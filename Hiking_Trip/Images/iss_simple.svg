@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Transparent background by default -->
+  <g stroke="black" stroke-width="16" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Solar arrays -->
+    <rect x="80" y="220" width="240" height="280" rx="12" />
+    <rect x="704" y="220" width="240" height="280" rx="12" />
+    <rect x="80" y="580" width="240" height="280" rx="12" />
+    <rect x="704" y="580" width="240" height="280" rx="12" />
+
+    <!-- Truss (horizontal spine) -->
+    <line x1="200" y1="512" x2="824" y2="512" />
+
+    <!-- Radiator/secondary panels (simplified) -->
+    <rect x="360" y="360" width="80" height="120" rx="8" />
+    <rect x="584" y="544" width="80" height="120" rx="8" />
+
+    <!-- Pressurized modules (central) -->
+    <rect x="440" y="456" width="144" height="112" rx="28" />
+    <rect x="440" y="352" width="144" height="72" rx="28" />
+    <rect x="440" y="600" width="144" height="72" rx="28" />
+
+    <!-- Docking/adapters -->
+    <circle cx="512" cy="328" r="20" />
+    <circle cx="512" cy="696" r="20" />
+
+    <!-- Small details/struts -->
+    <line x1="320" y1="360" x2="320" y2="664" />
+    <line x1="704" y1="360" x2="704" y2="664" />
+
+    <!-- Simple array cell lines -->
+    <g stroke-width="8">
+      <!-- Left-top cells -->
+      <line x1="80" y1="260" x2="320" y2="260"/>
+      <line x1="80" y1="300" x2="320" y2="300"/>
+      <line x1="80" y1="340" x2="320" y2="340"/>
+      <line x1="80" y1="380" x2="320" y2="380"/>
+      <line x1="80" y1="420" x2="320" y2="420"/>
+      <line x1="80" y1="460" x2="320" y2="460"/>
+      <line x1="80" y1="500" x2="320" y2="500"/>
+      <!-- Right-top cells -->
+      <line x1="704" y1="260" x2="944" y2="260"/>
+      <line x1="704" y1="300" x2="944" y2="300"/>
+      <line x1="704" y1="340" x2="944" y2="340"/>
+      <line x1="704" y1="380" x2="944" y2="380"/>
+      <line x1="704" y1="420" x2="944" y2="420"/>
+      <line x1="704" y1="460" x2="944" y2="460"/>
+      <line x1="704" y1="500" x2="944" y2="500"/>
+      <!-- Left-bottom cells -->
+      <line x1="80" y1="620" x2="320" y2="620"/>
+      <line x1="80" y1="660" x2="320" y2="660"/>
+      <line x1="80" y1="700" x2="320" y2="700"/>
+      <line x1="80" y1="740" x2="320" y2="740"/>
+      <line x1="80" y1="780" x2="320" y2="780"/>
+      <line x1="80" y1="820" x2="320" y2="820"/>
+      <line x1="80" y1="860" x2="320" y2="860"/>
+      <!-- Right-bottom cells -->
+      <line x1="704" y1="620" x2="944" y2="620"/>
+      <line x1="704" y1="660" x2="944" y2="660"/>
+      <line x1="704" y1="700" x2="944" y2="700"/>
+      <line x1="704" y1="740" x2="944" y2="740"/>
+      <line x1="704" y1="780" x2="944" y2="780"/>
+      <line x1="704" y1="820" x2="944" y2="820"/>
+      <line x1="704" y1="860" x2="944" y2="860"/>
+    </g>
+  </g>
+</svg>

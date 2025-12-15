@@ -1,0 +1,109 @@
+<!-- Full-width collapsible hints with Caveat font, white text, transparent (#02133e fallback) -->
+ <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  .eb-wrap {
+    width: 100%;
+    background: transparent;
+    background-color: rgba(2,19,62,0);
+    margin: 0; padding: 0;
+  }
+
+  .eb-title {
+    font-family: 'Caveat', cursive;
+    font-size: 34px;
+    color: #fff;
+    margin: 0 0 10px 0;
+  }
+
+  details.eb-drop {
+    border: 1px solid #39465e;
+    border-radius: 10px;
+    background: rgba(2,19,62,0.35);
+    overflow: hidden;
+  }
+  details.eb-drop[open]{margin-bottom:12px;}
+  details.eb-drop:not([open]){margin-bottom:0;}
+
+  .eb-summary {
+    list-style:none;
+    font-family:'Caveat',cursive;
+    font-size:28px;
+    color:#fff;
+    padding:10px 14px;
+    cursor:pointer;
+    position:relative;
+  }
+  .eb-summary::-webkit-details-marker{display:none;}
+  .eb-summary::after{
+    content:'▸';
+    position:absolute;right:12px;top:50%;transform:translateY(-50%);
+    color:#fff;opacity:.9;
+  }
+  details[open]>.eb-summary::after{content:'▾';}
+
+  .eb-body{
+    padding:10px 14px 14px 14px;
+    font-family:'Caveat',cursive;
+    color:#fff;
+    font-size:24px;
+  }
+
+  /* image + text row layout */
+  .eb-row {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px;
+  }
+
+  .eb-img {
+    width:200px;
+    height:auto;
+    border-radius:8px;
+  }
+
+  .eb-text {
+    font-family:'Caveat',cursive;
+    font-size:18px;
+    color:#fff;
+    flex:1 1 250px;
+  }
+
+  @media(max-width:700px){
+    .eb-row{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+
+<div class="eb-wrap">
+  <h2 class="eb-title">1 - Start - The Backpack</h2>
+
+  <!-- Hint 1 -->
+  <details class="eb-drop">
+    <summary class="eb-summary">💡 Hint 1</summary>
+    <div class="eb-body">
+      Look closely at the water bottle and what is on it
+    </div>
+  </details>
+
+  <!-- Hint 2 with side-by-side images -->
+  <details class="eb-drop">
+    <summary class="eb-summary">💡 Hint 2</summary>
+    <div class="eb-body eb-row">
+      <img class="eb-img" src="https://lh3.googleusercontent.com/sitesv/AAzXCkfDuI-X_Y1ritkZxOfCRVCzEVFZ3MeairYc0aOwjZfgmmlU5v1fvWitXyTC82ruKFTDaTMjTCmrBJHy9tVXPpK6pdHhwaqwJHBN09yyPWMPjYcT89kKuLnLirLkfDuBSXDjollto8onW377VIOQjWOQdXGDlCc1cwDGZ3ZnRpW1MF8Fowp5ZJ-k=w1280" alt="Hint image 1">
+      <img class="eb-img" src="https://lh3.googleusercontent.com/sitesv/AAzXCkcXWnZ5RFK3hPSFBihmrQcSDAnw1PBJaPRt_88fHDw-RtdHt4bbyX4WLKsHHtX6ZIMVBrwykWvkSEJZlK3B1vpCZ4MDEqpMU1GI6OUR5IidcryV7Iv0kNPMJomN4p_etH-sNjWW2cvoQ-DPKTR2QqcHkRxBXtc1E7zYwEkjWbLC34ziFaQ-9Ea5GkA=w1280" alt="Hint image 2">
+      <img class="eb-img" src="https://lh3.googleusercontent.com/sitesv/AAzXCkdFASCDD3AgyaE1pTQs7FsHpK65yyKIUl16k548_loZ4EnvOuSVkv2THvyofK7kiP_9WfUevEP45uD9YpAh2Ti4hXNGGMCFFdgDLEoQ1LoOXozkYnLmurkdmhNW6uVDkzJSIPmC5_l9YtEtBD5ElUzYbnZGisnuzInMwgptkXdMOQGUk3t9O4Ugle4=w1280" alt="Hint image 3">
+      <p class="eb-text">Look closely at the stickers or animals on the bottle</p>
+    </div>
+  </details>
+
+  <!-- Solution -->
+  <details class="eb-drop">
+    <summary class="eb-summary">✅ Solution</summary>
+    <div class="eb-body">
+      Solution is: 7-4-9. 7 is hidden in the dinosaur arms, 4 is hidden above the back leg of the mammoth
+      and 9 is hidden in the dog’s tail. The order of the numbers is the timeline of the animals
+      (dinosaur, mammoth and dog).
+    </div>
+  </details>
+</div>
