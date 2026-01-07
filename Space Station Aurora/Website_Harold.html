@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H.A.R.O.L.D. Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: transparent;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+            margin: 0;
+        }
+
+        .terminal {
+            background: transparent;
+            border: 3px solid #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3),
+                        inset 0 0 20px rgba(255, 255, 255, 0.1);
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            
+            .terminal {
+                padding: 12px;
+                border-width: 2px;
+                border-radius: 10px;
+            }
+            
+            h1 {
+                font-size: 20px !important;
+                letter-spacing: 1px !important;
+            }
+            
+            .subtitle {
+                font-size: 8px !important;
+                letter-spacing: 1px !important;
+            }
+            
+            .logo {
+                width: 50px !important;
+                height: 50px !important;
+                margin-bottom: 10px !important;
+            }
+            
+            .header {
+                margin-bottom: 15px !important;
+                padding-bottom: 15px !important;
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ffffff;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+
+        .subtitle {
+            font-size: 11px;
+            opacity: 0.7;
+            letter-spacing: 2px;
+        }
+
+        .output {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            height: 200px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .output::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .output::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .output::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+        }
+
+        .output::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        @media (max-width: 768px) {
+            .output {
+                height: 120px;
+                padding: 12px;
+                font-size: 11px;
+                margin-bottom: 15px;
+            }
+        }
+
+        .prompt {
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .response {
+            color: #00d4ff;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: nowrap;
+        }
+
+        input {
+            flex: 1;
+            min-width: 0;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #ffffff;
+            border-radius: 5px;
+            padding: 12px 15px;
+            color: #ffffff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 768px) {
+            .input-group {
+                gap: 6px;
+            }
+            
+            input {
+                font-size: 12px;
+                padding: 10px;
+                letter-spacing: 1px;
+            }
+            
+            button {
+                padding: 10px 15px !important;
+                font-size: 11px !important;
+                white-space: nowrap;
+            }
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        button {
+            background: #ffffff;
+            color: #192a69;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 25px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: #00d4ff;
+            color: #192a69;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .blink {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="header">
+            <div class="logo">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cstyle%3E.gear%7Bfill:none;stroke:%23ffffff;stroke-width:2;%7D%3C/style%3E%3Ccircle class='gear' cx='50' cy='50' r='45'/%3E%3Cpath class='gear' d='M50,10 L55,5 L60,10 L60,15 L55,20 L50,15 Z M90,50 L95,45 L90,40 L85,40 L80,45 L85,50 Z M50,90 L45,95 L40,90 L40,85 L45,80 L50,85 Z M10,50 L5,55 L10,60 L15,60 L20,55 L15,50 Z M75,25 L80,20 L75,15 L70,20 Z M75,75 L80,80 L75,85 L70,80 Z M25,75 L20,80 L25,85 L30,80 Z M25,25 L20,20 L25,15 L30,20 Z'/%3E%3Ccircle class='gear' cx='50' cy='50' r='20'/%3E%3Cpath class='gear' d='M40,35 Q35,40 35,50 Q35,60 40,65 M60,35 Q65,40 65,50 Q65,60 60,65'/%3E%3Ccircle fill='%23ffffff' cx='45' cy='45' r='3'/%3E%3Ccircle fill='%23ffffff' cx='55' cy='45' r='3'/%3E%3Cpath class='gear' d='M45,55 Q50,58 55,55'/%3E%3C/svg%3E" alt="H.A.R.O.L.D." style="width: 100%; height: 100%; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));">
+            </div>
+            <h1>H.A.R.O.L.D.</h1>
+            <div class="subtitle">HIGHLY ADVANCED ROBOTIC ORBITAL LOGISTIC DIRECTOR</div>
+        </div>
+
+        <div class="output" id="output">
+            <div class="prompt">SYSTEM READY<span class="blink">_</span></div>
+            <div class="prompt">ENTER ACCESS CODE TO PROCEED...</div>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="codeInput" placeholder="ENTER CODE" maxlength="20">
+            <button onclick="submitCode()">SUBMIT</button>
+        </div>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+        const input = document.getElementById('codeInput');
+
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitCode();
+            }
+        });
+
+        function submitCode() {
+            const code = input.value.trim().toUpperCase();
+            
+            if (!code) {
+                displayResponse('ERROR: NO CODE ENTERED');
+                return;
+            }
+
+            displayResponse(`> PROCESSING CODE: ${code}`);
+
+            setTimeout(() => {
+                if (code === 'ORBIT') {
+                    displayResponse('✓ COMMUNICATION RESTORED', true);
+                } else {
+                    displayResponse('✗ ACCESS DENIED: INVALID CODE', false);
+                }
+            }, 800);
+
+            input.value = '';
+        }
+
+        function displayResponse(message, success = null) {
+            const responseDiv = document.createElement('div');
+            responseDiv.className = 'response';
+            
+            if (success === true) {
+                responseDiv.style.color = '#00ff41';
+            } else if (success === false) {
+                responseDiv.style.color = '#ff4141';
+            } else {
+                responseDiv.style.color = '#ffffff';
+            }
+            
+            responseDiv.textContent = message;
+            output.appendChild(responseDiv);
+            
+            output.scrollTop = output.scrollHeight;
+        }
+    </script>
+</body>
+</html>
