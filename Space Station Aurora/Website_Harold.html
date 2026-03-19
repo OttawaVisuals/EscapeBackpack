@@ -14,82 +14,32 @@
 
         body {
             font-family: 'Orbitron', sans-serif;
-            background: transparent;
+            background: #192a69;
             color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            padding: 10px;
-            margin: 0;
+            padding: 15px;
         }
 
-        .terminal {
-            background: transparent;
-            border: 3px solid #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3),
-                        inset 0 0 20px rgba(255, 255, 255, 0.1);
-            max-width: 600px;
-            width: 100%;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 5px;
-            }
-            
-            .terminal {
-                padding: 12px;
-                border-width: 2px;
-                border-radius: 10px;
-            }
-            
-            h1 {
-                font-size: 20px !important;
-                letter-spacing: 1px !important;
-            }
-            
-            .subtitle {
-                font-size: 8px !important;
-                letter-spacing: 1px !important;
-            }
-            
-            .logo {
-                width: 50px !important;
-                height: 50px !important;
-                margin-bottom: 10px !important;
-            }
-            
-            .header {
-                margin-bottom: 15px !important;
-                padding-bottom: 15px !important;
-            }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
             border-bottom: 2px solid #ffffff;
         }
 
         .logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 15px;
-            animation: rotate 20s linear infinite;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 10px;
         }
 
         h1 {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 900;
             letter-spacing: 3px;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
@@ -98,19 +48,60 @@
         }
 
         .subtitle {
-            font-size: 11px;
+            font-size: 10px;
             opacity: 0.7;
             letter-spacing: 2px;
         }
 
-        .output {
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .status-item {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid #ffffff;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 11px;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .status-value {
+            color: #00ff41;
+            font-weight: 700;
+            margin-left: 5px;
+        }
+
+        .status-value.warning {
+            color: #ffaa00;
+        }
+
+        .status-value.error {
+            color: #ff4141;
+        }
+
+        .main-display {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #ffffff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .output {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 8px;
-            padding: 20px;
+            padding: 15px;
             height: 200px;
-            margin-bottom: 20px;
-            font-size: 14px;
+            margin-bottom: 15px;
+            font-size: 12px;
             line-height: 1.6;
             overflow-y: auto;
             overflow-x: hidden;
@@ -130,27 +121,15 @@
             border-radius: 4px;
         }
 
-        .output::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.7);
-        }
-
-        @media (max-width: 768px) {
-            .output {
-                height: 120px;
-                padding: 12px;
-                font-size: 11px;
-                margin-bottom: 15px;
-            }
-        }
-
         .prompt {
             color: #ffffff;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .response {
             color: #00d4ff;
             animation: fadeIn 0.5s ease-in;
+            margin-bottom: 5px;
         }
 
         @keyframes fadeIn {
@@ -161,40 +140,20 @@
         .input-group {
             display: flex;
             gap: 8px;
-            flex-wrap: nowrap;
+            margin-bottom: 15px;
         }
 
         input {
             flex: 1;
-            min-width: 0;
             background: rgba(0, 0, 0, 0.5);
             border: 2px solid #ffffff;
             border-radius: 5px;
-            padding: 12px 15px;
+            padding: 12px;
             color: #ffffff;
             font-family: 'Orbitron', sans-serif;
-            font-size: 16px;
+            font-size: 14px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            box-sizing: border-box;
-        }
-
-        @media (max-width: 768px) {
-            .input-group {
-                gap: 6px;
-            }
-            
-            input {
-                font-size: 12px;
-                padding: 10px;
-                letter-spacing: 1px;
-            }
-            
-            button {
-                padding: 10px 15px !important;
-                font-size: 11px !important;
-                white-space: nowrap;
-            }
+            letter-spacing: 1px;
         }
 
         input:focus {
@@ -207,24 +166,111 @@
             color: #192a69;
             border: none;
             border-radius: 5px;
-            padding: 12px 25px;
+            padding: 12px 20px;
             font-family: 'Orbitron', sans-serif;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 12px;
             cursor: pointer;
             transition: all 0.3s;
             letter-spacing: 1px;
+            white-space: nowrap;
         }
 
         button:hover {
             background: #00d4ff;
-            color: #192a69;
             box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
             transform: translateY(-2px);
         }
 
         button:active {
             transform: translateY(0);
+        }
+
+        .button-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .secondary-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            border: 1px solid #ffffff;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .panel {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #ffffff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #00d4ff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 8px;
+        }
+
+        .panel-content {
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .hint-item {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 3px solid #00d4ff;
+            padding: 8px;
+            margin-bottom: 8px;
+            border-radius: 3px;
+        }
+
+        .progress-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        .progress-status {
+            font-weight: 700;
+            min-width: 80px;
+        }
+
+        .progress-status.complete {
+            color: #00ff41;
+        }
+
+        .progress-status.locked {
+            color: #666;
         }
 
         .blink {
@@ -234,44 +280,249 @@
         @keyframes blink {
             50% { opacity: 0; }
         }
+
+        .sound-toggle {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            z-index: 100;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 20px;
+                letter-spacing: 2px;
+            }
+
+            .subtitle {
+                font-size: 8px;
+            }
+
+            .logo {
+                width: 50px;
+                height: 50px;
+            }
+
+            .output {
+                height: 150px;
+                font-size: 11px;
+                padding: 12px;
+            }
+
+            .status-item {
+                font-size: 10px;
+                padding: 6px 8px;
+            }
+
+            input {
+                font-size: 12px;
+                padding: 10px;
+            }
+
+            button {
+                font-size: 11px;
+                padding: 10px 15px;
+            }
+
+            .button-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="terminal">
+    <button class="sound-toggle" onclick="toggleSound()">🔊 SOUND: <span id="soundStatus">ON</span></button>
+
+    <div class="container">
         <div class="header">
             <div class="logo">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cstyle%3E.gear%7Bfill:none;stroke:%23ffffff;stroke-width:2;%7D%3C/style%3E%3Ccircle class='gear' cx='50' cy='50' r='45'/%3E%3Cpath class='gear' d='M50,10 L55,5 L60,10 L60,15 L55,20 L50,15 Z M90,50 L95,45 L90,40 L85,40 L80,45 L85,50 Z M50,90 L45,95 L40,90 L40,85 L45,80 L50,85 Z M10,50 L5,55 L10,60 L15,60 L20,55 L15,50 Z M75,25 L80,20 L75,15 L70,20 Z M75,75 L80,80 L75,85 L70,80 Z M25,75 L20,80 L25,85 L30,80 Z M25,25 L20,20 L25,15 L30,20 Z'/%3E%3Ccircle class='gear' cx='50' cy='50' r='20'/%3E%3Cpath class='gear' d='M40,35 Q35,40 35,50 Q35,60 40,65 M60,35 Q65,40 65,50 Q65,60 60,65'/%3E%3Ccircle fill='%23ffffff' cx='45' cy='45' r='3'/%3E%3Ccircle fill='%23ffffff' cx='55' cy='45' r='3'/%3E%3Cpath class='gear' d='M45,55 Q50,58 55,55'/%3E%3C/svg%3E" alt="H.A.R.O.L.D." style="width: 100%; height: 100%; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <style>.gear{fill:none;stroke:#ffffff;stroke-width:2.5;}</style>
+                    <circle class="gear" cx="50" cy="50" r="45"/>
+                    <path class="gear" d="M50,10 L55,5 L60,10 L60,15 L55,20 L50,15 Z M90,50 L95,45 L90,40 L85,40 L80,45 L85,50 Z M50,90 L45,95 L40,90 L40,85 L45,80 L50,85 Z M10,50 L5,55 L10,60 L15,60 L20,55 L15,50 Z M75,25 L80,20 L75,15 L70,20 Z M75,75 L80,80 L75,85 L70,80 Z M25,75 L20,80 L25,85 L30,80 Z M25,25 L20,20 L25,15 L30,20 Z"/>
+                    <circle class="gear" cx="50" cy="50" r="20"/>
+                    <path class="gear" d="M40,35 Q35,40 35,50 Q35,60 40,65 M60,35 Q65,40 65,50 Q65,60 60,65"/>
+                    <circle fill="#ffffff" cx="45" cy="45" r="3"/>
+                    <circle fill="#ffffff" cx="55" cy="45" r="3"/>
+                    <path class="gear" d="M45,55 Q50,58 55,55"/>
+                </svg>
             </div>
             <h1>H.A.R.O.L.D.</h1>
             <div class="subtitle">HIGHLY ADVANCED ROBOTIC ORBITAL LOGISTIC DIRECTOR</div>
         </div>
 
-        <div class="output" id="output">
-            <div class="prompt">SYSTEM READY<span class="blink">_</span></div>
-            <div class="prompt">ENTER ACCESS CODE TO PROCEED...</div>
+        <div class="status-bar">
+            <div class="status-item">
+                <span>SYSTEM:</span>
+                <span class="status-value warning" id="systemStatus">DEGRADED</span>
+            </div>
+            <div class="status-item">
+                <span>TIME:</span>
+                <span class="status-value" id="missionTime">00:00:00</span>
+            </div>
+            <div class="status-item">
+                <span>MODULES:</span>
+                <span class="status-value" id="moduleCount">0/5</span>
+            </div>
         </div>
 
-        <div class="input-group">
-            <input type="text" id="codeInput" placeholder="ENTER CODE" maxlength="20">
-            <button onclick="submitCode()">SUBMIT</button>
+        <div class="main-display">
+            <div class="output" id="output">
+                <div class="prompt">SYSTEM INITIALIZATION COMPLETE<span class="blink">_</span></div>
+                <div class="prompt">WELCOME, CREW MEMBER</div>
+                <div class="prompt">ENTER ACCESS CODES TO RESTORE SYSTEM FUNCTIONS...</div>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="codeInput" placeholder="ENTER CODE" maxlength="30">
+                <button onclick="submitCode()">SUBMIT</button>
+            </div>
+
+            <div class="button-row">
+                <button class="secondary-btn" onclick="togglePanel('help')">📋 HELP</button>
+                <button class="secondary-btn" onclick="togglePanel('briefing')">📡 BRIEFING</button>
+                <button class="secondary-btn" onclick="togglePanel('progress')">📊 PROGRESS</button>
+                <button class="secondary-btn" onclick="togglePanel('protocols')">⚠️ PROTOCOLS</button>
+            </div>
+        </div>
+
+        <div id="helpPanel" class="panel">
+            <div class="panel-title">HELP & HINTS</div>
+            <div class="panel-content">
+                <div class="hint-item">
+                    <strong>Stuck on a puzzle?</strong> Look for clues in your physical materials and the mission briefing.
+                </div>
+                <div class="hint-item">
+                    <strong>Code format:</strong> All access codes are single words or short phrases. Case doesn't matter.
+                </div>
+                <div class="hint-item">
+                    <strong>Progress tracking:</strong> Check the PROGRESS panel to see which modules you've unlocked.
+                </div>
+                <div class="hint-item">
+                    <strong>Need more help?</strong> Emergency protocols may contain additional hints for critical systems.
+                </div>
+            </div>
+        </div>
+
+        <div id="briefingPanel" class="panel">
+            <div class="panel-title">MISSION BRIEFING</div>
+            <div class="panel-content">
+                <p style="margin-bottom: 10px;">
+                    <strong>SITUATION:</strong> H.A.R.O.L.D. system has experienced critical failures across multiple modules. Core functions have been locked to prevent cascade failure.
+                </p>
+                <p style="margin-bottom: 10px;">
+                    <strong>OBJECTIVE:</strong> Restore system functionality by entering correct access codes for each module. Codes can be found by solving puzzles in your escape backpack materials.
+                </p>
+                <p>
+                    <strong>STATUS:</strong> System is currently operating in safe mode. Full restoration requires unlocking all 5 modules.
+                </p>
+            </div>
+        </div>
+
+        <div id="progressPanel" class="panel">
+            <div class="panel-title">MODULE RESTORATION PROGRESS</div>
+            <div class="panel-content" id="progressContent">
+                <div class="progress-item">
+                    <span class="progress-status locked">🔒 LOCKED</span>
+                    <span>Communications Array</span>
+                </div>
+                <div class="progress-item">
+                    <span class="progress-status locked">🔒 LOCKED</span>
+                    <span>Navigation Systems</span>
+                </div>
+                <div class="progress-item">
+                    <span class="progress-status locked">🔒 LOCKED</span>
+                    <span>Life Support</span>
+                </div>
+                <div class="progress-item">
+                    <span class="progress-status locked">🔒 LOCKED</span>
+                    <span>Power Management</span>
+                </div>
+                <div class="progress-item">
+                    <span class="progress-status locked">🔒 LOCKED</span>
+                    <span>Core AI Functions</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="protocolsPanel" class="panel">
+            <div class="panel-title">EMERGENCY PROTOCOLS</div>
+            <div class="panel-content">
+                <p style="margin-bottom: 10px;"><strong>EP-01:</strong> In case of total system failure, access admin backdoor for manual override.</p>
+                <p style="margin-bottom: 10px;"><strong>EP-02:</strong> Communication restoration is first priority - look for orbital references.</p>
+                <p style="margin-bottom: 10px;"><strong>EP-03:</strong> All codes relate to space station operations and mission objectives.</p>
+                <p><strong>EP-04:</strong> If completely stuck, contact mission control for assistance.</p>
+            </div>
         </div>
     </div>
 
     <script>
         const output = document.getElementById('output');
         const input = document.getElementById('codeInput');
+        let soundEnabled = true;
+        let unlockedModules = 0;
+        let startTime = Date.now();
+
+        // Update mission time
+        setInterval(() => {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const hours = Math.floor(elapsed / 3600).toString().padStart(2, '0');
+            const minutes = Math.floor((elapsed % 3600) / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            document.getElementById('missionTime').textContent = `${hours}:${minutes}:${seconds}`;
+        }, 1000);
 
         input.addEventListener('keypress', function(e) {
+            if (soundEnabled) playBeep();
             if (e.key === 'Enter') {
                 submitCode();
             }
         });
 
+        function playBeep() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.frequency.value = 800;
+            gainNode.gain.value = 0.1;
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.05);
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundStatus').textContent = soundEnabled ? 'ON' : 'OFF';
+        }
+
+        function togglePanel(panelName) {
+            const panel = document.getElementById(panelName + 'Panel');
+            const allPanels = document.querySelectorAll('.panel');
+            
+            allPanels.forEach(p => {
+                if (p !== panel) p.classList.remove('active');
+            });
+            
+            panel.classList.toggle('active');
+        }
+
         function submitCode() {
             const code = input.value.trim().toUpperCase();
             
             if (!code) {
-                displayResponse('ERROR: NO CODE ENTERED');
+                displayResponse('ERROR: NO CODE ENTERED', 'error');
                 return;
             }
 
@@ -279,22 +530,44 @@
 
             setTimeout(() => {
                 if (code === 'ORBIT') {
-                    displayResponse('✓ COMMUNICATION RESTORED', true);
+                    unlockModule(0, 'Communications Array');
+                    displayResponse('✓ COMMUNICATIONS ARRAY RESTORED', 'success');
                 } else {
-                    displayResponse('✗ ACCESS DENIED: INVALID CODE', false);
+                    displayResponse('✗ ACCESS DENIED: INVALID CODE', 'error');
                 }
             }, 800);
 
             input.value = '';
         }
 
-        function displayResponse(message, success = null) {
+        function unlockModule(index, name) {
+            unlockedModules++;
+            document.getElementById('moduleCount').textContent = `${unlockedModules}/5`;
+            
+            const progressItems = document.querySelectorAll('.progress-item');
+            const statusSpan = progressItems[index].querySelector('.progress-status');
+            statusSpan.textContent = '✓ ACTIVE';
+            statusSpan.classList.remove('locked');
+            statusSpan.classList.add('complete');
+
+            if (unlockedModules === 5) {
+                document.getElementById('systemStatus').textContent = 'OPTIMAL';
+                document.getElementById('systemStatus').classList.remove('warning');
+                setTimeout(() => {
+                    displayResponse('>>> ALL SYSTEMS RESTORED! MISSION COMPLETE! <<<', 'success');
+                }, 1000);
+            } else if (unlockedModules >= 3) {
+                document.getElementById('systemStatus').textContent = 'OPERATIONAL';
+            }
+        }
+
+        function displayResponse(message, type = null) {
             const responseDiv = document.createElement('div');
             responseDiv.className = 'response';
             
-            if (success === true) {
+            if (type === 'success') {
                 responseDiv.style.color = '#00ff41';
-            } else if (success === false) {
+            } else if (type === 'error') {
                 responseDiv.style.color = '#ff4141';
             } else {
                 responseDiv.style.color = '#ffffff';
@@ -304,6 +577,10 @@
             output.appendChild(responseDiv);
             
             output.scrollTop = output.scrollHeight;
+
+            if (soundEnabled && type) {
+                setTimeout(() => playBeep(), 100);
+            }
         }
     </script>
 </body>
