@@ -67,7 +67,7 @@ BRIEF = [
 # Player-facing Aurora letterhead; essential text remains clear despite the failed transmission.
 NAVY = HexColor('#16253c')
 ORANGE = HexColor('#a84420')
-C.drawImage(str(ROOT/'Images/Logos/StationAurora_Logo_v7_2048.png'), 48, 668, 78, 78, mask='auto')
+C.drawImage(str(ROOT/'Images/SpaceStationAurora.jpg'), 48, 668, 78, 78, mask='auto')
 text(142, 730, 'STATION AURORA', 24, NAVY, 'Helvetica-Bold')
 text(143, 709, 'HAROLD / EMERGENCY COMMUNICATIONS', 9, NAVY)
 text(143, 689, 'LOCAL HARDCOPY  /  12 MARCH 2032', 9, ORANGE, 'Courier-Bold')
