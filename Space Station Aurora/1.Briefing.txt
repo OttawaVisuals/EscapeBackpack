@@ -1,13 +1,22 @@
 Potential text for the first briefing - it would be a print out from HAROLD 
 
-Title: Station Aurora - Meteorite Strike - Urgent - March 12, 2032
+"Title: Station Aurora - Meteorite Strike - Urgent - March 12, 2032
 
-Hello Dr. Lancaster, a micrometeorite strike has damaged Aurora. Commander Helena Chen and Engineer Alistair Johnson are sealed in the crew quarters. 
+From: HAROLD to: Dr. Lancaster
+
+Hello Dr. Lancaster, a micrometeorite strike has damaged Aurora. 
+
+It seems you fell and hurt your head during the strike, preliminary scans indicate you might have some memory loss.
+
+Commander Helena Chen and Engineer Alistair Johnson are sealed in the crew quarters.
 
 You have reached Engineer Johnson's emergency backpack and you're the only one that can access the areas damages by the strike.
 
-Restore internal communications, stabilize the station, then prepare evacuation. The kit contains secured repair equipment. HAROLD will track your progress.
+I have also been damaged during the strike and I am loosing my ability to communicate effectively with you.
 
-Pascale Tremblay, the original engineer, missed launch after an anaphylactic reaction. Her condition is improving.
+Engineer Johnson seems to have locked some of the tools needed in this bag and I did my best to try and help you open the different compartments. 
 
-START: match the communications fault strip to the station map. Find the surviving signal path.
+Please find my interface so I can keep communicating with you."
+
+-> In an open pocket of the utility bag would be the QR code + patches
+-> We could try to make the print-out show signs that HRAOLD is struggling to finish printing the briefing note.
