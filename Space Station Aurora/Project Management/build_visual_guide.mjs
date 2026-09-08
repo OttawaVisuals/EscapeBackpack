@@ -9,7 +9,8 @@ const source = fs.readFileSync(new URL('Aurora_Completion_Proposal.md',dir),'utf
 const sections = source.split(/^## /m).slice(1).map(x=>({title:x.slice(0,x.indexOf('\n')),body:x.slice(x.indexOf('\n')+1)}));
 const puzzles = sections[3].body.split(/^### /m).slice(1).map(x=>({title:x.slice(0,x.indexOf('\n')),html:marked.parse(x.slice(x.indexOf('\n')+1))}));
 const content = sections.map(s=>marked.parse(s.body.replace(/```mermaid[\s\S]*?```/g,'')));
-const logo=fs.readFileSync(new URL('../Images/Logos/StationAurora_Logo_v7.svg',dir),'utf8').replace(/<\?xml[^>]*>/,'');
+// Current project-owner-approved logo; versioned SVGs are older alternatives.
+const logo='<img src="data:image/jpeg;base64,'+fs.readFileSync(new URL('../Images/SpaceStationAurora.jpg',dir)).toString('base64')+'" alt="Station Aurora logo" style="width:48px;height:48px;flex-shrink:0;border-radius:50%">';
 const patchPreview = fs.readFileSync(new URL('QR_Patch_Prototype/Aurora_QR_Patch_Editor.html',dir),'utf8');
 const patchNote = marked.parse(fs.readFileSync(new URL('QR_Six_Tile_Feasibility.md',dir),'utf8').split('## Candidate that passed')[0]);
 const patchSrcdoc = patchPreview.replaceAll('&','&amp;').replaceAll('\"','&quot;').replaceAll('<','&lt;').replaceAll('>','&gt;');
