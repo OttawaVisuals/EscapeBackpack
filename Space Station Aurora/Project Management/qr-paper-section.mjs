@@ -5,6 +5,7 @@ const escape = value => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').r
 export function paperSection(marked) {
   const layout = JSON.parse(read('QR_Patch_Prototype/aurora-qr-layoutV2.json'));
   const pdf = fs.readFileSync(new URL('../output/pdf/Aurora_V2_Paper_Prototype.pdf', dir)).toString('base64');
+  const briefPdf = fs.readFileSync(new URL('../output/pdf/Aurora_Emergency_Briefing.pdf', dir)).toString('base64');
   const briefing = read('QR_Patch_Prototype/Briefing_Refined_Draft.txt');
   const options = read('QR_Patch_Prototype/Placement_Clue_Options.md');
   const cells = layout.patches.flatMap(p => p.cells);
@@ -29,7 +30,7 @@ export function paperSection(marked) {
   return `<div class="reader" style="margin:24px 0">
     <span class="tag">V2 · ready for paper testing</span><h2>Print it. Assemble it. Test it.</h2>
     <p>Five pages: refined briefing, base QR, six cutout patches, maintenance diagram and facilitator instructions.</p>
-    <div class="toolbar"><a href="data:application/pdf;base64,${pdf}" download="Aurora_V2_Paper_Prototype.pdf">Download printable PDF</a><a href="data:text/plain;charset=utf-8,${encodeURIComponent(briefing)}" download="Briefing_Refined_Draft.txt">Download briefing text</a><a href="data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(layout,null,2))}" download="aurora-qr-layoutV2.json">Download V2 editor layout</a></div>
+    <div class="toolbar"><a href="data:application/pdf;base64,${pdf}" download="Aurora_V2_Paper_Prototype.pdf">Download printable PDF</a><a href="data:application/pdf;base64,${briefPdf}" download="Aurora_Emergency_Briefing.pdf">Download styled briefing only</a><a href="data:text/plain;charset=utf-8,${encodeURIComponent(briefing)}" download="Briefing_Refined_Draft.txt">Download briefing text</a><a href="data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(layout,null,2))}" download="aurora-qr-layoutV2.json">Download V2 editor layout</a></div>
     <p><strong>Print single-sided at 100% / Actual size.</strong> Check both 50 mm rulers. Give players pages 1, 2 and 4 plus the cut patches from page 3. Keep page 5.</p>
     <p class="notetext">3 mm squares · 75 mm QR face · 99 mm including its white border. Use opaque paper and adhesive underneath. Screen previews are not print templates.</p>
     <div class="intro"><strong>Opening sequence</strong><p>Briefing → find panel, patches and diagram → match shapes → transfer all six → scan → HAROLD.</p></div>

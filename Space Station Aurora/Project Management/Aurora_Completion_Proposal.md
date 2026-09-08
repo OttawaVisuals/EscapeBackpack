@@ -1,6 +1,6 @@
 # Space Station Aurora completion proposal
 
-**Recommendation:** build the hybrid version below: a printed station map, two locked pouches, a two-stage Arduino repair box, and HAROLD on one shared device. Prototype the entire game with paper envelopes before manufacturing the box.
+**Selected build: Option B — Hybrid.** Confirmed by the project owner. Build the hybrid version below: a printed station map, two locked pouches, a two-stage Arduino repair box, and HAROLD on one shared device. Prototype the entire game with paper envelopes before manufacturing the box.
 
 This is a proposed design, not accepted canon or a finished game. Existing source files have not been changed. All new puzzle values, dialogue, dates, dimensions, and play targets below are design proposals. Target assumption: 2–4 adult/teen players, 60–90 minutes, one table, one backpack and one shared screen. Duration needs blind playtesting. Purchasing region, budget, owned hardware, printer capacity and player ages are unconfirmed.
 
@@ -33,7 +33,7 @@ The project already has a useful foundation: Sarah as the player, a real meteori
 | Option | Experience | What changes | Main tradeoff |
 |---|---|---|---|
 | **A. Paper and locks** | Same investigation and map; paper control panel; HAROLD validates settings | Phase A settings release a pouch code; Phase B uses a four-digit lock at 8536 | Fastest to build. Less physical repair feedback. |
-| **B. Hybrid — recommended** | Printed map, tactile life-support cartridges, two-stage Arduino box, HAROLD | Full sequence below | Good variety and a convincing finale; needs hardware testing. |
+| **B. Hybrid — selected** | Printed map, tactile life-support cartridges, two-stage Arduino box, HAROLD | Full sequence below | Good variety and a convincing finale; needs hardware testing. |
 | **C. Instrumented station** | Hybrid plus a magnetic station board, detected repair cartridge and direct hardware status | Add sensors and a managed connection after B works | More immersive, but more wiring, transport and reset failure points. |
 
 Do not add extra puzzles merely to justify C. Give the same actions better feedback. The most valuable upgrade is detecting the final repair, not adding another cipher.
