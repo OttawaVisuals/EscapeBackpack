@@ -6,3 +6,9 @@
 
 ## Description
 GitHub repository to collect information, resources and solutions to our puzzles
+
+## Working with Coding Agents
+
+- Shared instructions: [AGENTS.md](AGENTS.md)
+- Current task and handoff: [HANDOFF.md](HANDOFF.md)
+- Claude Code entry point: [CLAUDE.md](CLAUDE.md)

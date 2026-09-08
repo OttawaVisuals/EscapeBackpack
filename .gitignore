@@ -5,6 +5,9 @@ Space Station Aurora/.codex-station-aurora-logo/
 Space Station Aurora/Project Management/.design-guide-build/
 *.inspect.ndjson
 
+# Personal Claude Code instructions (shared guidance is in CLAUDE.md)
+CLAUDE.local.md
+
 # Office lock files and Python caches
 ~$*
 __pycache__/
