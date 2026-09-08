@@ -1,0 +1,13 @@
+Potential text for the first briefing - it would be a print out from HAROLD 
+
+Title: Station Aurora - Meteorite Strike - Urgent - March 12, 2032
+
+Hello Dr. Lancaster, a micrometeorite strike has damaged Aurora. Commander Helena Chen and Engineer Alistair Johnson are sealed in the crew quarters. 
+
+You have reached Engineer Johnson's emergency backpack and you're the only one that can access the areas damages by the strike.
+
+Restore internal communications, stabilize the station, then prepare evacuation. The kit contains secured repair equipment. HAROLD will track your progress.
+
+Pascale Tremblay, the original engineer, missed launch after an anaphylactic reaction. Her condition is improving.
+
+START: match the communications fault strip to the station map. Find the surviving signal path.
