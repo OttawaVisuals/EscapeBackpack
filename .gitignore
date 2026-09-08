@@ -1,0 +1,10 @@
+# Local document-generation workspaces and installed dependencies
+**/node_modules/
+Space Station Aurora/.codex-staff-guide-20260903/
+Space Station Aurora/.codex-station-aurora-logo/
+Space Station Aurora/Project Management/.design-guide-build/
+*.inspect.ndjson
+
+# Office lock files and Python caches
+~$*
+__pycache__/
