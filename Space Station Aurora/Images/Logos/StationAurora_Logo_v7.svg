@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Space Station Aurora badge</title>
+  <desc id="desc">A detailed navy circular Space Station Aurora patch with compact ring lettering, a maple leaf, and an orbit.</desc>
+  <circle cx="500" cy="500" r="474" fill="#16253C" />
+  <circle cx="500" cy="500" r="442" fill="none" stroke="#F5F7F8" stroke-width="12" />
+  <circle cx="500" cy="500" r="360" fill="none" stroke="#F5F7F8" stroke-width="8" />
+  <circle cx="500" cy="500" r="320" fill="none" stroke="#AAB9C8" stroke-width="5" />
+  <g fill="#F5F7F8" font-family="Orbitron, Arial, sans-serif" font-size="42" font-weight="700" text-anchor="middle">
+    <text x="345" y="250" transform="rotate(-35 345 250)">S</text>
+    <text x="400" y="220" transform="rotate(-20 400 220)">T</text>
+    <text x="455" y="205" transform="rotate(-8 455 205)">A</text>
+    <text x="500" y="200">T</text>
+    <text x="545" y="205" transform="rotate(8 545 205)">I</text>
+    <text x="600" y="220" transform="rotate(20 600 220)">O</text>
+    <text x="655" y="250" transform="rotate(35 655 250)">N</text>
+    <text x="350" y="750" transform="rotate(35 350 750)">A</text>
+    <text x="408" y="782" transform="rotate(20 408 782)">U</text>
+    <text x="455" y="797" transform="rotate(8 455 797)">R</text>
+    <text x="500" y="802">O</text>
+    <text x="545" y="797" transform="rotate(-8 545 797)">R</text>
+    <text x="592" y="782" transform="rotate(-20 592 782)">A</text>
+  </g>
+  <ellipse cx="500" cy="500" rx="244" ry="102" fill="none" stroke="#F5F7F8" stroke-width="11" transform="rotate(-31 500 500)" />
+  <circle cx="292" cy="368" r="13" fill="#F5F7F8" />
+  <g transform="translate(500 500) scale(.066)">
+    <path fill="#F5F7F8" d="m-90 2030 45-863a95 95 0 0 0-111-98l-859 151 116-320a65 65 0 0 0-20-73l-941-762 212-99a65 65 0 0 0 34-79l-186-572 542 115a65 65 0 0 0 73-38l105-247 423 454a65 65 0 0 0 111-57l-204-1052 327 189a65 65 0 0 0 91-27l332-652 332 652a65 65 0 0 0 91 27l327-189-204 1052a65 65 0 0 0 111 57l423-454 105 247a65 65 0 0 0 73 38l542-115-186 572a65 65 0 0 0 34 79l212 99-941 762a65 65 0 0 0-20 73l116 320-859-151a95 95 0 0 0-111 98l45 863z" />
+  </g>
+</svg>

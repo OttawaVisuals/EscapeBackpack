@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Space Station Aurora patch</title>
+  <desc id="desc">A navy circular patch showing a white maple leaf with a single orbital path.</desc>
+  <circle cx="500" cy="500" r="474" fill="#16253C" />
+  <circle cx="500" cy="500" r="442" fill="none" stroke="#F5F7F8" stroke-width="16" />
+  <ellipse cx="500" cy="500" rx="345" ry="146" fill="none" stroke="#F5F7F8" stroke-width="14" transform="rotate(-31 500 500)" />
+  <circle cx="218" cy="332" r="18" fill="#F5F7F8" />
+  <path fill="#F5F7F8" d="M500 306 535 405 620 363 585 445 681 430 610 502 698 536 605 574 653 660 550 615 562 722 500 673 438 722 450 615 347 660 395 574 302 536 390 502 319 430 415 445 380 363 465 405Z" />
+</svg>
