@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Escape Backpack · Adventures & ideas</title>
   <style>
-    *{box-sizing:border-box}body{margin:0;background:#f4f0e7;color:#243c33;font:17px/1.6 'Segoe UI',sans-serif}header{background:#203e35;color:#fff;padding:46px 24px}header div,main{max-width:980px;margin:auto}h1{font-size:clamp(32px,6vw,50px);line-height:1.15;margin:0 0 12px}h2{font-size:26px;margin:0 0 16px}h3{font-size:20px;margin:0 0 8px}p{margin:0 0 16px}header p{color:#dce6da;max-width:700px;margin:0}main{padding:34px 24px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}.card{border:1px solid #d5cdbc;background:#fffcf5;border-radius:12px;padding:24px}.label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#7e633b;margin-bottom:10px}a{color:#245e48;text-underline-offset:4px}a:focus-visible{outline:3px solid #ae7137;outline-offset:5px}.review{margin-top:40px;padding-top:28px;border-top:2px solid #c9bea6}.review .card{border-top:4px solid #8b703d}.muted{font-size:14px;color:#657064}.link{display:inline-block;font-weight:650;margin-top:3px}footer{margin-top:24px;font-size:13px;color:#657064}
+    *{box-sizing:border-box}body{margin:0;background:#f4f0e7;color:#243c33;font:17px/1.6 'Segoe UI',sans-serif}header{background:#203e35;color:#fff;padding:46px 24px}header div,main{max-width:980px;margin:auto}h1{font-size:clamp(32px,6vw,50px);line-height:1.15;margin:0 0 12px}h2{font-size:26px;margin:0 0 16px}h3{font-size:20px;margin:0 0 8px}p{margin:0 0 16px}header p{color:#dce6da;max-width:700px;margin:0}main{padding:34px 24px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}.card{border:1px solid #d5cdbc;background:#fffcf5;border-radius:12px;padding:24px}.label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#7e633b;margin-bottom:10px}a{color:#245e48;text-underline-offset:4px}a:focus-visible{outline:3px solid #ae7137;outline-offset:5px}.review,.workflow{margin-top:40px;padding-top:28px;border-top:2px solid #c9bea6}.review .card{border-top:4px solid #8b703d}.muted{font-size:14px;color:#657064}.link{display:inline-block;font-weight:650;margin-top:3px}.table-wrap{overflow-x:auto;border:1px solid #d5cdbc;border-radius:12px;background:#fffcf5}table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:12px 16px;text-align:left;vertical-align:top;border-bottom:1px solid #e3dccd}th{background:#e8e3d7;font-size:14px}tr:last-child td{border-bottom:0}.workflow-links{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:16px;font-size:14px}footer{margin-top:24px;font-size:13px;color:#657064}
   </style>
 </head>
 <body>
@@ -25,7 +25,35 @@
         <article class="card"><div class="label">Aurora · Visual guide</div><h3>Space Station Aurora</h3><p>Adventure flow, puzzle details, station diagrams and the completion plan.</p><a class="link" href="Space%20Station%20Aurora/Project%20Management/Aurora_Visual_Guide.html">Open Aurora visual guide →</a></article>
       </div>
     </section>
+    <section class="workflow" aria-labelledby="workflow-title">
+      <h2 id="workflow-title">Codex + Claude Code workflow</h2>
+      <p>Use one agent at a time. Before switching, update the handoff, review the changes, and create a Git checkpoint when appropriate.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Task</th><th scope="col">Best tool</th><th scope="col">Suggested model</th></tr></thead>
+          <tbody>
+            <tr><td>Documents, presentations, PDFs, spreadsheets and visual checks</td><td>Codex</td><td>GPT-5.6 Sol · medium</td></tr>
+            <tr><td>Complex puzzle logic, major planning or final review</td><td>Codex</td><td>GPT-6 Astra · high</td></tr>
+            <tr><td>Routine HTML, documentation and maintenance</td><td>Either</td><td>Codex Terra · medium, or Claude <code>sonnet</code></td></tr>
+            <tr><td>Large code changes, refactoring and terminal-based work</td><td>Claude Code</td><td><code>sonnet</code>, or <code>opusplan</code> for difficult work</td></tr>
+            <tr><td>Mechanical edits, formatting and quick searches</td><td>Either</td><td>Codex Luna · low, or Claude <code>haiku</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="workflow-links"><a href="AGENTS.md">Shared agent instructions</a><a href="HANDOFF.md">Current handoff</a><a href="CLAUDE.md">Claude Code entry point</a></p>
+    </section>
     <footer>All links work from a downloaded copy of this repository. Open index.html to start.</footer>
   </main>
+  <script>
+    // Prefer the browser's PDF viewer. The user's browser settings may still download PDFs.
+    document.querySelectorAll('a[href]').forEach((link) => {
+      const href = link.getAttribute('href').split(/[?#]/, 1)[0].toLowerCase();
+      if (href.endsWith('.pdf')) {
+        link.removeAttribute('download');
+        link.target = '_blank';
+        link.rel = 'noopener';
+      }
+    });
+  </script>
 </body>
 </html>
