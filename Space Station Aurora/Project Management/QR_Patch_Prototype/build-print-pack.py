@@ -64,10 +64,38 @@ BRIEF = [
  '<b>Find the six repair patches and the optical maintenance diagram. Match every patch to its outline, keep the same orientation, and transfer it to the corresponding position on the interface. Install all six patches, then scan.</b>',
  'I will guide you through the remaining repairs once the connection is res...'
 ]
-start('Meteorite strike / urgent', 'EMERGENCY HARDCOPY - LOCAL PRINTER', 1)
-y=H-151
-for s in BRIEF: y=para(s,y)
-text(54,y-2,'[LINK LOST]  [PRINT BUFFER INCOMPLETE]',10,font='Courier')
+# Player-facing Aurora letterhead; essential text remains clear despite the failed transmission.
+NAVY = HexColor('#16253c')
+ORANGE = HexColor('#a84420')
+C.drawImage(str(ROOT/'Images/Logos/StationAurora_Logo_v7_2048.png'), 48, 668, 78, 78, mask='auto')
+text(142, 730, 'STATION AURORA', 24, NAVY, 'Helvetica-Bold')
+text(143, 709, 'HAROLD / EMERGENCY COMMUNICATIONS', 9, NAVY)
+text(143, 689, 'LOCAL HARDCOPY  /  12 MARCH 2032', 9, ORANGE, 'Courier-Bold')
+C.setStrokeColor(NAVY); C.setLineWidth(1.5); C.line(54, 654, 558, 654)
+C.setFillColor(ORANGE); C.rect(54, 615, 65, 24, fill=1, stroke=0)
+text(66, 623, 'URGENT', 10, white, 'Helvetica-Bold')
+text(131, 622, 'MICROMETEORITE STRIKE', 16, NAVY, 'Helvetica-Bold')
+text(54, 594, 'FROM  HAROLD', 10, NAVY, 'Courier')
+text(275, 594, 'TO  DR. SARAH LANCASTER', 10, NAVY, 'Courier')
+C.setStrokeColor(HexColor('#d8dee4')); C.setLineWidth(.6); C.line(54, 580, 558, 580)
+y=562
+for s in BRIEF[1:5]: y=para(s,y)
+# Distinct first action block, readable in grayscale as well as colour.
+p = Paragraph(BRIEF[5], STYLE); _, box_h = p.wrap(472, 500)
+C.setFillColor(HexColor('#f3f1ed')); C.rect(54, y-box_h-46, 504, box_h+46, fill=1, stroke=0)
+C.setFillColor(ORANGE); C.rect(54, y-box_h-46, 3, box_h+46, fill=1, stroke=0)
+text(70,y-19,'FIRST ACTION / RESTORE THE INTERFACE',9,ORANGE,'Helvetica-Bold')
+p.drawOn(C,70,y-32-box_h)
+y=y-box_h-66
+y=para(BRIEF[6],y)
+text(54,y,'[LINK LOST]  [PRINT BUFFER INCOMPLETE]',9,ORANGE,'Courier')
+# Restrained interrupted-printer marks below the message, never over instructions.
+for i,length in enumerate([169,117,58]):
+    C.setStrokeColor(HexColor('#bac0c5')); C.setLineWidth(.4); C.line(54,y-14-i*3,54+length,y-14-i*3)
+C.setStrokeColor(NAVY); C.setLineWidth(.6); C.line(54,55,558,55)
+text(54,40,'AURORA / CREW EMERGENCY NOTICE',8,NAVY,'Courier')
+text(421,40,'LOCAL COPY  /  01',8,NAVY,'Courier')
+assert y-23 > 65, 'Briefing overlaps footer'
 end()
 
 start('Optical interface', 'PLAYER PANEL - KEEP FLAT AND UPRIGHT', 2)
@@ -116,5 +144,10 @@ for p in D['patches']:
 y-=10
 para('<b>Observe:</b> can players identify all six outlines, preserve orientation, align the 3 mm cells and scan the result? A few strips are only one square wide. If cutting or alignment dominates the experience, enlarge the entire pack together for another test.',y)
 end(); C.save()
+from pypdf import PdfReader, PdfWriter
+brief_out = ROOT / 'output/pdf/Aurora_Emergency_Briefing.pdf'
+writer = PdfWriter(); writer.add_page(PdfReader(str(OUT)).pages[0])
+writer.add_metadata({'/Title': 'Station Aurora - Emergency briefing'})
+with brief_out.open('wb') as stream: writer.write(stream)
 (HERE/'Briefing_Refined_Draft.txt').write_text('STATION AURORA - METEORITE STRIKE - URGENT\n\n'+ '\n\n'.join(s.replace('<br/>','\n').replace('<b>','').replace('</b>','').replace('&nbsp;',' ') for s in BRIEF)+'\n\n[LINK LOST] [PRINT BUFFER INCOMPLETE]\n',encoding='utf-8')
 print(OUT)
