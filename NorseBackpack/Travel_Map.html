@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Norse journeys · Route workshop</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='6' fill='%231e3e35'/%3E%3Cpath d='M9 30L12 9L29 17L18 23L31 31' stroke='%23f3efe5' stroke-width='3' fill='none'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="TravelMap/vendor/leaflet.css">
+  <link rel="stylesheet" href="TravelMap/map.css">
+  <script defer src="TravelMap/vendor/leaflet.js"></script>
+  <script defer src="TravelMap/vendor/land.js"></script>
+  <script defer src="TravelMap/stops.js"></script>
+  <script defer src="TravelMap/map.js"></script>
+</head>
+<body>
+<header><div><a href="../index.html">Escape Backpack</a><span> / </span><a href="Norse_Brainstorm.html">Norse design guide</a><h1>The aunt’s route workshop</h1><p>Choose a person. Add places. Change the visit order to explore digit shapes.</p></div><div class="save-tools"><span id="save-status" role="status">Routes start empty</span><div><button id="undo" disabled>Undo</button> <button id="export">Export plan</button> <button id="import">Import plan</button><input type="file" id="import-file" accept=".json,application/json" hidden></div></div></header>
+<main>
+  <nav id="people" aria-label="Choose a journey"></nav>
+  <div class="workspace">
+    <section class="map-column" aria-label="Map and digit previews">
+      <div class="map-toolbar"><div><button id="fit-person">Fit this person</button><button id="fit-route">Fit selected route</button><button id="fit-all">All four people</button></div><div><label><input id="show-all" type="checkbox"> All routes & stops</label><label><input id="labels" type="checkbox" checked> Place labels</label><label><input id="tiles" type="checkbox"> Street detail (online)</label></div></div>
+      <div class="map-frame"><div id="map" aria-label="Interactive geographic map"></div><div class="map-caption"><b id="map-person"></b><span>Click a pin for its story and add button. Drag to pan; scroll or use + / − to zoom.</span></div></div>
+      <div class="map-foot"><span>Solid pins: supported connection · Dashed pins: saga / uncertain · Square: context</span><span id="tile-status" role="status">Offline coast map</span></div>
+      <section class="preview-section"><div class="section-heading"><h2>Does it look like a digit?</h2><label><input id="preview-points" type="checkbox"> Show visit numbers</label><button id="export-shapes">Export shapes SVG</button></div><div id="previews"></div><p class="small">North stays up. Previews preserve the map’s proportions and scale each trip to fit; they do not bend geography. Lines are puzzle connections, not historical sailing paths.</p></section>
+    </section>
+    <aside>
+      <section class="route-panel"><div class="section-heading"><h2>Aunt’s visit order</h2><span id="route-count" class="badge"></span></div><p class="small">Add stops below or on the map. Use ↑ ↓ or a position number to reorder.</p><div class="route-actions"><button id="reverse">Reverse</button><button id="clear">Clear this trip</button></div><ol id="route"></ol></section>
+      <section class="catalog-panel"><div class="section-heading"><h2>Places to choose</h2><span id="stop-count" class="badge"></span></div><p id="person-note" class="small"></p><div class="filters"><label class="sr-only" for="search">Find a place</label><input id="search" type="search" placeholder="Find a place or connection…"><label class="sr-only" for="evidence">Filter by evidence</label><select id="evidence"><option value="all">All evidence</option><option value="supported">Supported connections</option><option value="saga">Saga accounts</option><option value="uncertain">Uncertain / disputed</option><option value="context">Context / memorial</option></select></div><div id="catalog"></div></section>
+    </aside>
+  </div>
+  <details class="method"><summary>Historical sources, map accuracy & saving</summary><p>This is a researched working catalogue of identifiable places associated with all four lives, including disputed traditions and contextual sites. No complete, verified travel log survives for any of them. Unnamed towns and unlocatable places are not invented as pins. The catalogue is not a claim to list every journey or every modern memorial.</p><p><b>Supported</b> means the connection is supported by the cited historical or heritage source; it does not mean an exact visit location is archaeologically proven. <b>Saga</b> means a later narrative reports it. <b>Uncertain</b> marks disputed identity, geography or association. <b>Context</b> is a research destination, not a claimed visit.</p><p>Coordinates are approximate modern map anchors. Regional pins stand for areas, not exact landfalls, homes or battle positions. Historical regions do not match modern borders. Each place has its own source. Catalogue order is for browsing, not a verified chronology. Your selections always describe the aunt’s fictional itinerary.</p><p>Plans are saved only in this browser, on this device and site address. Export a plan to keep a portable copy; import restores all four trips. No account or shared storage is used. Changing between a local file, local server and hosted site may use different browser storage.</p><p>The bundled coast map works offline. Optional street detail needs the internet and uses OpenStreetMap. Tiny islands and coastline detail may be simplified on the offline map. Map projection: Web Mercator; north-up previews use the same projection.</p><p>Map data: <a href="https://www.naturalearthdata.com/about/terms-of-use/" target="_blank" rel="noopener">Natural Earth, public domain</a> (1:50m land). Street detail: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>. Mapping: <a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a> · <a href="TravelMap/vendor/LEAFLET-LICENSE.txt">license</a>.</p><div id="sources"></div></details>
+</main>
+<noscript>This route editor needs JavaScript enabled.</noscript>
+</body></html>
