@@ -14,9 +14,20 @@ The family trip retains the internal `rollo` key and every original stop ID/coor
 
 Plans use browser storage key `escape-backpack-norse-routes-v1`. Storage belongs to the browser/device/site address and is not shared. Exports contain route IDs plus readable visit information and source URLs. Imports use current catalogue coordinates, not exported coordinates; a future catalogue correction may therefore change an old plan's shape. No plan is preselected or seeded into the user's storage.
 
+## Candidate 1972 plan
+
+`Norse_Aunt_Route_Plan.json` is the current candidate final itinerary. In the workshop's left-to-right trip order, its north-up route previews are intended to read:
+
+- Leif Erikson: **1** — Helluland → Markland → L’Anse aux Meadows.
+- Rollo & descendants: **9** — Châlus → Rouen → Bayeux → Winchester → Battle → Roumare forest.
+- Aud the Deep-Minded: **7** — Dögurðarnes → Hvammur → Esjuberg.
+- Harald Hardrada: **2** — Oslo → Staraya Ladoga → Kyiv → Hedeby → Sicily → Anatolia.
+
+The projected workshop previews were visually checked and read as **1972**. This sets a four-digit candidate code, not dates or a proven historical chronology. Recheck the shapes at the final printed map size; the family **9** has the most complex geometry.
+
 ## Research and geography
 
-This is a working catalogue of identifiable life, journey and research associations, not an exhaustive historical itinerary. The surviving narratives contain disputed identifications and unnamed or unlocatable places. Do not turn regional anchors into precise historical landfalls or invent extra stops to fill gaps. No historical chronology, aunt travel dates, final code or lock length has been assigned.
+This is a working catalogue of identifiable life, journey and research associations, not an exhaustive historical itinerary. The surviving narratives contain disputed identifications and unnamed or unlocatable places. Do not turn regional anchors into precise historical landfalls or invent extra stops to fill gaps. The candidate route sets the intended four-digit code **1972**; historical chronology and aunt travel dates remain unassigned.
 
 The main historical citations are embedded in `stops.js` and visible beside every stop. Aud's Icelandic localities required additional map checks:
 
