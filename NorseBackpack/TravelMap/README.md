@@ -4,11 +4,13 @@ Open `../Travel_Map.html` directly or through the root site index. No build step
 
 ## Editable sources
 
-- `stops.js`: 57 person/place associations — Leif 7, Rollo 11, Aud 13, Harald 26. Each has an evidence category, coordinate precision note, explanation and historical source.
+- `stops.js`: 72 person/place associations — Leif 7, Rollo & descendants 26 (Rollo 11, William 7, Richard 8), Aud 13, Harald 26. Each has a named historical figure, evidence category, coordinate precision note, explanation and historical source.
 - `map.js`: route selection, repeated visits, reordering, undo, storage, JSON import/export and SVG shape export.
 - `map.css`: layout and existing Norse visual style.
 
 IDs are stable references in saved plans. Preserve them when correcting descriptions or anchors. Imported plans accept only known stop IDs belonging to the specified person, with at most 100 visits per trip. Repeat visits are allowed. Import restores all four routes; Undo restores the previous plan during the current page session.
+
+The family trip retains the internal `rollo` key and every original stop ID/coordinate. Existing version-1 saves and imports remain compatible. Its `figure` field distinguishes Rollo, William the Conqueror and Richard the Lionheart; users can mix all three in a single route. The family-member filter narrows the catalogue without hiding selected route points. Exported visits include the figure; old exports need no migration. The family note uses ellipses explicitly for intervening generations. This is Viking history and its later legacy, not a claim that William or Richard were Viking-Age explorers.
 
 Plans use browser storage key `escape-backpack-norse-routes-v1`. Storage belongs to the browser/device/site address and is not shared. Exports contain route IDs plus readable visit information and source URLs. Imports use current catalogue coordinates, not exported coordinates; a future catalogue correction may therefore change an old plan's shape. No plan is preselected or seeded into the user's storage.
 

@@ -39,7 +39,7 @@
   }
   function selectPerson(id,fit=true) {
     if (!personById.has(id)) return;
-    state.active=id; $('search').value=''; $('evidence').value='all'; save(); render();
+    state.active=id; $('search').value=''; $('evidence').value='all'; $('figure').value='all'; save(); render();
     if(fit) fitPerson();
   }
   const map = L.map('map',{minZoom:2,maxZoom:16,worldCopyJump:false,zoomControl:true,attributionControl:true});
@@ -64,7 +64,7 @@
   const evidenceNames = {supported:'Supported',saga:'Saga account',uncertain:'Uncertain / disputed',context:'Context / memorial'};
   function showStop(s) {
     const box=document.createElement('div');
-    box.innerHTML=`<h3>${esc(s.name)}</h3><p><b>${evidenceNames[s.evidence]}</b> · ${esc(s.precision)}</p><p>${esc(s.note)}</p><p>${sourceLink(s)}</p><p>Approximate anchor: ${s.lat.toFixed(3)}, ${s.lng.toFixed(3)}</p>`;
+    box.innerHTML=`<h3>${esc(s.name)}</h3><p><b>${esc(s.figure)}</b> · ${evidenceNames[s.evidence]} · ${esc(s.precision)}</p><p>${esc(s.note)}</p><p>${sourceLink(s)}</p><p>Approximate anchor: ${s.lat.toFixed(3)}, ${s.lng.toFixed(3)}</p>`;
     const button=document.createElement('button');
     button.textContent=state.routes[s.person].includes(s.id)?'Add another visit':'Add to aunt’s trip';
     button.onclick=()=>{add(s.id);map.closePopup();}; box.append(button);
@@ -87,9 +87,10 @@
     const labelBoxes=[];
     for(const s of visible){
       const p=personById.get(s.person), visits=state.routes[s.person].flatMap((id,i)=>id===s.id?[i+1]:[]),selected=visits.length>0;
-      const icon=L.divIcon({className:'pin-wrapper',html:`<span class="pin ${s.evidence} ${selected?'selected':''}" style="--person:${p.color}">${selected?visits[0]:p.short[0]}</span>`,iconSize:[28,28],iconAnchor:[14,14]});
-      const marker=L.marker([s.lat,s.lng],{icon,title:`${p.short}: ${s.name}${selected?' · visits '+visits.join(', '):''}`,keyboard:true,zIndexOffset:(s.person===state.active?200:0)+(selected?500:0)}).addTo(markers);
-      const label=`${all?p.short+': ':''}${esc(s.name.split(' · ')[0])}${selected?' · '+visits.join(', '):''}`;
+      const initial=s.figure==='Richard the Lionheart'?'L':s.figure[0];
+      const icon=L.divIcon({className:'pin-wrapper',html:`<span class="pin ${s.evidence} ${selected?'selected':''}" style="--person:${p.color}">${selected?visits[0]:initial}</span>`,iconSize:[28,28],iconAnchor:[14,14]});
+      const marker=L.marker([s.lat,s.lng],{icon,title:`${s.figure}: ${s.name}${selected?' · visits '+visits.join(', '):''}`,keyboard:true,zIndexOffset:(s.person===state.active?200:0)+(selected?500:0)}).addTo(markers);
+      const label=`${all||s.person==='rollo'?esc(s.figure.split(' ')[0])+': ':''}${esc(s.name.split(' · ')[0])}${selected?' · '+visits.join(', '):''}`;
       const pos=map.latLngToContainerPoint([s.lat,s.lng]);
       const box={left:pos.x+18,right:pos.x+18+Math.min(310,s.name.length*6+30),top:pos.y-13,bottom:pos.y+13};
       const clear=!labelBoxes.some(b=>box.left<b.right&&box.right>b.left&&box.top<b.bottom&&box.bottom>b.top);
@@ -105,16 +106,16 @@
   }
   function renderRoute(){
     $('route-count').textContent=`${route().length} visits`;
-    $('route').innerHTML=route().map((id,i)=>{const s=byId.get(id);return `<li><input type="number" min="1" max="${route().length}" value="${i+1}" data-position="${i}" aria-label="Position of visit ${i+1}, ${esc(s.name)}"><span class="route-name">${esc(s.name)}</span><button data-up="${i}" aria-label="Move visit ${i+1} up" ${i===0?'disabled':''}>↑</button><button data-down="${i}" aria-label="Move visit ${i+1} down" ${i===route().length-1?'disabled':''}>↓</button><button data-remove="${i}" aria-label="Remove visit ${i+1}">×</button></li>`;}).join('');
+    $('route').innerHTML=route().map((id,i)=>{const s=byId.get(id);return `<li><input type="number" min="1" max="${route().length}" value="${i+1}" data-position="${i}" aria-label="Position of visit ${i+1}, ${esc(s.name)}"><span class="route-name">${esc(s.name)}${s.person==='rollo'?`<small class="figure-label">${esc(s.figure)}</small>`:''}</span><button data-up="${i}" aria-label="Move visit ${i+1} up" ${i===0?'disabled':''}>↑</button><button data-down="${i}" aria-label="Move visit ${i+1} down" ${i===route().length-1?'disabled':''}>↓</button><button data-remove="${i}" aria-label="Remove visit ${i+1}">×</button></li>`;}).join('');
     $('reverse').disabled=route().length<2;$('clear').disabled=!route().length;$('fit-route').disabled=!route().length;
     $('undo').disabled=!history.length;
   }
   function renderCatalog(){
-    const q=$('search').value.toLocaleLowerCase().trim(),evidence=$('evidence').value;
+    const q=$('search').value.toLocaleLowerCase().trim(),evidence=$('evidence').value,figure=$('figure').value;
     const personal=stops.filter(s=>s.person===state.active);
-    const list=personal.filter(s=>(evidence==='all'||s.evidence===evidence)&&`${s.name} ${s.note}`.toLocaleLowerCase().includes(q));
+    const list=personal.filter(s=>(evidence==='all'||s.evidence===evidence)&&(state.active!=='rollo'||figure==='all'||s.figure===figure)&&`${s.name} ${s.note} ${s.figure}`.toLocaleLowerCase().includes(q));
     $('stop-count').textContent=`${list.length} / ${personal.length}`;
-    $('catalog').innerHTML=list.length?list.map(s=>{const chosen=route().includes(s.id);return `<article class="stop-card"><div class="stop-head"><h3>${esc(s.name)}</h3><button data-add="${s.id}" class="${chosen?'selected-action':''}" aria-label="${chosen?'Add another visit to':'Add'} ${esc(s.name)}">${chosen?'Add again':'+ Add'}</button></div><div class="meta">${evidenceNames[s.evidence]} · ${esc(s.precision)}</div><p>${esc(s.note)}</p>${sourceLink(s)} <button class="locate" data-locate="${s.id}" aria-label="Locate ${esc(s.name)} on map">Locate</button></article>`;}).join(''):'<p class="small">No matching places. Try a different name or evidence filter.</p>';
+    $('catalog').innerHTML=list.length?list.map(s=>{const chosen=route().includes(s.id);return `<article class="stop-card"><div class="stop-head"><h3>${esc(s.name)}</h3><button data-add="${s.id}" class="${chosen?'selected-action':''}" aria-label="${chosen?'Add another visit to':'Add'} ${esc(s.name)}">${chosen?'Add again':'+ Add'}</button></div><div class="meta">${s.person==='rollo'?esc(s.figure)+' · ':''}${evidenceNames[s.evidence]} · ${esc(s.precision)}</div><p>${esc(s.note)}</p>${sourceLink(s)} <button class="locate" data-locate="${s.id}" aria-label="Locate ${esc(s.name)} on map">Locate</button></article>`;}).join(''):'<p class="small">No matching places. Try a different name or evidence filter.</p>';
   }
   // Match Web Mercator used by the map. Uniform scaling preserves shape; never stretch x and y separately.
   function shape(id,w=220,h=125,numbers=false){
@@ -134,6 +135,7 @@
   }
   function render(){
     document.documentElement.style.setProperty('--active',current().color);
+    $('family-info').hidden=state.active!=='rollo';$('figure-filter').hidden=state.active!=='rollo';
     $('map-person').textContent=current().name;$('person-note').textContent=current().note;
     renderPeople();renderRoute();renderCatalog();renderPreviews();drawMap();
   }
@@ -159,7 +161,7 @@
     const from=+e.target.dataset.position,to=Number(e.target.value)-1;
     if(Number.isInteger(to)&&to>=0&&to<route().length)move(from,to);else renderRoute();
   };
-  $('search').oninput=renderCatalog;$('evidence').onchange=renderCatalog;
+  $('search').oninput=renderCatalog;$('evidence').onchange=renderCatalog;$('figure').onchange=renderCatalog;
   $('fit-person').onclick=fitPerson;
   $('fit-route').onclick=()=>fitStops(route().map(id=>byId.get(id)));
   $('fit-all').onclick=()=>{$('show-all').checked=true;drawMap();fitStops(stops);};
@@ -178,7 +180,7 @@
     const file=e.target.files[0];if(!file)return;
     try{
       if(file.size>1000000)throw Error('Plan is too large. Choose an exported route plan under 1 MB.');
-      const next=validate(JSON.parse(await file.text()));change(()=>{state=next;});fitPerson();status('Imported all four trips · Undo restores the previous plan');
+      const next=validate(JSON.parse(await file.text()));$('search').value='';$('evidence').value='all';$('figure').value='all';change(()=>{state=next;});fitPerson();status('Imported all four trips · Undo restores the previous plan');
     }catch(error){status(`Import failed: ${error instanceof SyntaxError?'The file is not valid JSON.':error.message}`);}
     finally{e.target.value='';}
   };
