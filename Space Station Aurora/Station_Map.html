@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive module map for Space Station Aurora.">
+  <title>Station Aurora · Interactive map</title>
+  <style>
+    :root{
+      color-scheme:dark;
+      --ink:#e8f4f6;--muted:#92aeb7;--panel:#0b1b27;--panel-2:#102735;
+      --line:#284352;--cyan:#53d5e4;--orange:#ff8a3d;--gold:#efd057;--red:#ff5b55;
+      font-family:"Segoe UI",Arial,sans-serif
+    }
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#06121b;color:var(--ink)}
+    body{background:radial-gradient(circle at 52% 24%,#123044 0,#081923 42%,#051018 100%);font-size:16px;line-height:1.5}
+    button,a,[tabindex]{-webkit-tap-highlight-color:transparent}
+    button{font:inherit}a{color:var(--cyan);text-underline-offset:4px}
+    a:focus-visible,button:focus-visible,.module:focus-visible{outline:3px solid #fff;outline-offset:3px}
+    .shell{min-height:100vh;display:grid;grid-template-rows:auto 1fr}
+    header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px clamp(16px,3vw,34px);border-bottom:1px solid var(--line);background:rgba(6,18,27,.9)}
+    .identity{display:flex;align-items:center;gap:13px}.mark{width:38px;height:38px;border:2px solid var(--cyan);border-radius:50%;display:grid;place-items:center;color:var(--cyan);font-weight:800;letter-spacing:-2px;box-shadow:0 0 22px #53d5e433}
+    h1{font-size:clamp(18px,2.4vw,27px);line-height:1.1;margin:0;letter-spacing:.08em;text-transform:uppercase}.eyebrow{font-size:12px;color:var(--cyan);letter-spacing:.17em;text-transform:uppercase;margin-bottom:4px}
+    .back{font-size:14px;font-weight:650;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:8px 11px;background:#0d2230}
+    main{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,340px);gap:18px;padding:18px clamp(14px,2.5vw,30px) 26px;min-height:0}
+    .workspace,.inspector{border:1px solid var(--line);background:rgba(11,27,39,.9);border-radius:14px;box-shadow:0 18px 50px #0007}
+    .workspace{min-width:0;display:grid;grid-template-rows:auto 1fr;overflow:hidden}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line);background:#0b202d}
+    .toolbar-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.tool{color:var(--ink);background:#102c3a;border:1px solid #315164;border-radius:8px;min-width:42px;min-height:42px;padding:8px 12px;cursor:pointer;font-weight:650}.tool:hover,.tool[aria-pressed="true"]{border-color:var(--cyan);background:#143747}.tool.square{font-size:22px;padding:4px 10px}.zoom-readout{min-width:54px;color:var(--muted);font-variant-numeric:tabular-nums;text-align:center}
+    .map-frame{position:relative;min-height:480px;overflow:hidden;background:#f9fbfb}.map-frame::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 45px #06121b44}
+    #station-map{display:block;width:100%;height:100%;min-height:480px;touch-action:none;cursor:grab;background:#fff}#station-map.dragging{cursor:grabbing}
+    .module{cursor:pointer}.module .hit{fill:transparent;stroke:transparent;vector-effect:non-scaling-stroke;transition:.16s ease}.module:hover .hit,.module:focus-visible .hit,.module.selected .hit{fill:#53d5e421;stroke:var(--cyan);stroke-width:3}.module.selected .hit{fill:#53d5e437;filter:drop-shadow(0 0 5px #53d5e4)}
+    .map-label{font:700 11px/1 "Segoe UI",Arial,sans-serif;fill:#06212d;stroke:#fff;stroke-width:3px;paint-order:stroke;pointer-events:none;text-anchor:middle}.labels-hidden .map-label{display:none}
+    .inspector{padding:20px;display:flex;flex-direction:column;gap:18px}.inspector h2{font-size:24px;line-height:1.15;margin:0}.inspector p{margin:0}.meta{color:var(--muted);font-size:14px}.status{display:inline-flex;align-items:center;gap:8px;width:max-content;color:#bfeaf0;background:#0d2a37;border:1px solid #285466;border-radius:99px;padding:5px 10px;font-size:13px;font-weight:700}.status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+    .readout{display:grid;gap:10px;padding-top:16px;border-top:1px solid var(--line)}.readout div{display:grid;grid-template-columns:82px 1fr;gap:10px}.readout dt{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.08em}.readout dd{margin:0;font-weight:650}
+    .legend{margin-top:auto;padding-top:17px;border-top:1px solid var(--line)}.legend h3{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 10px}.legend-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px}.legend-grid span{display:flex;align-items:center;gap:7px}.swatch{width:11px;height:11px;border-radius:2px;background:var(--cyan)}.swatch.orange{background:var(--orange)}.swatch.red{background:var(--red)}.swatch.gold{background:var(--gold)}
+    .hint{padding:10px 12px;border-left:3px solid var(--cyan);background:#0d2532;color:#b7cbd1;font-size:14px}
+    @media(max-width:860px){main{grid-template-columns:1fr}.map-frame,#station-map{min-height:390px}.inspector{min-height:260px}.legend{margin-top:0}}
+    @media(max-width:520px){header{align-items:flex-start}.back{font-size:0}.back::after{content:"Index";font-size:14px}.map-frame,#station-map{min-height:330px}.toolbar{align-items:flex-start}.toolbar-group:first-child{width:100%}.tool{min-height:44px}.inspector{padding:17px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.module .hit{transition:none}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="identity"><div class="mark" aria-hidden="true">A</div><div><div class="eyebrow">Station systems</div><h1>Station Aurora map</h1></div></div>
+      <a class="back" href="../index.html">← Project index</a>
+    </header>
+    <main>
+      <section class="workspace" aria-label="Interactive station blueprint">
+        <div class="toolbar">
+          <div class="toolbar-group" aria-label="Map display controls">
+            <button class="tool" id="labels" type="button" aria-pressed="true">Labels</button>
+            <button class="tool" id="fit" type="button">Fit station</button>
+          </div>
+          <div class="toolbar-group" aria-label="Zoom controls">
+            <button class="tool square" id="zoom-out" type="button" aria-label="Zoom out">−</button>
+            <span class="zoom-readout" id="zoom-readout" aria-live="polite">100%</span>
+            <button class="tool square" id="zoom-in" type="button" aria-label="Zoom in">+</button>
+          </div>
+        </div>
+        <div class="map-frame">
+          <svg id="station-map" viewBox="0 0 792 338" role="img" aria-labelledby="map-title map-description">
+            <title id="map-title">Interactive blueprint of Space Station Aurora</title>
+            <desc id="map-description">Select a labelled station module for its name, type and location. Drag to pan and use the controls to zoom.</desc>
+            <image id="blueprint-base" href="StationBluePrint/Station_Aurora_Vector.svg" data-fallback="StationBluePrint/Station_Aurora_Map_Base.png" x="0" y="0" width="792" height="338" preserveAspectRatio="none"/>
+            <g id="modules">
+              <g class="module" tabindex="0" role="button" aria-label="Bridge" data-id="bridge"><rect class="hit" x="14" y="135" width="98" height="68" rx="28"/><text class="map-label" x="63" y="128">Bridge</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Science" data-id="science"><rect class="hit" x="117" y="142" width="101" height="54" rx="8"/><text class="map-label" x="168" y="135">Science</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Shuttle 1" data-id="shuttle-1"><rect class="hit" x="210" y="64" width="61" height="78" rx="23"/><text class="map-label" x="240" y="56">Shuttle 1</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Shuttle 2" data-id="shuttle-2"><rect class="hit" x="210" y="196" width="61" height="79" rx="23"/><text class="map-label" x="240" y="289">Shuttle 2</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Hydroponics" data-id="hydroponics"><rect class="hit" x="262" y="125" width="115" height="88" rx="12"/><text class="map-label" x="320" y="118">Hydroponics</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Crew Quarters" data-id="crew-quarters"><rect class="hit" x="396" y="56" width="41" height="74" rx="9"/><text class="map-label" x="416" y="48">Crew Quarters</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Kitchen" data-id="kitchen"><rect class="hit" x="396" y="208" width="41" height="75" rx="9"/><text class="map-label" x="416" y="297">Kitchen</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Central access hub" data-id="access-hub"><circle class="hit" cx="416" cy="169" r="34"/><text class="map-label" x="416" y="211">Access hub</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Radiator 1" data-id="radiator-1"><rect class="hit" x="451" y="75" width="103" height="51" rx="4"/><text class="map-label" x="503" y="68">Radiator 1</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Storage" data-id="storage"><rect class="hit" x="455" y="149" width="97" height="41" rx="8"/><text class="map-label" x="503" y="142">Storage</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Radiator 2" data-id="radiator-2"><rect class="hit" x="451" y="211" width="103" height="53" rx="4"/><text class="map-label" x="503" y="278">Radiator 2</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Engineering" data-id="engineering"><rect class="hit" x="555" y="132" width="102" height="75" rx="12"/><text class="map-label" x="606" y="125">Engineering</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Engine 1" data-id="engine-1"><rect class="hit" x="665" y="88" width="37" height="21" rx="6"/><text class="map-label" x="684" y="81">Engine 1</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Engine 2" data-id="engine-2"><rect class="hit" x="665" y="229" width="37" height="22" rx="6"/><text class="map-label" x="684" y="265">Engine 2</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Power module" data-id="power"><rect class="hit" x="701" y="152" width="54" height="34" rx="9"/><text class="map-label" x="728" y="145">Power</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Solar Array 1" data-id="solar-1"><rect class="hit" x="579" y="25" width="100" height="42" rx="3"/><text class="map-label" x="629" y="18">Solar 1</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Solar Array 2" data-id="solar-2"><rect class="hit" x="676" y="25" width="102" height="42" rx="3"/><text class="map-label" x="727" y="18">Solar 2</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Solar Array 3" data-id="solar-3"><rect class="hit" x="579" y="272" width="100" height="42" rx="3"/><text class="map-label" x="629" y="328">Solar 3</text></g>
+              <g class="module" tabindex="0" role="button" aria-label="Solar Array 4" data-id="solar-4"><rect class="hit" x="676" y="272" width="102" height="42" rx="3"/><text class="map-label" x="727" y="328">Solar 4</text></g>
+            </g>
+          </svg>
+        </div>
+      </section>
+      <aside class="inspector" aria-labelledby="module-name">
+        <span class="status">Blueprint ready</span>
+        <div><p class="eyebrow">Selected module</p><h2 id="module-name">Choose a module</h2></div>
+        <p id="module-description">Select any outlined area on the map. You can also use Tab, then Enter or Space.</p>
+        <dl class="readout">
+          <div><dt>System</dt><dd id="module-system">—</dd></div>
+          <div><dt>Position</dt><dd id="module-position">—</dd></div>
+          <div><dt>Source</dt><dd>Layered DXF blueprint</dd></div>
+        </dl>
+        <p class="hint" id="module-note">This map identifies physical modules only. Puzzle states and damage locations have not been assigned.</p>
+        <div class="legend">
+          <h3>Blueprint layers</h3>
+          <div class="legend-grid"><span><i class="swatch"></i>Station modules</span><span><i class="swatch orange"></i>Shuttles</span><span><i class="swatch red"></i>Propulsion</span><span><i class="swatch gold"></i>Solar arrays</span></div>
+        </div>
+      </aside>
+    </main>
+  </div>
+  <script>
+    const moduleData={
+      bridge:{name:"Bridge",system:"Command",position:"Forward end",description:"Forward command module identified on the labelled blueprint."},
+      science:{name:"Science",system:"Research",position:"Forward section",description:"Science module between the bridge and shuttle access hub."},
+      "shuttle-1":{name:"Shuttle 1",system:"Auxiliary craft",position:"Upper forward dock",description:"First of two auxiliary craft attached to the forward access hub."},
+      "shuttle-2":{name:"Shuttle 2",system:"Auxiliary craft",position:"Lower forward dock",description:"Second auxiliary craft attached to the forward access hub."},
+      hydroponics:{name:"Hydroponics",system:"Habitation support",position:"Forward-centre",description:"Hydroponics module immediately forward of the central access hub."},
+      "crew-quarters":{name:"Crew Quarters",system:"Habitation",position:"Upper central dock",description:"Crew living module attached above the central access hub."},
+      kitchen:{name:"Kitchen",system:"Habitation",position:"Lower central dock",description:"Kitchen module attached below the central access hub."},
+      "access-hub":{name:"Access Hub",system:"Station access",position:"Station centre",description:"Circular central hub connecting habitation, storage and radiator structures."},
+      "radiator-1":{name:"Radiator 1",system:"Thermal control",position:"Upper centre",description:"Upper radiator panel adjacent to the central access hub."},
+      storage:{name:"Storage",system:"Logistics",position:"Centre-right",description:"Storage module between the central access hub and engineering."},
+      "radiator-2":{name:"Radiator 2",system:"Thermal control",position:"Lower centre",description:"Lower radiator panel adjacent to the central access hub."},
+      engineering:{name:"Engineering",system:"Station operations",position:"Aft section",description:"Engineering module between storage and the aft power assembly."},
+      "engine-1":{name:"Engine 1",system:"Propulsion",position:"Upper aft truss",description:"Upper engine mounted on the aft support truss."},
+      "engine-2":{name:"Engine 2",system:"Propulsion",position:"Lower aft truss",description:"Lower engine mounted on the aft support truss."},
+      power:{name:"Power",system:"Electrical",position:"Aft end",description:"Power module at the far aft end of the station."},
+      "solar-1":{name:"Solar Array 1",system:"Power generation",position:"Upper-left aft array",description:"First of four solar arrays on the aft truss."},
+      "solar-2":{name:"Solar Array 2",system:"Power generation",position:"Upper-right aft array",description:"Second of four solar arrays on the aft truss."},
+      "solar-3":{name:"Solar Array 3",system:"Power generation",position:"Lower-left aft array",description:"Third of four solar arrays on the aft truss."},
+      "solar-4":{name:"Solar Array 4",system:"Power generation",position:"Lower-right aft array",description:"Fourth of four solar arrays on the aft truss."}
+    };
+    const svg=document.getElementById("station-map"),modules=[...document.querySelectorAll(".module")],base={x:0,y:0,w:792,h:338};
+    const blueprint=document.getElementById("blueprint-base");blueprint.addEventListener("error",()=>{if(blueprint.getAttribute("href")!==blueprint.dataset.fallback)blueprint.setAttribute("href",blueprint.dataset.fallback)});
+    let view={...base},drag=null,labelsVisible=true;
+    const fields={name:document.getElementById("module-name"),system:document.getElementById("module-system"),position:document.getElementById("module-position"),description:document.getElementById("module-description")};
+    function applyView(){svg.setAttribute("viewBox",`${view.x} ${view.y} ${view.w} ${view.h}`);document.getElementById("zoom-readout").textContent=`${Math.round(base.w/view.w*100)}%`}
+    function selectModule(element,updateHash=true){const data=moduleData[element.dataset.id];modules.forEach(item=>item.classList.toggle("selected",item===element));fields.name.textContent=data.name;fields.system.textContent=data.system;fields.position.textContent=data.position;fields.description.textContent=data.description;if(updateHash)history.replaceState(null,"",`#${element.dataset.id}`)}
+    function zoom(factor,point={x:view.x+view.w/2,y:view.y+view.h/2}){const nextW=Math.max(300,Math.min(792,view.w*factor)),nextH=nextW*(base.h/base.w);view.x=point.x-(point.x-view.x)*(nextW/view.w);view.y=point.y-(point.y-view.y)*(nextH/view.h);view.w=nextW;view.h=nextH;applyView()}
+    modules.forEach(element=>{element.addEventListener("click",()=>selectModule(element));element.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();selectModule(element)}})});
+    document.getElementById("labels").addEventListener("click",event=>{labelsVisible=!labelsVisible;svg.classList.toggle("labels-hidden",!labelsVisible);event.currentTarget.setAttribute("aria-pressed",String(labelsVisible))});
+    document.getElementById("fit").addEventListener("click",()=>{view={...base};applyView()});
+    document.getElementById("zoom-in").addEventListener("click",()=>zoom(.8));document.getElementById("zoom-out").addEventListener("click",()=>zoom(1.25));
+    svg.addEventListener("wheel",event=>{event.preventDefault();const rect=svg.getBoundingClientRect(),point={x:view.x+(event.clientX-rect.left)/rect.width*view.w,y:view.y+(event.clientY-rect.top)/rect.height*view.h};zoom(event.deltaY>0?1.12:.88,point)},{passive:false});
+    svg.addEventListener("pointerdown",event=>{if(event.target.closest(".module"))return;drag={x:event.clientX,y:event.clientY,viewX:view.x,viewY:view.y};svg.setPointerCapture(event.pointerId);svg.classList.add("dragging")});
+    svg.addEventListener("pointermove",event=>{if(!drag)return;const rect=svg.getBoundingClientRect();view.x=drag.viewX-(event.clientX-drag.x)/rect.width*view.w;view.y=drag.viewY-(event.clientY-drag.y)/rect.height*view.h;applyView()});
+    function endDrag(){drag=null;svg.classList.remove("dragging")}svg.addEventListener("pointerup",endDrag);svg.addEventListener("pointercancel",endDrag);
+    const initial=document.querySelector(`.module[data-id="${location.hash.slice(1)}"]`);if(initial)selectModule(initial,false);applyView();
+  </script>
+</body>
+</html>
