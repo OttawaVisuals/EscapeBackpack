@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Norse Backpack · Postcard 01 Prototype</title>
+<style>
+@page{size:landscape;margin:10mm}*{box-sizing:border-box}body{margin:0;background:#263a34;color:#302b24;font:16px/1.5 Georgia,serif}.wrap{max-width:1200px;margin:auto;padding:28px}.note{color:#ece7d9;margin-bottom:18px;font-family:'Segoe UI',sans-serif}.cards{display:grid;grid-template-columns:1fr 1fr;gap:24px}.card{aspect-ratio:3/2;position:relative;overflow:hidden;background:#e9dfc9;box-shadow:0 10px 28px #0005;border:1px solid #9f927a}.front img{width:100%;height:100%;object-fit:cover;display:block}.digit{position:absolute;font:700 clamp(14px,2.1vw,28px) Georgia,serif;color:#322a20;opacity:.62;text-shadow:0 1px 1px #dfd0b4;transform:rotate(-3deg)}.d3{left:19%;top:71%}.d1{left:34.6%;top:38.5%;color:#d9d0b5;opacity:.52}.d4{left:84%;top:68%;color:#5b221b;opacity:.55;transform:rotate(4deg)}.back{padding:6%;background:linear-gradient(100deg,#e8dec8,#f1e9d8)}.back:after{content:'';position:absolute;top:8%;bottom:8%;left:50%;border-left:1px solid #baa98b}.message{width:44%}.message p{margin:0 0 .65em}.address{position:absolute;left:56%;right:7%;top:10%;bottom:8%;font-family:'Segoe UI',sans-serif}.stamp{float:right;width:31%;aspect-ratio:4/5;border:2px dashed #907b56;display:grid;place-items:center;text-align:center;font-size:11px;color:#786a52}.postmark{margin-top:24%;font-size:13px;letter-spacing:.08em;text-transform:uppercase}.line{border-bottom:1px solid #a99b83;height:12%;}.draft{position:absolute;right:7%;bottom:5%;font-size:11px;color:#786a52;font-family:'Segoe UI',sans-serif}.key{margin-top:18px;color:#ece7d9;font:14px/1.45 'Segoe UI',sans-serif}.key strong{color:#efc277}@media(max-width:850px){.cards{grid-template-columns:1fr}.card{min-height:0}}@media print{body{background:white}.wrap{padding:0}.note,.key{display:none}.cards{gap:10mm}.card{box-shadow:none;break-inside:avoid}.draft{display:none}}
+</style>
+<style>.digit{font-size:clamp(17px,2.3vw,30px)}.d1{left:35.2%;top:42%;opacity:.72}.d4{left:84%;top:62%;opacity:.76}.back{padding:5%}.message{font-size:clamp(11px,1.12vw,14px);line-height:1.38}.message p{margin-bottom:.48em}@media(max-width:850px){.message{font-size:clamp(11px,2.2vw,15px)}}</style>
+</head>
+<body>
+<main class="wrap">
+<p class="note">Postcard 01 prototype. Print landscape, double-sided, flipping on the short edge. Draft content only.</p>
+<div class="cards">
+<section class="card front" aria-label="Postcard front with three hidden digits"><img src="Postcard_01_Harbor_Base.png" alt="Painted North Atlantic harbor with crates, wooden buildings and fishing boats"><span class="digit d3" aria-hidden="true">3</span><span class="digit d1" aria-hidden="true">1</span><span class="digit d4" aria-hidden="true">4</span></section>
+<section class="card back" aria-label="Postcard back"><div class="message"><p>Dear explorer,</p><p>If this reached you, the field bag did too. I have spent years following our family story across the North Atlantic.</p><p>Open the bag, keep every postcard you find, and do not throw away the dates or place names.</p><p>For the first lock, the picture matters more than this message. Three travellers’ marks are hiding in the harbor. Read the view from left to right.</p><p>— Aunt Liv</p></div><div class="address"><div class="stamp">STAMP<br>AREA</div><p class="postmark"><strong>Seyðisfjörður, Iceland</strong><br>4 May 2026</p><div class="line"></div><div class="line"></div><div class="line"></div></div><span class="draft">CARD 01 · PROTOTYPE</span></section>
+</div>
+<p class="key"><strong>Designer answer:</strong> 314. The digits sit on the left crate, center door and right boat. The aunt’s name, location, date and code are proposed values.</p>
+</main>
+</body>
+</html>
