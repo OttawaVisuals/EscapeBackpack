@@ -11,6 +11,14 @@ window.NORSE_SOURCES = {
   rolloNormandy: ['Normandy Tourism · Rollo’s Normandy', 'https://www.normandie-tourisme.fr/rollon-duc-de-normandie/'],
   rolloWalcheren: ['DBNL · later history citing Dudo on Walcheren', 'https://www.dbnl.org/tekst/wage004vade02_01/wage004vade02_01_0025.php'],
   rolloSaga: ['Heimskringla · Harald Fairhair’s saga, Rolf’s exile', 'https://www.gutenberg.org/files/598/598-h/598-h.htm'],
+  williamNormandy: ['Caen Tourism · William, his Norman roots and descendants', 'https://www.caenlamer-tourisme.fr/decouvrir-caen-la-mer/caen-une-ville-aux-mille-facettes/histoire-de-guillaume-le-conquerant/'],
+  williamPevensey: ['English Heritage · Pevensey and the invasion', 'https://www.english-heritage.org.uk/visit/places/pevensey-castle/history/'],
+  williamBattle: ['Historic England · Battle of Hastings', 'https://historicengland.org.uk/listing/the-list/list-entry/1000013'],
+  williamWestminster: ['Westminster Abbey · William’s coronation', 'https://www.westminster-abbey.org/abbey-commemorations/royals/william-i-the-conqueror'],
+  richardRoyal: ['Royal Household · Richard the Lionheart', 'https://www.royal.uk/richard-i'],
+  richardNormandy: ['Normandy Tourism · Richard’s ancestry and Château Gaillard', 'https://en.normandie-tourisme.fr/discover/medieval-normandy/leading-figures/richard-the-lionheart/'],
+  richardAustria: ['Danube Tourism · Richard’s Dürnstein trail', 'https://www.donau.com/en/excursions/themenweg-richard-loewenherz'],
+  richardCyprus: ['Visit Cyprus · Limassol wedding tradition', 'https://www.visitcyprus.com/discover-cyprus/culture/sites-and-monuments/lemesos-limassol-medieval-castle/'],
   audSaga: ['Laxdæla saga · chapters 1–6', 'https://sagadb.org/laxdaela_saga.en#1'],
   audLife: ['Shetland.org · Aud’s life and journey', 'https://www.shetland.org/blog/aud-the-deep-minded'],
   audHvammur: ['Visit West Iceland · Hvammur in Dalir', 'https://www.west.is/en/experiences/culture-heritage/history-and-culture/hvammur'],
@@ -24,7 +32,7 @@ window.NORSE_SOURCES = {
 };
 window.NORSE_PEOPLE = [
   {id:'leif',name:'Leif Erikson',short:'Leif',theme:'Across the Atlantic',color:'#216580',note:'Homes, saga voyages and candidate American landfalls. Helluland and Markland are regions with debated boundaries; Vinland has no single agreed pin.'},
-  {id:'rollo',name:'Rollo of Normandy',short:'Rollo',theme:'From raider to ruler',color:'#a2562d',note:'Normandy is the strongest core. Scandinavian origins and early voyages are disputed; the Danish and Norwegian pins are alternatives, not successive stops.'},
+  {id:'rollo',name:'Rollo & descendants',short:'Family',theme:'Rollo · William · Richard',color:'#a2562d',note:'One family-history trip: mix Rollo, William the Conqueror and Richard the Lionheart in the aunt’s visit order. William and Richard belong to the later Norman and Angevin legacy. Rollo’s origins remain disputed.'},
   {id:'aud',name:'Aud the Deep-Minded',short:'Aud',theme:'Islands & a new home',color:'#6d528b',note:'Also called Auðr, Unn or Unnr. Much of her story comes from later sagas. Regional anchors keep unnamed ports and uncertain Icelandic sites visibly approximate.'},
   {id:'harald',name:'Harald Hardrada',short:'Harald',theme:'Eastward & back again',color:'#467444',note:'Early exile, Byzantine service, Scandinavian reign and England. Broad campaign regions are included without inventing precise battle sites or unnamed towns.'}
 ];
@@ -48,6 +56,21 @@ window.NORSE_STOPS = [
   ['r-chartres','rollo','Chartres · France',48.447,1.488,'supported','City anchor','Campaign and defeat associated with the 911 settlement.','rolloHistory'],
   ['r-epte','rollo','Saint-Clair-sur-Epte · France',49.207,1.682,'supported','Village anchor','Traditional site of the agreement that established his Norman territory.','rolloNormandy'],
   ['r-roumare','rollo','Roumare forest · Normandy',49.413,0.965,'context','Forest anchor','Local naming legend; useful research stop, not an established visit.','rolloNormandy'],
+  ['w-falaise','rollo','Falaise · Normandy',48.893,-0.2,'supported','Town / castle vicinity','Birthplace and childhood setting.','williamNormandy','William the Conqueror'],
+  ['w-caen','rollo','Caen · Normandy',49.183,-0.369,'supported','City anchor','Ducal centre, castle and abbey foundations; burial at the Abbaye aux Hommes.','williamNormandy','William the Conqueror'],
+  ['w-dives','rollo','Dives estuary · Normandy',49.286,-0.101,'supported','Estuary anchor','Fleet preparations for the invasion of England; approximate harbour area.','williamNormandy','William the Conqueror'],
+  ['w-pevensey','rollo','Pevensey · England',50.82,0.338,'supported','Castle / landing vicinity','Landing and initial fortified base in 1066; historic shoreline differed.','williamPevensey','William the Conqueror'],
+  ['w-hastings','rollo','Hastings · England',50.856,0.584,'supported','Town anchor','Invasion base after Pevensey; distinct from the battlefield at Battle.','williamBattle','William the Conqueror'],
+  ['w-battle','rollo','Battle · Hastings battlefield',50.914,0.487,'supported','Battlefield vicinity','Victory over Harold; later abbey commemorates the battle.','williamBattle','William the Conqueror'],
+  ['w-westminster','rollo','Westminster · London',51.499,-0.128,'supported','Abbey vicinity','Coronation as king of England in 1066.','williamWestminster','William the Conqueror'],
+  ['rl-limassol','rollo','Limassol · Cyprus',34.671,33.041,'uncertain','Old-town / castle vicinity','Marriage to Berengaria in Limassol; the castle is the traditional location, not a proven exact venue.','richardCyprus','Richard the Lionheart'],
+  ['rl-acre','rollo','Acre / Akko',32.923,35.069,'supported','City anchor','Third Crusade siege and capture; approximate city anchor.','richardRoyal','Richard the Lionheart'],
+  ['rl-arsuf','rollo','Arsuf / Apollonia',32.193,34.806,'supported','Coastal / battlefield vicinity','Crusade battle; pin is an approximate coastal anchor.','richardRoyal','Richard the Lionheart'],
+  ['rl-jaffa','rollo','Jaffa',32.052,34.752,'supported','Old-city anchor','Fighting and the peace agreement associated with the end of his crusade.','richardRoyal','Richard the Lionheart'],
+  ['rl-durnstein','rollo','Dürnstein · Austria',48.395,15.52,'supported','Town / castle vicinity','Captivity association and modern Richard the Lionheart history trail.','richardAustria','Richard the Lionheart'],
+  ['rl-winchester','rollo','Winchester · England',51.06,-1.313,'supported','City / cathedral vicinity','Recoronation after his release in 1194.','richardRoyal','Richard the Lionheart'],
+  ['rl-gaillard','rollo','Château Gaillard · Les Andelys',49.239,1.403,'supported','Castle vicinity','Fortress built under Richard to defend Normandy.','richardNormandy','Richard the Lionheart'],
+  ['rl-chalus','rollo','Châlus · France',45.655,0.981,'supported','Town / castle vicinity','Final siege and death in 1199.','richardRoyal','Richard the Lionheart'],
   ['a-raumsdal','aud','Romsdal · Norway',62.57,7.69,'saga','Regional anchor','Her father’s home region in Laxdæla saga.','audSaga'],
   ['a-dublin','aud','Dublin · Ireland',53.349,-6.26,'saga','City anchor','Marriage and family association with Olaf the White.','audLife'],
   ['a-hebrides','aud','Hebrides · Scotland',57.6,-7.1,'saga','Regional anchor','Family’s western-isles background; exact residence unspecified.','audLife'],
@@ -87,4 +110,4 @@ window.NORSE_STOPS = [
   ['h-fulford','harald','Fulford · England',53.932,-1.073,'supported','Battlefield vicinity','Victory before Stamford Bridge.','haraldBio'],
   ['h-york','harald','York · England',53.96,-1.087,'supported','City anchor','Submission after Fulford.','haraldBio'],
   ['h-stamford','harald','Stamford Bridge · England',53.99,-0.913,'supported','Village / battlefield vicinity','Final battle and death in 1066.','haraldBio']
-].map(([id,person,name,lat,lng,evidence,precision,note,source])=>({id,person,name,lat,lng,evidence,precision,note,source}));
+].map(([id,person,name,lat,lng,evidence,precision,note,source,figure])=>({id,person,name,lat,lng,evidence,precision,note,source,figure:figure||(person==='rollo'?'Rollo':window.NORSE_PEOPLE.find(p=>p.id===person).name)}));
