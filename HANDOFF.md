@@ -4,110 +4,68 @@ Last updated: 2026-09-09 by Codex
 
 ## Current Task
 
-Close the completed Norse postcard meta-puzzle session and record its published repository state.
+Build an interactive HTML map on the existing site to select and reorder the aunt’s visits among places associated with Leif Erikson, Rollo, Aud the Deep-Minded and Harald Hardrada.
 
 ## Status
 
-Session closed. The Norse brainstorm now starts with one postcard containing a hidden 3-digit code. Later postcards arrive as puzzle rewards. A full map appears near the end, and connecting the dated locations becomes the final lock puzzle.
+Implemented and linked from the root homepage and Norse brainstorm. The map contains 57 researched person/place associations: Leif 7, Rollo 11, Aud 13 and Harald 26. Each stop explains its historical connection and distinguishes supported, saga, uncertain and contextual evidence. No surviving complete travel log exists; this is a broad working catalogue, not a claim of exhaustive verified stops.
 
-Postcard 01 has a printable front/back HTML prototype and generated harbor artwork. Its location, date, aunt's name and opening code are explicitly marked as draft values. The full route, exact postcard count, locations and final code remain unset until a readable path is engineered and play-tested.
+Users can add places, repeat visits, reorder with arrows or position numbers, reverse or clear each trip, undo changes, fit a trip or all four people, search/filter stops and inspect four north-up route-shape previews. Plans save in this browser and can be exported/imported as JSON; shape previews export as SVG. The default coast map works offline, including direct file opening. Street detail is optional and online.
 
-Commit `2437676` contains the Norse brainstorm, postcard prototype, artwork and homepage links. It is pushed to `origin/main`.
-
-Unrelated local Aurora map and `AGENTS.md` changes remain present and uncommitted.
+The existing repository is a local static site; README still says a live site is to be created. The user requested committing and pushing the completed Norse work to `origin/main`. This checkpoint includes the map, related Norse planning updates, site links and handoff; unrelated Aurora and AGENTS.md changes remain local. No website deployment is included. A preview server was started at http://127.0.0.1:8767/NorseBackpack/Travel_Map.html and the page was queued for opening in Codex.
 
 ## Files Changed This Session
 
-- `NorseBackpack/Norse_Brainstorm.html` — makes the postcard journey the final meta-puzzle and adds the opening postcard prototype.
-- `NorseBackpack/Postcards/Postcard_01_Prototype.html` — printable front/back prototype with the story and hidden 314 code.
-- `NorseBackpack/Postcards/Postcard_01_Harbor_Base.png` — generated vintage North Atlantic harbor artwork used by the prototype.
-- `index.html` — updates the Norse card to describe brainstorm v2.
-- `HANDOFF.md` — records this Norse revision and open design work.
+- `NorseBackpack/Travel_Map.html` — new interactive workshop page.
+- `NorseBackpack/TravelMap/stops.js` — catalogue and historical sources.
+- `NorseBackpack/TravelMap/map.js` — map, ordered trips, persistence and exports.
+- `NorseBackpack/TravelMap/map.css` — responsive Norse styling.
+- `NorseBackpack/TravelMap/README.md` — maintenance, research limits and coordinate methodology.
+- `NorseBackpack/TravelMap/vendor/` — local Leaflet 1.9.4, its license and Natural Earth public-domain land geometry.
+- `index.html` — link to the map in the Norse design-guide card.
+- `NorseBackpack/Norse_Brainstorm.html` — link to the route workshop above the header; previous planning edits preserved.
+- `HANDOFF.md` — current session and next action.
 
 ## Decisions
 
-- Do not consume the date-ordering idea in the opening puzzle. Postcard 01 uses a simple image search instead.
-- Keep every postcard useful during the main sequence, then reuse the dates and locations for the final map route.
-- Release the full map from the WELL pouch near the end.
-- Keep the player-facing final clue indirect. Put the explicit location, date and line instructions in the hint ladder.
-- Engineer the final digit shapes on the map before selecting real locations and dates.
-- Keep `Norse_Ideas.pptx` unchanged because it is the original source deck. The active design guide is `Norse_Brainstorm.html`.
+- These routes belong to the fictional aunt. Selecting a place does not claim the historical person visited that precise coordinate.
+- Stable stop IDs support portable plans. Repeated visits are allowed; each trip supports up to 100 visits.
+- No final route, date sequence, digit answer or lock length is set. All routes start empty.
+- Digit previews preserve geographic proportions and north-up orientation; the editor does not stretch geography into numbers.
+- Historic claims and coordinate precision are separate. Regional pins are explicitly marked; uncertain origins are alternatives, not a historical sequence.
+- Imported plans use the current trusted catalogue and reject unknown/wrong-person IDs. Corrected catalogue coordinates may change old plan shapes; this is documented.
+- Reuse the existing static HTML site. No new hosted project or site architecture was introduced.
 
 ## Checks
 
-- Visually inspected the story, opening postcard, final meta-puzzle panel and printable postcard in the browser.
-- Corrected clipped postcard copy and increased the visibility of the hidden 1 and 4.
-- Confirmed the guide, postcard page and artwork return HTTP 200 from the local server.
-- Browser console check returned no errors.
-- `git diff --check` passed; line-ending conversion warnings remain for existing Windows files.
-- Confirmed local and remote `main` both pointed to commit `2437676` after push.
+- Read README, prior handoff, Git status/history and existing Norse final-puzzle text before editing.
+- JavaScript syntax checks — pass.
+- Catalogue integrity — pass: 57 unique IDs, valid person/source links and numeric coordinates.
+- Browser workflow — pass: add, repeated visits, up/down and numbered reordering, reverse, undo, per-person isolation, reload persistence, search, evidence filter, map-popup add, overview, JSON export/import, invalid import preserving state, SVG export, clear/undo and direct file opening.
+- Browser console/page errors after fixes — none in the main workflow.
+- Desktop and 390px mobile layouts inspected; mobile has no horizontal overflow. Mobile route editing — pass.
+- Homepage and brainstorm navigation links — pass; both affected layouts visually inspected.
+- Optional OpenStreetMap detail — loaded and visually verified above the offline coast layer; switching back to offline mode — pass.
+- Browser storage denied — editing remains usable and the export reminder is shown. SVG export rendered and visually inspected — pass.
+- `git diff --check` — pass; existing Windows line-ending warnings remain.
+- Sources checked against historical/heritage publications and saga texts. Icelandic anchors corrected using official heritage and geographic references; all coordinates remain described as approximate.
+- Test scripts, exports and screenshots are outside the repository under the session visualization directory; they do not seed the user’s browser state.
+- No final digit geometry, physical print legibility or player solve has been approved or tested.
+
+## Prior Project Context Preserved
+
+- Norse tone: playful mystery, mostly adults with teens supported; no prior Norse knowledge required.
+- Props must reset cleanly. Candidate set: museum tickets, 3D-printed rune cryptex, hnefatafl board/pieces, maps and handwritten-note facsimiles.
+- Rune cryptex answer and what it releases are undecided. The linked Koolehaoda L-Coffee backpack remains a candidate needing physical fit/hardware checks.
+- Earlier final-puzzle prose in the brainstorm still describes the single-route prototype. The new four-person workshop explores the revised design; final puzzle instructions should be updated after route selection.
+- Existing uncommitted Aurora map/converter/assets and AGENTS.md changes are unrelated and were preserved.
 
 ## Next Action
 
-When work resumes, confirm the final travel-wallet lock length. Then design the map path backward from the intended digit shapes.
+Use the workshop to select promising stops and visit orders, then export the plan for a digit-legibility review before fixing postcard dates and lock length.
 
 ## Blockers / Questions
 
-- No implementation blocker. This session is complete.
-- Open design question: how many digits does the final travel-wallet lock require?
-- The final postcard count, places, dates and route remain intentionally unset until that lock length is known.
-
-## Session Log
-
-### 2026-09-09 — Codex
-
-- Added direct homepage links for the Norse brainstorm and printable postcard prototype.
-- Committed and pushed the completed work as `2437676` on `main`.
-- Closed the session with the final route lock length as the next design input.
-
-### 2026-09-08 — Codex
-
-- Replaced the easy opening postcard-ordering clue with a hidden-image code.
-- Reworked the postcard set into a final journey-on-a-map meta-puzzle.
-- Created and visually checked the first postcard prototype.
-
-### 2026-09-08 — Codex
-
-- Created the shared cross-agent workflow.
-- No puzzle content or project deliverables were changed.
-- Added the recommended model/task division to `index.html`.
-- Configured PDF links in the root index to prefer a new browser tab and inline viewer.
-- Standardized the two embedded Aurora PDF links and documented the rule for all future HTML pages.
-- Built and integrated the detailed interactive Station Aurora map from the supplied AutoCAD exports.
-- Replaced the PDF-derived base with the supplied layered DXF conversion.
-- Removed the construction grid and simplified the map to two functional colours plus neutral structure.
-
----
-
-## Update Template
-
-Copy these headings when refreshing the handoff:
-
-```markdown
-Last updated: YYYY-MM-DD by Codex or Claude Code
-
-## Current Task
-One precise outcome.
-
-## Status
-Done, in progress, or blocked, followed by a short factual summary.
-
-## Files Changed This Session
-- `path` — what changed and why.
-
-## Decisions
-- Decision and brief reason.
-
-## Checks
-- Check — pass/fail/not run.
-
-## Next Action
-One concrete action another agent can start with.
-
-## Blockers / Questions
-- None, or a specific blocker/question.
-
-## Session Log
-### YYYY-MM-DD — Agent
-- Short summary.
-```
+- No implementation blocker. Three versus four final digits remains open.
+- The Leif attachment mentioned in the earlier conversation was not visible; no claim was made to reproduce it.
+- Exact historical voyages and some regional landfalls cannot be established from surviving evidence.
