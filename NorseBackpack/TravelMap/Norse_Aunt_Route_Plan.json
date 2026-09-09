@@ -1,0 +1,315 @@
+{
+  "version": 1,
+  "active": "harald",
+  "routes": {
+    "leif": [
+      "l-helluland",
+      "l-markland",
+      "l-meadows"
+    ],
+    "rollo": [
+      "rl-chalus",
+      "r-rouen",
+      "r-bayeux",
+      "rl-winchester",
+      "w-battle",
+      "r-roumare"
+    ],
+    "aud": [
+      "a-dogurdarnes",
+      "a-hvammur",
+      "a-esjuberg"
+    ],
+    "harald": [
+      "h-oslo",
+      "h-ladoga",
+      "h-kyiv",
+      "h-hedeby",
+      "h-sicily",
+      "h-anatolia"
+    ]
+  },
+  "exportedAt": "2026-09-09T19:22:15.255Z",
+  "description": "Candidate fictional itinerary intended to draw the final code 1972. Catalogue associations are not verified visit logs.",
+  "intendedCode": "1972",
+  "digitOrder": [
+    {
+      "trip": "leif",
+      "digit": "1"
+    },
+    {
+      "trip": "rollo",
+      "digit": "9"
+    },
+    {
+      "trip": "aud",
+      "digit": "7"
+    },
+    {
+      "trip": "harald",
+      "digit": "2"
+    }
+  ],
+  "visits": {
+    "leif": [
+      {
+        "order": 1,
+        "id": "l-helluland",
+        "person": "leif",
+        "name": "Helluland candidate · Baffin Island",
+        "lat": 65.2,
+        "lng": -64,
+        "evidence": "uncertain",
+        "precision": "Regional anchor",
+        "note": "Rocky saga land, usually associated with Baffin Island; exact landfall unknown.",
+        "source": "leifCanada",
+        "figure": "Leif Erikson",
+        "sourceUrl": "https://www.heritage.nf.ca/articles/exploration/norse-north-atlantic.php"
+      },
+      {
+        "order": 2,
+        "id": "l-markland",
+        "person": "leif",
+        "name": "Markland candidate · Labrador",
+        "lat": 54.5,
+        "lng": -57.5,
+        "evidence": "uncertain",
+        "precision": "Regional anchor",
+        "note": "Wooded saga land, commonly associated with Labrador; exact landfall unknown.",
+        "source": "leifCanada",
+        "figure": "Leif Erikson",
+        "sourceUrl": "https://www.heritage.nf.ca/articles/exploration/norse-north-atlantic.php"
+      },
+      {
+        "order": 3,
+        "id": "l-meadows",
+        "person": "leif",
+        "name": "L’Anse aux Meadows · Newfoundland",
+        "lat": 51.595,
+        "lng": -55.533,
+        "evidence": "uncertain",
+        "precision": "Archaeological site",
+        "note": "Confirmed Norse settlement; Leif’s personal association remains uncertain. Research anchor for Vinland.",
+        "source": "meadows",
+        "figure": "Leif Erikson",
+        "sourceUrl": "https://parks.canada.ca/culture/designation/lieu-site/anse-aux-meadows"
+      }
+    ],
+    "rollo": [
+      {
+        "order": 1,
+        "id": "rl-chalus",
+        "person": "rollo",
+        "name": "Châlus · France",
+        "lat": 45.655,
+        "lng": 0.981,
+        "evidence": "supported",
+        "precision": "Town / castle vicinity",
+        "note": "Final siege and death in 1199.",
+        "source": "richardRoyal",
+        "figure": "Richard the Lionheart",
+        "sourceUrl": "https://www.royal.uk/richard-i"
+      },
+      {
+        "order": 2,
+        "id": "r-rouen",
+        "person": "rollo",
+        "name": "Rouen · Normandy",
+        "lat": 49.443,
+        "lng": 1.099,
+        "evidence": "supported",
+        "precision": "City anchor",
+        "note": "Core of his power and the territory granted around 911.",
+        "source": "rolloStudy",
+        "figure": "Rollo",
+        "sourceUrl": "https://fasg.org/projects/henryproject/data/rollo000.htm"
+      },
+      {
+        "order": 3,
+        "id": "r-bayeux",
+        "person": "rollo",
+        "name": "Bayeux · Normandy",
+        "lat": 49.277,
+        "lng": -0.703,
+        "evidence": "saga",
+        "precision": "City anchor",
+        "note": "Later accounts link his campaigns and Poppa to Bayeux.",
+        "source": "rolloHistory",
+        "figure": "Rollo",
+        "sourceUrl": "https://www.worldhistory.org/Rollo_of_Normandy/"
+      },
+      {
+        "order": 4,
+        "id": "rl-winchester",
+        "person": "rollo",
+        "name": "Winchester · England",
+        "lat": 51.06,
+        "lng": -1.313,
+        "evidence": "supported",
+        "precision": "City / cathedral vicinity",
+        "note": "Recoronation after his release in 1194.",
+        "source": "richardRoyal",
+        "figure": "Richard the Lionheart",
+        "sourceUrl": "https://www.royal.uk/richard-i"
+      },
+      {
+        "order": 5,
+        "id": "w-battle",
+        "person": "rollo",
+        "name": "Battle · Hastings battlefield",
+        "lat": 50.914,
+        "lng": 0.487,
+        "evidence": "supported",
+        "precision": "Battlefield vicinity",
+        "note": "Victory over Harold; later abbey commemorates the battle.",
+        "source": "williamBattle",
+        "figure": "William the Conqueror",
+        "sourceUrl": "https://historicengland.org.uk/listing/the-list/list-entry/1000013"
+      },
+      {
+        "order": 6,
+        "id": "r-roumare",
+        "person": "rollo",
+        "name": "Roumare forest · Normandy",
+        "lat": 49.413,
+        "lng": 0.965,
+        "evidence": "context",
+        "precision": "Forest anchor",
+        "note": "Local naming legend; useful research stop, not an established visit.",
+        "source": "rolloNormandy",
+        "figure": "Rollo",
+        "sourceUrl": "https://www.normandie-tourisme.fr/rollon-duc-de-normandie/"
+      }
+    ],
+    "aud": [
+      {
+        "order": 1,
+        "id": "a-dogurdarnes",
+        "person": "aud",
+        "name": "Dögurðarnes / Dagverðarnes · Iceland",
+        "lat": 65.17,
+        "lng": -22.52,
+        "evidence": "uncertain",
+        "precision": "Modern locality anchor",
+        "note": "Saga midday meal stop; modern locality represents the peninsula, not an exact landing.",
+        "source": "audSaga",
+        "figure": "Aud the Deep-Minded",
+        "sourceUrl": "https://sagadb.org/laxdaela_saga.en#1"
+      },
+      {
+        "order": 2,
+        "id": "a-hvammur",
+        "person": "aud",
+        "name": "Hvammur · Dalir, Iceland",
+        "lat": 65.2185,
+        "lng": -21.8287,
+        "evidence": "supported",
+        "precision": "Settlement vicinity",
+        "note": "Her settlement, identified in local heritage interpretation.",
+        "source": "audHvammur",
+        "figure": "Aud the Deep-Minded",
+        "sourceUrl": "https://www.west.is/en/experiences/culture-heritage/history-and-culture/hvammur"
+      },
+      {
+        "order": 3,
+        "id": "a-esjuberg",
+        "person": "aud",
+        "name": "Esjuberg / Kjalarnes · Iceland",
+        "lat": 64.23,
+        "lng": -21.8,
+        "evidence": "saga",
+        "precision": "District anchor",
+        "note": "Visit to her brother Helgi, whose offer she rejected.",
+        "source": "audSaga",
+        "figure": "Aud the Deep-Minded",
+        "sourceUrl": "https://sagadb.org/laxdaela_saga.en#1"
+      }
+    ],
+    "harald": [
+      {
+        "order": 1,
+        "id": "h-oslo",
+        "person": "harald",
+        "name": "Oslo · Norway",
+        "lat": 59.908,
+        "lng": 10.767,
+        "evidence": "supported",
+        "precision": "City anchor",
+        "note": "Royal base; traditional founding association, though settlement is older.",
+        "source": "haraldBio",
+        "figure": "Harald Hardrada",
+        "sourceUrl": "https://en.wikipedia.org/wiki/Harald_Hardrada"
+      },
+      {
+        "order": 2,
+        "id": "h-ladoga",
+        "person": "harald",
+        "name": "Aldeigjuborg / Staraya Ladoga",
+        "lat": 59.998,
+        "lng": 32.295,
+        "evidence": "saga",
+        "precision": "Settlement vicinity",
+        "note": "Saga stop to obtain a ship on the return west.",
+        "source": "haraldSaga",
+        "figure": "Harald Hardrada",
+        "sourceUrl": "https://www.gutenberg.org/files/598/598-h/598-h.htm"
+      },
+      {
+        "order": 3,
+        "id": "h-kyiv",
+        "person": "harald",
+        "name": "Kyiv · Ukraine",
+        "lat": 50.45,
+        "lng": 30.523,
+        "evidence": "supported",
+        "precision": "City anchor",
+        "note": "Service with Yaroslav and later marriage to Elisiv.",
+        "source": "haraldCambridge",
+        "figure": "Harald Hardrada",
+        "sourceUrl": "https://www.cambridge.org/core/books/abs/varangians-of-byzantium/haraldr-sigurarson-and-his-period-as-a-varangian-in-constantinople-10341043/C13D204FFE93C484F561A6BEA41990FD"
+      },
+      {
+        "order": 4,
+        "id": "h-hedeby",
+        "person": "harald",
+        "name": "Hedeby · present-day Germany",
+        "lat": 54.491,
+        "lng": 9.566,
+        "evidence": "supported",
+        "precision": "Site vicinity",
+        "note": "Attack during his wars with Denmark.",
+        "source": "haraldBio",
+        "figure": "Harald Hardrada",
+        "sourceUrl": "https://en.wikipedia.org/wiki/Harald_Hardrada"
+      },
+      {
+        "order": 5,
+        "id": "h-sicily",
+        "person": "harald",
+        "name": "Sicily · Italy",
+        "lat": 37.6,
+        "lng": 14.2,
+        "evidence": "supported",
+        "precision": "Island anchor",
+        "note": "Service in the Byzantine Sicilian campaign.",
+        "source": "haraldStudy",
+        "figure": "Harald Hardrada",
+        "sourceUrl": "https://pressto.amu.edu.pl/index.php/bp/article/view/53087"
+      },
+      {
+        "order": 6,
+        "id": "h-anatolia",
+        "person": "harald",
+        "name": "Asia Minor · Anatolia",
+        "lat": 39,
+        "lng": 32,
+        "evidence": "supported",
+        "precision": "Regional anchor",
+        "note": "Broad military-service region; not a specific battle site.",
+        "source": "haraldMuseum",
+        "figure": "Harald Hardrada",
+        "sourceUrl": "https://www.vikingeskibsmuseet.dk/en/professions/education/viking-age-people/historical-characters/harald-hardrada-of-norway"
+      }
+    ]
+  }
+}
