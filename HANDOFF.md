@@ -1,18 +1,20 @@
 # Project Handoff
 
-Last updated: 2026-09-08 by Codex
+Last updated: 2026-09-09 by Codex
 
 ## Current Task
 
-Revise the Norse backpack so postcards form the final meta-puzzle and prototype the first postcard.
+Close the completed Norse postcard meta-puzzle session and record its published repository state.
 
 ## Status
 
-Complete for this draft. The Norse brainstorm now starts with one postcard containing a hidden 3-digit code. Later postcards arrive as puzzle rewards. A full map appears near the end, and connecting the dated locations becomes the final lock puzzle.
+Session closed. The Norse brainstorm now starts with one postcard containing a hidden 3-digit code. Later postcards arrive as puzzle rewards. A full map appears near the end, and connecting the dated locations becomes the final lock puzzle.
 
 Postcard 01 has a printable front/back HTML prototype and generated harbor artwork. Its location, date, aunt's name and opening code are explicitly marked as draft values. The full route, exact postcard count, locations and final code remain unset until a readable path is engineered and play-tested.
 
-Unrelated local Aurora map changes remain present and untouched.
+Commit `2437676` contains the Norse brainstorm, postcard prototype, artwork and homepage links. It is pushed to `origin/main`.
+
+Unrelated local Aurora map and `AGENTS.md` changes remain present and uncommitted.
 
 ## Files Changed This Session
 
@@ -38,17 +40,25 @@ Unrelated local Aurora map changes remain present and untouched.
 - Confirmed the guide, postcard page and artwork return HTTP 200 from the local server.
 - Browser console check returned no errors.
 - `git diff --check` passed; line-ending conversion warnings remain for existing Windows files.
+- Confirmed local and remote `main` both pointed to commit `2437676` after push.
 
 ## Next Action
 
-Choose the final lock length, then design the map path and required postcard locations backward from the intended digit shapes.
+When work resumes, confirm the final travel-wallet lock length. Then design the map path backward from the intended digit shapes.
 
 ## Blockers / Questions
 
-- How many digits does the final travel-wallet lock require?
-- The final postcard count, places, dates and route cannot be fixed until that lock length is known.
+- No implementation blocker. This session is complete.
+- Open design question: how many digits does the final travel-wallet lock require?
+- The final postcard count, places, dates and route remain intentionally unset until that lock length is known.
 
 ## Session Log
+
+### 2026-09-09 — Codex
+
+- Added direct homepage links for the Norse brainstorm and printable postcard prototype.
+- Committed and pushed the completed work as `2437676` on `main`.
+- Closed the session with the final route lock length as the next design input.
 
 ### 2026-09-08 — Codex
 
