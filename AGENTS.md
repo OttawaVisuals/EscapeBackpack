@@ -16,6 +16,8 @@ This file is the shared source of truth for Codex, Claude Code, and other coding
 - `Lego/` — Lego backpack materials.
 - `NorseBackpack/` — Norse-themed concept and brainstorming materials.
 - `Space Station Aurora/` — active space-station escape-game materials.
+- `Space Station Aurora/Station_Map.html` — interactive map built from the detailed AutoCAD station plan.
+- `Space Station Aurora/StationBluePrint/` — original DWG/DXF/PDF blueprint sources, the layer-preserving SVG converter, and the rendered map base.
 - `Fonts/` — local font assets used by project documents.
 
 Many deliverables are binary files (`.docx`, `.pptx`, `.pdf`, and images). Preserve their formatting and verify rendered output after changing them.
