@@ -4,7 +4,7 @@ Last updated: 2026-09-09 by Codex
 
 ## Current Task and Status
 
-Added source links for every stop in the main Norse guide's Travel Routes section. Implemented, checked, committed and pushed to `origin/main`.
+Norse route-selection session complete. The candidate 1972 route, main-guide Travel Routes section and per-stop source links were implemented, checked and pushed to `origin/main` in commit `bbbde30`.
 
 The section shows the four projected digit shapes and all 18 stops in order. Every stop now links to the exact historical, heritage or research source recorded in the route plan and opens that source in a new tab. The family 9 remains the least conventional shape and should receive extra attention in print testing.
 
@@ -44,8 +44,7 @@ The map still contains 72 researched person/place associations across the four t
 - Norse tone: playful mystery for adults with teens supported; no prior Norse knowledge required.
 - Props must reset cleanly. Candidates include museum tickets, rune cryptex, hnefatafl pieces, maps and note facsimiles.
 - Cryptex answer/release remain undecided; candidate backpack needs physical fit/hardware checks.
-- Older brainstorm final-puzzle prose still describes the single-route prototype; update after route selection.
-- Previous map checkpoint: d8baee9.
+- Route-selection checkpoint: `bbbde30`.
 
 ## Next Action and Open Questions
 
