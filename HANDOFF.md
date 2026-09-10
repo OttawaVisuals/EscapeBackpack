@@ -4,63 +4,55 @@ Last updated: 2026-09-09 by Codex
 
 ## Current Task and Status
 
-The finished L’Anse aux Meadows postcard is now on the local website with exact PNG previews of its printable front and back, an image-credit page, individual postcard PDF and a two-up letter-size PDF.
+The Norse website is consolidated around `NorseBackpack/Norse_Brainstorm.html`.
 
-Nothing You Could Do is the approved handwriting font for Aunt Liv. The letter-size PDF has two 6 × 4 inch fronts on page 1 and two position-matched backs on page 2. The back carries the complete CC BY-SA attribution at a reduced size. Wikimedia Commons is the preferred image source for future postcards, but every file licence must still be checked individually.
+- The retired Seyðisfjörður harbor-postcard prop was removed from the prototype section.
+- A new Postcards section shows the front and back of all three current cards.
+- Each postcard has its own two-page PDF link.
+- A top link opens a combined six-page PDF containing all three cards.
+- The Travel routes section now includes four geographic maps with numbered stops, followed by the existing route details and digit previews.
+- The root landing page now links only to the consolidated Norse brainstorm page.
 
 ## Files Changed
 
-- NorseBackpack/Postcards/Postcard_01_LAnse_Illustration_v2.png — new illustrated front artwork.
-- NorseBackpack/Postcards/Postcard_01_LAnse_Style_Study.html — editable title treatment, palette and reusable style rules.
-- NorseBackpack/Postcards/Postcard_01_LAnse.html — finished website preview with front, back and printable-file links.
-- NorseBackpack/Postcards/Postcard_01_LAnse_Front.png — exact rendered front used by the website.
-- NorseBackpack/Postcards/Postcard_01_LAnse_Back.png — exact rendered back used by the website.
-- NorseBackpack/Postcards/Image_Credits.html — expandable website credit register for postcard imagery.
-- NorseBackpack/Postcards/build_postcard_01_pdf.py — reproducible PDF source.
-- Fonts/Nothing_You_Could_Do/NothingYouCouldDo-Regular.ttf and OFL.txt — locally bundled handwriting font and licence.
-- NorseBackpack/Postcards/References/LAnse_aux_Meadows_Meeting_of_Two_Worlds_Source.jpg — CC BY-SA source photograph.
-- NorseBackpack/Postcards/References/README.md — attribution, license and visual-reference notes.
-- output/pdf/Postcard_01_LAnse_Print.pdf — two-page print-ready postcard.
-- output/pdf/Postcard_01_LAnse_Letter_Print.pdf — two-up, two-page US Letter duplex print sheet.
-- index.html — links to the finished postcard and printable PDF.
-- README.md — links the Norse postcard from the project overview.
-- HANDOFF.md — current handover.
+- `NorseBackpack/Norse_Brainstorm.html` — consolidated postcard gallery, PDF links, four embedded route maps and retired-prop cleanup.
+- `NorseBackpack/Postcards/Postcard_02_Baffin_Island_Back.png` — placeholder back.
+- `NorseBackpack/Postcards/Postcard_03_Battle_Harbour_Back.png` — placeholder back.
+- `NorseBackpack/Postcards/build_postcard_collection.py` — reproducible placeholder-back and PDF builder.
+- `output/pdf/Postcard_02_Baffin_Island_Print.pdf` — front/back PDF.
+- `output/pdf/Postcard_03_Battle_Harbour_Print.pdf` — front/back PDF.
+- `output/pdf/Norse_Postcards_Full_Print.pdf` — combined six-page postcard set.
+- `index.html` — simplified Norse project link.
+- `README.md` — points to the consolidated brainstorm page.
+- `HANDOFF.md` — current handover.
+
+The earlier front artwork, source photographs and source-register updates remain part of the same uncommitted work. Unrelated local Aurora and `AGENTS.md` changes remain untouched.
 
 ## Decisions
 
-- Preserve `Postcard_01_Prototype.html` and its harbor artwork as an earlier concept.
-- Use landscape 3:2 fronts with one dominant landmark and deterministic HTML lettering.
-- Use destination-specific five- or six-colour palettes; the first uses paper, Atlantic navy, patina teal, fog, spruce and ochre.
-- Do not use Parks Canada logos, signatures or copied wording/layout.
-- Credit D. Gordon E. Robertson and license the adaptation under CC BY-SA 3.0 or a compatible license.
-- Put full attribution text on the physical postcard back and maintain a fuller source record on the website.
-- Use Nothing You Could Do for Aunt Liv’s handwritten messages.
-- Keep the attribution smaller than the message while retaining extractable text and the complete source/licence details.
-- Use rendered PDF pages as the website previews so the displayed card matches the printable output exactly.
-- Use Wikimedia Commons as the first search source; prefer public-domain, CC0 or CC BY files when suitable to avoid ShareAlike obligations on later artwork.
-- Preserve unrelated local AGENTS.md and Aurora map/converter/asset changes.
+- Do not invent postcard messages or dates. Cards 02 and 03 use explicit placeholder backs until copy is approved.
+- Keep individual PDFs and add one combined PDF; all website PDF links open in a new browser tab.
+- Use the existing offline Natural Earth coast data and Leaflet for embedded maps.
+- Show the selected fictional route order on each map and retain the existing historical-confidence notes beneath it.
+- Keep the separate route workshop available only as an optional editing link inside the Travel routes section.
 
 ## Checks
 
-- Source photograph and Canada’s Parks Posters reference inspected.
-- Finished website page desktop render — pass; the exact rendered front/back images are visible without clipping.
-- Website links — pass; home page, postcard, credits and PDF return HTTP 200.
-- Browser console — pass; no warnings or errors.
-- PDF structure — pass; two pages, each exactly 6 × 4 inches, with extractable message and attribution text.
-- Letter PDF structure — pass; two US Letter pages, with two messages and two attribution blocks extracted from the back page.
-- PDF visual inspection — pass on all four affected rendered pages; handwriting, crop marks, alignment, reduced attribution and spacing are clean.
-- Physical duplex printing has not been tested.
+- Browser desktop visual inspection: pass for Postcards, Travel routes and Prototype & tests sections.
+- All six postcard images loaded at their expected dimensions.
+- All four embedded maps rendered; 18 numbered route markers present.
+- Browser console after the corrected reload: no new errors or warnings.
+- Old harbor-art, prototype-page and 314 mechanism references removed from `Norse_Brainstorm.html`.
+- All four PDF URLs return HTTP 200 with `application/pdf`.
+- Individual PDFs: two pages each, 6 x 4 inches.
+- Combined PDF: six pages, 6 x 4 inches; every rendered page exactly matches its individual source PDF page.
+- Full-size render inspection of the four new PDF pages: pass; no clipping, overlap or unreadable text.
+- Physical printing has not been tested.
 
-## Prior Project Context
+## Next Action
 
-- Norse route planning is complete in commit `bbbde30`; intended candidate answer is 1972, pending physical recognition testing.
-- Norse tone: playful mystery for adults with teens supported; no prior Norse knowledge required.
-- Props must reset cleanly. Candidates include museum tickets, rune cryptex, hnefatafl pieces, maps and note facsimiles.
-- Cryptex answer/release remain undecided; candidate backpack needs physical fit/hardware checks.
-- Aunt Liv’s exact travel dates remain unset.
+Approve or write the message and travel date for Postcards 02 and 03, then replace the placeholder backs and rebuild the PDFs.
 
-## Next Action and Open Questions
+## Open Design Issue
 
-Print the letter-size PDF double-sided at 100% / Actual Size, flip on the long edge, and check alignment plus the back’s smallest attribution text. Then choose the next route stop and a suitably licensed Wikimedia image.
-
-The current brainstorm page still presents the earlier Seyðisfjörður harbor/314 clue prototype. The new L’Anse aux Meadows art does not yet contain that hidden-code mechanism, so the opening puzzle needs a separate design decision before the old prototype is retired.
+The puzzle-detail and packing sections now mark the replacement opening mechanism and answer as pending. Nothing has been invented to fill that gap.

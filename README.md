@@ -7,7 +7,7 @@
 ## Description
 GitHub repository to collect information, resources and solutions to our puzzles
 
-The Norse prototype includes [Aunt Liv’s first L’Anse aux Meadows postcard](NorseBackpack/Postcards/Postcard_01_LAnse.html), with exact front/back image previews and a two-up US Letter PDF for duplex printing.
+The [Norse brainstorm](NorseBackpack/Norse_Brainstorm.html) collects the game concept, postcard fronts and backs, printable PDFs, playable sketches and route maps in one place.
 
 ## Working with Coding Agents
 
