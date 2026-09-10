@@ -31,6 +31,7 @@ Many deliverables are binary files (`.docx`, `.pptx`, `.pdf`, and images). Prese
 - Do not invent puzzle rules, answers, measurements, dates, or project status. Record unknowns clearly.
 - Use concise, plain language in project documentation.
 - For visual work, follow the relevant existing design guide and compare a rendered result with the source.
+- Keep each project's brainstorming and design content in that project's single main HTML file (for example `NorseBackpack/Norse_Brainstorm.html`), added as a new tab/section in the existing single-page structure. Do not split design notes into a second standalone HTML file unless the user asks for a separate document.
 - Do not commit, push, or publish unless the user asks.
 
 ## HTML PDF Links
