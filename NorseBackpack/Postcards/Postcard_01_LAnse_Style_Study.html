@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Norse Backpack · L’Anse aux Meadows Postcard Style</title>
+<style>
+@font-face{font-family:Cinzel;src:url('../../Fonts/Cinzel/static/Cinzel-ExtraBold.ttf') format('truetype');font-weight:800}
+@font-face{font-family:Plex;src:url('../../Fonts/IBM_Plex_Mono/IBMPlexMono-Regular.ttf') format('truetype')}
+:root{--paper:#efe3c4;--navy:#12343c;--teal:#2f7775;--fog:#aebfc0;--spruce:#25473b;--ochre:#b58631;--ink:#173d43}
+*{box-sizing:border-box}
+body{margin:0;background:#203936;color:#f5edd8;font:15px/1.45 Plex,monospace}
+main{width:min(1180px,calc(100% - 32px));margin:auto;padding:28px 0 40px}
+h1{margin:0 0 4px;font:800 clamp(23px,4vw,42px)/1.1 Cinzel,serif;letter-spacing:.02em}
+.intro{max-width:72ch;margin:0 0 22px;color:#d9d3c4}
+.postcard{position:relative;aspect-ratio:3/2;overflow:hidden;background:var(--paper);box-shadow:0 14px 36px #07141080}
+.postcard img{display:block;width:100%;height:100%;object-fit:cover}
+.title{position:absolute;left:4.5%;right:4.5%;bottom:5.2%;height:14.5%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--paper);text-align:center;text-shadow:0 2px 0 #071b1e66}
+.title strong{font:800 clamp(19px,4.1vw,54px)/.95 Cinzel,serif;letter-spacing:.045em}
+.title span{margin-top:.7em;font-size:clamp(7px,1.15vw,15px);letter-spacing:.18em}
+.guide{display:grid;grid-template-columns:1.15fr 1fr;gap:22px;margin-top:24px}
+.panel{padding:20px;background:#f4ead4;color:#293633;border-top:7px solid var(--ochre)}
+.panel h2{margin:0 0 10px;font:800 19px/1.15 Cinzel,serif;color:var(--ink)}
+.panel p{margin:0 0 10px}.panel ul{margin:0;padding-left:20px}.panel li+li{margin-top:7px}
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.swatch{min-height:78px;padding:9px;display:flex;align-items:end;font-size:11px;color:#fff}
+.paper{background:var(--paper);color:#293633}.navy{background:var(--navy)}.teal{background:var(--teal)}.fog{background:var(--fog);color:#293633}.spruce{background:var(--spruce)}.ochre{background:var(--ochre)}
+.credit{margin:18px 0 0;color:#c8c3b6;font-size:11px}.credit a{color:#f1c66b}
+@media(max-width:760px){.guide{grid-template-columns:1fr}.postcard{aspect-ratio:3/2}.title strong{font-size:clamp(15px,4.5vw,34px)}}
+@media print{@page{size:6in 4in;margin:0}body{background:#fff}main{width:6in;padding:0}.intro,.guide,.credit,h1{display:none}.postcard{width:6in;height:4in;box-shadow:none;break-inside:avoid}}
+</style>
+</head>
+<body>
+<main>
+<h1>Postcard style study</h1>
+<p class="intro">A reusable travel-poster system for Aunt Liv’s route. This first front uses the “Meeting of Two Worlds” sculpture at L’Anse aux Meadows.</p>
+<section class="postcard" aria-label="Illustrated L’Anse aux Meadows postcard front">
+  <img src="Postcard_01_LAnse_Illustration_v2.png" alt="Screen-print-style illustration of the Meeting of Two Worlds sculpture overlooking the Atlantic">
+  <div class="title"><strong>L’ANSE AUX MEADOWS</strong><span>NEWFOUNDLAND AND LABRADOR</span></div>
+</section>
+<section class="guide" aria-label="Postcard visual system">
+  <div class="panel">
+    <h2>Reusable rules</h2>
+    <ul>
+      <li>Landscape 3:2 format with one dominant landmark.</li>
+      <li>Flat, screen-printed colour layers; simplified shapes; visible paper grain.</li>
+      <li>Five or six colours chosen from the destination.</li>
+      <li>Dark lower title band, large place name, smaller region line.</li>
+      <li>No tourism logos. Keep puzzle clues separate from the location title.</li>
+    </ul>
+  </div>
+  <div class="panel">
+    <h2>Atlantic palette</h2>
+    <div class="swatches">
+      <div class="swatch paper">Paper<br>#EFE3C4</div>
+      <div class="swatch navy">Atlantic<br>#12343C</div>
+      <div class="swatch teal">Patina<br>#2F7775</div>
+      <div class="swatch fog">Fog<br>#AEBFC0</div>
+      <div class="swatch spruce">Spruce<br>#25473B</div>
+      <div class="swatch ochre">Ochre<br>#B58631</div>
+    </div>
+  </div>
+</section>
+<p class="credit">Artwork adapted from a photograph by D. Gordon E. Robertson, licensed <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>. The adaptation is shared under the same license. Visual direction informed by the broad characteristics of contemporary Canadian travel posters; no Parks Canada marks are used.</p>
+</main>
+</body>
+</html>

@@ -7,6 +7,8 @@
 ## Description
 GitHub repository to collect information, resources and solutions to our puzzles
 
+The Norse prototype includes [Aunt Liv’s first L’Anse aux Meadows postcard](NorseBackpack/Postcards/Postcard_01_LAnse.html), with exact front/back image previews and a two-up US Letter PDF for duplex printing.
+
 ## Working with Coding Agents
 
 - Shared instructions: [AGENTS.md](AGENTS.md)
