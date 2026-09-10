@@ -319,9 +319,24 @@
 <table style="margin-top:8px">
 <tr><th>Card</th><th>Own trail</th><th>Shows instead</th></tr>
 <tr><td>15 &middot; Kyiv</td><td>Harald Hardrada</td><td>Leif's longship <span class="pill">Decided</span></td></tr>
-<tr><td>04 &middot; Châlus</td><td>Rollo &amp; descendants</td><td>Not yet assigned <span class="pill open">Open</span></td></tr>
-<tr><td>11 &middot; Hvammur</td><td>Aud the Deep-Minded</td><td>Not yet assigned <span class="pill open">Open</span></td></tr>
+<tr><td>04 &middot; Châlus</td><td>Rollo &amp; descendants</td><td>Not yet assigned <span class="pill open">Parked</span></td></tr>
+<tr><td>11 &middot; Hvammur</td><td>Aud the Deep-Minded</td><td>Not yet assigned <span class="pill open">Parked</span></td></tr>
 </table>
+<p class="small muted" style="margin-top:10px">Parked. Assigning these two depends on deciding how many cards should actually be active (see the note on card density above) &mdash; picking a wrong motif now would be getting ahead of that call. Not needed to start the stamp artwork below.</p>
+</div>
+
+<div class="card">
+<h3>Illustration brief for Codex</h3>
+<p>One shared style across all four series, so they read as one issuer's stamps rather than four unrelated pictures. Each brief below is written to hand to Codex directly.</p>
+<p style="margin-top:10px"><strong>Shared style, all four:</strong> single motif, centred, filling most of the frame. Engraved-line illustration in the style of a Victorian-to-Edwardian postage stamp &mdash; fine cross-hatching for shading, no flat colour fills &mdash; printed in one dominant ink colour (the trail colour) on a lightly tinted paper ground, not full-colour. A plain perforated border, no denomination, no lettering, no country name, and no date: those are either added later per-card (price, postmark) or intentionally left out. Portrait or landscape orientation, whichever suits the motif, consistent within a series across all its cards.</p>
+<table style="margin-top:12px">
+<tr><th>Trail</th><th>Codex prompt</th></tr>
+<tr><td>Leif Erikson</td><td>A Viking longship under full sail, seen from the side, dragon-head prow, single mast, riding a cresting wave. Engraved-line postage-stamp illustration, single ink colour <code>#216580</code> on cream paper, fine cross-hatched shading, plain perforated border, no text.</td></tr>
+<tr><td>Rollo &amp; descendants</td><td>A comet with a long curving tail low over a horizon, in the style of the Bayeux Tapestry's depiction of Halley's Comet, with two small stylised figures below pointing up at it. Engraved-line postage-stamp illustration, single ink colour <code>#a2562d</code> on cream paper, fine cross-hatched shading, plain perforated border, no text.</td></tr>
+<tr><td>Aud the Deep-Minded</td><td>Two carved wooden high-seat pillars (öndvegissúlur) standing side by side on a shoreline, each topped with a simple carved figure, waves at their base. Engraved-line postage-stamp illustration, single ink colour <code>#6d528b</code> on cream paper, fine cross-hatched shading, plain perforated border, no text.</td></tr>
+<tr><td>Harald Hardrada</td><td>A single labrys (double-headed axe), blade upright, centred, with a simple Byzantine meander (key-pattern) border framing it. Engraved-line postage-stamp illustration, single ink colour <code>#467444</code> on cream paper, fine cross-hatched shading, plain perforated border, no text.</td></tr>
+</table>
+<p class="small muted" style="margin-top:10px">Generate one motif per series first and sanity-check that all four are readable and distinguishable at true stamp size (roughly 20&times;24 mm on the finished card) before producing every card's stamp from it.</p>
 </div>
 </div>
 
@@ -526,7 +541,7 @@
 <p class="lede">The first three unblock artwork production. Nothing below needs the backpack to be bought first.</p>
 <ol class="steps">
 <li><h3>Assign the sparse sets <span class="pill">Done</span></h3><p>Which of the 18 cards carry a price, extra text, a tilted stamp and an anomaly stamp is now fixed in the worksheet above. The digits, letters and directions those channels actually carry are still unassigned &mdash; that depends on the two open lock conflicts below.</p></li>
-<li><h3>Design the four stamp series <span class="pill">Motif &amp; colour decided</span></h3><p>Motif and colour per trail are set (see the table above). Two of the three anomaly wrong-trail variants are still unassigned, and the actual stamp artwork is to be produced in Codex, not here.</p></li>
+<li><h3>Design the four stamp series <span class="pill">Ready for Codex</span></h3><p>Motif, colour and an illustration brief per trail are set (see above). Two of the three anomaly wrong-trail variants are parked pending the card-density question. The actual stamp artwork is produced in Codex, not here.</p></li>
 <li><h3>Re-render the three existing fronts at the new size</h3><p>From <code>Postcards/References/</code> at 1500 × 1050 px, and change <code>SIZE</code> and <code>PAGE</code> together in <code>build_postcard_collection.py</code>. Do not rescale the current 1536 × 1024 art.</p></li>
 <li><h3>Write the aunt's letters</h3><p>They carry the reading direction for the rune stick, the pointer that first teaches each sparse channel, and the comb's disguise. This is the writing that makes the clues land, and it is currently the largest unwritten piece.</p></li>
 <li><h3>Solve the hnefatafl board</h3><p>Search for a blocker layout with exactly one four-move escape, then fix the direction sequence it produces.</p></li>
