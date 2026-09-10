@@ -1,13 +1,15 @@
 # Project Handoff
 
-Last updated: 2026-09-10 by Claude Code
+Last updated: 2026-09-10 by Codex
 
 ## Current Task and Status
 
-Norse postcard stamp design, continued across this session in two parts:
+Norse postcard stamp design, continued across two sessions:
 
 1. Decided the four trail stamp motifs and colours, and wrote a ready-to-use illustration brief per trail for Codex (which will actually produce the stamp artwork — not done here).
 2. Started deciding the two remaining anomaly-card wrong-trail motifs (Châlus, Hvammur), but **parked that** at the user's request: it surfaced a real tension in the corpus design (see Open Design Issues) that needs a separate decision first.
+
+Codex then generated three Leif route stamp options using the agreed longship motif and blue `#216580` ink. The user selected C, the compact icon-like broadside with minimal waves. Codex used it as the style reference for the other three route stamps and saved the complete four-stamp v1 set under `NorseBackpack/Postcards/Stamps/`. The images share a cream paper ground, plain perforated edge, single trail-colour ink and simplified engraved linework; Harald retains the previously agreed inner Byzantine meander frame. All four are now displayed in a responsive gallery in the Design spec tab of `Norse_Brainstorm.html`, and the stamp-series step is marked done pending the physical print test.
 
 Also folded in: this session's sparse-set assignment (previous handoff) is committed and pushed. A process note from the user, now in memory: for creative/design decisions with real degrees of freedom, propose in chat and get input before writing to the file — don't just execute because a step is named "next" in this doc. Both pieces of work in this session followed that (motifs/colours/briefs were proposed and confirmed before being written in).
 
@@ -17,8 +19,13 @@ Also folded in: this session's sparse-set assignment (previous handoff) is commi
   - New "The four stamp series" table: motif + trail colour (reusing the existing route-map colours) + rationale for each of the four trails.
   - New "Wrong-trail variants for the anomaly cards" table: Kyiv decided (shows Leif's longship); Châlus and Hvammur marked **Parked**, with a note explaining why (depends on the card-density question below) and that it doesn't block stamp artwork.
   - New "Illustration brief for Codex" card: one shared style spec (engraved single-colour line art, cross-hatched shading, cream paper, plain perforated border, no text/denomination yet) plus one ready-to-paste Codex prompt per trail.
-  - "Next steps, in order" step 2 updated to "Ready for Codex".
+  - Added the four selected stamp images in a responsive gallery below the motif table, with descriptive alternative text and route-colour captions.
+  - Reframed the prompt card as the brief used for the first pass and marked "Next steps, in order" step 2 as done, with the true-size print test still required.
   - (From earlier in this session, already committed as `24e9a7f`): the full sparse-set assignment worksheet and the new Design guide tab (colour/typography/tone/components/icons reference).
+- `NorseBackpack/Postcards/Stamps/Stamp_Leif_Longship_v1.png` — selected compact longship stamp.
+- `NorseBackpack/Postcards/Stamps/Stamp_Rollo_Comet_v1.png` — comet and two pointing figures.
+- `NorseBackpack/Postcards/Stamps/Stamp_Aud_Pillars_v1.png` — paired carved high-seat pillars.
+- `NorseBackpack/Postcards/Stamps/Stamp_Harald_Labrys_v1.png` — labrys with Byzantine meander frame.
 - `HANDOFF.md` — this handover.
 
 No other file was touched this session. The uncommitted Aurora changes (`Station_Aurora_Map_Base.png`, `Station_Aurora_Vector.svg`, `convert_dxf_to_svg.py`, `Station_Map.html`, and the Aurora paragraph in `AGENTS.md`) remain exactly as found — still a separate, in-progress thread the user chose not to continue this session.
@@ -42,13 +49,15 @@ Illustration style, all four: engraved-line, single ink colour (the trail colour
 
 - Opened `Norse_Brainstorm.html` in the browser after each edit; confirmed via `document.body.textContent` / `querySelectorAll` that the new tables and the Codex-brief card render with the expected content, and that the Design spec tab still shows correctly.
 - Confirmed (from the sparse-set-assignment work earlier this session) that new CSS stayed scoped and didn't leak into other tabs; no new CSS was added in this stamp-brief pass, only table/card content, so no re-check needed.
-- No image has been generated yet — the brief is untested against an actual Codex output. First real check is generating one motif and confirming legibility at true stamp size (~20×24 mm), as noted in the file itself.
+- The four saved v1 PNGs were visually inspected at full generated size. Each is 1145 × 1374 px with consistent portrait proportions and intact cropping/perforations. A true-size 20×24 mm print test has not yet been run.
+- Static HTML checks found four stamp cards, four stamp image references, responsive rules for desktop/tablet/mobile, balanced CSS braces, and no missing local images among all ten image references on the page.
+- Browser visual validation could not be run because the available browser automation blocks local `file://` pages. The gallery layout therefore still needs a quick manual browser check after opening `Norse_Brainstorm.html` locally.
 
 ## Next Action
 
 Two independent next steps, neither blocking the other:
 
-1. **Take the four Codex prompts (Design spec tab → "Illustration brief for Codex") into Codex**, generate one motif per trail, and sanity-check legibility at true stamp size before producing all 18 cards' stamps from them.
+1. **Run a true-size 20×24 mm print test of the four v1 stamps.** Check that the Rollo figures and Aud pillar carvings remain readable, and decide whether Harald's inner meander frame makes the set feel inconsistent before integrating the stamps into postcard layouts.
 2. **Resolve the card-density question** this session surfaced: the sparse-channel assignment currently loads 15 of 18 cards with at least one marker, which conflicts with the original "five or six active cards" decision and dilutes the anomaly stamp's job as a "look here" signal (see Open Design Issues). Deciding this unblocks the Châlus/Hvammur anomaly motifs and probably also affects whether the current price/text/tilt card assignment (from the previous session) should be revisited.
 
 After either of those: re-render the three existing postcard fronts at true size, write the aunt's letters, solve the hnefatafl board — the rest of the "Next steps, in order" list in the Design spec tab is unchanged.
