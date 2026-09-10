@@ -40,6 +40,8 @@
 #design .pc .slots{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
 #design .slot{width:19px;height:19px;border-radius:4px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff}
 #design .slot.tbd{background:transparent;border:1px dashed #a99a7b;color:#8a7d63}
+#design .pc.quiet{opacity:.6}
+#design .pc .quiet-note{display:block;margin-top:6px;font-size:11px;color:#8a7d63;font-style:italic}
 #design .trailhead{display:flex;align-items:baseline;gap:10px;margin-top:22px}
 #design .trailhead h3{margin:0}
 #design .trailhead .digit{font-family:Cinzel,Georgia,serif;font-size:26px;color:#b56a2a}
@@ -51,9 +53,30 @@
 #design .steps li{counter-increment:s;position:relative;padding:14px 18px 14px 54px;background:#fffdf7;border:1px solid #ddd6c4;border-radius:9px;margin-bottom:10px}
 #design .steps li:before{content:counter(s);position:absolute;left:16px;top:14px;width:26px;height:26px;border-radius:50%;background:#254c40;color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
 #design .steps h3{margin-bottom:4px}
+/* Design guide tab — scoped under #guide, same convention as #design above. */
+#guide .lede{font-size:17px;color:#42544c;max-width:820px;margin-top:14px}
+#guide .designsection{margin-top:38px}
+#guide .designsection:first-of-type{margin-top:26px}
+#guide .card{background:#fffdf7;border:1px solid #ddd6c4;border-radius:10px;padding:20px 22px;margin-top:14px}
+#guide .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:14px}
+#guide .swatchgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:14px}
+#guide .swatch{border:1px solid #d7d1bf;border-radius:10px;overflow:hidden;background:#fffcf4}
+#guide .swatch .fill{height:52px}
+#guide .swatch .meta{padding:10px 12px}
+#guide .swatch .meta b{display:block;font-size:13px}
+#guide .swatch .meta code{font-size:12px;color:#657065}
+#guide .swatch .meta span{display:block;font-size:12px;color:#657065;margin-top:3px}
+#guide .type-sample{border:1px solid #d7d1bf;border-radius:10px;background:#fffcf4;padding:18px 20px;margin-top:12px}
+#guide .type-sample .label{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#8d633b;margin-bottom:8px}
+#guide .type-cinzel{font-family:Cinzel,Georgia,serif;font-size:28px}
+#guide .type-body{font-family:'Segoe UI',Arial,sans-serif;font-size:16px}
+#guide .type-georgia{font-family:Georgia,serif;font-size:18px}
+#guide .component-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:14px}
+#guide .icon-note{display:flex;gap:14px;align-items:flex-start;background:#fffcf4;border:1px solid #d7d1bf;border-radius:10px;padding:16px 18px;margin-top:12px}
+#guide .icon-note .glyph{font-size:30px;font-family:'Segoe UI Symbol',sans-serif;color:#254c40;flex:none}
 </style>
 <header><div class="eyebrow">Escape Backpack / Norse / Brainstorm v2</div><h1>The Raven Inheritance</h1><p>Your great-aunt has sent you her field bag and the first postcard from a long journey. More cards are hidden inside. Together they lead to the invitation she wants you to earn.</p><div class="tags"><span class="tag">Working title</span><span class="tag">Playful mystery</span><span class="tag">Adults + teens</span><span class="tag">Reusable props</span><span class="tag">A notch harder than Hiking</span><span class="tag">Designer copy · spoilers</span></div></header>
-<nav aria-label="Guide sections"><button data-view="story" aria-pressed="true">Story & sequence</button><button data-view="puzzles" aria-pressed="false">Puzzle details</button><button data-view="postcards" aria-pressed="false">Postcards</button><button data-view="routes" aria-pressed="false">Travel routes</button><button data-view="lab" aria-pressed="false">Prototype & tests</button><button data-view="build" aria-pressed="false">Props & choices</button><button data-view="design" aria-pressed="false">Design spec</button></nav>
+<nav aria-label="Guide sections"><button data-view="story" aria-pressed="true">Story & sequence</button><button data-view="puzzles" aria-pressed="false">Puzzle details</button><button data-view="postcards" aria-pressed="false">Postcards</button><button data-view="routes" aria-pressed="false">Travel routes</button><button data-view="lab" aria-pressed="false">Prototype & tests</button><button data-view="build" aria-pressed="false">Props & choices</button><button data-view="design" aria-pressed="false">Design spec</button><button data-view="guide" aria-pressed="false">Design guide</button></nav>
 <main class="wrap">
 <section id="story" class="view"><div class="intro"><div><div class="eyebrow">Suggested direction</div><h2>A family secret, mapped through postcards</h2><p>Your great-aunt has been tracing the family’s Nordic origins. Her first postcard arrives with a locked field bag. Every solved section of the bag reveals more dated postcards from different places.</p><p>Players use the cards as ordinary clues along the way. Near the end they find a full map and realize the entire trip has been building one final answer.</p></div><aside class="callout"><h3>Keep the original ending</h3><p>The final route code opens the travel wallet. Inside is the plane ticket from your idea deck, plus: <em>“I could use someone who notices what everyone else walks past.”</em></p><p class="small muted">The ticket is a fictional game prop. The current candidate routes form <strong>1972</strong>: Leif 1, Rollo’s family line 9, Aud 7 and Harald 2. Dates, the physical map and the dig location remain open.</p></aside></div>
 <div class="grid2"><div><h3>The reason for the locks</h3><p class="small">Your aunt loves setting family challenges. This parcel is her invitation test. The locks protect each stage of her research and release the journey a few locations at a time.</p></div><div><h3>The recurring “aha”</h3><p class="small">Each postcard appears useful once, so players keep it without knowing its final purpose. The map changes the cards from souvenirs into plotted points. Connecting the dated locations reveals the final digits.</p></div></div>
@@ -75,7 +98,7 @@
 <section id="build" class="view" hidden><div class="eyebrow">Decisions for the next draft</div><h2>Make the bag feel like it belongs to her</h2><div class="grid2"><div class="panel"><h3>Core reusable prop kit</h3><ul><li>Museum tickets that can carry dates, locations, exhibit references or short clue fragments.</li><li>A 3D-printed cryptex with rune rings; its answer and place in the puzzle sequence are still to be defined.</li><li>A 7 × 7 hnefatafl-inspired board with durable pieces, a three-line rule card and a hidden compartment under the throne square opened by the king piece.</li><li>Printed journey maps protected by lamination or a clear sleeve; use removable markers, cord or an overlay.</li><li>Hand-written notes made as replaceable inserts or reusable facsimiles, with a clean master kept for reprinting.</li><li>A set of 18 dated postcards, one per route stop, with only the first card outside the bag.</li><li>A carved rune stick for the branch-rune cipher, with its key table on a separate museum label.</li><li>A comb with broken teeth, used as a grille over postcard messages.</li><li>Replica coins and a small balance with weights.</li><li>Reader tools: a magnifier, a red acetate filter, and a UV pen with a blacklight.</li><li>Replica object labels, family record cards, saga strips, a travel wallet and a fictional boarding pass.</li></ul><p class="decision" style="margin-top:15px">Design for repeat play: no writing on irreplaceable props, all loose pieces inventoried, and every puzzle given a clear reset state.</p></div><div class="panel"><h3>Candidate backpack</h3><p><a href="https://www.amazon.ca/koolehaoda-Backpack-Business-Rucksack-L-Coffee/dp/B07VST6YSY" target="_blank" rel="noopener">View the Koolehaoda vintage canvas backpack</a></p><p class="small">The listing describes the L-Coffee version as a canvas-and-leather-style 35 L backpack sized 46 × 32 × 20 cm, with a main compartment and several pockets. Its field-bag look suits the story.</p><p class="small muted">Candidate only. Before purchase, confirm current price and availability, then test the actual lock attachment points, pocket access, prop fit, hardware durability and reset workflow. Seller measurements and claims have not been independently verified.</p></div></div>
 <div class="sectionhead"><h2>Presentation direction</h2></div><div class="grid2"><div class="panel"><h3>Playful mystery</h3><p>Use an adventurous aunt, dry museum humour and satisfying discoveries. Keep danger fictional and light; avoid horror, solemn ritual or dense historical exposition.</p><p class="small muted">The mystery should feel clever and curious, not childish. Let the props carry the atmosphere while clue wording stays direct.</p></div><div class="panel"><h3>Audience: mostly adults, also teens</h3><p>Assume no prior Norse knowledge. Challenge should come from connecting evidence, handling objects and spotting patterns—not trivia, tiny print or obscure rune knowledge.</p><p class="decision" style="margin-top:15px">Difficulty target: a notch harder than the finished Hiking backpack. The lever is convergence — at least two codes should need three separate props — not obscurity.</p><p class="small muted">No duration claim yet. Play-test with both adults and teens before setting one.</p></div></div>
 <div class="sectionhead"><h2>Other directions worth keeping</h2></div><div class="grid2"><div><div class="choice"><h3>More magic: the sleeping raven</h3><p>A final message hints that the dig has uncovered something alive.</p><p class="small muted">Keep the ticket reveal and make the supernatural layer a final tease.</p></div><div class="choice"><h3>More tactile: thread on the map</h3><p>Players pin each postcard location and connect the stops with cord instead of drawing directly on the map.</p><p class="small muted">This makes the last clue physical and resettable. Prototype pin spacing and route legibility before choosing the locations.</p></div><div class="choice"><h3>More investigation: the wrong museum label</h3><p>Compare a drawing, a repair note and a catalogue entry to identify a mislabeled replica. Its accession number opens the archive.</p><p class="small muted">A swap for family records if you want less genealogy.</p></div></div><div class="panel"><h3>Decided</h3><ol><li><strong>Postcards:</strong> one per route stop, so 18 cards at roughly 5 × 3.5 in.</li><li><strong>Card design:</strong> a universal layer on all 18 (per-trail stamp series, plus a postmark carrying date and place) and a sparse layer on small subsets (prices, extra text, tilted stamps, anomaly stamps).</li><li><strong>Cipher:</strong> branch runes (kvistrúnir), answering <strong>HRAFN</strong>.</li><li><strong>Hnefatafl:</strong> a four-move escape driving a directional lock, on a board with a hidden compartment under the throne.</li><li><strong>Tools in the bag:</strong> magnifier, red acetate filter, UV pen and blacklight.</li><li><strong>Non-lock clues:</strong> three, whose answers are instructions rather than codes.</li></ol>
-<h3 style="margin-top:20px">Still open</h3><ol><li><strong>Final map:</strong> pin the cards to it, connect pins with cord, or use a transparent overlay? Prototype at print size first.</li><li><strong>Rune cryptex:</strong> what is its answer, and what does opening it release? HRAFN currently belongs to the five-letter lock.</li><li><strong>Bag hardware:</strong> which pockets can accept reusable locks without permanent alteration?</li><li><strong>Sparse-set membership:</strong> which cards carry which design element.</li></ol><p class="small muted">Current assumptions: mostly adults with potential teen players, no prior Norse knowledge, a table available, and reusable props throughout.</p><p class="small muted">Full reasoning, prop specs and next steps live in the <a href="#" data-view="design">Design spec tab</a> above.</p><p style="margin-top:16px">The route is now the hero prop. Engineer the path first, then assign plausible dated stops to its vertices. That prevents the geography from producing unreadable digits.</p></div></div>
+<h3 style="margin-top:20px">Still open</h3><ol><li><strong>Final map:</strong> pin the cards to it, connect pins with cord, or use a transparent overlay? Prototype at print size first.</li><li><strong>Rune cryptex:</strong> what is its answer, and what does opening it release? HRAFN currently belongs to the five-letter lock.</li><li><strong>Bag hardware:</strong> which pockets can accept reusable locks without permanent alteration?</li><li><strong>Directional lock conflict:</strong> both the tilted-stamp postcards and the hnefatafl escape now feed a directional lock; needs a second lock or a reassignment.</li></ol><p class="small muted">Current assumptions: mostly adults with potential teen players, no prior Norse knowledge, a table available, and reusable props throughout.</p><p class="small muted">Full reasoning, prop specs and next steps live in the <a href="#" data-view="design">Design spec tab</a> above.</p><p style="margin-top:16px">The route is now the hero prop. Engineer the path first, then assign plausible dated stops to its vertices. That prevents the geography from producing unreadable digits.</p></div></div>
 <div class="sectionhead"><h2>Packing & release draft</h2></div><div class="tablewrap"><table><thead><tr><th>Container</th><th>Opens with</th><th>Inside</th></tr></thead><tbody><tr><td>Outside / START</td><td>Already accessible</td><td>First dated postcard and locked field bag</td></tr><tr><td>Main compartment</td><td>Opening mechanism and answer pending</td><td>Notebook, rune key and tag, locked archive case, later dated postcard</td></tr><tr><td>Archive case</td><td>582 · runes</td><td>Family records, king board, locked RAVEN and CROWN pouches, locked WELL pouch, final locked travel wallet, later dated postcard</td></tr><tr><td>RAVEN pouch</td><td>427 · family records</td><td>Saga strips and later dated postcard(s)</td></tr><tr><td>CROWN pouch</td><td>631 · king board</td><td>Saga ordering key and later dated postcard(s)</td></tr><tr><td>WELL pouch</td><td>2468 · saga</td><td>Full map and remaining dated postcard(s)</td></tr><tr><td>Travel wallet</td><td>1972 · candidate route code</td><td>Fictional ticket, personal letter, optional ending link</td></tr></tbody></table></div><p class="small muted" style="margin-top:12px">The opening mechanism is undecided and the intermediate codes remain proposed design values. The candidate final route code is 1972; exact postcard dates and final printed-map legibility still need testing. Confirm existing lock hardware supports four digits before fixing the code.</p>
 <details style="margin-top:22px"><summary>Reset and prototype checks</summary><p>Repack the wallet first, then the WELL pouch and two branch pouches. Put the remaining materials in the archive and main compartment. Leave only postcard 01 outside. Scramble every lock. Keep a packing photo and a numbered spare postcard set.</p><p>Before final production: choose and test the replacement opening mechanism; make every date and place name unambiguous; confirm every route point is easy to locate; test that the completed lines resemble only the intended digits; run an unfamiliar group through the paper version. Observe solve times before choosing a duration target.</p></details>
 <div class="sources"><strong>Basis and limits.</strong> Read the text in Norse_Ideas.pptx, Ideas-Designs.pptx, Hiking’s clue and reassembly documents and support workbook; inspected Aurora_Visual_Guide.html. The existing Norse deck supplies the aunt, family origins, Norway invitation, runes, board game and mythology ideas. This page proposes everything else. Original slide artwork and physical backpacks were not inspected.<p>Historical references: <a href="https://www.britishmuseumshoponline.org/hnefatafl-the-viking-game.html" target="_blank" rel="noopener">British Museum: hnefatafl</a>; <a href="https://www.museumofgaming.org.uk/RULES-Hnefatafl.pdf" target="_blank" rel="noopener">Museum of Gaming: an example rule set</a>; <a href="https://natmus.dk/museer-og-slotte/nationalmuseet/undervisning-paa-nationalmuseet/undervisningsmaterialer/grundskolen/danmarks-oldtid/undervisningsrollespil/vikingetiden/genstande/runes-skalp/" target="_blank" rel="noopener">National Museum of Denmark: Viking Age runes</a>. Viking Age rune alphabets had 16 characters with some shared sounds. The aunt’s cipher, saga, genealogy and solo board rules are invented for this game.</p></div>
@@ -242,13 +265,18 @@
 
 <div class="card">
 <h3>The 18 cards</h3>
-<p>Every card carries the universal pair. The sparse slots are unassigned &mdash; this doubles as the worksheet for filling them in.</p>
+<p>Every card carries the universal pair. The sparse slots are now assigned by card &mdash; digits, letters and directions are not chosen yet, only which card carries which channel.</p>
 <div class="legend">
 <span><i class="dot" style="background:#254c40"></i> series motif (all)</span>
 <span><i class="dot" style="background:#3d7a6a"></i> postmark (all)</span>
-<span><i class="dot" style="border:1px dashed #a99a7b;background:transparent"></i> sparse slot, to assign</span>
+<span><i class="dot" style="background:#b56a2a"></i> price · 4 cards</span>
+<span><i class="dot" style="background:#2f5f8a"></i> extra text · 5 cards</span>
+<span><i class="dot" style="background:#8a4f9e"></i> tilted stamp · 4 cards</span>
+<span><i class="dot" style="background:#a4472f"></i> anomaly stamp · 3 cards</span>
 </div>
 <div id="corpus"></div>
+<p style="margin-top:14px"><strong>Reading the assignment.</strong> Leif's trail &mdash; the three cards already built &mdash; carries one card each of price, extra text and tilted stamp, so the trail that's already printed teaches all three data channels before players meet the others. The anomaly channel is deliberately withheld from Leif's own cards: its motif is the one borrowed to mislabel Kyiv, so the "true" ship series stays clean everywhere it actually belongs. Kyiv also carries a price, the one deliberate double-duty card in the set, placed where the anomaly already draws attention. The two six-stop trails (Rollo, Harald) each keep a couple of genuinely quiet cards; the two three-stop trails (Leif, Aud) don't have room to spare one, so every one of their cards is doing something.</p>
+<p class="small muted" style="margin-top:8px">Three cards carry no sparse element at all: Battle, Staraya Ladoga and Sicily.</p>
 </div>
 
 <div class="card">
@@ -269,6 +297,31 @@
 
 <div class="warn">
 <strong>Artwork consequence of the size change.</strong> The existing fronts are 1536 &times; 1024 px, a 3:2 ratio. A 5 &times; 3.5 in card at 300 dpi is 1500 &times; 1050 px, a 10:7 ratio. The height is 26 px short, so rescaling would soften the illustrations. The three existing fronts need re-rendering from <code>Postcards/References/</code>, and in <code>build_postcard_collection.py</code> the <code>SIZE</code> and <code>PAGE</code> constants must change together.
+</div>
+</div>
+
+<div class="designsection">
+<div class="eyebrow">Postcard system</div>
+<h2>The four stamp series</h2>
+<p class="lede">Motif and colour per trail, decided. The stamp artwork itself will be produced in Codex, not here &mdash; this table is the brief. Denomination typography, the extra-line style and the tilt convention are deliberately left out; they depend on the still-open lock questions below.</p>
+
+<table>
+<tr><th>Trail</th><th>Colour</th><th>Motif</th><th>Why</th></tr>
+<tr><td>Leif Erikson</td><td><i class="dot" style="background:#216580"></i> <code>#216580</code></td><td>A longship</td><td>The obvious, strongest read for a Vinland voyage; matches the route-map colour already used for this trail.</td></tr>
+<tr><td>Rollo &amp; descendants</td><td><i class="dot" style="background:#a2562d"></i> <code>#a2562d</code></td><td>The Bayeux comet</td><td>Halley's Comet as depicted in the Bayeux Tapestry (captioned <em>ISTI MIRANT STELLA</em>). Ties directly to Bayeux, a stop already on this trail, and avoids a second ship motif competing with Leif's.</td></tr>
+<tr><td>Aud the Deep-Minded</td><td><i class="dot" style="background:#6d528b"></i> <code>#6d528b</code></td><td>High-seat pillars (öndvegissúlur)</td><td>The carved posts a settler cast overboard to let the gods choose a landing site &mdash; Aud's own saga does this. Symmetrical, stamp-friendly silhouette, and specific to her rather than generic Norse imagery.</td></tr>
+<tr><td>Harald Hardrada</td><td><i class="dot" style="background:#467444"></i> <code>#467444</code></td><td>A labrys (double-headed axe)</td><td>Reads as Varangian Guard / Byzantine service. Deliberately not his raven banner (Landeyðan) &mdash; a raven motif here would compete with the game's own raven/HRAFN emblem right where Kyiv's anomaly stamp needs to read as clearly <em>not</em> Harald's own series.</td></tr>
+</table>
+
+<div class="card">
+<h3>Wrong-trail variants for the anomaly cards</h3>
+<p>Each anomaly card shows another trail's motif in its own trail's stamp slot. Only one of the three is decided so far:</p>
+<table style="margin-top:8px">
+<tr><th>Card</th><th>Own trail</th><th>Shows instead</th></tr>
+<tr><td>15 &middot; Kyiv</td><td>Harald Hardrada</td><td>Leif's longship <span class="pill">Decided</span></td></tr>
+<tr><td>04 &middot; Châlus</td><td>Rollo &amp; descendants</td><td>Not yet assigned <span class="pill open">Open</span></td></tr>
+<tr><td>11 &middot; Hvammur</td><td>Aud the Deep-Minded</td><td>Not yet assigned <span class="pill open">Open</span></td></tr>
+</table>
 </div>
 </div>
 
@@ -472,8 +525,8 @@
 <h2>Next steps, in order</h2>
 <p class="lede">The first three unblock artwork production. Nothing below needs the backpack to be bought first.</p>
 <ol class="steps">
-<li><h3>Assign the sparse sets</h3><p>Decide which of the 18 cards carry a price, an extra line of text, a tilted stamp and an anomaly stamp, using the worksheet above. Everything about the artwork depends on this, and it is a pure design decision requiring no purchase or test.</p></li>
-<li><h3>Design the four stamp series</h3><p>One motif family per trail, distinct enough to be read at a glance across a table of 18 cards, plus the wrong-trail variants for the anomaly cards.</p></li>
+<li><h3>Assign the sparse sets <span class="pill">Done</span></h3><p>Which of the 18 cards carry a price, extra text, a tilted stamp and an anomaly stamp is now fixed in the worksheet above. The digits, letters and directions those channels actually carry are still unassigned &mdash; that depends on the two open lock conflicts below.</p></li>
+<li><h3>Design the four stamp series <span class="pill">Motif &amp; colour decided</span></h3><p>Motif and colour per trail are set (see the table above). Two of the three anomaly wrong-trail variants are still unassigned, and the actual stamp artwork is to be produced in Codex, not here.</p></li>
 <li><h3>Re-render the three existing fronts at the new size</h3><p>From <code>Postcards/References/</code> at 1500 × 1050 px, and change <code>SIZE</code> and <code>PAGE</code> together in <code>build_postcard_collection.py</code>. Do not rescale the current 1536 × 1024 art.</p></li>
 <li><h3>Write the aunt's letters</h3><p>They carry the reading direction for the rune stick, the pointer that first teaches each sparse channel, and the comb's disguise. This is the writing that makes the clues land, and it is currently the largest unwritten piece.</p></li>
 <li><h3>Solve the hnefatafl board</h3><p>Search for a blocker layout with exactly one four-move escape, then fix the direction sequence it produces.</p></li>
@@ -511,8 +564,10 @@
 <h2>Unresolved</h2>
 <ul>
 <li><span class="pill open">Open</span> Whether the players may handle the stamps directly. Printed stamps are fixed to the card, which is fine, but any puzzle depending on stamp placement needs a reset check.</li>
-<li><span class="pill open">Open</span> Which five or six of the 18 cards are the active ones, and which trail each anomaly stamp points at.</li>
+<li><span class="pill open">Open</span> Which trail's motif each anomaly card wrongly shows. Kyiv is fixed (Leif's ship series, per the worked example above); Châlus and Hvammur still need a wrong-series assignment.</li>
 <li><span class="pill open">Open</span> The cryptex answer and what opening it releases. HRAFN fits a five-ring cryptex, but it is currently assigned to the five-letter lock; only one of the two can have it.</li>
+<li><span class="pill open">Open</span> Two sparse channels now feed directional locks &mdash; the tilted-stamp set and the hnefatafl escape. Either the postcard corpus needs a second directional lock to receive it, or the tilted-stamp channel should feed something else.</li>
+<li><span class="pill open">Open</span> The actual digits, letters and directions each sparse set carries &mdash; the four price cards, the five extra-text cards and the four tilted-stamp cards are chosen, but what they print is not, since it depends on the two lock conflicts above.</li>
 <li><span class="pill open">Open</span> The exact wording of the three redirect clues.</li>
 <li><span class="pill open">Open</span> Container and lock placement, pending the backpack and pouch purchase.</li>
 </ul>
@@ -536,6 +591,83 @@
 <li>Carved rune-message sticks (rúnakefli) from Bergen.</li>
 <li>Cistercian numerals as 13th-century monastic notation, if that option is taken up.</li>
 </ul>
+</div>
+</section>
+<section id="guide" class="view" hidden>
+<div class="eyebrow">Reference</div><h2>Design guide</h2>
+<p class="lede">The visual system this page already uses, written down so new content &mdash; stamp artwork, later props, future tabs &mdash; stays consistent with it. Nothing here is a new decision; it's what the page already does, made explicit.</p>
+
+<div class="designsection">
+<h2>Colour</h2>
+<p class="lede" style="font-size:15px">Core chrome first, then the two accent colours used for status and emphasis, then the four trail colours (also used for the stamp series above). Illustration-specific colours inside individual SVG diagrams aren't part of this system and are chosen per diagram.</p>
+<div class="swatchgrid">
+<div class="swatch"><div class="fill" style="background:#f3efe5"></div><div class="meta"><b>Page background</b><code>#f3efe5</code><span>Warm cream, used everywhere outside the header</span></div></div>
+<div class="swatch"><div class="fill" style="background:#193b35"></div><div class="meta"><b>Header / primary dark</b><code>#193b35</code><span>Header background; close relative of the nav-active green</span></div></div>
+<div class="swatch"><div class="fill" style="background:#254c40"></div><div class="meta"><b>Primary green</b><code>#254c40</code><span>Active nav, primary buttons, lock boxes, default pills</span></div></div>
+<div class="swatch"><div class="fill" style="background:#25372f"></div><div class="meta"><b>Body ink</b><code>#25372f</code><span>Default text colour</span></div></div>
+<div class="swatch"><div class="fill" style="background:#657065"></div><div class="meta"><b>Muted text</b><code>#657065</code><span>Captions, secondary copy, table headers</span></div></div>
+<div class="swatch"><div class="fill" style="background:#95602c"></div><div class="meta"><b>Eyebrow / amber-brown</b><code>#95602c</code><span>Section eyebrows, "test" status pill</span></div></div>
+<div class="swatch"><div class="fill" style="background:#b56a2a"></div><div class="meta"><b>Amber accent</b><code>#b56a2a</code><span>Notes, price colour on stamps, callout borders</span></div></div>
+<div class="swatch"><div class="fill" style="background:#a4472f"></div><div class="meta"><b>Rust / warning</b><code>#a4472f</code><span>Warnings, "open" status pill, anomaly-stamp colour</span></div></div>
+</div>
+<p style="margin-top:18px"><strong>Trail colours</strong> &mdash; one per route, reused everywhere a trail is identified: route maps, the postcard corpus worksheet, and now the stamp series.</p>
+<div class="swatchgrid">
+<div class="swatch"><div class="fill" style="background:#216580"></div><div class="meta"><b>Leif Erikson</b><code>#216580</code></div></div>
+<div class="swatch"><div class="fill" style="background:#a2562d"></div><div class="meta"><b>Rollo &amp; descendants</b><code>#a2562d</code></div></div>
+<div class="swatch"><div class="fill" style="background:#6d528b"></div><div class="meta"><b>Aud the Deep-Minded</b><code>#6d528b</code></div></div>
+<div class="swatch"><div class="fill" style="background:#467444"></div><div class="meta"><b>Harald Hardrada</b><code>#467444</code></div></div>
+</div>
+</div>
+
+<div class="designsection">
+<h2>Typography</h2>
+<div class="type-sample"><div class="label">Display &middot; Cinzel</div><div class="type-cinzel">The Raven Inheritance</div><p class="small muted" style="margin-top:8px">Headings only (<code>h1</code>, <code>h2</code>), the route digits and the trailhead numerals. A local file, loaded from <code>Fonts/Cinzel</code>. Carries the "museum label" formality.</p></div>
+<div class="type-sample"><div class="label">Body &amp; UI &middot; Segoe UI / Arial</div><div class="type-body">Buttons, navigation, running text, table content, eyebrows.</div><p class="small muted" style="margin-top:8px">The workhorse font for everything that isn't a heading, a quote, or a code.</p></div>
+<div class="type-sample"><div class="label">Quotes &amp; codes &middot; Georgia</div><div class="type-georgia">"I could use someone who notices what everyone else walks past."</div><p class="small muted" style="margin-top:8px">Blockquotes, lock codes (<code>.code</code>), the rune-symbol display, and postcard message copy. A warmer serif for anything meant to feel hand-written or old.</p></div>
+</div>
+
+<div class="designsection">
+<h2>Tone &amp; voice</h2>
+<p class="lede" style="font-size:15px">Carried over from the Props &amp; choices tab's presentation direction &mdash; restated here as writing guidance, not redecided.</p>
+<div class="grid">
+<div class="card"><h3>Playful mystery</h3><p>An adventurous aunt, dry museum humour, danger kept fictional and light. Avoid horror, solemn ritual, or dense historical exposition.</p></div>
+<div class="card"><h3>Clever, not childish</h3><p>Challenge comes from connecting evidence, handling objects and spotting patterns &mdash; not trivia, tiny print or obscure rune knowledge.</p></div>
+<div class="card"><h3>Mostly adults, also teens</h3><p>Assume no prior Norse knowledge. Clue wording stays direct even when the props carry the atmosphere.</p></div>
+<div class="card"><h3>Difficulty lever</h3><p>A notch harder than Hiking, via convergence &mdash; at least two codes needing three separate props &mdash; not obscurity.</p></div>
+</div>
+</div>
+
+<div class="designsection">
+<h2>Components</h2>
+<div class="card">
+<h3>Buttons &amp; navigation</h3>
+<div class="component-row"><button class="primary" type="button" disabled>Primary</button><button class="secondary" type="button" disabled>Secondary</button><button type="button" disabled aria-pressed="true">Nav &middot; active</button><button type="button" disabled aria-pressed="false">Nav &middot; inactive</button></div>
+<p class="small muted" style="margin-top:10px">Solid green for the primary action or the active nav tab; an outlined neutral button everywhere else. No third button style.</p>
+</div>
+<div class="card">
+<h3>Tags &amp; pills</h3>
+<div class="component-row"><span class="tag">Tag</span><span class="pill">Pill &middot; default</span><span class="pill open">Pill &middot; open</span><span class="pill test">Pill &middot; test</span></div>
+<p class="small muted" style="margin-top:10px"><strong>Tags</strong> label the whole page or a whole card (top of the header, "Decided" lists). <strong>Pills</strong> are Design-spec-tab only and carry status: green = done/default, rust = open question, brown = needs a test.</p>
+</div>
+<div class="card">
+<h3>Cards &amp; panels</h3>
+<p>The single reusable content container: cream-white fill, a thin warm-grey border, a soft corner radius, generous padding. Called <code>.panel</code> outside the Design spec tab and <code>.card</code> inside it &mdash; same look, scoped separately so the two tabs' styles can't leak into each other.</p>
+</div>
+<div class="card">
+<h3>Notes &amp; warnings</h3>
+<p>A left-border callout in place of an icon: amber border for a note worth flagging, rust border for something that actually blocks progress. Used sparingly &mdash; a page of warnings stops reading as a warning.</p>
+</div>
+<div class="card">
+<h3>Tables</h3>
+<p>Minimal ruled rows, no vertical lines, small-caps-style uppercase headers in muted grey. Used for any structured comparison (stamp series, container contents, route stops) rather than building one-off layouts.</p>
+</div>
+</div>
+
+<div class="designsection">
+<h2>Icons &amp; illustration</h2>
+<div class="icon-note"><span class="glyph">ᚱ</span><div><strong>No generic icon set.</strong> The page uses real Younger Futhark runes as decoration (the header's giant faint watermark, the rune-choice buttons) rather than a symbol library. It reinforces that the cipher is a real writing system, not a game icon.</div></div>
+<div class="icon-note"><span class="glyph" style="font-size:16px;color:#8a7d63">&#9679;</span><div><strong>Swatch dots</strong> (<code>.dot</code>/<code>.swatch</code>) are the only abstract icon in use, for legends: small, flat, colour-coded squares identifying a trail or a design channel at a glance &mdash; as seen in the postcard corpus worksheet and the colour swatches on this page.</div></div>
+<div class="icon-note"><span class="glyph" style="font-size:20px">&#9670;</span><div><strong>Hand-drawn line diagrams</strong> (the postcard-back map, the hnefatafl board, the branch-rune figures) share one muted parchment palette &mdash; <code>#f0e6cf</code> fill, <code>#a99a7b</code>/<code>#8a7d63</code> stroke &mdash; instead of being illustrated individually. New diagrams should reuse those two stroke tones rather than introducing new ones.</div></div>
 </div>
 </section>
 </main>
@@ -580,11 +712,39 @@ document.getElementById('boardreset').onclick=()=>{path=[[3,3]];finished=false;d
   });
 })();
 (function(){
+  var tagMeta={
+    Pr:{label:'price',color:'#b56a2a',letter:'Pr'},
+    Tx:{label:'extra text',color:'#2f5f8a',letter:'Tx'},
+    Ti:{label:'tilted stamp',color:'#8a4f9e',letter:'Ti'},
+    An:{label:'anomaly stamp',color:'#a4472f',letter:'An'}
+  };
   var trails=[
-    {name:'Leif Erikson',digit:'1',stops:['Helluland · Baffin Island','Markland · Labrador','L’Anse aux Meadows']},
-    {name:'Rollo &amp; descendants',digit:'9',stops:['Châlus','Rouen','Bayeux','Winchester','Battle','Roumare forest']},
-    {name:'Aud the Deep-Minded',digit:'7',stops:['Dögurðarnes','Hvammur','Esjuberg']},
-    {name:'Harald Hardrada',digit:'2',stops:['Oslo','Staraya Ladoga','Kyiv','Hedeby','Sicily','Asia Minor']}
+    {name:'Leif Erikson',digit:'1',stops:[
+      {name:'Helluland · Baffin Island',tags:['Tx']},
+      {name:'Markland · Labrador',tags:['Pr']},
+      {name:'L’Anse aux Meadows',tags:['Ti']}
+    ]},
+    {name:'Rollo &amp; descendants',digit:'9',stops:[
+      {name:'Châlus',tags:['An']},
+      {name:'Rouen',tags:['Tx']},
+      {name:'Bayeux',tags:['Ti']},
+      {name:'Winchester',tags:['Pr']},
+      {name:'Battle',tags:[]},
+      {name:'Roumare forest',tags:['Tx']}
+    ]},
+    {name:'Aud the Deep-Minded',digit:'7',stops:[
+      {name:'Dögurðarnes',tags:['Tx']},
+      {name:'Hvammur',tags:['An']},
+      {name:'Esjuberg',tags:['Pr']}
+    ]},
+    {name:'Harald Hardrada',digit:'2',stops:[
+      {name:'Oslo',tags:['Ti']},
+      {name:'Staraya Ladoga',tags:[]},
+      {name:'Kyiv',tags:['An','Pr']},
+      {name:'Hedeby',tags:['Tx']},
+      {name:'Sicily',tags:[]},
+      {name:'Asia Minor',tags:['Ti']}
+    ]}
   ];
   var host=document.getElementById('corpus');
   if(!host)return;
@@ -598,12 +758,19 @@ document.getElementById('boardreset').onclick=()=>{path=[[3,3]];finished=false;d
     g.className='corpus';
     t.stops.forEach(function(s){
       n++;
-      g.innerHTML+='<div class="pc"><b>'+String(n).padStart(2,'0')+' · '+s+'</b>'
+      var sparse=s.tags.map(function(tag){
+        var m=tagMeta[tag];
+        return '<i class="slot" style="background:'+m.color+'" title="'+m.label+'">'+m.letter+'</i>';
+      }).join('');
+      var quiet=s.tags.length===0;
+      g.innerHTML+='<div class="pc'+(quiet?' quiet':'')+'"><b>'+String(n).padStart(2,'0')+' · '+s.name+'</b>'
         +'<div class="slots">'
         +'<i class="slot" style="background:#254c40" title="series motif">S</i>'
         +'<i class="slot" style="background:#3d7a6a" title="postmark">P</i>'
-        +'<i class="slot tbd" title="sparse slot, unassigned">?</i>'
-        +'</div></div>';
+        +sparse
+        +'</div>'
+        +(quiet?'<span class="quiet-note">quiet card</span>':'')
+        +'</div>';
     });
     host.appendChild(g);
   });
