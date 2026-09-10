@@ -4,53 +4,62 @@ Last updated: 2026-09-10 by Claude Code
 
 ## Current Task and Status
 
-Norse postcard sparse-set assignment, the next content step flagged by the prior handoff. Two threads were live at session start (this Norse one, and an uncommitted, in-progress Aurora map recolor); the user was asked which to continue and chose Norse. The Aurora changes were left untouched.
+Norse postcard stamp design, continued across this session in two parts:
 
-Task: decide which of the 18 postcards carry a price, extra text, a tilted stamp and an anomaly stamp (the corpus worksheet in the Design spec tab), per the "Next steps, in order" list. This is a structural design decision — which card gets which channel — not the actual digits/letters/directions those channels will print, which stay open pending two lock conflicts (see Open Design Issues).
+1. Decided the four trail stamp motifs and colours, and wrote a ready-to-use illustration brief per trail for Codex (which will actually produce the stamp artwork — not done here).
+2. Started deciding the two remaining anomaly-card wrong-trail motifs (Châlus, Hvammur), but **parked that** at the user's request: it surfaced a real tension in the corpus design (see Open Design Issues) that needs a separate decision first.
+
+Also folded in: this session's sparse-set assignment (previous handoff) is committed and pushed. A process note from the user, now in memory: for creative/design decisions with real degrees of freedom, propose in chat and get input before writing to the file — don't just execute because a step is named "next" in this doc. Both pieces of work in this session followed that (motifs/colours/briefs were proposed and confirmed before being written in).
 
 ## Files Changed
 
-- `NorseBackpack/Norse_Brainstorm.html` — in the Design spec tab:
-  - The corpus-rendering script (bottom `<script>` block) now carries a `tags` array per postcard instead of a generic unassigned slot, plus a `tagMeta` color/label map for the four sparse channels.
-  - The "18 cards" card's legend, lede and worksheet now show the real assignment, plus a paragraph explaining the reasoning (see Decisions).
-  - Added `.pc.quiet` / `.quiet-note` CSS, scoped under `#design`, for the three cards that carry no sparse element.
-  - "Next steps, in order" step 1 marked done, with a note that only the card→channel mapping is decided, not the printed values.
-  - "Still open" (Design spec tab) and "Still open" (Props & choices tab) updated: removed the now-resolved "which cards are active" items, added the two lock conflicts (tilted-stamp vs. hnefatafl both feeding a directional lock; HRAFN vs. cryptex) and a note that anomaly wrong-trail motifs are fixed only for Kyiv so far.
+- `NorseBackpack/Norse_Brainstorm.html` — in the Design spec tab, inside "The postcard system":
+  - New "The four stamp series" table: motif + trail colour (reusing the existing route-map colours) + rationale for each of the four trails.
+  - New "Wrong-trail variants for the anomaly cards" table: Kyiv decided (shows Leif's longship); Châlus and Hvammur marked **Parked**, with a note explaining why (depends on the card-density question below) and that it doesn't block stamp artwork.
+  - New "Illustration brief for Codex" card: one shared style spec (engraved single-colour line art, cross-hatched shading, cream paper, plain perforated border, no text/denomination yet) plus one ready-to-paste Codex prompt per trail.
+  - "Next steps, in order" step 2 updated to "Ready for Codex".
+  - (From earlier in this session, already committed as `24e9a7f`): the full sparse-set assignment worksheet and the new Design guide tab (colour/typography/tone/components/icons reference).
 - `HANDOFF.md` — this handover.
 
-No other file was modified. The uncommitted Aurora changes (`Station_Aurora_Map_Base.png`, `Station_Aurora_Vector.svg`, `convert_dxf_to_svg.py`, `Station_Map.html`, and the Aurora paragraph in `AGENTS.md`) were left alone and are not part of this session's work.
+No other file was touched this session. The uncommitted Aurora changes (`Station_Aurora_Map_Base.png`, `Station_Aurora_Vector.svg`, `convert_dxf_to_svg.py`, `Station_Map.html`, and the Aurora paragraph in `AGENTS.md`) remain exactly as found — still a separate, in-progress thread the user chose not to continue this session.
 
 ## Decisions
 
-The 18-card assignment (card numbers per the trail order already in the page):
+**Stamp series (motif + colour), all decided:**
 
-- **Price (4, feeds a 4-digit lock):** 02 Markland, 07 Winchester, 12 Esjuberg, 15 Kyiv.
-- **Extra text (5, feeds a word lock):** 01 Helluland, 05 Rouen, 09 Roumare forest, 10 Dögurðarnes, 16 Hedeby.
-- **Tilted stamp (4, feeds a directional lock):** 03 L'Anse aux Meadows, 06 Bayeux, 13 Oslo, 18 Asia Minor.
-- **Anomaly stamp (3, selector only):** 04 Châlus, 11 Hvammur, 15 Kyiv (wrong motif = Leif's ship series, matching the doc's own worked example).
-- **Quiet (3, no sparse element):** 08 Battle, 14 Staraya Ladoga, 17 Sicily.
+| Trail | Colour | Motif |
+|---|---|---|
+| Leif Erikson | `#216580` | Longship |
+| Rollo & descendants | `#a2562d` | The Bayeux comet (Halley's Comet as shown in the tapestry) |
+| Aud the Deep-Minded | `#6d528b` | High-seat pillars (öndvegissúlur) |
+| Harald Hardrada | `#467444` | A labrys (double-headed axe) — deliberately not his historical raven banner, to avoid competing with the game's own raven/HRAFN emblem |
 
-Reasoning: Leif's trail (the three cards already built) was given one card of each *data*-bearing channel (price, text, tilt) so the already-printed trail teaches all three before players meet the rest — but no anomaly card, since Leif's own ship motif is the one borrowed to mislabel Kyiv, keeping the "true" series clean everywhere it actually belongs. Kyiv is the one deliberate double-duty card (price + anomaly), placed where the anomaly already draws attention, per the design doc's own "overlap belongs on the last postcard puzzle" guidance and its own Kyiv/ship-anomaly example. The two 3-stop trails (Leif, Aud) have no spare card and so are fully loaded; the two 6-stop trails (Rollo, Harald) each keep a couple of genuinely quiet cards.
+Illustration style, all four: engraved-line, single ink colour (the trail colour) on cream paper, fine cross-hatched shading, plain perforated border, no text/denomination/date yet. Full Codex prompt text is in the file.
 
-This assignment surfaced (and is recorded, not resolved) two real conflicts the sparse-channel design creates: (1) the tilted-stamp channel and the hnefatafl board both produce a directional lock — either the corpus needs a second one, or tilt should feed something else; (2) only Kyiv's anomaly wrong-motif is decided — Châlus and Hvammur still need one assigned.
+**Anomaly wrong-trail motifs:** Kyiv only (shows Leif's ship, per the design doc's own worked example). Châlus and Hvammur intentionally left undecided — parked, not forgotten.
 
 ## Checks
 
-- Opened `Norse_Brainstorm.html` in the browser, navigated to the Design spec tab.
-- Verified via `document.querySelectorAll` that the corpus renders exactly 18 cards with the correct per-category counts (price 4, extra text 5, tilted stamp 4, anomaly stamp 3, quiet 3) and that series motif/postmark still show on all 18.
-- Confirmed CSS scoping held: after the edit, the Prototype & tests tab's pre-existing `.runes` element still computes 35px/block/7px letter-spacing, unchanged.
-- No print test, no prop built — unchanged from before, this session touched only the corpus worksheet's data and surrounding text.
+- Opened `Norse_Brainstorm.html` in the browser after each edit; confirmed via `document.body.textContent` / `querySelectorAll` that the new tables and the Codex-brief card render with the expected content, and that the Design spec tab still shows correctly.
+- Confirmed (from the sparse-set-assignment work earlier this session) that new CSS stayed scoped and didn't leak into other tabs; no new CSS was added in this stamp-brief pass, only table/card content, so no re-check needed.
+- No image has been generated yet — the brief is untested against an actual Codex output. First real check is generating one motif and confirming legibility at true stamp size (~20×24 mm), as noted in the file itself.
 
 ## Next Action
 
-Per the (now-updated) "Next steps, in order" list in the Design spec tab: **design the four stamp series** — one motif family per trail (a ship series for Leif, a Byzantine series for Harald, etc.), distinct enough to read at a glance across 18 cards on a table, plus the wrong-trail variant needed for each of the three anomaly cards (Kyiv's is fixed as Leif's ship motif; Châlus and Hvammur still need theirs chosen as part of this step).
+Two independent next steps, neither blocking the other:
+
+1. **Take the four Codex prompts (Design spec tab → "Illustration brief for Codex") into Codex**, generate one motif per trail, and sanity-check legibility at true stamp size before producing all 18 cards' stamps from them.
+2. **Resolve the card-density question** this session surfaced: the sparse-channel assignment currently loads 15 of 18 cards with at least one marker, which conflicts with the original "five or six active cards" decision and dilutes the anomaly stamp's job as a "look here" signal (see Open Design Issues). Deciding this unblocks the Châlus/Hvammur anomaly motifs and probably also affects whether the current price/text/tilt card assignment (from the previous session) should be revisited.
+
+After either of those: re-render the three existing postcard fronts at true size, write the aunt's letters, solve the hnefatafl board — the rest of the "Next steps, in order" list in the Design spec tab is unchanged.
 
 ## Open Design Issues
 
-- The tilted-stamp postcard set and the hnefatafl escape both now feed a directional lock. Needs a second directional lock in the design, or one of the two reassigned to a different lock type.
+- **Card density vs. the anomaly signal (new this session, unresolved).** 15 of 18 cards carry a sparse marker under the current assignment, which conflicts with the "five or six active" decision and weakens the anomaly stamp's job (it's meant to flag which few cards matter, but almost all of them already do). Needs a decision: scale back the sparse assignment, or accept the anomaly stamps as "look here first" rather than "the only ones that matter."
+- Anomaly wrong-trail motifs for Châlus and Hvammur — parked, depends on the above.
+- The tilted-stamp postcard set and the hnefatafl escape both feed a directional lock; needs a second lock or a reassignment.
 - HRAFN is assigned to the five-letter lock but also fits a five-ring cryptex; only one of the two can have it.
-- Anomaly wrong-trail motifs: Kyiv is decided (Leif's ship series). Châlus and Hvammur are not yet assigned a wrong series — that's part of the next step (stamp series design).
-- The actual digits, letters and directions carried by the price, extra-text and tilted-stamp cards are unassigned — deliberately, since they depend on the two lock conflicts above.
+- The actual digits, letters and directions the price/text/tilt cards carry are unassigned, pending the two lock conflicts above.
 - The 18-card postcard set needs its artwork re-rendered, not rescaled (1536×1024 current vs. 1500×1050 target at true print size). `SIZE`/`PAGE` in `Postcards/build_postcard_collection.py` must change together.
 - The hnefatafl board layout (a provably unique four-move escape) has not been generated.
 - The final map mechanic (pins/cord vs. overlay) is undecided by choice; needs prototyping at print size.
@@ -61,4 +70,4 @@ Per the (now-updated) "Next steps, in order" list in the Design spec tab: **desi
 
 ## Aurora note (not this session's work, left as found)
 
-There are uncommitted changes recoloring `Space Station Aurora/Station_Map.html` (and its SVG/PNG/converter script) to a blue-compartments/amber-external/grey-structural scheme, matching a new paragraph added to `AGENTS.md`. That work was in progress before this session and was deliberately not touched — the user chose to continue the Norse thread instead. It's still sitting unstaged in `git status` and may not be finished (not verified this session).
+Uncommitted changes recolor `Space Station Aurora/Station_Map.html` (plus its SVG/PNG/converter script) to a blue-compartments/amber-external/grey-structural scheme, matching a paragraph already added to `AGENTS.md`. That was in progress before this session and remains untouched and unverified — still sitting unstaged in `git status`.
