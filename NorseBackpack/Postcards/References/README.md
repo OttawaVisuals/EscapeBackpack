@@ -15,6 +15,26 @@ Search Wikimedia Commons first. Check each file page individually and prefer, in
 
 The derived illustration and postcard design must be shared under CC BY-SA 3.0 or a compatible license. Credit the photographer and state that the source was adapted.
 
+## Baffin Island source photograph
+
+- Title: *Grinnell Glacier Bergie Bits, Baffin Island (30587389848)*
+- Photographer: Gregory "Slobirdr" Smith
+- Source: <https://commons.wikimedia.org/wiki/File:Grinnell_Glacier_Bergie_Bits,_Baffin_Island_(30587389848).jpg>
+- License: [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/)
+- Local source: `Baffin_Island_Grinnell_Glacier_Source.jpg`
+- Change: cropped and adapted into a simplified screen-print-style illustration for Postcard 02.
+
+The derived illustration and postcard design must be shared under CC BY-SA 2.0 or a compatible license.
+
+## Battle Harbour source photograph
+
+- Title: *Battle Harbour - MacGillivray*
+- Photographer: Matt MacGillivray
+- Source: <https://commons.wikimedia.org/wiki/File:Battle_Harbour_-_MacGillivray.jpg>
+- License: [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/)
+- Local source: `Battle_Harbour_MacGillivray_Source.jpg`
+- Change: cropped and adapted into a simplified screen-print-style illustration for Postcard 03.
+
 The website uses `Postcard_01_LAnse_Front.png` and `Postcard_01_LAnse_Back.png`, rendered directly from the individual print PDF so the online preview matches the printable artifact.
 
 ## Visual direction
