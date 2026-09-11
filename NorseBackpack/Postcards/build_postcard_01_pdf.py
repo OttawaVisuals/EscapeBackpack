@@ -23,6 +23,7 @@ NAVY = HexColor("#12343C")
 TEAL = HexColor("#2F7775")
 RULE = HexColor("#A99A7B")
 INK = HexColor("#283B34")
+FUNFACT = HexColor("#B56A2A")
 
 pdfmetrics.registerFont(TTFont("CinzelExtraBold", str(FONT_DIR / "Cinzel" / "static" / "Cinzel-ExtraBold.ttf")))
 pdfmetrics.registerFont(TTFont("NothingYouCouldDo", str(FONT_DIR / "Nothing_You_Could_Do" / "NothingYouCouldDo-Regular.ttf")))
@@ -131,13 +132,19 @@ def draw_back_card(c, x=0, y=0):
     for offset in (-7, -2, 3, 8):
         c.line(postmark_x + 23, postmark_y + offset, right, postmark_y + offset)
 
+    # Address — shrunk to make room for the Fun Fact block below it.
     address_x = divider + 17
-    address_y = H - 126
+    box_right = right + 5
+    c.setStrokeColor(RULE)
+    c.setLineWidth(0.6)
+    c.rect(divider + 11, 81, box_right - (divider + 11), 66, fill=0, stroke=1)
+
+    address_y = H - 124
     c.setFillColor(HexColor("#59635D"))
     c.setFont("Helvetica-Bold", 5.2)
-    c.drawString(address_x, address_y + 13, "TO")
+    c.drawString(address_x, address_y + 12, "TO")
     c.setFillColor(INK)
-    c.setFont("NothingYouCouldDo", 9.2)
+    c.setFont("NothingYouCouldDo", 8)
     address_lines = [
         "John Ericson",
         "24 Longship Way",
@@ -145,11 +152,33 @@ def draw_back_card(c, x=0, y=0):
         "Canada",
     ]
     for index, line in enumerate(address_lines):
-        line_y = address_y - index * 19
+        line_y = address_y - index * 13
         c.drawString(address_x, line_y, line)
         c.setStrokeColor(HexColor("#C0B291"))
-        c.setLineWidth(0.45)
-        c.line(address_x, line_y - 4, right, line_y - 4)
+        c.setLineWidth(0.4)
+        c.line(address_x, line_y - 3, right, line_y - 3)
+
+    # Fun Fact — typed, real trivia, stacked under the address.
+    funfact_top, funfact_bottom = 76, 28
+    c.setStrokeColor(FUNFACT)
+    c.setLineWidth(0.6)
+    c.rect(divider + 11, funfact_bottom, box_right - (divider + 11), funfact_top - funfact_bottom, fill=0, stroke=1)
+    c.setFillColor(FUNFACT)
+    c.setFont("Helvetica-Bold", 6)
+    c.drawString(address_x, funfact_top - 9, "FUN FACT")
+    c.setFillColor(INK)
+    fact_font, fact_size, fact_leading = "Helvetica", 5, 5.8
+    fact_text = (
+        "L'Anse aux Meadows turned up butternuts and worked butternut wood, though "
+        "the nearest wild butternut trees grow hundreds of kilometres south, near "
+        "the St. Lawrence. Read as evidence its people ranged well beyond it, into "
+        "the wider “Vinland” the sagas describe."
+    )
+    fact_y = funfact_top - 20
+    for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):
+        c.setFont(fact_font, fact_size)
+        c.drawString(address_x, fact_y, line)
+        fact_y -= fact_leading
 
     credit_top = 16
     c.setStrokeColor(RULE)
