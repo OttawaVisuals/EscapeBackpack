@@ -9,7 +9,7 @@
     :root{
       color-scheme:dark;
       --ink:#e8f4f6;--muted:#92aeb7;--panel:#0b1b27;--panel-2:#102735;
-      --line:#284352;--cyan:#53d5e4;--orange:#ff8a3d;--gold:#efd057;--red:#ff5b55;
+      --line:#284352;--cyan:#53d5e4;
       font-family:"Segoe UI",Arial,sans-serif
     }
     *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#06121b;color:var(--ink)}
@@ -32,7 +32,7 @@
     .map-label{font:700 11px/1 "Segoe UI",Arial,sans-serif;fill:#06212d;stroke:#fff;stroke-width:3px;paint-order:stroke;pointer-events:none;text-anchor:middle}.labels-hidden .map-label{display:none}
     .inspector{padding:20px;display:flex;flex-direction:column;gap:18px}.inspector h2{font-size:24px;line-height:1.15;margin:0}.inspector p{margin:0}.meta{color:var(--muted);font-size:14px}.status{display:inline-flex;align-items:center;gap:8px;width:max-content;color:#bfeaf0;background:#0d2a37;border:1px solid #285466;border-radius:99px;padding:5px 10px;font-size:13px;font-weight:700}.status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
     .readout{display:grid;gap:10px;padding-top:16px;border-top:1px solid var(--line)}.readout div{display:grid;grid-template-columns:82px 1fr;gap:10px}.readout dt{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.08em}.readout dd{margin:0;font-weight:650}
-    .legend{margin-top:auto;padding-top:17px;border-top:1px solid var(--line)}.legend h3{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 10px}.legend-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px}.legend-grid span{display:flex;align-items:center;gap:7px}.swatch{width:11px;height:11px;border-radius:2px;background:var(--cyan)}.swatch.orange{background:var(--orange)}.swatch.red{background:var(--red)}.swatch.gold{background:var(--gold)}
+    .legend{margin-top:auto;padding-top:17px;border-top:1px solid var(--line)}.legend h3{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 10px}.legend-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px}.legend-grid span{display:flex;align-items:center;gap:7px}.swatch{width:11px;height:11px;border-radius:2px;background:#289bc8}.swatch.external{background:#c88a18}
     .hint{padding:10px 12px;border-left:3px solid var(--cyan);background:#0d2532;color:#b7cbd1;font-size:14px}
     @media(max-width:860px){main{grid-template-columns:1fr}.map-frame,#station-map{min-height:390px}.inspector{min-height:260px}.legend{margin-top:0}}
     @media(max-width:520px){header{align-items:flex-start}.back{font-size:0}.back::after{content:"Index";font-size:14px}.map-frame,#station-map{min-height:330px}.toolbar{align-items:flex-start}.toolbar-group:first-child{width:100%}.tool{min-height:44px}.inspector{padding:17px}}
@@ -99,7 +99,7 @@
         <p class="hint" id="module-note">This map identifies physical modules only. Puzzle states and damage locations have not been assigned.</p>
         <div class="legend">
           <h3>Blueprint layers</h3>
-          <div class="legend-grid"><span><i class="swatch"></i>Station modules</span><span><i class="swatch orange"></i>Shuttles</span><span><i class="swatch red"></i>Propulsion</span><span><i class="swatch gold"></i>Solar arrays</span></div>
+          <div class="legend-grid"><span><i class="swatch"></i>Compartments</span><span><i class="swatch external"></i>External systems</span></div>
         </div>
       </aside>
     </main>

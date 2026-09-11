@@ -17,25 +17,25 @@ HERE = Path(__file__).resolve().parent
 SOURCE = HERE / "SpaceStationAurora.dxf"
 OUTPUT = HERE / "Station_Aurora_Vector.svg"
 SVG_WIDTH = 792
+EXCLUDED_LAYERS = {"Z.Box"}  # Construction grid; keep it in the DXF, omit it from the map.
 
 LAYER_COLORS = {
-    "0": "#a9c6d3",
-    "A.Engines": "#ff6b58",
-    "C.Bridge": "#70d8ff",
-    "D.Science": "#70d8ff",
-    "E.Hydroponics": "#69d6b0",
-    "E2.Hydroponics Outlines": "#69d6b0",
-    "F.Hub": "#d9edf4",
-    "G.Crew Quarter": "#8ecbff",
-    "H.Kitchen": "#8ecbff",
-    "I.Storage": "#c4d5dc",
-    "J.Engineering": "#ffad66",
-    "K.Power": "#ff6b58",
-    "L.Shuttles": "#ffad66",
-    "L1.Shuttle Outlines": "#ffad66",
-    "M.Radiators": "#789eff",
-    "N.SolarArrays": "#e5c85c",
-    "Z.Box": "#d5e0e4",
+    "0": "#9fb4bd",
+    "A.Engines": "#c88a18",
+    "C.Bridge": "#289bc8",
+    "D.Science": "#289bc8",
+    "E.Hydroponics": "#289bc8",
+    "E2.Hydroponics Outlines": "#289bc8",
+    "F.Hub": "#289bc8",
+    "G.Crew Quarter": "#289bc8",
+    "H.Kitchen": "#289bc8",
+    "I.Storage": "#289bc8",
+    "J.Engineering": "#289bc8",
+    "K.Power": "#289bc8",
+    "L.Shuttles": "#c88a18",
+    "L1.Shuttle Outlines": "#c88a18",
+    "M.Radiators": "#c88a18",
+    "N.SolarArrays": "#c88a18",
 }
 
 
@@ -63,6 +63,8 @@ def main() -> None:
     groups = []
     for layer in document.layers:
         name = layer.dxf.name
+        if name in EXCLUDED_LAYERS:
+            continue
         entities = [entity for entity in modelspace if entity.dxf.layer == name]
         commands = []
         for entity in entities:
