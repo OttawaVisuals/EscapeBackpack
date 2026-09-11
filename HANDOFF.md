@@ -1,82 +1,76 @@
 # Project Handoff
 
-Last updated: 2026-09-10 by Codex
+Last updated: 2026-09-11 by Claude Code
+
+> Session continuity only. Open design questions are **not** tracked here — they live in the
+> Open questions tab of `NorseBackpack/Norse_Brainstorm.html`, each with a stable ID.
+> See "Where Design State Lives" in `AGENTS.md`.
 
 ## Current Task and Status
 
-Norse postcard stamp design, continued across two sessions:
+**Session scope:** review the Norse backpack as a whole (the user's prompt asked for it explicitly — this is not the usual one-piece-per-session mode), then fold the agreed direction into the project page and the shared agent docs.
 
-1. Decided the four trail stamp motifs and colours, and wrote a ready-to-use illustration brief per trail for Codex (which will actually produce the stamp artwork — not done here).
-2. Started deciding the two remaining anomaly-card wrong-trail motifs (Châlus, Hvammur), but **parked that** at the user's request: it surfaced a real tension in the corpus design (see Open Design Issues) that needs a separate decision first.
+Done:
 
-Codex then generated three Leif route stamp options using the agreed longship motif and blue `#216580` ink. The user selected C, the compact icon-like broadside with minimal waves. Codex used it as the style reference for the other three route stamps and saved the complete four-stamp v1 set under `NorseBackpack/Postcards/Stamps/`. The images share a cream paper ground, plain perforated edge, single trail-colour ink and simplified engraved linework; Harald retains the previously agreed inner Byzantine meander frame. All four are now displayed in a responsive gallery in the Design spec tab of `Norse_Brainstorm.html`, and the stamp-series step is marked done pending the physical print test.
-
-Also folded in: this session's sparse-set assignment (previous handoff) is committed and pushed. A process note from the user, now in memory: for creative/design decisions with real degrees of freedom, propose in chat and get input before writing to the file — don't just execute because a step is named "next" in this doc. Both pieces of work in this session followed that (motifs/colours/briefs were proposed and confirmed before being written in).
-
-## Files Changed
-
-- `NorseBackpack/Norse_Brainstorm.html` — in the Design spec tab, inside "The postcard system":
-  - New "The four stamp series" table: motif + trail colour (reusing the existing route-map colours) + rationale for each of the four trails.
-  - New "Wrong-trail variants for the anomaly cards" table: Kyiv decided (shows Leif's longship); Châlus and Hvammur marked **Parked**, with a note explaining why (depends on the card-density question below) and that it doesn't block stamp artwork.
-  - New "Illustration brief for Codex" card: one shared style spec (engraved single-colour line art, cross-hatched shading, cream paper, plain perforated border, no text/denomination yet) plus one ready-to-paste Codex prompt per trail.
-  - Added the four selected stamp images in a responsive gallery below the motif table, with descriptive alternative text and route-colour captions.
-  - Reframed the prompt card as the brief used for the first pass and marked "Next steps, in order" step 2 as done, with the true-size print test still required.
-  - (From earlier in this session, already committed as `24e9a7f`): the full sparse-set assignment worksheet and the new Design guide tab (colour/typography/tone/components/icons reference).
-- `NorseBackpack/Postcards/Stamps/Stamp_Leif_Longship_v1.png` — selected compact longship stamp.
-- `NorseBackpack/Postcards/Stamps/Stamp_Rollo_Comet_v1.png` — comet and two pointing figures.
-- `NorseBackpack/Postcards/Stamps/Stamp_Aud_Pillars_v1.png` — paired carved high-seat pillars.
-- `NorseBackpack/Postcards/Stamps/Stamp_Harald_Labrys_v1.png` — labrys with Byzantine meander frame.
-- `HANDOFF.md` — this handover.
-
-No other file was touched this session. The uncommitted Aurora changes (`Station_Aurora_Map_Base.png`, `Station_Aurora_Vector.svg`, `convert_dxf_to_svg.py`, `Station_Map.html`, and the Aurora paragraph in `AGENTS.md`) remain exactly as found — still a separate, in-progress thread the user chose not to continue this session.
+1. Reviewed the eight existing tabs of `Norse_Brainstorm.html`, `HANDOFF.md`, `AGENTS.md`, the route-plan JSON, the build scripts and the commit history. Looked at all four stamps and the three postcards at full size. Re-ran an exhaustive search over the hnefatafl blocker layout.
+2. Proposed a review and a postcard architecture in chat first, per the propose-before-editing rule. The user made four decisions during that discussion, then corrected the direction once — the first postcard proposal used abstract data channels (a digit on every denomination, a letter in every imprint), which was rejected in favour of cards that carry real trivia and clues in their own voice.
+3. Rewrote the Story & sequence tab: deliberately incomplete, with only the two settled anchors.
+4. Added three tabs — **Postcard system**, **Open questions**, **Options** — bringing the page to eleven tabs.
+5. Removed the container structure everywhere: the packing table, the codes in the puzzle entries, and the container names in rewards and reset notes.
+6. Reconciled the Design spec tab with the new direction (27 targeted edits) so no superseded model is still asserted as current.
+7. Added the session-working rules and the Norse design invariants to `AGENTS.md`.
 
 ## Decisions
 
-**Stamp series (motif + colour), all decided:**
+Taken with the user this session:
 
-| Trail | Colour | Motif |
-|---|---|---|
-| Leif Erikson | `#216580` | Longship |
-| Rollo & descendants | `#a2562d` | The Bayeux comet (Halley's Comet as shown in the tapestry) |
-| Aud the Deep-Minded | `#6d528b` | High-seat pillars (öndvegissúlur) |
-| Harald Hardrada | `#467444` | A labrys (double-headed axe) — deliberately not his historical raven banner, to avoid competing with the game's own raven/HRAFN emblem |
+| # | Decision |
+|---|---|
+| 1 | **The postcards are the main mechanic.** Everything else in the bag is an instrument that acts on them. |
+| 2 | **All 18 cards are active** — each does a job besides the final ordering. Supersedes "five or six active, the rest quiet". |
+| 3 | **Containers are unfrozen.** The six named containers and their codes are removed; they get decided once the puzzles exist. |
+| 4 | **Cards arrive a few at a time** (two or three per opening), not front-loaded and not strictly one per stage. |
+| 5 | **Opening puzzle rewritten.** Two luggage tags on the bag, two stand-out digits each. Postcard 01 names L'Anse aux Meadows; the tag showing that place reads first. Supersedes the `0734` postmark-plus-circled-34 mechanism. |
+| 6 | **Final puzzle:** four printed maps, one per trail, plus all 18 cards. Drawing each trail's legs in order gives the four digits (candidate `1972`). |
+| 7 | **Dates are interleaved** across trails, so the endgame needs splitting by stamp before ordering by date. |
+| 8 | **Anomaly stamps dropped**, and the tilted-stamp channel with them. |
+| 9 | **Two stamps to be redrawn** on historical grounds: Harald's labrys → a Dane axe; Aud's high-seat pillars → a comb. |
+| 10 | Each card carries **two voices** — a printed publisher's caption (real trivia, and where numbers hide) and her handwriting (voice, tasks, and the selection and ordering rules). |
 
-Illustration style, all four: engraved-line, single ink colour (the trail colour) on cream paper, fine cross-hatched shading, plain perforated border, no text/denomination/date yet. Full Codex prompt text is in the file.
+## Files Changed
 
-**Anomaly wrong-trail motifs:** Kyiv only (shows Leif's ship, per the design doc's own worked example). Châlus and Hvammur intentionally left undecided — parked, not forgotten.
+- `NorseBackpack/Norse_Brainstorm.html` — 120 KB → 166 KB.
+  - Nav: three new tabs; eleven total.
+  - **Story & sequence** rewritten: premise, the two settled anchors, an explicit note that the middle and the containers are open. Packing table gone.
+  - **Postcard system** (new): the three jobs, the two-voice card with an annotated diagram, the seven card verbs, the continuation-set worked example, the six-family coverage matrix over all 18 cards, the interleaved-dates figure, and what carries over unchanged.
+  - **Open questions** (new): 33 entries across ST / PC / PZ / PR / HI with status pills.
+  - **Options** (new): candidate middle puzzles, card mechanics (in use / available / dropped), lock and opening types, endings.
+  - **Puzzle details**: `puzzles` array rewritten — a `status` field added, the opening puzzle replaced, and every container name and intermediate code removed.
+  - **Props & choices**: Decided list rewritten, Still-open list replaced by a pointer to the register, packing table replaced by a "Containers and release — not decided, on purpose" note, luggage-tag and scale entries updated.
+  - **Design spec**: sparse-channel model, anomaly mechanic, 18-card worksheet and wrong-trail variants replaced by a short superseded note; stamp table, gallery captions and illustration briefs updated for the Dane axe and the comb; redirect clues 1 and 2 updated; Next steps rewritten; Unresolved list replaced by a pointer.
+  - Script: the corpus-worksheet generator removed (its `#corpus` host is gone).
+- `AGENTS.md` — 4.2 KB → 9.0 KB. New sections: How These Sessions Work, Where Design State Lives, Agent Roles, and Norse Backpack design invariants. The HTML validation rule now says a visual browser check is possible and expected.
+- `HANDOFF.md` — this file, reduced to session continuity.
+
+Not touched: the postcard PDFs and PNGs, the build scripts, the stamp artwork, the travel-map files, and the uncommitted Aurora changes.
 
 ## Checks
 
-- Opened `Norse_Brainstorm.html` in the browser after each edit; confirmed via `document.body.textContent` / `querySelectorAll` that the new tables and the Codex-brief card render with the expected content, and that the Design spec tab still shows correctly.
-- Confirmed (from the sparse-set-assignment work earlier this session) that new CSS stayed scoped and didn't leak into other tabs; no new CSS was added in this stamp-brief pass, only table/card content, so no re-check needed.
-- The four saved v1 PNGs were visually inspected at full generated size. Each is 1145 × 1374 px with consistent portrait proportions and intact cropping/perforations. A true-size 20×24 mm print test has not yet been run.
-- Static HTML checks found four stamp cards, four stamp image references, responsive rules for desktop/tablet/mobile, balanced CSS braces, and no missing local images among all ten image references on the page.
-- Browser visual validation could not be run because the available browser automation blocks local `file://` pages. The gallery layout therefore still needs a quick manual browser check after opening `Norse_Brainstorm.html` locally.
+- Element balance after all edits: 632 `<div>` / 632 `</div>`, 11 `<section>` / 11 `</section>`, 16 `<figure>`, 10 `<svg>`, 8 `<table>`, 6 `<style>` — all paired.
+- All eleven `data-view` buttons resolve to an existing section; no orphans.
+- Grepped for every removed concept (`RAVEN pouch`, `CROWN pouch`, `WELL pouch`, `archive case`, `0734`, `main compartment`, `sparse`, `anomaly stamp`, `tilted stamp`). Every surviving mention is either an explicit "this was removed / is superseded" note or a genuine reference to the physical backpack. Two stale ones found and fixed: a hint-ladder example naming the archive case, and a parked-idea note that depended on the anomaly channel.
+- **Visual check done in the browser**, which previous handoffs recorded as impossible. Confirmed rendering of the rewritten Story tab, the journey steps with their new status line, the Postcard system tab (all four SVG figures, the voices panel, the coverage matrix), the Open questions register and the Options tab. Figure geometry read back from the DOM to confirm the SVGs size correctly (649 × 193–286 px inside 695 px cards).
+- Hnefatafl escape counts re-derived by exhaustive search over the layout in the page: **exactly three moves has one solution** (D4 → F4 → F7 → G7); **exactly four moves has six**. Recorded in the page as `PZ-01`.
+- Not run: any print test, the red-filter test, or a source check of the historical claims. The history findings in this session were checked against general knowledge only — `HI-05` still stands.
 
 ## Next Action
 
-Two independent next steps, neither blocking the other:
+Build the **continuation set** on paper: four postcards, one sentence running across the seams, scissors. It proves the format, and if it does not feel good in the hand the rest of the postcard system is not worth building. Cards proposed: Markland, Bayeux, Esjuberg, Sicily — one per trail, spelling `WEIGH WHAT SHE TRADED`.
 
-1. **Run a true-size 20×24 mm print test of the four v1 stamps.** Check that the Rollo figures and Aud pillar carvings remain readable, and decide whether Harald's inner meander frame makes the set feel inconsistent before integrating the stamps into postcard layouts.
-2. **Resolve the card-density question** this session surfaced: the sparse-channel assignment currently loads 15 of 18 cards with at least one marker, which conflicts with the original "five or six active cards" decision and dilutes the anomaly stamp's job as a "look here" signal (see Open Design Issues). Deciding this unblocks the Châlus/Hvammur anomaly motifs and probably also affects whether the current price/text/tilt card assignment (from the previous session) should be revisited.
+After that, in order: write card 01 properly (caption + corrected message + her voice) as the template for the other seventeen; settle the date span (`PC-03`) and assign all eighteen dates (`PC-04`); solve family D's missing selection rule (`PC-05`).
 
-After either of those: re-render the three existing postcard fronts at true size, write the aunt's letters, solve the hnefatafl board — the rest of the "Next steps, in order" list in the Design spec tab is unchanged.
+## Blockers and Notes
 
-## Open Design Issues
-
-- **Card density vs. the anomaly signal (new this session, unresolved).** 15 of 18 cards carry a sparse marker under the current assignment, which conflicts with the "five or six active" decision and weakens the anomaly stamp's job (it's meant to flag which few cards matter, but almost all of them already do). Needs a decision: scale back the sparse assignment, or accept the anomaly stamps as "look here first" rather than "the only ones that matter."
-- Anomaly wrong-trail motifs for Châlus and Hvammur — parked, depends on the above.
-- The tilted-stamp postcard set and the hnefatafl escape both feed a directional lock; needs a second lock or a reassignment.
-- HRAFN is assigned to the five-letter lock but also fits a five-ring cryptex; only one of the two can have it.
-- The actual digits, letters and directions the price/text/tilt cards carry are unassigned, pending the two lock conflicts above.
-- The 18-card postcard set needs its artwork re-rendered, not rescaled (1536×1024 current vs. 1500×1050 target at true print size). `SIZE`/`PAGE` in `Postcards/build_postcard_collection.py` must change together.
-- The hnefatafl board layout (a provably unique four-move escape) has not been generated.
-- The final map mechanic (pins/cord vs. overlay) is undecided by choice; needs prototyping at print size.
-- The red filter needs a home-printer colour test.
-- The wording of the three redirect clues is unwritten.
-- Every historical claim in the Design spec tab needs source-checking before it reaches a prop.
-- Carried over from earlier sessions: postcards 02 and 03 still need their message and travel date; the main compartment's opening mechanism and answer are still undecided.
-
-## Aurora note (not this session's work, left as found)
-
-Uncommitted changes recolor `Space Station Aurora/Station_Map.html` (plus its SVG/PNG/converter script) to a blue-compartments/amber-external/grey-structural scheme, matching a paragraph already added to `AGENTS.md`. That was in progress before this session and remains untouched and unverified — still sitting unstaged in `git status`.
+- Nothing is blocked on a purchase. Everything in the next action is paper and scissors.
+- The uncommitted Aurora changes (`Station_Aurora_Map_Base.png`, `Station_Aurora_Vector.svg`, `convert_dxf_to_svg.py`, `Station_Map.html`, and the Aurora paragraph in `AGENTS.md`) remain exactly as found — a separate in-progress thread, untouched and unverified across several sessions now. Worth committing or stashing so it stops appearing in every `git status` review.
+- Nothing has been committed. All changes are unstaged.
