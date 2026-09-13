@@ -11,3 +11,6 @@ CLAUDE.local.md
 # Office lock files and Python caches
 ~$*
 __pycache__/
+
+# Scratch QA renders (visual-check PNGs, rejected asset attempts)
+tmp/

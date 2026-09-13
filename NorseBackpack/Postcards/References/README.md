@@ -11,7 +11,7 @@ Search Wikimedia Commons first. Check each file page individually and prefer, in
 - Source: <https://commons.wikimedia.org/wiki/File:L%27Anse_aux_Meadows,_The_Meeting_of_Two_Worlds.jpg>
 - License: [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)
 - Local source: `LAnse_aux_Meadows_Meeting_of_Two_Worlds_Source.jpg`
-- Change: adapted into a simplified screen-print-style illustration for Postcard 01.
+- Change: adapted into a simplified screen-print-style illustration for Postcard 01; reframed to full bleed, then converted to the PC-13 10:7 format with an exact-ratio crop and uniform scale to 1500 × 1050.
 
 The derived illustration and postcard design must be shared under CC BY-SA 3.0 or a compatible license. Credit the photographer and state that the source was adapted.
 
@@ -22,7 +22,7 @@ The derived illustration and postcard design must be shared under CC BY-SA 3.0 o
 - Source: <https://commons.wikimedia.org/wiki/File:Grinnell_Glacier_Bergie_Bits,_Baffin_Island_(30587389848).jpg>
 - License: [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/)
 - Local source: `Baffin_Island_Grinnell_Glacier_Source.jpg`
-- Change: cropped and adapted into a simplified screen-print-style illustration for Postcard 02.
+- Change: cropped and adapted into a simplified screen-print-style illustration for Postcard 03; reframed to full bleed and given four tiny complementary `1576` half-digits disguised as top-edge cloud flecks. Converted to 1500 × 1050 with the same centred horizontal crop and scale as Card 02; the top row was preserved.
 
 The derived illustration and postcard design must be shared under CC BY-SA 2.0 or a compatible license.
 
@@ -33,9 +33,9 @@ The derived illustration and postcard design must be shared under CC BY-SA 2.0 o
 - Source: <https://commons.wikimedia.org/wiki/File:Battle_Harbour_-_MacGillivray.jpg>
 - License: [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/)
 - Local source: `Battle_Harbour_MacGillivray_Source.jpg`
-- Change: cropped and adapted into a simplified screen-print-style illustration for Postcard 03.
+- Change: cropped and adapted into a simplified screen-print-style illustration for Postcard 02; reframed to full bleed and given four tiny pre-inverted `1576` half-digits disguised as top-edge cloud flecks, aligned to Card 03 after Card 02 is rotated 180 degrees. Converted to 1500 × 1050 with the same centred horizontal crop and scale as Card 03; the top row was preserved.
 
-The website uses `Postcard_01_LAnse_Front.png` and `Postcard_01_LAnse_Back.png`, rendered directly from the individual print PDF so the online preview matches the printable artifact.
+The website uses `Postcard_01_LAnse_Front.png`, generated from the 1500 × 1050 illustration source, and `Postcard_01_LAnse_Back.png`, rendered from the individual print PDF.
 
 ## Visual direction
 

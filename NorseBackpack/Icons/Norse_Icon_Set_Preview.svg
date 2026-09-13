@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 720 390" role="img" aria-labelledby="title desc">
+  <title id="title">Norse icon set preview</title><desc id="desc">Eight Norse-inspired icons shown at map and text sizes.</desc>
+  <rect width="720" height="390" rx="18" fill="#F3EFE5"/>
+  <text x="38" y="48" fill="#25372F" font-family="Georgia,serif" font-size="26">Norse map &amp; text icons</text>
+  <text x="40" y="72" fill="#657065" font-family="Arial,sans-serif" font-size="12">64 × 64 SVG · transparent backgrounds · forest green with restrained rust accent</text>
+  <g font-family="Arial,sans-serif" font-size="12" fill="#42544C" text-anchor="middle">
+    <g transform="translate(38 98)"><rect width="145" height="108" rx="10" fill="#FFFDF7" stroke="#D7D1BF"/><image x="41" y="12" width="64" height="64" xlink:href="longship.svg"/><text x="72.5" y="94">Longship</text></g>
+    <g transform="translate(204 98)"><rect width="145" height="108" rx="10" fill="#FFFDF7" stroke="#D7D1BF"/><image x="41" y="12" width="64" height="64" xlink:href="settlement.svg"/><text x="72.5" y="94">Settlement</text></g>
+    <g transform="translate(370 98)"><rect width="145" height="108" rx="10" fill="#FFFDF7" stroke="#D7D1BF"/><image x="41" y="12" width="64" height="64" xlink:href="longhouse.svg"/><text x="72.5" y="94">Longhouse</text></g>
+    <g transform="translate(536 98)"><rect width="145" height="108" rx="10" fill="#FFFDF7" stroke="#D7D1BF"/><image x="41" y="12" width="64" height="64" xlink:href="runestone.svg"/><text x="72.5" y="94">Runestone</text></g>
+    <g transform="translate(38 222)"><rect width="145" height="108" rx="10" fill="#FFFDF7" stroke="#D7D1BF"/><image x="41" y="12" width="64" height="64" xlink:href="burial_mound.svg"/><text x="72.5" y="94">Burial mound</text></g>
+    <g transform="translate(204 222)"><rect width="145" height="108" rx="10" fill="#FFFDF7" stroke="#D7D1BF"/><image x="41" y="12" width="64" height="64" xlink:href="round_shield.svg"/><text x="72.5" y="94">Round shield</text></g>
+    <g transform="translate(370 222)"><rect width="145" height="108" rx="10" fill="#FFFDF7" stroke="#D7D1BF"/><image x="41" y="12" width="64" height="64" xlink:href="dane_axe.svg"/><text x="72.5" y="94">Dane axe</text></g>
+    <g transform="translate(536 222)"><rect width="145" height="108" rx="10" fill="#FFFDF7" stroke="#D7D1BF"/><image x="41" y="12" width="64" height="64" xlink:href="raven.svg"/><text x="72.5" y="94">Raven</text></g>
+  </g>
+  <g transform="translate(40 354)" font-family="Arial,sans-serif" font-size="12" fill="#657065">
+    <text x="0" y="0">Text-size check:</text>
+    <image x="94" y="-18" width="22" height="22" xlink:href="longship.svg"/><image x="126" y="-18" width="22" height="22" xlink:href="settlement.svg"/><image x="158" y="-18" width="22" height="22" xlink:href="runestone.svg"/><image x="190" y="-18" width="22" height="22" xlink:href="round_shield.svg"/><image x="222" y="-18" width="22" height="22" xlink:href="dane_axe.svg"/><image x="254" y="-18" width="22" height="22" xlink:href="raven.svg"/>
+  </g>
+</svg>

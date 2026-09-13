@@ -3,9 +3,9 @@
   "active": "harald",
   "routes": {
     "leif": [
-      "l-helluland",
-      "l-markland",
-      "l-meadows"
+      "l-meadows",
+      "l-battle",
+      "l-qikiqtarjuaq"
     ],
     "rollo": [
       "rl-chalus",
@@ -54,34 +54,6 @@
     "leif": [
       {
         "order": 1,
-        "id": "l-helluland",
-        "person": "leif",
-        "name": "Helluland candidate · Baffin Island",
-        "lat": 65.2,
-        "lng": -64,
-        "evidence": "uncertain",
-        "precision": "Regional anchor",
-        "note": "Rocky saga land, usually associated with Baffin Island; exact landfall unknown.",
-        "source": "leifCanada",
-        "figure": "Leif Erikson",
-        "sourceUrl": "https://www.heritage.nf.ca/articles/exploration/norse-north-atlantic.php"
-      },
-      {
-        "order": 2,
-        "id": "l-markland",
-        "person": "leif",
-        "name": "Markland candidate · Labrador",
-        "lat": 54.5,
-        "lng": -57.5,
-        "evidence": "uncertain",
-        "precision": "Regional anchor",
-        "note": "Wooded saga land, commonly associated with Labrador; exact landfall unknown.",
-        "source": "leifCanada",
-        "figure": "Leif Erikson",
-        "sourceUrl": "https://www.heritage.nf.ca/articles/exploration/norse-north-atlantic.php"
-      },
-      {
-        "order": 3,
         "id": "l-meadows",
         "person": "leif",
         "name": "L’Anse aux Meadows · Newfoundland",
@@ -93,6 +65,34 @@
         "source": "meadows",
         "figure": "Leif Erikson",
         "sourceUrl": "https://parks.canada.ca/culture/designation/lieu-site/anse-aux-meadows"
+      },
+      {
+        "order": 2,
+        "id": "l-battle",
+        "person": "leif",
+        "name": "Battle Harbour · Labrador",
+        "lat": 52.27,
+        "lng": -55.58,
+        "evidence": "context",
+        "precision": "Settlement vicinity",
+        "note": "Modern coastal settlement on Liv's own route, not a Norse association. She followed the coast rather than a reconstructed landfall. Coordinate is an approximate settlement anchor and has not been source-checked (HI-05).",
+        "source": "",
+        "figure": "Leif Erikson",
+        "sourceUrl": ""
+      },
+      {
+        "order": 3,
+        "id": "l-qikiqtarjuaq",
+        "person": "leif",
+        "name": "Qikiqtarjuaq · Baffin Island",
+        "lat": 67.56,
+        "lng": -64.03,
+        "evidence": "context",
+        "precision": "Settlement vicinity",
+        "note": "Modern coastal settlement on Liv's own route, not a Norse association. She followed the coast rather than a reconstructed landfall. Coordinate is an approximate settlement anchor and has not been source-checked (HI-05).",
+        "source": "",
+        "figure": "Leif Erikson",
+        "sourceUrl": ""
       }
     ],
     "rollo": [

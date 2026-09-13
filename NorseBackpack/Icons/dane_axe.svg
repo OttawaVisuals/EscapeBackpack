@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Dane axe</title><desc id="desc">A long-handled single-bladed Dane axe.</desc>
+  <path d="m18 55 25-43" fill="none" stroke="#283B34" stroke-width="4.2" stroke-linecap="round"/>
+  <path d="M39 11c7-1 13 1 18 5-5 2-7 7-8 13-5-5-10-7-16-7Z" fill="#283B34" stroke="#283B34" stroke-width="2.2" stroke-linejoin="round"/>
+  <path d="M41 15c5 0 8 1 11 3-3 2-4 4-5 7" fill="none" stroke="#B56A2A" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="m15 56 5-1" stroke="#B56A2A" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -18,7 +18,11 @@ Plans use browser storage key `escape-backpack-norse-routes-v1`. Storage belongs
 
 `Norse_Aunt_Route_Plan.json` is the current candidate final itinerary. In the workshop's left-to-right trip order, its north-up route previews are intended to read:
 
-- Leif Erikson: **1** — Helluland → Markland → L’Anse aux Meadows.
+- Leif Erikson: **1** — L’Anse aux Meadows → Battle Harbour → Qikiqtarjuaq.
+  The Markland and Helluland regional anchors were replaced with the real coastal settlements the
+  postcards name. With stops unmarked on the printed maps, players locate each stop by name, and a
+  saga region the size of Spain has no defined endpoint to draw to. Both remain in `stops.js` as
+  historical associations — the research corpus is unchanged; only Liv’s itinerary moved.
 - Rollo & descendants: **9** — Châlus → Rouen → Bayeux → Winchester → Battle → Roumare forest.
 - Aud the Deep-Minded: **7** — Dögurðarnes → Hvammur → Esjuberg.
 - Harald Hardrada: **2** — Oslo → Staraya Ladoga → Kyiv → Hedeby → Sicily → Anatolia.

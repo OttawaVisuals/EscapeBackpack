@@ -11,7 +11,7 @@ from reportlab.lib.utils import ImageReader
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "pdf" / "Postcard_01_LAnse_Print.pdf"
 OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_01_LAnse_Letter_Print.pdf"
-ART = ROOT / "NorseBackpack" / "Postcards" / "Postcard_01_LAnse_Illustration_v2.png"
+FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_01_LAnse_Front.png"
 STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Leif_Longship_v1.png"
 FONT_DIR = ROOT / "Fonts"
 
@@ -48,12 +48,17 @@ def wrap_text(text, font, size, width):
 def draw_front_card(c, x=0, y=0):
     c.saveState()
     c.translate(x, y)
-    c.drawImage(ImageReader(str(ART)), 0, 0, W, H, preserveAspectRatio=False, mask="auto")
-    c.setFillColor(PAPER)
-    c.setFont("CinzelExtraBold", 25)
-    c.drawCentredString(W / 2, 45, "L'ANSE AUX MEADOWS")
-    c.setFont("Helvetica-Bold", 7.2)
-    c.drawCentredString(W / 2, 27, "NEWFOUNDLAND AND LABRADOR")
+    front = ImageReader(str(FRONT))
+    fw, fh = front.getSize()
+    # PC-11: preserveAspectRatio=False here previously stretched 1536x1024 (3:2) art onto
+    # a 10:7 page by 5% vertically. Fail loud instead of silently distorting -- the fix is
+    # correctly-sized art (1500x1050, PC-13), not a draw-time hack.
+    if (fw, fh) != (1500, 1050):
+        raise ValueError(
+            f"Postcard_01_LAnse_Front.png is {fw}x{fh}, expected 1500x1050 (PC-13, "
+            f"5x3.5in @300dpi). Drawing it here would stretch it to fit the page."
+        )
+    c.drawImage(front, 0, 0, W, H, preserveAspectRatio=False, mask="auto")
     c.restoreState()
 
 
@@ -97,7 +102,7 @@ def draw_back_card(c, x=0, y=0):
 
     # The agreed route stamp, shown at approximately 20 x 24 mm.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72
-    stamp_x, stamp_y = right - stamp_w, H - 35 - stamp_h
+    stamp_x, stamp_y = right - stamp_w, H - 30 - stamp_h
     c.drawImage(
         ImageReader(str(STAMP)),
         stamp_x,
@@ -111,7 +116,7 @@ def draw_back_card(c, x=0, y=0):
 
     # Place and date form the universal postmark. The day-of-month is
     # underlined: it is the first two digits of the opening puzzle's code.
-    postmark_x, postmark_y = stamp_x - 5, H - 64
+    postmark_x, postmark_y = stamp_x - 5, H - 48
     c.setStrokeColor(TEAL)
     c.setLineWidth(0.8)
     c.circle(postmark_x, postmark_y, 23, fill=0, stroke=1)
@@ -132,19 +137,23 @@ def draw_back_card(c, x=0, y=0):
     for offset in (-7, -2, 3, 8):
         c.line(postmark_x + 23, postmark_y + offset, right, postmark_y + offset)
 
-    # Address — shrunk to make room for the Fun Fact block below it.
+    # Address — moved up into the dead strip left of the stamp, so the Fun Fact block below can
+    # nearly double. The longest address line is 78pt in a 150pt-wide panel, so the block was
+    # never using its right half; the stamp now overlaps that unused corner, as it would on a
+    # real card. Ruled lines stop short of the stamp rather than running under it.
     address_x = divider + 17
     box_right = right + 5
+    rule_right = 278
     c.setStrokeColor(RULE)
     c.setLineWidth(0.6)
-    c.rect(divider + 11, 81, box_right - (divider + 11), 66, fill=0, stroke=1)
+    c.rect(divider + 11, 126, box_right - (divider + 11), 62, fill=0, stroke=1)
 
-    address_y = H - 124
+    address_y = 166
     c.setFillColor(HexColor("#59635D"))
-    c.setFont("Helvetica-Bold", 5.2)
+    c.setFont("Helvetica-Bold", 5.8)
     c.drawString(address_x, address_y + 12, "TO")
     c.setFillColor(INK)
-    c.setFont("NothingYouCouldDo", 8)
+    c.setFont("NothingYouCouldDo", 8.6)
     address_lines = [
         "John Ericson",
         "24 Longship Way",
@@ -156,41 +165,54 @@ def draw_back_card(c, x=0, y=0):
         c.drawString(address_x, line_y, line)
         c.setStrokeColor(HexColor("#C0B291"))
         c.setLineWidth(0.4)
-        c.line(address_x, line_y - 3, right, line_y - 3)
+        c.line(address_x, line_y - 3, rule_right, line_y - 3)
 
     # Fun Fact — typed, real trivia, stacked under the address.
-    funfact_top, funfact_bottom = 76, 28
+    funfact_top, funfact_bottom = 120, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
     c.rect(divider + 11, funfact_bottom, box_right - (divider + 11), funfact_top - funfact_bottom, fill=0, stroke=1)
     c.setFillColor(FUNFACT)
-    c.setFont("Helvetica-Bold", 6)
-    c.drawString(address_x, funfact_top - 9, "FUN FACT")
+    c.setFont("Helvetica-Bold", 7.5)
+    c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 5, 5.8
+    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
     fact_text = (
         "L'Anse aux Meadows turned up butternuts and worked butternut wood, though "
         "the nearest wild butternut trees grow hundreds of kilometres south, near "
         "the St. Lawrence. Read as evidence its people ranged well beyond it, into "
         "the wider “Vinland” the sagas describe."
     )
-    fact_y = funfact_top - 20
+    fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):
         c.setFont(fact_font, fact_size)
         c.drawString(address_x, fact_y, line)
         fact_y -= fact_leading
 
-    credit_top = 16
+    credit_top = 19
     c.setStrokeColor(RULE)
     c.line(left, credit_top + 7, right, credit_top + 7)
     c.setFillColor(HexColor("#59635D"))
-    c.setFont("Helvetica", 3.2)
+    c.setFont("Helvetica", 4)
+    # One line, no file path. A URL on a prop meant to read as a gift-shop postcard was the only
+    # anachronism on the card (PC-09); real postcards do print photographer credits. What remains
+    # still satisfies CC BY-SA 3.0 on its own — modification notice, title, author, licence — and
+    # the fuller record (source URL, adaptation licence) lives in Postcards/Image_Credits.html.
     credit_lines = [
         'Image adaptation: "L\'Anse aux Meadows, The Meeting of Two Worlds" - D. Gordon E. Robertson, CC BY-SA 3.0.',
-        "Source and full attribution: Postcards/Image_Credits.html",
     ]
     for index, line in enumerate(credit_lines):
-        c.drawString(left, credit_top - index * 4, line)
+        c.drawString(left, credit_top - index * 5, line)
+
+    # Publisher's imprint, right-aligned opposite the image credit. This is the grid reference for
+    # the beasts chain (PZ-10): "Series F, No. 1" is square F1 of Leif's sheet, where the polar
+    # bear is drawn. It sits in the credit strip on purpose -- the attribution beside it is the
+    # camouflage, since players classify this band as production metadata and stop reading. Set a
+    # little larger than the 3.2pt credit because it has to be legible: an unreadable clue is a
+    # broken one, and a publisher's code differing in size from an image credit is normal on real
+    # printed matter. Her handwriting carries the rule to read it; the card never carries both.
+    c.setFont("Helvetica", 5)
+    c.drawRightString(right, credit_top, "Vinland Editions  ·  Series F, No. 1")
     c.restoreState()
 
 

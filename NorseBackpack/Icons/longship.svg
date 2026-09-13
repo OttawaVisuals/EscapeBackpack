@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Norse longship</title><desc id="desc">A compact side-view longship under a square sail.</desc>
+  <g fill="none" stroke="#283B34" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 40h43c-3 8-11 12-24 12S12 48 10 40Z" fill="#283B34"/>
+    <path d="M9 40c-3-4-2-8 2-10-1 4 1 7 5 10M53 40c4-2 6-6 5-10 4 3 4 7 1 11"/>
+    <path d="M31 13v27M16 16h15v20H16l5-10Z"/>
+    <path d="M31 16h16v20H31Z" fill="#B56A2A" stroke="#283B34"/>
+    <path d="M14 54c7-3 13-3 20 0s13 3 20 0"/>
+  </g>
+  <g fill="#B56A2A" stroke="#283B34" stroke-width="1.5"><circle cx="21" cy="42" r="3"/><circle cx="29" cy="42" r="3"/><circle cx="37" cy="42" r="3"/><circle cx="45" cy="42" r="3"/></g>
+</svg>

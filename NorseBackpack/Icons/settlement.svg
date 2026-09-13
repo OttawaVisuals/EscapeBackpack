@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Norse settlement</title><desc id="desc">Three turf-roofed buildings forming a small settlement.</desc>
+  <g stroke="#283B34" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 34 17 24l10 10v17H7Z" fill="none"/>
+    <path d="M23 31 34 17l13 14v20H23Z" fill="none"/>
+    <path d="m42 37 8-9 8 9v14H42Z" fill="none"/>
+    <path d="M5 34h24L18 21Z" fill="#B56A2A"/>
+    <path d="M20 31h30L34 14Z" fill="#B56A2A"/>
+    <path d="M40 37h20L50 25Z" fill="#B56A2A"/>
+    <path d="M13 51V39h8v12M30 51V35h9v16M47 51V41h6v10" fill="none"/>
+    <path d="M5 52h54" fill="none"/>
+  </g>
+</svg>

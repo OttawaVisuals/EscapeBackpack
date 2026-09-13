@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Runestone</title><desc id="desc">An upright carved stone with a simple angular rune.</desc>
+  <path d="M18 54 16 25l7-14 19 2 7 13-3 28Z" fill="#283B34" stroke="#283B34" stroke-width="2.6" stroke-linejoin="round"/>
+  <path d="M25 45V22m0 11 13-10m-13 11 13 10M20 50h25" fill="none" stroke="#B56A2A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M13 55h38" fill="none" stroke="#283B34" stroke-width="2.6" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 360" role="img" aria-label="Four postcards shown twice. In the top row they are in the wrong order and the handwritten fragments across their edges do not read. In the bottom row, correctly ordered and butted together, the fragments form one sentence ending in the instruction weigh what she traded.">
+<defs><marker id="sysdn" viewBox="0 0 10 10" refX="5" refY="9" markerWidth="7" markerHeight="7" orient="auto"><polygon points="1,0 9,0 5,9" fill="#8a7d63"/></marker></defs>
+<text x="0" y="18" font-size="11.5" font-weight="700" fill="#a4472f">AS FOUND — four cards, four fragments, no sentence</text>
+<g fill="#f0e6cf" stroke="#a99a7b" stroke-width="1.2"><rect x="14" y="32" width="176" height="123"/><rect x="210" y="32" width="176" height="123"/><rect x="406" y="32" width="176" height="123"/><rect x="602" y="32" width="176" height="123"/></g>
+<g font-family="Georgia,serif" font-style="italic" font-size="11.5" fill="#25372f"><text x="24" y="98">which of the four I could not</text><text x="220" y="98">If you are reading this in the</text><text x="416" y="98">explain. Weigh what she traded.</text><text x="612" y="98">right order then you already know</text></g>
+<g font-size="9.5" fill="#8a7d63"><text x="24" y="146">ESJUBERG</text><text x="220" y="146">MARKLAND</text><text x="416" y="146">SICILY</text><text x="612" y="146">BAYEUX</text></g>
+<line x1="396" y1="172" x2="396" y2="202" stroke="#8a7d63" stroke-width="1.5" marker-end="url(#sysdn)"/>
+<text x="0" y="228" font-size="11.5" font-weight="700" fill="#254c40">BUTTED TOGETHER IN THE RIGHT ORDER</text>
+<g fill="#f0e6cf" stroke="#a99a7b" stroke-width="1.2"><rect x="14" y="242" width="191" height="123"/><rect x="205" y="242" width="191" height="123"/><rect x="396" y="242" width="191" height="123"/><rect x="587" y="242" width="191" height="123"/></g>
+<g font-family="Georgia,serif" font-style="italic" font-size="11.5" fill="#25372f"><text x="26" y="300">If you are reading this in the</text><text x="217" y="300">right order then you already know</text><text x="408" y="300">which of the four I could not</text><text x="599" y="300" fill="#254c40" font-weight="700">explain. Weigh what she traded.</text></g>
+<g font-size="9.5" fill="#8a7d63"><text x="26" y="352">MARKLAND · Leif</text><text x="217" y="352">BAYEUX · Rollo</text><text x="408" y="352">ESJUBERG · Aud</text><text x="599" y="352">SICILY · Harald</text></g>
+</svg>
