@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Norse longhouse</title><desc id="desc">A single low timber longhouse with a turf roof.</desc>
+  <g fill="none" stroke="#283B34" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 31 23 18h25l8 13-8 4H22Z" fill="#B56A2A"/>
+    <path d="M12 33v18h39V34M22 35v16M46 35v16M28 51V38h10v13"/>
+    <path d="M16 39v8M43 39v8M8 52h46"/>
+    <path d="M14 27c10-5 23-7 36-6" stroke="#B56A2A"/>
+  </g>
+</svg>

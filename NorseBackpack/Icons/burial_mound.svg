@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Burial mound</title><desc id="desc">A low grass-covered burial mound with a stone marker.</desc>
+  <g fill="none" stroke="#283B34" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 49c5-13 14-20 26-20s21 7 26 20Z" fill="#283B34"/>
+    <path d="M27 29V17l5-7 5 7v12" fill="#B56A2A"/>
+    <path d="M4 50h56M12 44l4-5m6 5 3-7m20 7-4-6m11 7-3-5" stroke="#B56A2A"/>
+  </g>
+</svg>

@@ -50,13 +50,12 @@ For the Aurora map, `SpaceStationAurora.dxf` is authoritative. The generated web
 
 ### Norse Backpack — current design invariants
 
-These constrain any Norse work and are easy to get wrong from an older reading of the files.
+As of 2026-09-12, this section is deliberately much shorter than it used to be. Earlier readings of this file treated a long list of specific mechanisms (the opening luggage-tag code, particular lock hardware, specific puzzle families, container structure) as fixed. The user has said the game is still too constrained by those prior decisions. Only two things are real constraints; everything else is an idea, welcome to be replaced if a better one turns up.
 
-- **The postcards are the main mechanic.** Eighteen cards, one per route stop. Everything else in the bag is an instrument that acts on them — the comb reads a message, the balance orders three cards, the board's task is set by a card. Design outwards from the deck, not towards it.
-- **All eighteen cards are active.** Every card does a job besides the final ordering. The earlier "five or six active cards, the rest quiet" model is superseded, along with the sparse-channel worksheet, the anomaly stamps and the tilted stamps.
-- **The number and names of the containers are not decided and will change.** The old six-container list (main compartment, archive case, RAVEN, CROWN, WELL pouches, travel wallet) and its fixed codes have been removed. Do not reintroduce container names or intermediate lock codes. Containers get decided once the postcard puzzles exist, so they can be shaped around the puzzles.
-- **The postcard system itself is a work in progress.** The Postcard system tab is the current thinking, not a finished spec. Parts of it are explicitly marked open.
-- Two anchors are settled: the opening four-digit code (two luggage tags, postcard 01 names the place on the tag that reads first) and the final puzzle (four maps plus all eighteen cards, drawing each trail's legs in order to give the four digits).
+- **Eighteen postcards.** The deck is eighteen cards, one per route stop. This count is fixed.
+- **The final puzzle reads as shapes drawn on maps.** Whatever the surrounding mechanism, the endgame payoff comes from tracing routes on maps and reading the resulting shapes as the final code. Even this is open to change if a clearly better final puzzle emerges — but it is the working anchor unless the user says otherwise.
+- **Everything else is a soft idea, not a decision:** the opening puzzle (luggage tags + postcard 01), the specific four-digit codes (`1021`, `1972`), the six puzzle-family model, container structure and count, lock hardware choices, postcard order, and the number of locks in between. Treat anything in `Norse_Brainstorm.html` marked "Decided" or "Settled" from before 2026-09-12 as a strong candidate worth reusing, not a constraint worth defending. Propose changes to it the same as anything else — see "Propose before editing" above.
+- **The postcard system is still the main mechanic in spirit** — the cards should drive the other props rather than the reverse — but the specific verbs (continuation set, hold-to-light, comb grille, etc.) in the Postcard system tab are candidates, not a locked list.
 
 Many deliverables are binary files (`.docx`, `.pptx`, `.pdf`, and images). Preserve their formatting and verify rendered output after changing them.
 
@@ -90,7 +89,7 @@ All PDF links in existing and new HTML pages must prefer the browser's PDF viewe
 
 Use checks appropriate to the files changed:
 
-- HTML: open the local file in the in-app browser and check it visually, not only as text. The page renders, its JavaScript runs, and deep links work (`Norse_Brainstorm.html#view-puzzles`), so a script-generated tab can be inspected directly. Earlier handoffs claimed a `file://` limitation made this impossible; that was wrong. Verify links, layout and console errors.
+- HTML: open the page in the in-app browser and check it visually, not only as text — do not use a raw `file://` URL. A `file://` page renders as a static, non-interactive snapshot in this tool (0×0 viewport, no JavaScript execution, console/network tools return nothing), which earlier handoffs misread as a browser limitation blocking HTML checks entirely; the actual fix is serving the file over local HTTP. Use `.claude/launch.json`'s `static-preview` config (`python -m http.server 8734` from the repo root) — call `preview_start` with `name: "static-preview"`, then navigate to `http://localhost:8734/<path-to-file>`. Over real HTTP the page renders, JavaScript runs, deep links work (`Norse_Brainstorm.html#view-puzzles`), and console/network checks are meaningful. Verify links, layout and console errors this way for any HTML with inline `<script>`.
 - Documents/slides/PDFs: render and visually inspect every affected page or slide.
 - Spreadsheets: recalculate, check formulas, and inspect affected sheets.
 - Images: inspect at full size and confirm transparency/cropping where relevant.

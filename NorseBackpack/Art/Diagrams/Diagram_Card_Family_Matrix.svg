@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 370" role="img" aria-label="Matrix of six puzzle families against all eighteen postcards showing which cards each family uses, with a final row for the map that uses all eighteen. Every card has at least one job besides the map.">
+<rect x="160" y="88" width="108" height="7" fill="#216580"/><rect x="268" y="88" width="216" height="7" fill="#a2562d"/><rect x="484" y="88" width="108" height="7" fill="#6d528b"/><rect x="592" y="88" width="216" height="7" fill="#467444"/>
+<g font-size="10" font-weight="700" text-anchor="middle"><text x="214" y="84" fill="#216580">LEIF</text><text x="376" y="84" fill="#a2562d">ROLLO &amp; DESCENDANTS</text><text x="538" y="84" fill="#6d528b">AUD</text><text x="700" y="84" fill="#467444">HARALD</text></g>
+<g font-size="10.5" fill="#42544c">
+<text transform="rotate(-52 178 80)" x="178" y="80">L’Anse</text><text transform="rotate(-52 214 80)" x="214" y="80">Markland</text><text transform="rotate(-52 250 80)" x="250" y="80">Helluland</text>
+<text transform="rotate(-52 286 80)" x="286" y="80">Châlus</text><text transform="rotate(-52 322 80)" x="322" y="80">Rouen</text><text transform="rotate(-52 358 80)" x="358" y="80">Bayeux</text>
+<text transform="rotate(-52 394 80)" x="394" y="80">Winchester</text><text transform="rotate(-52 430 80)" x="430" y="80">Battle</text><text transform="rotate(-52 466 80)" x="466" y="80">Roumare</text>
+<text transform="rotate(-52 502 80)" x="502" y="80">Dögurðarnes</text><text transform="rotate(-52 538 80)" x="538" y="80">Hvammur</text><text transform="rotate(-52 574 80)" x="574" y="80">Esjuberg</text>
+<text transform="rotate(-52 610 80)" x="610" y="80">Oslo</text><text transform="rotate(-52 646 80)" x="646" y="80">Ladoga</text><text transform="rotate(-52 682 80)" x="682" y="80">Kyiv</text>
+<text transform="rotate(-52 718 80)" x="718" y="80">Hedeby</text><text transform="rotate(-52 754 80)" x="754" y="80">Sicily</text><text transform="rotate(-52 790 80)" x="790" y="80">Anatolia</text>
+</g>
+<g stroke="#ddd6c4" stroke-width="1"><line x1="160" y1="108" x2="808" y2="108"/><line x1="160" y1="136" x2="808" y2="136"/><line x1="160" y1="164" x2="808" y2="164"/><line x1="160" y1="192" x2="808" y2="192"/><line x1="160" y1="220" x2="808" y2="220"/><line x1="160" y1="248" x2="808" y2="248"/><line x1="160" y1="276" x2="808" y2="276"/><line x1="160" y1="304" x2="808" y2="304"/></g>
+<g font-size="11.5" fill="#25372f" text-anchor="end"><text x="150" y="126">A · continuation set</text><text x="150" y="154">B · hold-to-light pair</text><text x="150" y="182">C · comb grille</text><text x="150" y="210">D · Fun Fact cross-reference</text><text x="150" y="238">E · task cards</text><text x="150" y="266">F · the three mints · coins</text><text x="150" y="294">G · the four maps · all 18</text></g>
+<g fill="#254c40"><rect x="198" y="112" width="32" height="20" rx="2"/><rect x="342" y="112" width="32" height="20" rx="2"/><rect x="558" y="112" width="32" height="20" rx="2"/><rect x="738" y="112" width="32" height="20" rx="2"/></g>
+<g fill="#216580"><rect x="162" y="140" width="32" height="20" rx="2"/><rect x="234" y="140" width="32" height="20" rx="2"/></g>
+<g fill="#6d528b"><rect x="306" y="168" width="32" height="20" rx="2"/><rect x="450" y="168" width="32" height="20" rx="2"/><rect x="486" y="168" width="32" height="20" rx="2"/></g>
+<g fill="#a2562d" opacity="0.45"><rect x="270" y="196" width="32" height="20" rx="2"/><rect x="414" y="196" width="32" height="20" rx="2"/><rect x="630" y="196" width="32" height="20" rx="2"/><rect x="774" y="196" width="32" height="20" rx="2"/></g>
+<g fill="#467444"><rect x="522" y="224" width="32" height="20" rx="2"/><rect x="594" y="224" width="32" height="20" rx="2"/><rect x="702" y="224" width="32" height="20" rx="2"/></g>
+<g fill="#b56a2a"><rect x="378" y="252" width="32" height="20" rx="2"/><rect x="666" y="252" width="32" height="20" rx="2"/><rect x="738" y="252" width="32" height="20" rx="2"/></g>
+<rect x="162" y="280" width="644" height="20" rx="2" fill="#8a7d63" opacity="0.32"/>
+<text x="484" y="294" font-size="11" font-weight="700" fill="#25372f" text-anchor="middle">split by stamp, order by date, draw the legs — 1 · 9 · 7 · 2</text>
+<text x="150" y="326" font-size="11" fill="#657065" text-anchor="end">jobs besides the maps</text>
+<g font-size="11.5" font-weight="700" text-anchor="middle" font-family="Georgia,serif">
+<text x="178" y="326" fill="#b56a2a">2</text><text x="214" y="326" fill="#657065">1</text><text x="250" y="326" fill="#657065">1</text>
+<text x="286" y="326" fill="#657065">1</text><text x="322" y="326" fill="#657065">1</text><text x="358" y="326" fill="#657065">1</text>
+<text x="394" y="326" fill="#657065">1</text><text x="430" y="326" fill="#657065">1</text><text x="466" y="326" fill="#657065">1</text>
+<text x="502" y="326" fill="#657065">1</text><text x="538" y="326" fill="#657065">1</text><text x="574" y="326" fill="#657065">1</text>
+<text x="610" y="326" fill="#657065">1</text><text x="646" y="326" fill="#657065">1</text><text x="682" y="326" fill="#657065">1</text>
+<text x="718" y="326" fill="#657065">1</text><text x="754" y="326" fill="#b56a2a">2</text><text x="790" y="326" fill="#657065">1</text>
+</g>
+<text x="484" y="352" font-size="12" fill="#254c40" text-anchor="middle" font-weight="600">no card idle · L’Anse and Sicily double up</text>
+</svg>
