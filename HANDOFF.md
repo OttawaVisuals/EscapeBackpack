@@ -18,6 +18,8 @@ Last updated: 2026-09-15 by Claude Code
 
 **Next action:** assign a minimal, unique constraint set for one trail (probably Rollo, using the existing Bayeux → Battle relationship), then test it as a logic grid before writing any player-facing postcard text.
 
+**Revision:** replaced the abstract per-trail timeline emphasis with one shared, simple calendar: 18 slots from 01 March to 21 April at three-day intervals. L'Anse aux Meadows is slot 1; the remaining slots are intentionally unassigned. Museum tickets now anchor exact slots on this calendar, while postcard and final-document clues constrain the rest.
+
 ## Session Close — 2026-09-15 — Candidate weight-puzzle branches recorded
 
 **Task:** record the user's two new, separate weight-puzzle directions in the Norse design source.
