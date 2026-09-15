@@ -1006,27 +1006,50 @@ full-colour. A plain perforated border, no denomination, no lettering, no countr
 </ul>
 <p>Both the stain and the offset are <strong>printed</strong>, not real ink, so the prop is stable and reprintable. This also gives Harald's map an early-ish job once it exists: players handle it mid-game and get used to it, without learning what it is finally for.</p>
 <figure style="max-width:760px;margin:18px auto 0">
-<img src="Props/Hnefatafl/Hnefatafl_Incomplete_Board_Sketch_v2.png" alt="Liv's hand-drawn incomplete eleven by eleven hnefatafl setup on plain white document paper, with the rightmost three columns destroyed by a dense dragged green-black ink-transfer smear" style="display:block;width:100%;height:auto;border:1px solid #d7d1bf;border-radius:4px" loading="lazy">
-<figcaption><strong>Incomplete setup sketch · v2.</strong> ImageGen render, 1254 &times; 1254 px PNG. Plain document paper replaces the parchment; the right side now reads as still-wet drawing ink transferred and dragged by another sheet, not a tea stain. The visible A&ndash;H setup remains exact. The superseded parchment direction is retained as <code>Hnefatafl_Incomplete_Board_Sketch_v1.png</code>.</figcaption>
+<img src="Props/Hnefatafl/Hnefatafl_Incomplete_Board_Sketch_v3.png" alt="Liv's hand-drawn incomplete eleven by eleven hnefatafl setup on plain white document paper, with the rightmost three columns reduced to pale broken and offset ink remnants" style="display:block;width:100%;height:auto;border:1px solid #d7d1bf;border-radius:4px" loading="lazy">
+<figcaption><strong>Incomplete setup sketch · v3.</strong> ImageGen render, 1254 &times; 1254 px PNG. Another sheet blotted and lifted the still-wet ink from columns I&ndash;K, leaving mostly white paper with broken grid fragments, offset ghosts and small dragged marks. The information is missing rather than covered. The visible A&ndash;H setup remains exact; v1 and v2 are retained as superseded directions.</figcaption>
 </figure>
 <details style="margin-top:12px"><summary>Exact ImageGen prompt</summary><pre style="white-space:pre-wrap;font-size:11px;line-height:1.45;margin-top:12px">Use case: precise-object-edit
 Asset type: revised game-prop artwork
-Image 1: edit target. It already has the correct 11×11 grid and exact token geometry.
-Primary request: Change only the paper treatment and the obscuring damage on the right. Do not redraw, move, add, remove, resize, or restyle any visible grid cell or game token in columns A–H.
-Required edit:
-1. Replace the aged tan parchment everywhere with clean plain white/off-white document paper, with only subtle ordinary paper fibres.
-2. Replace the opaque muddy-brown stain over columns I–K with a dense dark green-black wet-pen-ink transfer smear. It was caused by another sheet touching still-wet ink and being dragged/lifted away: irregular blurred ink, offset fragments, feathering, dry dragged streaks and lifted patches. Use the same #283B34 family as the drawn grid, not brown.
-3. Keep the damaged I–K region unreadable and keep the second sheet out of frame.
-Hard invariants copied from Image 1:
-- exactly the same 11×11 grid;
-- exactly the same visible attackers at A4, A5, A8, B1, D11, D6, E11, F1, F11, F9, G1, G8 and H5;
-- exactly the same visible hollow defenders at C5, E8, F5, F8, G5 and G7;
-- exactly the same rust king at F6;
-- exactly the same visible rust diamonds at A1 and A11;
-- no new visible marks or tokens anywhere;
-- all of columns I–K remain obscured, including their grid lines and hidden pieces.
-The edit must retain the original composition and straight overhead view.
-No text, labels, numbers, title, caption, logo, watermark, hands, extra paper, tea stain, coffee stain, brown pigment, parchment aging, perspective distortion, or decorative additions.</pre></details>
+Image 1: edit target. Preserve the white paper, the 11×11 board, and every visible token exactly.
+Primary request: Change only the heavy dark damaged area over the rightmost three columns. Replace it with a restrained, realistic area of ink that was blotted/lifted when another sheet touched the still-wet drawing and was peeled away.
+Damaged-area appearance:
+- white paper must remain visually dominant—roughly 70–80% of the I–K area should still look white;
+- most original grid ink in I–K has transferred away, leaving pale broken line segments, incomplete square fragments, small offset ghost marks, tiny feathered edges, and a few short directional drag streaks;
+- use sparse, low-density green-grey remnants rather than a continuous dark shape;
+- no large dark patch, no solid coverage, no dramatic splatter, no brown color;
+- the information is unreadable because key strokes are missing, interrupted, doubled, and displaced—not because anything covers them;
+- the damage boundary is subtle and irregular around the H/I edge, with column H and its H5 attacker still fully readable.
+Hard invariants:
+- do not alter the clean plain white/off-white document paper elsewhere;
+- do not redraw, move, add, remove, resize, or restyle the grid or any visible mark in columns A–H;
+- keep exactly 11×11 cells;
+- keep visible attackers exactly at A4, A5, A8, B1, D11, D6, E11, F1, F11, F9, G1, G8 and H5;
+- keep visible hollow defenders exactly at C5, E8, F5, F8, G5 and G7;
+- keep the rust king at F6 and rust diamonds at A1 and A11;
+- no new visible tokens;
+- I–K must remain too incomplete to reconstruct reliably, including the hidden I6, K4, K8, K1 and K11 marks.
+No text, labels, numbers, title, caption, logo, watermark, hands, second sheet, parchment, tea/coffee stain, dense black mass, rectangular block, heavy splatter, perspective change, or decorative additions.</pre></details>
+<figure style="max-width:540px;margin:18px auto 0">
+<img src="Props/Hnefatafl/Hnefatafl_Transferred_Ink_Paper_v1.png" alt="The separate white paper carrying a mirrored three-column by eleven-row transferred-ink strip, with three dark pieces and two rust corner diamonds" style="display:block;width:100%;height:auto;border:1px solid #d7d1bf;border-radius:4px" loading="lazy">
+<figcaption><strong>Transferred-ink companion paper · v1.</strong> ImageGen render, 1254 &times; 1254 px PNG. Only the lifted strip appears: columns K&ndash;J&ndash;I from left to right, with K8, K4 and I6 plus the K11/K1 corner diamonds. The contact face is horizontally mirrored, ready to be read through or flipped back into alignment.</figcaption>
+</figure>
+<details style="margin-top:12px"><summary>Exact companion-paper ImageGen prompt</summary><pre style="white-space:pre-wrap;font-size:11px;line-height:1.45;margin-top:12px">Use case: illustration-story
+Asset type: high-resolution companion paper prop for the incomplete hnefatafl setup
+Image 1: style and geometry reference only. Do not reproduce its full 11×11 board. Create the separate sheet that touched its damaged right side and received the transferred ink.
+Primary request: Show a single plain white/off-white piece of paper, viewed straight overhead. On it is only the transferred impression of the original board's rightmost three columns. The transferred strip is a narrow 3-column by 11-row hand-drawn grid fragment, mirrored horizontally relative to the original board: visual column order K, J, I from left to right. Rows remain 11 at top to 1 at bottom.
+Exact transferred marks:
+- In mirrored column K, place dark filled square attackers at row 8 and row 4, plus rust open diamonds at row 11 and row 1.
+- Mirrored column J is empty.
+- In mirrored column I, place one dark filled square attacker at row 6.
+- No king and no defenders appear on this sheet.
+Transfer appearance: the second sheet absorbed most of the still-wet ink. The 3×11 grid and five marks are readable enough to reconstruct, but imperfect: slightly doubled edges, feathered ink, small missing flecks, faint offset ghosts and a few short drag streaks. Keep individual cell boundaries and token identities clear. It should visibly correspond to the pale missing fragments in Image 1.
+Composition: the narrow vertical transferred strip occupies the central area of the white sheet with generous blank paper around it; square overall canvas; no other board columns.
+Style/medium: casual transferred pen ink, matching Image 1's handmade line weight and dark ink-green #283B34. Rust #B56A2A transfers for the two diamonds, slightly faded and imperfect. Ordinary white document paper, not parchment.
+Physical logic: this is the inked contact face after the top paper has been lifted and turned over for viewing, so the transferred strip is horizontally mirrored. It is an accidental offset print, not a newly drawn clean copy.
+Text: none.
+Constraints: exactly 3 columns and exactly 11 rows; exact token positions listed above; no additional tokens or marks; high-resolution PNG; straight overhead.
+Avoid: full 11×11 board, letters, numbers, labels, title, caption, logo, watermark, hands, desk props, second paper, parchment, tea/coffee stains, dense black mass, dramatic splatter, polished modern diagram, perspective distortion.</pre></details>
 <p class="small muted">Built, both panels, sharing one geometry source (<code>Props/Hnefatafl/board_layout.py</code>) so they can't drift out of registration: the map-back panel is <code>Props/Hnefatafl/build_board_setup_pdf.py</code> &rarr; <code>output/pdf/Hnefatafl_Board_Setup_Insert.pdf</code> (a standalone insert &mdash; Harald has no trail map sheet yet, so it is not composited onto anything real); the ticket's mirrored panel is drawn inside <code>build_ticket_pdf.py</code> itself, at the identical 0.5in cell pitch. The old illustrative diagram below (clean rectangle, no real blocker geometry) is superseded by these two built panels.</p>
 <div class="fig">
 <figure>

@@ -102,21 +102,26 @@ removed" shape test needs redoing now that six real points exist.
 pen sketch on the blank white back of a document, with columns I–K made unreadable by wet ink
 transferred and dragged when another sheet was lifted away.
 
-**Built, then revised:** `Hnefatafl_Incomplete_Board_Sketch_v2.png` is the selected 1254×1254
-PNG. It keeps the exact dark-green hand-ruled setup, but now sits on plain white document paper;
-the right side is damaged by dense green-black wet-ink transfer and dragged smearing from another
-sheet, not a brown tea stain. The visible A–H positions were checked cell-by-cell against the
-user's coordinate list. Columns I–K are unreadable as intended. The superseded parchment version
-is retained beside it as `Hnefatafl_Incomplete_Board_Sketch_v1.png`.
+**Built, then revised:** `Hnefatafl_Incomplete_Board_Sketch_v3.png` is the selected 1254×1254
+PNG. It keeps the exact dark-green hand-ruled setup on plain white document paper. Columns I–K
+now show restrained lifted ink: mostly white paper with broken grid fragments, offset ghosts and
+small dragged marks. The information is missing rather than hidden under a dark mass. The visible
+A–H positions were checked cell-by-cell against the user's coordinate list. The heavier v1 and
+v2 treatments are retained beside it as superseded directions.
 
-**Project-page record:** added the rendered image and the exact built-in ImageGen prompt to the
-Hnefatafl setup section in `NorseBackpack/Norse_Brainstorm.html`.
+**Companion paper built:** `Hnefatafl_Transferred_Ink_Paper_v1.png` (1254×1254 PNG). It carries
+only the transferred 3×11 strip, horizontally mirrored as K–J–I: attackers at K8, K4 and I6,
+with rust diamonds at K11 and K1. The grid and marks are readable but retain slight feathering,
+missing flecks and offset ghosts so they look transferred rather than freshly redrawn.
 
-**Checks:** confirmed PNG format and 1254×1254 dimensions for v2; inspected the full render; checked the
-11×11 cell count, visible token coordinates, lack of text/labels, and opaque I–K coverage. HTML
+**Project-page record:** added both rendered images and their exact built-in ImageGen prompts to
+the Hnefatafl setup section in `NorseBackpack/Norse_Brainstorm.html`.
+
+**Checks:** confirmed PNG format and 1254×1254 dimensions for v3; inspected the full render; checked the
+11×11 cell count, visible token coordinates, lack of text/labels, and fragmented I–K area. HTML
 tag balance and live browser rendering were checked after the edit.
 
-**Next action:** decide whether v2 becomes the actual Harald map-back artwork or remains a
+**Next action:** decide whether v3 becomes the actual Harald map-back artwork or remains a
 visual direction alongside the existing deterministic PDF panel. No PDF was rebuilt in this
 session.
 
