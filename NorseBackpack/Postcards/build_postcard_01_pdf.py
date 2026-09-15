@@ -204,15 +204,16 @@ def draw_back_card(c, x=0, y=0):
     for index, line in enumerate(credit_lines):
         c.drawString(left, credit_top - index * 5, line)
 
-    # Publisher's imprint, right-aligned opposite the image credit. This is the grid reference for
-    # the beasts chain (PZ-10): "Series F, No. 1" is square F1 of Leif's sheet, where the polar
-    # bear is drawn. It sits in the credit strip on purpose -- the attribution beside it is the
-    # camouflage, since players classify this band as production metadata and stop reading. Set a
-    # little larger than the 3.2pt credit because it has to be legible: an unreadable clue is a
-    # broken one, and a publisher's code differing in size from an image credit is normal on real
-    # printed matter. Her handwriting carries the rule to read it; the card never carries both.
+    # Publisher's imprint, right-aligned opposite the image credit. Pure flavour on this card --
+    # no referent (PZ-10: only the card live when the beasts chain runs gets a real grid
+    # reference, and that's card 02, not card 01, per PZ-13). Every card still carries one so a
+    # single odd card back never becomes the tell. It sits in the credit strip on purpose -- the
+    # attribution beside it is the camouflage, since players classify this band as production
+    # metadata and stop reading. Set a little larger than the 3.2pt credit because it has to be
+    # legible: an unreadable clue is a broken one, and a publisher's code differing in size from
+    # an image credit is normal on real printed matter.
     c.setFont("Helvetica", 5)
-    c.drawRightString(right, credit_top, "Vinland Editions  ·  Series F, No. 1")
+    c.drawRightString(right, credit_top, "Vinland Editions  ·  Series A, No. 1")
     c.restoreState()
 
 

@@ -29,6 +29,42 @@ CARDS = [
         "BAFFIN ISLAND",
         "NUNAVUT",
     ),
+    (
+        POSTCARDS / "Postcard_04_Chalus_Illustration_v1.png",
+        POSTCARDS / "Postcard_04_Chalus_Front.png",
+        "CHÂLUS",
+        "HAUTE-VIENNE",
+    ),
+    (
+        POSTCARDS / "Postcard_05_Rouen_Illustration_v1.png",
+        POSTCARDS / "Postcard_05_Rouen_Front.png",
+        "ROUEN",
+        "NORMANDY",
+    ),
+    (
+        POSTCARDS / "Postcard_06_Bayeux_Illustration_v1.png",
+        POSTCARDS / "Postcard_06_Bayeux_Front.png",
+        "BAYEUX",
+        "NORMANDY",
+    ),
+    (
+        POSTCARDS / "Postcard_07_Winchester_Illustration_v1.png",
+        POSTCARDS / "Postcard_07_Winchester_Front.png",
+        "WINCHESTER",
+        "ENGLAND",
+    ),
+    (
+        POSTCARDS / "Postcard_08_Battle_Illustration_v1.png",
+        POSTCARDS / "Postcard_08_Battle_Front.png",
+        "BATTLE",
+        "EAST SUSSEX",
+    ),
+    (
+        POSTCARDS / "Postcard_13_Oslo_Illustration_v1.png",
+        POSTCARDS / "Postcard_13_Oslo_Front.png",
+        "OSLO",
+        "NORWAY",
+    ),
 ]
 
 
@@ -81,7 +117,7 @@ def build_card(source, output, title, subtitle):
     draw_spaced_text(draw, center_x + 2, round(h * 0.8213), title, title_font, title_spacing, SHADOW)
     draw_spaced_text(draw, center_x, round(h * 0.8184), title, title_font, title_spacing, PAPER)
     draw_spaced_text(draw, center_x, round(h * 0.9258), subtitle, subtitle_font, subtitle_spacing, PAPER)
-    image.save(output, optimize=True)
+    image.save(output, optimize=True, dpi=(300, 300))
     print(output)
 
 

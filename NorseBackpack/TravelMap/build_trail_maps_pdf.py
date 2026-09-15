@@ -38,7 +38,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 FONT_DIR = ROOT / "Fonts"
 OUT_DIR = ROOT / "output" / "pdf"
-ART_DIR = HERE / "Art" / "processed"   # alpha-hole-filled derivatives; see fill_art_alpha_holes.py
+SOURCE_ART_DIR = HERE / "Art"
+ART_DIR = SOURCE_ART_DIR / "processed"  # Leif's alpha-hole-filled derivatives
 
 SEA      = HexColor("#DCE7E4")
 LAND_C   = HexColor("#EFE3C4")
@@ -142,12 +143,22 @@ TRAILS = {
                      ("Reykholt", 64.66, -21.29), ("Mosfellsbær", 64.17, -21.68),
                      ("Hafnarfjörður", 64.07, -21.94)],
     ),
+    "harald": dict(
+        # Title is a draft pick, not yet confirmed with the user -- "Eastward & back again"
+        # is the theme already recorded in stops.js; this titles it after his most famous
+        # historical role. Continent-spanning trail (Norway to Ukraine to Sicily to eastern
+        # Anatolia), so the frame is necessarily far more zoomed out than the other three
+        # sheets -- a much coarser km-per-square is an accepted, not overlooked, consequence.
+        n=4, title="THE VARANGIAN ROAD", sub="Harald Hardrada", band="#467444",
+        parallels=(40, 58), lon0=22.0, frame=(2.0, 42.0, 34.0, 62.0),
+        regions=[],
+        areas=[],
+        waters=[],
+        extra_towns=[],
+    ),
 }
 
-BLOCKED = {
-    "harald": "stops 5 and 6 are 'Sicily' and 'Asia Minor' -- regions, not points. Same "
-              "no-endpoint problem Helluland had; resolve to named settlements first.",
-}
+BLOCKED = {}
 
 # Decorative vignettes approved for Leif's sheet (PR-11), re-placed for the PR-13 frame. The
 # three sea pieces sit inside the placement guide's re-run rectangles (build_art_placement_guide.py
@@ -168,6 +179,37 @@ LEIF_ART = (
     ("Leif_Wolf_v1.png",       ( 39.87, 396.32, 48.0, 44.0), 0.62), # A6
     ("Leif_Orca_v1.png",       (403.07, 334.48, 48.0, 44.0), 0.62), # G7
     ("Leif_Settlement_v1.png", (326.0, 589.8,  58.0, 36.0), 0.62),  # W. Greenland, 4.1deg clear
+)
+
+# Rollo's seven rust-brown story vignettes. Each 38pt square gives the normalized artwork an
+# actual visible width of at most about 0.43in after the closer-placement revision. Positions
+# use compact boxes so each vignette can sit beside its associated stop while
+# remaining clear of town dots, the answer-route stroke and fixed labels.
+# Battle and Hastings share one longship.
+ROLLO_ART = (
+    ("Rollo_Crossbow_Bolt_v1.png", (373.0, 174.0, 38.0, 38.0), 0.62),  # Chalus
+    ("Rollo_Treaty_Scroll_v1.png", (372.0, 440.0, 38.0, 38.0), 0.62),  # Saint-Clair-sur-Epte
+    ("Rollo_Ducal_Coronet_v1.png", (393.0, 481.0, 38.0, 38.0), 0.62),  # Rouen
+    ("Rollo_Needle_Thread_v1.png", (258.0, 427.0, 38.0, 38.0), 0.62),  # Bayeux
+    ("Rollo_Crown_v1.png", (281.0, 596.0, 38.0, 38.0), 0.62),          # Winchester
+    ("Rollo_Longship_v1.png", (304.0, 529.0, 38.0, 38.0), 0.62),       # Battle / Hastings
+    ("Rollo_Boar_v1.png", (324.0, 491.0, 38.0, 38.0), 0.62),           # Roumare forest
+)
+
+# Word-lock puzzle vignettes (PZ-15, concept stage): six icons, each somewhere inside its named
+# grid cell -- unlike ROLLO_ART above, these ARE the puzzle's answer squares, not scenery placed
+# near a real stop. Each box is offset by a different random amount within its cell (never
+# centred -- six identically-centred icons read as a deliberate grid overlay, not scenery) while
+# staying fully inside the cell bounds.
+# Word order fixed by the order the words were chosen in chat: beef, poultry, combat, forest,
+# tavern, people -- matched 1:1 against the given grid refs D1, I3, H6, E7, H9, F11.
+ROLLO_WORDLOCK_ART = (
+    ("Rollo_Cow_v1.png",    (218.58, 714.44, 38.0, 38.0), 0.62),  # beef    -> D1
+    ("Rollo_Hen_v1.png",    (533.64, 577.67, 38.0, 38.0), 0.62),  # poultry -> I3
+    ("Rollo_Combat_v1.png", (465.22, 400.51, 38.0, 38.0), 0.62),  # combat  -> H6
+    ("Rollo_Forest_v1.png", (294.88, 335.10, 38.0, 38.0), 0.62),  # forest  -> E7
+    ("Rollo_Inn_v1.png",    (459.58, 223.36, 38.0, 38.0), 0.62),  # tavern  -> H9
+    ("Rollo_Folk_v1.png",   (349.79,  80.62, 38.0, 38.0), 0.62),  # people  -> F11
 )
 
 
@@ -345,6 +387,15 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
     if key == "leif":
         for filename, box, alpha in LEIF_ART:
             draw_vignette(c, ART_DIR / filename, box, alpha)
+            x, y, w, h = box
+            lab.reserve(x, y, x + w, y + h)
+    elif key == "rollo":
+        for filename, box, alpha in ROLLO_ART:
+            draw_vignette(c, SOURCE_ART_DIR / filename, box, alpha)
+            x, y, w, h = box
+            lab.reserve(x, y, x + w, y + h)
+        for filename, box, alpha in ROLLO_WORDLOCK_ART:
+            draw_vignette(c, SOURCE_ART_DIR / filename, box, alpha)
             x, y, w, h = box
             lab.reserve(x, y, x + w, y + h)
 
