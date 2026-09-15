@@ -6,6 +6,18 @@ Last updated: 2026-09-15 by Claude Code
 > Open questions tab of `NorseBackpack/Norse_Brainstorm.html`, each with a stable ID.
 > See "Where Design State Lives" in `AGENTS.md`.
 
+## Session — 2026-09-15 — Final riddle direction recorded
+
+**Task:** record the user's replacement direction for the Norse endgame.
+
+**Decision in principle:** all 18 postcards are released before the final clue bundle. Rather than reading a date from every postmark or receiving three held-back cards at the end, players solve an evidence-led travel timeline: recurring dated museum tickets provide anchors; natural postcard statements provide relative-order constraints; a few final travel documents resolve remaining ambiguity. The solved four route orders are then traced on the maps as before, producing the candidate `1972` code.
+
+**Changed:** `NorseBackpack/Norse_Brainstorm.html` — added the **Final riddle** tab with the player flow, an intentionally blank per-trail evidence worksheet, evidence rules, and the uniqueness/play-test risk. It explicitly records that this direction supersedes postmark dates as the endgame ordering key and the held-back-postcard plan. Exact tickets, dates, phrases, and final documents remain open as `PZ-16` work; no content has been invented.
+
+**Checks:** served over local HTTP and opened `Norse_Brainstorm.html#view-final-riddle`; tab selection, final-riddle content and responsive top layout rendered correctly, with no console errors. Ran `git diff --check` successfully.
+
+**Next action:** assign a minimal, unique constraint set for one trail (probably Rollo, using the existing Bayeux → Battle relationship), then test it as a logic grid before writing any player-facing postcard text.
+
 ## Session Close — 2026-09-15 — Candidate weight-puzzle branches recorded
 
 **Task:** record the user's two new, separate weight-puzzle directions in the Norse design source.
