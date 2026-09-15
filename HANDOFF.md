@@ -1,10 +1,153 @@
 # Project Handoff
 
-Last updated: 2026-09-14 by Claude Code
+Last updated: 2026-09-15 by Claude Code
 
 > Session continuity only. Open design questions are **not** tracked here — they live in the
 > Open questions tab of `NorseBackpack/Norse_Brainstorm.html`, each with a stable ID.
 > See "Where Design State Lives" in `AGENTS.md`.
+
+## Session Close — 2026-09-15 — Candidate weight-puzzle branches recorded
+
+**Task:** record the user's two new, separate weight-puzzle directions in the Norse design source.
+
+**Recorded as candidates, not decisions:**
+- **Aud treasure cache:** coins arrive during Aud's travel; her smaller map identifies the cache.
+  A target reading of `370.56 g` has its final digit crossed out in a supplied drawing, leaving
+  `370.5`, which reads `SOLE` upside down for the owned four-letter lock. This explicitly
+  supersedes the previous three-mints/weight-order concept.
+- **Oslo hnefatafl pieces:** 3D-printed attackers and defenders have concealed controlled weights
+  and letters/runes on their bases. Each side is weighed and ordered separately; matching weights
+  across colours require correct grouping first. It remains separate from the board-reconstruction
+  and king-escape puzzle.
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html`.
+
+**Checks:** reviewed the updated source and ran `git diff --check` (no whitespace errors).
+
+**Next action:** choose the exact attacker/defender outputs and prototype the required scale,
+ballast and repeatable 3D-print weights. The existing 200 g / 0.01 g scale cannot measure 370.56 g.
+
+## Session Close — 2026-09-15 (continued) — Two postcard builders missed the v2 flat stamp swap
+
+**Task:** following up on the stamp session below (Codex's v2 flat-overlay stamps), checked for
+consistency across all builders rather than assuming the swap was complete everywhere.
+
+**Found:** `build_postcard_01_pdf.py`, `05`, `06`, `07`, `08` already pointed at the `_v2_flat`
+stamps and had been rebuilt. `build_postcard_02_pdf.py` and `build_postcard_03_pdf.py` — both
+Leif's trail, same `Stamp_Leif_Longship` art as card 01 — still pointed at the old `_v1`
+photographic stamp (card 01 was updated, 02/03 were missed). A repo-wide `grep` confirmed no other
+`_v1` stamp references remained once these two were fixed.
+
+**Fixed:** updated both scripts' `STAMP` path to `Stamp_Leif_Longship_v2_flat.png`, rebuilt
+`Postcard_02_Battle_Harbour_{Print,Letter_Print}.pdf` and
+`Postcard_03_Baffin_Island_{Print,Letter_Print}.pdf`, then rebuilt `Norse_Postcards_Full_Print.pdf`
+via `build_postcard_collection.py` so the combined file picks up cards 02/03's new stamp too (that
+combined file currently only bundles cards 01–03 — `CARDS` in the collection script is deliberately
+left empty per its own comment, cards 05+ aren't wired into it; pre-existing, not changed here).
+
+### Files changed
+
+- `NorseBackpack/Postcards/build_postcard_02_pdf.py`, `build_postcard_03_pdf.py` — stamp path
+  updated to `_v2_flat`.
+- `output/pdf/Postcard_02_Battle_Harbour_{Print,Letter_Print}.pdf`,
+  `Postcard_03_Baffin_Island_{Print,Letter_Print}.pdf`, `Norse_Postcards_Full_Print.pdf` — rebuilt.
+
+### Checks run
+
+- Rasterized card 02's back page (PyMuPDF) and inspected at full size: the stamp sits flat on the
+  cream card stock with no grey photographic background/shadow box, matching cards 01/05/06/07/08.
+- `grep -rn "Stamp_.*_v1\.png"` across `.py`/`.html` returned nothing after the fix.
+
+### Next action
+
+Run the planned physical print-size check (`PR-05`), per Codex's session below — unaffected by this
+fix, still outstanding.
+
+### Blockers / open items
+
+- None new. `Stamp_Aud_Pillars_v2_flat.png` and `Stamp_Harald_Labrys_v2_flat.png` exist but are
+  unused by any build script yet (Aud/Harald postcard builders don't exist), and both motifs are
+  already flagged "Superseded — redraw" in the Design guide, unrelated to this fix.
+
+## Session Close — 2026-09-15 — All four stamps converted from photographed objects to postcard overlays
+
+**Task:** review the stamp series and improve the stamp background without changing the icons.
+
+**Built and approved across the four existing motifs:**
+- New v2 assets preserve each engraved illustration and trail colour, but remove the photographic
+  table/surround and cast shadow. The area outside each perforated edge is transparent (32-bit
+  alpha), with a quiet pale-cream internal ground.
+- The Design spec gallery points to all four v2 overlays. Exact prompts are recorded there.
+- Card 01 and all four built Rollo cards (05–08) now use their matching v2 asset; their PDFs were
+  rebuilt. Aud and Harald have no built postcard PDF yet, so their v2 assets are ready for use.
+
+### Files changed
+
+- `NorseBackpack/Postcards/Stamps/Stamp_{Leif_Longship,Rollo_Comet,Aud_Pillars,Harald_Labrys}_v2_flat.png` — new transparent-background overlays.
+- `NorseBackpack/Postcards/build_postcard_{01,05,06,07,08}_pdf.py` — built cards now consume v2 assets.
+- `NorseBackpack/Norse_Brainstorm.html` — gallery points to v2; treatment and exact prompts added.
+- `output/pdf/Postcard_01_LAnse_{Print,Letter_Print}.pdf`, `Norse_Postcards_Full_Print.pdf`, and
+  `Postcard_{05_Rouen,06_Bayeux,07_Winchester,08_Battle}_{Print,Letter_Print}.pdf` — rebuilt.
+
+### Checks run
+
+- Inspected all four transparent PNGs at full resolution: 1145×1374, 32-bit ARGB.
+- Rendered Card 01 and Bayeux/Card 06 backs from rebuilt PDFs at 3× and inspected them: no
+  photographic shadow or dark rectangle remains; postmarks still overlay their stamps correctly.
+- HTML paired-tag check passed.
+- Local in-app-browser preview failed to attach, so the Design tab itself was not visually checked
+  in-browser this session. The image/PDF visual proof was checked directly.
+
+### Next action
+
+Run the planned physical print-size check (`PR-05`) before producing the remaining postcard backs.
+
+## Session Close — 2026-09-15 — Rouen postcard's gallery entry was stale, not actually missing
+
+**Task:** the user reported the Rouen postcard "missing." Investigated rather than rebuilding
+blind — `Postcard_05_Rouen_Front.png`, `build_postcard_05_pdf.py`, and both
+`output/pdf/Postcard_05_Rouen_{Print,Letter_Print}.pdf` already exist and are complete (message,
+Fun Fact, address, stamp, postmark placeholder, word-lock order clue), committed in `e96d06d`. The
+postcard itself was never missing.
+
+**Real problem:** the Postcards tab's gallery entry for card 05 (`Norse_Brainstorm.html`) was
+stale from before the back/PDF got built — it showed only the front image, no "View PDF" link, and
+said "back and print PDF remain to build." A nearby `PZ-15` note also still claimed Rouen's front
+art didn't exist and the build script was blocked on Codex. Since the design page is the project's
+single source of truth (`AGENTS.md`), a stale entry there reads as the postcard not existing, which
+is exactly what was reported. This was mechanical sync to match already-built, already-decided
+content — not a new design call — so it didn't need re-proposing first.
+
+**Fixed:**
+- Rendered `Postcard_05_Rouen_Back.png` (1500×1050, matches the front) by rasterizing page 2 of the
+  already-built `Postcard_05_Rouen_Print.pdf` with PyMuPDF — a direct capture of existing content,
+  nothing invented.
+- Updated the card 05 gallery entry: added the back figure and a "View PDF" link, corrected the
+  status line to "message, Fun Fact and word-lock order clue built; postmark date still pending"
+  (matching the pattern used for cards 02/03/06/07/08).
+- Corrected `PZ-15`'s stale "Still open" line (dropped the false front-art/Codex-block claim) and
+  its status pill (postcard text is no longer open).
+
+### Files changed
+
+- `NorseBackpack/Postcards/Postcard_05_Rouen_Back.png` — new, rasterized from the existing PDF.
+- `NorseBackpack/Norse_Brainstorm.html` — card 05 gallery entry (back figure, PDF link, status
+  text), `PZ-15` open-items line and status pill.
+
+### Checks run
+
+- Served over local HTTP (`static-preview`, port 8734) and viewed the Postcards tab: front and back
+  both render at natural size, "View PDF" opens the correct file, no console errors.
+
+### Next action
+
+None queued from this session. Postmark dates (`PC-03`/`PC-04`) remain open for Rouen along with
+every other built card.
+
+### Blockers / open items
+
+- No blocker from this session. Pre-existing backlog (postmark dates, unbuilt cards 04/09–18,
+  Hnefatafl placement, etc.) is unchanged.
 
 ## Session Close — 2026-09-14 (continued) — Harald's trail map sheet unblocked and built
 
