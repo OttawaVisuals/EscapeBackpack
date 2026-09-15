@@ -6,6 +6,78 @@ Last updated: 2026-09-15 by Claude Code
 > Open questions tab of `NorseBackpack/Norse_Brainstorm.html`, each with a stable ID.
 > See "Where Design State Lives" in `AGENTS.md`.
 
+## Session Close — 2026-09-15 (continued) — Final riddle v2 recorded: decoy postcards + crest/logo filter
+
+**Task:** the user supplied a written design update (`Final_Riddle_Update.md`, dated 15 Sept 2026,
+their own attached doc, not authored this session) replacing the evidence-led-calendar Final riddle
+direction with a richer version: 22 postcards (18 real stops + 4 decoys, one per trail), a family
+logo/crest note in the final bundle that filters decoys by element, and the same calendar-
+reconstruction mechanism underneath. The doc's own status line says it's a candidate, not proofed,
+and gates postcard-text changes behind a solver check that doesn't exist yet — so this session
+recorded it as the new candidate direction rather than treating it as decided.
+
+**Written into `Norse_Brainstorm.html`, following the doc's own change table:**
+- Full rewrite of the **Final riddle tab**: the deck/filter mechanism (decoys, logo/crest elements,
+  paired fake elements, the element-mark design constraint, decoy cities still needing a shape-check),
+  the working calendar (22 slots candidate, dated-vs-undated still open), clue types and jobs
+  (tickets/postcards/final bundle), the guessing-risk box, and a four-point validation section
+  matching the doc's solver checks verbatim (unique answer, bundle gates, no decoy reads as a shape,
+  gap/order rules hold).
+- **Story & sequence**: "Last puzzle" panel and "Keep the original ending" callout both updated to
+  22 cards + the crest/logo filter, both linking to the Final riddle tab as the candidate source.
+- **Postcard system tab**: job 1's description, the "every card is active" line, and the "Ordering
+  key"/"Count" rows in the carried-over-decisions table updated (postmark now place-only; order
+  comes from reconstructed evidence, not a raw sort).
+- **Postcards tab**: intro line and the "All 18, by trail" legend both flag the candidate 22-card /
+  decoy-filter change without altering the actual card boxes (no decoy city is decided yet, so
+  nothing was added to the grid).
+- **Design spec tab**: card-layout table's count/design-elements/ordering-key/active-cards rows
+  updated to match, including the candidate element-mark field.
+- **Open questions**: `PZ-08` reworded (first-appearance rule kept, source changed to the
+  reconstructed calendar); `PZ-11` marked superseded in place (old reasoning kept, not deleted, per
+  `AGENTS.md`'s "say so where the old text was" rule); `PC-10` reasoning corrected (postmark is no
+  longer the ordering key); `PZ-16` got an optional tie-in note (the crest/logo note could be a
+  family-tree puzzle's output). **New `PZ-18`** bundles every item the doc's own "Open questions,
+  new items" list named: dated-vs-undated decoys, the logo/crest element designs and their two
+  fakes, decoy city per trail (shape-check pending), Aud's missing museum ticket, final-bundle
+  contents, and the constraint-solver build itself.
+- **Travel routes tab**: added a pending note (`PZ-18`) rather than inventing decoy cities or
+  coordinates — `stops.js`/`Norse_Aunt_Route_Plan.json` are untouched, since which decoy goes where
+  is explicitly still open in the source doc.
+- Fixed the codes-reference table's "Final route lock" row, which still said "postmark-date order"
+  and "All 18" — a direct, factual consequence of the above, not a new call.
+
+**Deliberately not done:** no postcard text was rewritten (the doc's own gate: the solver check
+must pass first), no decoy cities/coordinates were chosen, no crest/logo artwork was designed, no
+constraint-solver script was built. All of that stays open under `PZ-18`.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — sections listed above.
+
+### Checks run
+
+- Caught and fixed one self-introduced bug: a stray `</p>` instead of `</div>` in the new "Open
+  decision: do decoys take slots?" note broke div/p balance (947/946 and 228/229). Full-file
+  div/section/article/details/ul/li/a/table/tr/td/th/p/span tag-count check passed after the fix.
+- Served over local HTTP (`static-preview`, port 8734) and checked live: Story & sequence's two new
+  links land correctly; the rewritten Final riddle tab renders top to bottom including the
+  Validation section; the Open questions tab shows the new `PZ-18` row and the superseded `PZ-11`
+  pill. No console errors anywhere checked.
+
+### Next action
+
+Per the doc: design and shape-check one trail's decoy city first (probably Rollo, since it's the
+6-stop trail with the most map detail already built), then build the constraint-grid solver before
+writing any of the 4 decoy postcards or touching existing postcard text.
+
+### Blockers / open items
+
+- Everything under new `PZ-18` (see above) — this session recorded the direction, it didn't resolve
+  any of it.
+- Pre-existing backlog (postmark dates generally, `PR-05` print-size check, Aud's coin-hoard specifics,
+  Oslo hnefatafl weight puzzle, unbuilt cards) is unchanged.
+
 ## Session — 2026-09-15 — Aud treasure-map and coin-hoard chain recorded
 
 **Task:** record the approved Aud journey direction and move the comb to Harald.
