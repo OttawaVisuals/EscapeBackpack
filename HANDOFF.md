@@ -6,6 +6,18 @@ Last updated: 2026-09-15 by Claude Code
 > Open questions tab of `NorseBackpack/Norse_Brainstorm.html`, each with a stable ID.
 > See "Where Design State Lives" in `AGENTS.md`.
 
+## Session — 2026-09-15 — Aud treasure-map and coin-hoard chain recorded
+
+**Task:** record the approved Aud journey direction and move the comb to Harald.
+
+**Decision:** Aud&rsquo;s existing laminated journey map is also the treasure map. Dögurðarnes gives four feature-route clues; the four destination squares hide a four-digit code that opens the coin cache. All coins release at once, mixed: several coins of each of three visually distinct types. The final treasure square&rsquo;s cache mark selects one sorted pile. Hvammur tells players to weigh it; Esjuberg&rsquo;s upside-down art and a drawn scale display with the final digit crossed out produce `370.56` → `370.5` → `SOLE` upside down. `SOLE` is now the decided answer for the owned four-letter lock. The comb moves to Harald&rsquo;s journey; its exact card set and output remain open.
+
+**Changed:** `NorseBackpack/Norse_Brainstorm.html` — updated the card-family matrix, lock table, PZ-03, new open build item `PZ-17`, `PR-02`, the coin-hoard prop flow, and the comb description.
+
+**Checks:** `git diff --check` passed; paired HTML-tag check passed; served over local HTTP and opened the Design spec tab in the in-app browser. Layout rendered normally and the browser reported no console errors.
+
+**Next action:** design and play-test Aud&rsquo;s four exact map routes, then choose the three coin types/counts and calibrate the selected pile on a replacement scale (>370.56 g capacity, 0.01 g resolution).
+
 ## Session — 2026-09-15 — Final riddle direction recorded
 
 **Task:** record the user's replacement direction for the Norse endgame.
