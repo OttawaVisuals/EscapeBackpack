@@ -28,7 +28,9 @@ window.NORSE_SOURCES = {
   haraldSaga: ['Heimskringla · Saga of Harald Hardrade (later narrative)', 'https://www.gutenberg.org/files/598/598-h/598-h.htm'],
   haraldEast: ['Harald’s saga · eastern journey and Holy Land', 'https://www.gutenberg.org/files/22093/22093-h/22093-h.htm'],
   haraldStudy: ['Balcanica Posnaniensia · Harald’s Sicilian service', 'https://pressto.amu.edu.pl/index.php/bp/article/view/53087'],
-  haraldBio: ['Harald Hardrada · biography and source bibliography', 'https://en.wikipedia.org/wiki/Harald_Hardrada']
+  haraldBio: ['Harald Hardrada · biography and source bibliography', 'https://en.wikipedia.org/wiki/Harald_Hardrada'],
+  haraldSyracuse: ['Medievalists.net · Harald Hardrada, fighting in Sicily and Italy (Messina and Syracuse taken, 1040)', 'https://www.medievalists.net/2022/05/harald-hardrada-fighting-in-sicily-and-italy/'],
+  meliteneHistory: ['Wikipedia · Conquest of Melitene (934) — Byzantine frontier fortress on the Euphrates', 'https://en.wikipedia.org/wiki/Conquest_of_Melitene_(934)']
 };
 window.NORSE_PEOPLE = [
   {id:'leif',name:'Leif Erikson',short:'Leif',theme:'Across the Atlantic',color:'#216580',note:'Homes, saga voyages and candidate American landfalls. Helluland and Markland are regions with debated boundaries; Vinland has no single agreed pin.'},
@@ -90,8 +92,8 @@ window.NORSE_STOPS = [
   ['h-novgorod','harald','Holmgard / Novgorod',58.522,31.275,'saga','City anchor','Saga’s Rus’ setting; distinguish it from historical Kyiv connections.','haraldEast'],
   ['h-kyiv','harald','Kyiv · Ukraine',50.45,30.523,'supported','City anchor','Service with Yaroslav and later marriage to Elisiv.','haraldCambridge'],
   ['h-constantinople','harald','Constantinople / Istanbul',41.008,28.978,'supported','City anchor','Byzantine imperial service.','haraldCambridge'],
-  ['h-anatolia','harald','Asia Minor · Anatolia',39,32,'supported','Regional anchor','Broad military-service region; not a specific battle site.','haraldMuseum'],
-  ['h-sicily','harald','Sicily · Italy',37.6,14.2,'supported','Island anchor','Service in the Byzantine Sicilian campaign.','haraldStudy'],
+  ['h-anatolia','harald','Melitene · Asia Minor',38.35,38.32,'illustrative','Illustrative placement','No single city is attested as Harald’s own site in Asia Minor — sources describe a broad campaign capturing roughly 80 strongholds east to the Euphrates. Melitene (modern Malatya) is a real, well-documented Byzantine-Arab frontier fortress directly on that river frontier, chosen as a representative point for the map, not a sourced fact about Harald himself.','meliteneHistory'],
+  ['h-sicily','harald','Syracuse · Sicily',37.069,15.288,'supported','City anchor','Captured by the Byzantine army Harald served in during the 1038–1040 campaign under George Maniakes — one of the specific cities the sources name as taken.','haraldSyracuse'],
   ['h-bulgaria','harald','Bulgaria · campaign region',42.7,25.3,'supported','Regional anchor','Participation in suppressing Peter Deljan’s uprising; approximate regional pin.','haraldStudy'],
   ['h-jerusalem','harald','Jerusalem',31.778,35.235,'saga','City anchor','Holy Land journey reported in his saga.','haraldEast'],
   ['h-jordan','harald','River Jordan · pilgrimage tradition',31.837,35.546,'saga','River-region anchor','Saga bathing episode; exact location unspecified.','haraldEast'],

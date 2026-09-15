@@ -22,33 +22,12 @@ HAND = ROOT / "Fonts" / "Nothing_You_Could_Do" / "NothingYouCouldDo-Regular.ttf"
 SANS = Path(r"C:\Windows\Fonts\arial.ttf")
 SANS_BOLD = Path(r"C:\Windows\Fonts\arialbd.ttf")
 
-CARDS = [
-    {
-        "number": "02",
-        "slug": "Battle_Harbour",
-        "place": "BATTLE HARBOUR",
-        "region": "NEWFOUNDLAND AND LABRADOR",
-        "front": POSTCARDS / "Postcard_02_Battle_Harbour_Front.png",
-        # One human-readable line, matching card 01 (PC-09). The source and licence URLs and the
-        # adaptation licence live in Image_Credits.html, which now documents all three cards
-        # (PC-14) -- printing URLs on a prop meant to read as a gift-shop postcard was the only
-        # anachronism on these backs.
-        "credit": [
-            'Image adaptation: "Battle Harbour - MacGillivray" - Matt MacGillivray, CC BY 2.0.',
-        ],
-    },
-    {
-        "number": "03",
-        "slug": "Baffin_Island",
-        "place": "BAFFIN ISLAND",
-        "region": "NUNAVUT",
-        "front": POSTCARDS / "Postcard_03_Baffin_Island_Front.png",
-        "credit": [
-            'Image adaptation: "Grinnell Glacier Bergie Bits, Baffin Island" '
-            '- Gregory "Slobirdr" Smith, CC BY-SA 2.0.',
-        ],
-    },
-]
+# Cards 01-03 (Leif's trail) all now have their own dedicated scripts -- build_postcard_01_pdf.py,
+# build_postcard_02_pdf.py, build_postcard_03_pdf.py -- with real messages, Fun Facts and imprints
+# (PZ-05, PZ-10, PZ-13). None of them may be rebuilt here with placeholder text. CARDS stays empty
+# until a future card (04-18) is ready for its own dedicated script; build_back()/build_pdf() are
+# kept for whichever of those gets placeholder content first.
+CARDS = []
 
 
 def font(path, size):
@@ -112,7 +91,11 @@ def combine_pdfs(inputs, output):
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    individual = [OUT / "Postcard_01_LAnse_Print.pdf"]
+    individual = [
+        OUT / "Postcard_01_LAnse_Print.pdf",
+        OUT / "Postcard_02_Battle_Harbour_Print.pdf",  # built by build_postcard_02_pdf.py
+        OUT / "Postcard_03_Baffin_Island_Print.pdf",  # built by build_postcard_03_pdf.py
+    ]
     for card in CARDS:
         back = build_back(card)
         output = OUT / f"Postcard_{card['number']}_{card['slug']}_Print.pdf"

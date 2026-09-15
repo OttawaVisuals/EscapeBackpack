@@ -1,10 +1,1448 @@
 # Project Handoff
 
-Last updated: 2026-09-12 by Claude Code
+Last updated: 2026-09-14 by Claude Code
 
 > Session continuity only. Open design questions are **not** tracked here — they live in the
 > Open questions tab of `NorseBackpack/Norse_Brainstorm.html`, each with a stable ID.
 > See "Where Design State Lives" in `AGENTS.md`.
+
+## Session Close — 2026-09-14 (continued) — Harald's trail map sheet unblocked and built
+
+**Task, same session continued:** start Harald's trail map sheet, which `build_trail_maps_pdf.py`
+had listed in `BLOCKED` since stops 5–6 ("Sicily", "Asia Minor") were regions, not named points.
+
+**Researched real, verifiable places for both** (WebSearch, not memory):
+- **Sicily → Syracuse.** Confirmed by multiple sources: during the 1038–1040 Byzantine campaign
+  under George Maniakes, Harald's forces took part in capturing Messina and Syracuse — a specific,
+  well-documented site.
+- **Asia Minor → no single city resolves.** Every source describes a broad sweep (~80 strongholds
+  captured, advancing to the Euphrates), no named city tied to Harald specifically. Reported this
+  honestly to the user rather than inventing one; they chose **"pick a representative city, clearly
+  flagged as illustrative."** Chose **Melitene** (modern Malatya) — a real, well-documented
+  Byzantine-Arab frontier fortress directly on the Euphrates, explicitly marked as a placement
+  choice, not a sourced fact about Harald.
+
+**Updated the sourced data in two places** (both needed — they're separate copies): `stops.js`
+(the 72-entry research corpus, plus two new source entries) and `Norse_Aunt_Route_Plan.json`'s
+embedded `visits.harald` copies for `h-sicily`/`h-anatolia`. New evidence category `illustrative`
+added for the Melitene entry, distinct from `supported`/`saga`/`uncertain`, so it can't be mistaken
+for sourced fact later.
+
+**Added `harald` to `TRAILS` and built the sheet** — first attempt succeeded cleanly (no dropped
+labels, no collisions): all six stops findable by name. Title `THE VARANGIAN ROAD` is a draft pick,
+not yet confirmed with the user. Frame is necessarily much more zoomed out than the other three
+sheets (continent-spanning: Norway to Sicily to eastern Anatolia) — a coarser km-per-square is an
+accepted consequence, not an oversight.
+
+**Real problem caught: the traced route doesn't read as a digit `2`.** Plotted in visit order, the
+path crosses west↔east twice — a zigzag, not a clean 2. Flagged to the user before going further
+(this is the core final-puzzle mechanic — traced shapes read as the code). They chose **accept as-is**
+over reordering (which would also require re-checking `PZ-08`'s postmark-order constraint and
+`PZ-11`'s held-back-card choice).
+
+**Second, independent instance of the same problem found and partially fixed:** the "Travel routes"
+tab already had a hardcoded, hand-drawn SVG polyline captioned "Harald route shaped like the digit
+2" — an idealized target shape drawn before the real map existed, not derived from any projection,
+plus a full duplicate copy of the old Sicily/Anatolia stop text (name, note, source link) that
+`stops.js` alone doesn't drive. Updated that duplicate text to Syracuse/Melitene and re-captioned the
+SVG as an idealized target that the real map doesn't achieve, rather than leaving the page
+contradicting its own answer key.
+
+### Files changed
+
+- `NorseBackpack/TravelMap/stops.js` — `h-sicily`→Syracuse, `h-anatolia`→Melitene (new coordinates,
+  evidence/precision/note/source), two new `NORSE_SOURCES` entries.
+- `NorseBackpack/TravelMap/Norse_Aunt_Route_Plan.json` — same two stops' embedded copies updated to
+  match.
+- `NorseBackpack/TravelMap/build_trail_maps_pdf.py` — `BLOCKED` emptied; new `harald` entry in
+  `TRAILS` (frame, parallels, title, band colour, minimal/empty regions-areas-waters-extra_towns).
+- `output/pdf/Trail_Map_4_Harald_Print.pdf`, `Trail_Map_4_Harald_ANSWER.pdf` — new.
+- `NorseBackpack/Norse_Brainstorm.html` — `PZ-09` (Harald's sheet now built, shape risk noted),
+  `PZ-11` (Aldeigjuborg hold-back flagged stale, needs re-test against the real projection), `PZ-06`
+  (the "loosest of the four" note updated to reflect the real zigzag), the postcard-gallery Harald
+  caption, the prop-kit list's "three of four sheets built" line, and the Travel routes tab's
+  hardcoded Harald route-card (stale stop text + misleadingly confident SVG shape).
+
+### Checks run
+
+- Ran `build_trail_maps_pdf.py harald`: clean build, no `STOPS NOT LABELLED` line, no label
+  collisions reported.
+- Rendered both the print and ANSWER PDFs at 200dpi and inspected visually: all six stops labelled
+  and findable, coastlines/grid/scale bar/compass all correct, no overlap or dropped content.
+- Verified the shape problem by reading the actual projected stop order off the rendered answer
+  key, not by assumption.
+- Live-checked (served over local HTTP) that both the Travel routes tab's Leaflet mini-map and the
+  separate `Travel_Map.html` workshop page pick up the new Syracuse/Melitene data automatically
+  (both read `stops.js` at runtime) — no console errors on either page.
+- HTML tag balance after all edits: 897 `div`, 12 `section`, 64 `figure`, 23 `details`, 23 `article`,
+  13 `ul`, 108 `li`, 80 `a`, 5 `svg`, 7 `ol` — all paired.
+- Validated `Norse_Aunt_Route_Plan.json` still parses after editing.
+- Deleted temporary preview PNGs after inspection.
+
+### Next action
+
+Re-test `PZ-11`'s Harald hold-back choice (Aldeigjuborg/Staraya Ladoga) against the real built map's
+projection — it was chosen on an approximate projection before this sheet existed, and the "one-card-
+removed" shape test needs redoing now that six real points exist.
+
+### Blockers / open items
+
+- `PZ-11`'s Harald hold-back card is stale (see Next action).
+- Title `THE VARANGIAN ROAD` is an unconfirmed draft pick.
+- Harald's sheet has no decorative regions/areas/waters/extra-town labels yet (the other three
+  sheets each have 8–25) — currently only the six real stops are labelled.
+- The hnefatafl board-setup panel (`Props/Hnefatafl/build_board_setup_pdf.py`) still needs
+  compositing onto this sheet's back now that it exists.
+- The coin puzzle's three mint-city locations (`PZ-09`) are still unplaced on this sheet.
+- `PR-11`-style decorative vignettes (present on Leif's and Rollo's sheets) don't exist for Harald.
+
+## Session Close — 2026-09-14 — Incomplete hand-drawn hnefatafl setup sketch
+
+**Task:** create a square, high-resolution PNG of the final 11×11 board setup as Liv's practical
+pen sketch on the blank white back of a document, with columns I–K made unreadable by wet ink
+transferred and dragged when another sheet was lifted away.
+
+**Built, then revised:** `Hnefatafl_Incomplete_Board_Sketch_v2.png` is the selected 1254×1254
+PNG. It keeps the exact dark-green hand-ruled setup, but now sits on plain white document paper;
+the right side is damaged by dense green-black wet-ink transfer and dragged smearing from another
+sheet, not a brown tea stain. The visible A–H positions were checked cell-by-cell against the
+user's coordinate list. Columns I–K are unreadable as intended. The superseded parchment version
+is retained beside it as `Hnefatafl_Incomplete_Board_Sketch_v1.png`.
+
+**Project-page record:** added the rendered image and the exact built-in ImageGen prompt to the
+Hnefatafl setup section in `NorseBackpack/Norse_Brainstorm.html`.
+
+**Checks:** confirmed PNG format and 1254×1254 dimensions for v2; inspected the full render; checked the
+11×11 cell count, visible token coordinates, lack of text/labels, and opaque I–K coverage. HTML
+tag balance and live browser rendering were checked after the edit.
+
+**Next action:** decide whether v2 becomes the actual Harald map-back artwork or remains a
+visual direction alongside the existing deterministic PDF panel. No PDF was rebuilt in this
+session.
+
+## Session Close — 2026-09-14 (continued) — Board size changed to 11×11; user's final layout solved and all props rebuilt
+
+**Task, same session continued:** the user asked to make the board "more realistic" — first proposed
+10×10, then corrected to 11×11 after I flagged that 10×10 has no true centre square (even-sized
+board). Built an interactive sandbox so they could design the final layout themselves; they used it
+and handed back a finished 22-piece layout (16 attackers, 6 defenders) in the tool's own export
+format.
+
+**Built:** `NorseBackpack/Props/Hnefatafl/board_designer.html` — standalone, self-contained 11×11
+sandbox with true centre throne (F6), an adapted starting layout (8 defenders in a ring inspired by
+Tablut's pattern, 20 attackers in edge rows — not claimed as verified history for this size), slide
+movement with custodian captures, a free-form Place/Edit mode, and a live coordinate export.
+
+**Solved the user's final layout by exhaustive search** (not eyeballed): 1 and 2 moves have zero
+solutions, **3 moves has exactly one** — `F6 → H6 → H11 → K11`, legs 2/5/3, code `253` — and 4 moves
+already has 18. Also verified the hidden-strip property still holds at this size: assuming the three
+hidden columns (I–K) are empty finds 31 false candidate routes, so the puzzle still "refuses to
+resolve instead of resolving wrongly."
+
+**Rebuilt all three Hnefatafl props at 11×11**, sharing one updated geometry module:
+- `board_layout.py` — full rewrite: `ATTACKERS`/`DEFENDERS` tracked as separate sets (not just one
+  undifferentiated `BLOCKS`), 11×11 `SIZE`, new throne/corners/solution path, new A–H visible /
+  I–K hidden column split (up from A–E/F–G at 7×7).
+- `build_board_setup_pdf.py` — map-back panel now draws attackers (dark) and defenders (light,
+  outlined) as visually distinct tokens; stain enlarged to 3 columns; caption switched from a full
+  coordinate list to counts (19 pieces don't fit legibly on one line the way 10 did).
+- `build_ticket_pdf.py` — mirrored offset panel now 3 columns (K, J, I reversed) instead of 2,
+  also with distinct attacker/defender tokens; ticket page grew from 2.4×5.6in to 2.6×6.6in to fit.
+- The **interactive prototype in the main page itself** (previously left stale at 7×7 in the prior
+  entry below) was also updated: 11×11 grid, real attacker/defender sets, corrected corner test,
+  reset/hint routes rewritten to the new solution. This was not explicitly requested but leaving the
+  page's own demo showing a superseded 7×7 board while every other section described 11×11 would
+  have been a real inconsistency.
+
+**`PZ-01` moved from "in progress" back to Decided** (at 11×11) — the 7×7 solution stays visible only
+where explicitly marked as a superseded illustration (`PZ-07`'s old SVG diagram caption), not
+anywhere it could be mistaken for current.
+
+### Files changed
+
+- `NorseBackpack/Props/Hnefatafl/board_designer.html` — new (from the "in progress" half of this
+  session).
+- `NorseBackpack/Props/Hnefatafl/board_layout.py` — full rewrite for 11×11.
+- `NorseBackpack/Props/Hnefatafl/build_board_setup_pdf.py` — rebuilt for 11×11, attacker/defender
+  token distinction.
+- `NorseBackpack/Props/Hnefatafl/build_ticket_pdf.py` — rebuilt for 11×11, same token distinction.
+- `output/pdf/Hnefatafl_Board_Setup_Insert.pdf`, `Hnefatafl_Ticket_Print.pdf`,
+  `Hnefatafl_Ticket_Letter_Print.pdf` — rebuilt in place.
+- `NorseBackpack/Norse_Brainstorm.html` — `PZ-01` (finalized 11×11 solution/code, pill back to
+  Decided), `PZ-07` (rebuilt-panel details, 3-column split), `PR-08` (11×11 target, piece-count
+  note), the codes-reference table row, "What the board feeds" card, the interactive prototype's
+  CSS (`.board` grid now 11 columns, new `.cell.defenderblock` style, resized king/token glyphs)
+  and JS (`attackers`/`defenders`/`blocks` sets, 121-cell render loop, corrected corner test, new
+  reset/hint routes), and its surrounding panel text.
+
+### Checks run
+
+- Ran the uniqueness search in a throwaway script (not committed) over the user's exact layout:
+  confirmed 0/0/1/18 solutions at 1/2/3/4 moves, and 31 false candidates assuming I–K empty.
+- Rebuilt both PDF props and rendered every page (map insert, ticket front, ticket back) at
+  250–300dpi; cross-checked the map panel's visible tokens and the ticket's mirrored panel token-
+  by-token against the layout data — all 19 visible + 3 hidden (via the ticket) pieces landed on the
+  exact expected squares.
+- Loaded the main page's Prototype tab live in the browser, clicked "Show route": rendered
+  "Solution: F6 → H6 → H11 → K11. Legs: 2, 5, 3 → code 253." exactly matching the search result, on
+  an 11×11 grid with the corners in all four visual corners. No console errors.
+- HTML tag balance after all edits: 897 `div`, 12 `section`, 63 `figure`, 22 `details`, 23 `article`,
+  13 `ul`, 108 `li`, 80 `a` — all paired.
+- Deleted temporary preview PNGs and the scratch solver script after inspection.
+
+### Next action
+
+Decide whether Codex should start Oslo's front artwork now, or wait for Harald's trail map sheet to
+exist first — same open call as before, unaffected by the board-size work.
+
+### Blockers / open items
+
+- Harald's trail map sheet still doesn't exist — the real blocker for finishing this puzzle's
+  physical props (unchanged from earlier this session).
+- `PR-08` (which specific 11×11 board/piece set to buy) is still unchecked against real listings.
+- The Oslo postcard's front artwork and print PDF are still unbuilt.
+- `PR-09`'s physical print test (does the offset read through the ticket, does the stain hide the
+  original) has not been run — the props are sized correctly now but untested on paper.
+
+## Session Close — 2026-09-14 — King's escape (hnefatafl): compartment dropped, moved to Harald, ticket + map-back panel built
+
+**Task:** continue the king's escape puzzle. In chat, the user dropped the throne-compartment
+idea entirely (board is now a straightforward bought prop, no cavity), then asked to build the
+Oslo museum ticket, the Oslo postcard text, and the map-back setup panel + its mirrored offset —
+for **Harald's trail**, not Leif's (reassigning `PZ-07`/`PZ-09`).
+
+**Decided in chat, written into the page:**
+- Throne compartment dropped (`PZ-01` candidate summary, `PR-08`, the puzzle-detail card, the
+  "Needs work" note, the "build" tab's prop-kit bullet, the 3D-printer inventory line).
+- The prop renamed pamphlet → **ticket** throughout (it's flat, not folded — confirmed with the
+  user this is the same object, not a second prop).
+- Ticket content simplified to the *real* historical rules (light defenders at centre, dark
+  attackers, sandwich-capture, king escapes to a corner) — general museum-visitor copy, not this
+  puzzle's own house rules (fixed non-moving blockers). Liv's actual task line ("get him to a
+  corner in exactly three moves") moved to the **Oslo postcard** instead, in her voice: "We like
+  to play our own rules though: can you get the king to escape to a corner in exactly three
+  moves?"
+- Whole mechanism reassigned from Leif's map to **Harald's Oslo map** (`PZ-07`, `PZ-09`) — Oslo is
+  a real, verified stop (`h-oslo`, order 1, Harald's trail opener). Harald's trail map sheet does
+  **not exist yet** (`build_trail_maps_pdf.py` has no entry for him, and two of his six stops are
+  still regions, not named places) — flagged to the user before drafting, who chose to draft text
+  now and let the art wait.
+- Oslo postcard message and Fun Fact drafted and written into `PZ-05` (not yet built as a PDF —
+  blocked on front art, which is Codex's job, and on Harald's map for context).
+
+**Built — two new Python props, sharing one geometry module so they can't drift apart:**
+- `NorseBackpack/Props/Hnefatafl/board_layout.py` — the 14 fixed blocker squares, throne and
+  corners, pulled from the exact `blocks` set in this page's own interactive prototype (not
+  re-derived by eye). Also the map/ticket split: columns A–E visible, F–G hidden.
+- `NorseBackpack/Props/Hnefatafl/build_board_setup_pdf.py` → `output/pdf/Hnefatafl_Board_Setup_Insert.pdf`
+  — the map-back panel: grid, throne, corners and the 10 visible blockers, with an irregular stain
+  over columns F–G and Liv's margin apology beside it. **Real bug caught and fixed**: the first
+  version painted the stain as a translucent overlay, so the hidden blockers showed through as
+  darker patches — visually defeating the "hidden" strip entirely. Fixed by never drawing tokens
+  in the hidden columns at all, so the stain covers blank paper, not a disguised token.
+- `NorseBackpack/Props/Hnefatafl/build_ticket_pdf.py` → `output/pdf/Hnefatafl_Ticket_Print.pdf`
+  (+ `_Letter_Print.pdf`) — front: museum branding, a decorative (non-puzzle) mini board icon, and
+  the real-rules text. Back: the reconstruction-caveat line plus the mirrored two-column offset
+  panel (columns printed G, F — reversed from the map's own F, G order — at the same 0.5in cell
+  pitch as the map panel, so the grid lines actually continue when butted together). **Real bug
+  caught and fixed**: the first rules draft said "no captures" one line above "the attackers win
+  by surrounding him" — a direct self-contradiction, since surrounding *is* a capture in real
+  hnefatafl. Rewrote to describe the actual sandwich-capture rule.
+
+### Files changed
+
+- `NorseBackpack/Props/Hnefatafl/board_layout.py` — new.
+- `NorseBackpack/Props/Hnefatafl/build_board_setup_pdf.py` — new.
+- `NorseBackpack/Props/Hnefatafl/build_ticket_pdf.py` — new.
+- `output/pdf/Hnefatafl_Board_Setup_Insert.pdf`, `Hnefatafl_Ticket_Print.pdf`,
+  `Hnefatafl_Ticket_Letter_Print.pdf` — new.
+- `NorseBackpack/Norse_Brainstorm.html` — `PZ-01`, `PZ-05` (Oslo message + Fun Fact), `PZ-07`
+  (reassigned to Harald, both panels marked built), `PZ-09` (hnefatafl job moved off Leif's map
+  onto Harald's), `PR-08`, `PR-09`, the codes-reference table row, the puzzle-candidate summary,
+  the interactive prototype's caption, the "build" tab's prop-kit list, and the 3D-printer
+  inventory line — all updated for the compartment drop, the pamphlet→ticket rename, and the
+  Leif→Harald reassignment.
+
+### Checks run
+
+- Ran both build scripts; inspected all three PDF pages (map insert, ticket front, ticket back) at
+  300dpi. Caught and fixed the two real bugs above before calling either script done.
+- Verified the ticket's mirrored panel against the shared blocker data by hand: G-column blockers
+  (G2, G4, G5) land in the left slot, F-column blocker (F2) in the right slot, matching the
+  reversed G-then-F column order; corners G1/G7 render as open diamonds in the correct rows.
+- HTML tag balance after all edits: 897 `div`, 12 `section`, 63 `figure`, 22 `details`, 23
+  `article`, 13 `ul`, 108 `li` — all paired.
+- Served over local HTTP (another session's `static-preview` on port 8734, joined directly since
+  it serves the same repo checkout) and inspected the Puzzle details tab: heading, rules text and
+  prototype caption all show the updated ticket/Harald wording; no console errors.
+- Deleted temporary preview PNGs from `output/pdf/` after inspection; the three new production
+  PDFs are left in place.
+
+### Next action
+
+Decide whether Codex should start Oslo's front artwork now (independent of the map, like Rouen's
+front was built before its map/lock context existed) or wait — either way, Harald's trail map
+sheet (`build_trail_maps_pdf.py`) is the real blocker for finishing this puzzle's physical props.
+
+### Blockers / open items
+
+- Harald's trail map sheet does not exist yet — two of his six stops (Sicily, Anatolia) are still
+  regional anchors, not named places, which blocks the sheet itself, not just this puzzle.
+- `PR-08` (which physical board to buy, 7×7 vs. 9×9/11×11) is still unchecked against real
+  listings — now simpler since the compartment requirement is gone, but still unresolved.
+- The Oslo postcard's front artwork and print PDF are both unbuilt — this session only wrote the
+  message and Fun Fact into `PZ-05`.
+- `PR-09`'s print test (does the offset read through the ticket, does the stain hide the original)
+  is now buildable/testable since both scripts exist, but no physical print test has been run.
+
+## Session Close — 2026-09-14 — Oslo postcard front
+
+**Task:** create Postcard 13's Oslo front from the user-selected Wikimedia photograph of
+Akershus Fortress viewed from the water, matching the approved postcard series.
+
+**Done:** verified Balou46's source and CC BY-SA 4.0 licence, generated a screen-print nighttime
+waterfront illustration, normalized it to 1500 × 1050 at 300 dpi, and added the shared
+`OSLO / NORWAY` title treatment. The exact prompt, attribution and front-only status are recorded
+in the Postcards tab and source register. The back and print PDF were not part of this session.
+
+### Files changed
+
+- `NorseBackpack/Postcards/Postcard_13_Oslo_Front.png` — finished front.
+- `NorseBackpack/Postcards/Postcard_13_Oslo_Illustration_v1.png` — print-sized illustration.
+- `NorseBackpack/Postcards/References/Postcard_13_Oslo_ImageGen_Source.png` — untouched ImageGen result.
+- `NorseBackpack/Postcards/References/Oslo_Akershus_Balou46_Source.jpg` — Wikimedia source.
+- `NorseBackpack/Postcards/build_postcard_front_images.py` — Oslo registered in the shared front builder.
+- `NorseBackpack/Postcards/References/README.md` — attribution and adaptation notes.
+- `NorseBackpack/Norse_Brainstorm.html` — gallery, overview, exact prompt and source summary.
+
+### Checks run
+
+- Inspected the Wikimedia source, generated illustration and titled front at full size.
+- Confirmed the final front is 1500 × 1050 at 300 dpi.
+- Served the design page over local HTTP and inspected the Oslo overview tile and gallery card in
+  the in-app browser. The image loaded at its natural 1500 × 1050 size, the Postcards view was
+  active, and the browser console had no warnings or errors. HTML tag counts remain balanced.
+
+### Next action
+
+Decide Postcard 13's message and Fun Fact before building its back and print PDF.
+
+### Blockers / open items
+
+- No front-art blocker remains. The back content and PDF are still unbuilt.
+
+## Session Close — 2026-09-14 — Châlus postcard front
+
+**Task:** create Postcard 04's Châlus front from the user-selected Wikimedia photograph of
+Château de Châlus-Chabrol, matching the approved postcard series.
+
+**Done:** verified Fonquebure's source and CC BY-SA 3.0 licence, generated a screen-print castle
+illustration, normalized it to 1500 × 1050 at 300 dpi, and added the shared
+`CHÂLUS / HAUTE-VIENNE` title treatment. The source photograph's white caption strip was excluded.
+The exact prompt, attribution and front-only status are recorded in the Postcards tab and source
+register. The back and print PDF were not part of this session.
+
+### Files changed
+
+- `NorseBackpack/Postcards/Postcard_04_Chalus_Front.png` — finished front.
+- `NorseBackpack/Postcards/Postcard_04_Chalus_Illustration_v1.png` — print-sized illustration.
+- `NorseBackpack/Postcards/References/Postcard_04_Chalus_ImageGen_Source.png` — untouched ImageGen result.
+- `NorseBackpack/Postcards/References/Chateau_Chalus_Chabrol_Fonquebure_Source.jpg` — Wikimedia source.
+- `NorseBackpack/Postcards/build_postcard_front_images.py` — Châlus registered in the shared front builder.
+- `NorseBackpack/Postcards/References/README.md` — attribution and adaptation notes.
+- `NorseBackpack/Norse_Brainstorm.html` — gallery, overview, exact prompt and source summary.
+
+### Checks run
+
+- Inspected the Wikimedia source, generated illustration and titled front at full size.
+- Confirmed the final front is 1500 × 1050 at 300 dpi.
+- Served the design page over local HTTP and inspected the Châlus overview tile and gallery card
+  in the in-app browser. The image loaded at its natural 1500 × 1050 size, the Postcards view was
+  active, and the browser console had no warnings or errors. HTML tag counts remain balanced.
+
+### Next action
+
+Decide Postcard 04's message and Fun Fact before building its back and print PDF.
+
+### Blockers / open items
+
+- No front-art blocker remains. The back content and PDF are still unbuilt.
+
+## Session Close — 2026-09-14 — Rouen postcard front
+
+**Task:** create Postcard 05's Rouen front from the user-specified Wikimedia Commons photograph
+`Rouen Place du Vieux-Marché 05`, matching the approved postcard series.
+
+**Done:** verified Zairon's source photograph and CC BY-SA 4.0 licence, generated a
+screen-print-style Old Market Square illustration, normalized it to 1500 × 1050 at 300 dpi, and
+added the shared `ROUEN / NORMANDY` title treatment. The prompt, source credit and front-only
+status are recorded in the Postcards tab and source register. The back and print PDF are not part
+of this session.
+
+### Files changed
+
+- `NorseBackpack/Postcards/Postcard_05_Rouen_Front.png` — finished front.
+- `NorseBackpack/Postcards/Postcard_05_Rouen_Illustration_v1.png` — print-sized illustration.
+- `NorseBackpack/Postcards/References/Postcard_05_Rouen_ImageGen_Source.png` — untouched ImageGen result.
+- `NorseBackpack/Postcards/References/Rouen_Place_du_Vieux_Marche_Source.{jpg,png}` — Wikimedia source and compatibility copy.
+- `NorseBackpack/Postcards/build_postcard_front_images.py` — Rouen registered in the shared front builder.
+- `NorseBackpack/Postcards/References/README.md` — attribution and adaptation notes.
+- `NorseBackpack/Norse_Brainstorm.html` — gallery, overview, exact prompt and source summary.
+
+### Checks run
+
+- Inspected the Wikimedia source, generated illustration and titled front at full size.
+- Confirmed the final front is 1500 × 1050 at 300 dpi.
+- Served the design page over local HTTP and inspected the Rouen overview tile and gallery card in
+  the in-app browser. The image loaded at its natural 1500 × 1050 size, the Postcards view was
+  active, and the browser console had no warnings or errors. HTML tag counts remain balanced.
+
+### Next action
+
+Build `build_postcard_05_pdf.py` from the already-decided Rouen message, Fun Fact and word-lock
+order clue, then render the back and print PDF.
+
+### Blockers / open items
+
+- No front-art blocker remains. The back, postmark treatment and PDF still need building.
+
+## Session Close — 2026-09-14 — Château de Robert le Diable line icon
+
+**Task:** create a simple black architectural line icon from the user-specified Wikimedia Commons
+photograph `2014-Chateau-Robert-LeDiable.jpg`, with a transparent background.
+
+**Done:** downloaded W. Mechelke's 3008 × 2000 original (CC BY-SA 3.0), verified the attribution
+and licence on Commons, and used it as the sole structural reference. The accepted drawing keeps
+the left round crenellated tower, broken central wall, receding curtain wall, major openings and
+the source photograph's cropped right tower while omitting foliage, ground, railings and stone
+texture. The first generation baked in a checkerboard; a second ImageGen background-extraction
+pass produced genuine alpha. A reproducible cleanup normalizes the final 1536 × 1024, 300 dpi PNG
+to exact black over transparency. The icon is not yet placed on Map 2.
+
+### Files changed
+
+- `NorseBackpack/TravelMap/Art/Rollo_Chateau_Robert_Le_Diable_Line_v1.png` — production icon.
+- `NorseBackpack/TravelMap/Art/Sources/Chateau_Robert_Le_Diable_WMechelke_Source.jpg` — original
+  Wikimedia photograph.
+- `NorseBackpack/TravelMap/Art/Sources/Rollo_Chateau_Robert_Le_Diable_Line_v1_ImageGen_Source.png`
+  — accepted transparent ImageGen render.
+- `NorseBackpack/TravelMap/prepare_chateau_line_icon.py` — reproducible alpha/RGB/canvas cleanup.
+- `NorseBackpack/Norse_Brainstorm.html` — gallery, source attribution, CC BY-SA note and exact
+  two-stage ImageGen prompts added to the Design guide.
+
+### Checks run
+
+- Inspected the source photo, accepted render and normalized icon.
+- Verified production output is 1536 × 1024 RGBA at 300 dpi, alpha extrema 0–255, with only
+  `(0, 0, 0)` in visible RGB pixels.
+- Served the design page over local HTTP and inspected the icon, caption and source/licence block
+  in the in-app browser. The image loaded at its natural 1536 × 1024 size and the browser console
+  has no warnings or errors. HTML tag counts remain balanced.
+
+### Next action
+
+User reviews the icon. If approved, decide its exact Map 2 size and location before editing the
+map builder; placement must avoid labels and the final drawn-route corridor.
+
+### Blockers / open items
+
+- No technical blocker. Map placement was not requested and remains open.
+
+## Session Close — 2026-09-14 — Six additional Map 2 word icons
+
+**Task:** generate one Rollo/Map 2 icon for each paired English-word concept: Combat/Fight,
+Beef/Cow, Forest/Woodland, Poultry/Hen, People/Folk and Tavern/Inn. The pairs are synonyms from
+different origins, so the deliverable is six icons, not twelve.
+
+**Done:** generated crossed sword/axe, cow, three-tree woodland, hen, three ordinary townspeople
+and timber inn/tankard-sign subjects using the existing Rollo map art as style references. Forest,
+folk and inn initially contained baked transparency checkerboards; corrected those with a second
+ImageGen background-extraction pass. Ran all six through the existing normalization script so
+each production asset is a 1024 × 1024 transparent PNG at 300 dpi with every visible RGB pixel
+exactly `#A2562D`. Icons are built but not placed on Map 2.
+
+### Files changed
+
+- `NorseBackpack/TravelMap/Art/Rollo_{Combat,Cow,Forest,Hen,Folk,Inn}_v1.png` — six production
+  icons.
+- `NorseBackpack/TravelMap/Art/Sources/Rollo_{Combat,Cow,Forest,Hen,Folk,Inn}_v1_ImageGen_Source.png`
+  — accepted raw or transparency-corrected renders.
+- `NorseBackpack/TravelMap/normalize_rollo_vignettes.py` — six new assets added to the reproducible
+  normalization list.
+- `NorseBackpack/Norse_Brainstorm.html` — six-icon gallery, status and exact generation/correction
+  prompts added to the Design guide.
+
+### Checks run
+
+- Inspected all six source renders and all six normalized assets.
+- Verified every production file is 1024 × 1024 RGBA with alpha extrema 0–255 and only
+  `(162, 86, 45)` in visible RGB pixels.
+- Rendered the set at approximately 0.43 in / 300 dpi on the map's cream colour; all six concepts
+  remain recognizable.
+- Served the design page over local HTTP and inspected the six-icon gallery in the in-app browser;
+  all six images loaded at their natural 1024 × 1024 size, the 3 × 2 layout is clean, and the
+  browser console has no warnings or errors. HTML tag counts remain balanced.
+
+### Next action
+
+User reviews the six icons. If approved, decide their actual Map 2 locations before changing the
+map builder; placement must respect stop labels and the final drawn-route corridor.
+
+### Blockers / open items
+
+- No technical blocker. Map placement was not requested and remains open.
+
+## Session Close — 2026-09-14 — Battle postcard front artwork
+
+**Task:** continue the postcard image set with the Battle/Hastings stop, using the user-specified
+Wikimedia Commons photograph of the wooden archer sculpture at the battlefield and the same
+screen-print travel-poster style as the approved fronts.
+
+**Done:** downloaded Richard Cooke's exact Commons source and verified its CC BY-SA 2.0 licence.
+Used it as the scene reference alongside four finished postcard illustrations as style/layout
+references. The first ImageGen render was accepted: it keeps the carved kneeling archer clearly
+wooden, the drawn longbow, open field, tree line, distant Battle Abbey and broad summer sky, with
+no reenactment or invented figures. Normalized the 1499 × 1049 render to the exact PC-13 1500 ×
+1050 size at 300 dpi, then used the shared builder to add `BATTLE / EAST SUSSEX`. Card 08 is
+front-only; its message, Fun Fact, assigned tree/teacup rebus, back and print PDF remain unwritten.
+
+### Files changed
+
+- `NorseBackpack/Postcards/Postcard_08_Battle_Illustration_v1.png` — print-sized illustration.
+- `NorseBackpack/Postcards/Postcard_08_Battle_Front.png` — titled postcard front.
+- `NorseBackpack/Postcards/References/Battle_Hastings_Sculpture_Source.jpg` — exact source.
+- `NorseBackpack/Postcards/References/Postcard_08_Battle_ImageGen_Source.png` — raw render.
+- `NorseBackpack/Postcards/References/README.md` — source, licence and adaptation notes.
+- `NorseBackpack/Postcards/build_postcard_front_images.py` — Battle added to the shared list.
+- `NorseBackpack/Norse_Brainstorm.html` — Rollo overview thumbnail, front-only gallery entry,
+  source note and exact production prompt.
+
+### Checks run
+
+- Inspected the photograph, normalized illustration and titled front at full size.
+- Confirmed both production PNGs are 1500 × 1050; the illustration records 300 dpi.
+- HTML tag balance: 827 `div`, 11 `section`, 47 `figure`, 17 `details` and 19 `article` elements,
+  all paired.
+- Served over local HTTP and checked the Postcards tab: overview thumbnail and gallery image load
+  at natural size 1500 × 1050; the new front lays out cleanly; no browser warnings or errors.
+
+### Next action
+
+Create the next user-selected front. Build Battle's back only after its message and Fun Fact are
+approved; the tree/teacup rebus placement is already assigned by `PZ-14`.
+
+### Blockers / open items
+
+- No technical blocker. Battle is not fully built, so the Rollo count remains 1 of 6 and the
+  overview correctly shows its artwork without a completion checkmark.
+
+## Session Close — 2026-09-14 — Winchester postcard front artwork
+
+**Task:** continue the postcard image set with Winchester, using the user-specified Wikimedia
+Commons photograph of Winchester Cathedral and the same screen-print travel-poster style as the
+approved fronts.
+
+**Done:** downloaded Graham Horn's exact Commons source and verified its CC BY-SA 2.0 licence.
+Used it as the scene reference alongside cards 01–03 and Bayeux as style/layout references. The
+first ImageGen render was accepted: it retains the elevated winter view, long cathedral nave,
+square central tower, west front, layered roofs and snow-dusted ridge in the set's flat,
+lightly-distressed palette. Normalized the 1499 × 1049 render to the exact PC-13 1500 × 1050 size
+at 300 dpi, then used the shared front builder to add `WINCHESTER / ENGLAND`. Card 07 is front-only;
+its message, Fun Fact, assigned cross/bow/lightning rebus, back and print PDF remain unwritten.
+
+### Files changed
+
+- `NorseBackpack/Postcards/Postcard_07_Winchester_Illustration_v1.png` — print-sized illustration.
+- `NorseBackpack/Postcards/Postcard_07_Winchester_Front.png` — titled postcard front.
+- `NorseBackpack/Postcards/References/Winchester_Cathedral_Graham_Horn_Source.jpg` — exact source.
+- `NorseBackpack/Postcards/References/Postcard_07_Winchester_ImageGen_Source.png` — raw render.
+- `NorseBackpack/Postcards/References/README.md` — source, licence and adaptation notes.
+- `NorseBackpack/Postcards/build_postcard_front_images.py` — Winchester added to the shared list.
+- `NorseBackpack/Norse_Brainstorm.html` — Rollo overview thumbnail, front-only gallery entry,
+  source note and exact production prompt.
+
+### Checks run
+
+- Inspected the photograph, normalized illustration and titled front at full size.
+- Confirmed both production PNGs are 1500 × 1050; the illustration records 300 dpi.
+- HTML tag balance: 824 `div`, 11 `section`, 46 `figure`, 16 `details` and 18 `article` elements,
+  all paired.
+- Served over local HTTP and checked the Postcards tab: the overview thumbnail and gallery image
+  load at natural size 1500 × 1050; the new front lays out cleanly; no browser warnings or errors.
+
+### Next action
+
+Create the next user-selected front. Build Winchester's back only after its message and Fun Fact
+are approved; the cross/bow/lightning rebus placement is already assigned by `PZ-14`.
+
+### Blockers / open items
+
+- No technical blocker. Winchester is not a fully built card, so the Rollo count remains 1 of 6
+  and the overview correctly shows its artwork without a completion checkmark.
+
+## Session Close — 2026-09-14 — Bayeux postcard front artwork
+
+**Task:** continue the postcard image set with Bayeux, using the user-specified Wikimedia Commons
+photograph of Bayeux Tapestry Scene 57 and the same screen-print travel-poster style as cards
+01–03.
+
+**Done:** downloaded the exact Commons source, verified its CC0/public-domain status, and used it
+as the scene reference alongside the three finished postcard illustrations as style/layout
+references. The first ImageGen render was accepted without a second generation: it preserves the
+standing soldier, arrow-struck shield bearer, mounted figure, fallen warrior, inscription and
+animal borders in a limited-palette screen-print treatment. Normalized the 1499 × 1049 render to
+the exact PC-13 1500 × 1050 size at 300 dpi, then used the shared postcard-front builder to add
+`BAYEUX / NORMANDY` in the established title band. Card 06 is front-only; its message, Fun Fact,
+imprint, back and print PDF remain unwritten. The generated Latin inscription is decorative and
+close to the source, but is not a letter-perfect scholarly transcription.
+
+### Files changed
+
+- `NorseBackpack/Postcards/Postcard_06_Bayeux_Illustration_v1.png` — print-sized illustration.
+- `NorseBackpack/Postcards/Postcard_06_Bayeux_Front.png` — titled postcard front.
+- `NorseBackpack/Postcards/References/Bayeux_Tapestry_scene57_Harold_death_Source.jpg` — exact
+  user-specified source image.
+- `NorseBackpack/Postcards/References/Postcard_06_Bayeux_ImageGen_Source.png` — untouched render.
+- `NorseBackpack/Postcards/References/README.md` — source, licence and adaptation notes.
+- `NorseBackpack/Postcards/build_postcard_front_images.py` — Bayeux added to the shared front list.
+- `NorseBackpack/Norse_Brainstorm.html` — Rollo overview thumbnail, front-only gallery entry,
+  source note and exact production prompt.
+
+### Checks run
+
+- Inspected the source, normalized illustration and titled front at full size.
+- Confirmed both production PNGs are 1500 × 1050; the illustration records 300 dpi.
+- Confirmed Bayeux uses the same shared typography routine as cards 01–03 and the title sits fully
+  inside the blank navy band.
+- HTML tag balance remained valid: 821 `div`, 11 `section`, 44 `figure`, 15 `details` and 17
+  `article` elements, all paired. Served over local HTTP and checked the Postcards tab: the Bayeux
+  overview thumbnail and full gallery image both load at natural size 1500 × 1050, the new entry
+  lays out cleanly, the correct view is active, and the browser console has no warnings or errors.
+
+### Next action
+
+Create the next user-selected postcard front. Bayeux's back should wait until its message and Fun
+Fact are approved (`PZ-05`), since this session was image-only.
+
+### Blockers / open items
+
+- No technical blocker. Bayeux is not a complete card yet, so it remains excluded from the
+  “fully built” count and has no checkmark in the overview.
+
+## Session Close — 2026-09-14 — Norse hint page copied into the live escape-backpack-games repo
+
+**Task:** follow-up to the prior session's `NorseBackpack/norse-hints.html` (built in this repo,
+matching the Hiking Backpack's live hint-companion format). The user asked to copy it into the
+actual `escape-backpack-games` repo so it goes live at the real URL.
+
+**Done:** that repo (`OttawaVisuals/escape-backpack-games`, public, flat file structure —
+`index.html`, `styles.css`, `assets/`, `hiking-hints.html`, etc. at root) wasn't cloned anywhere on
+this machine, so this session cloned it fresh to `C:\EscapeBackpack\escape-backpack-games` (a
+sibling of this repo, outside it — not tracked here). Confirmed the repo's own `styles.css` and
+`assets/logo.png` are the canonical originals (this repo's copies in `NorseBackpack/` were just a
+local preview copy, byte-for-byte the same content), so only `norse-hints.html` itself was copied
+in — no need to touch the shared assets. Asked and confirmed two scope questions before pushing:
+(1) don't add Norse to `index.html`'s backpack grid or any other page's nav dropdown yet — only 5 of
+9 planned puzzle stations are real, so site-wide discoverability is a separate decision for later;
+(2) commit and push now rather than leaving it staged. Committed and pushed straight to `main`
+(`4fc3519`); GitHub Pages rebuilt within about a minute.
+
+**Live now:** https://ottawavisuals.github.io/escape-backpack-games/norse-hints.html — verified with
+no console errors, using the repo's real `styles.css`/logo (not the local preview copies).
+
+### Files changed
+
+- `C:\EscapeBackpack\escape-backpack-games\norse-hints.html` — new, pushed to `main`. **This path is
+  outside this repo** — nothing here tracks it; future sessions working on the public hint page need
+  to go to that clone (or re-clone it) rather than editing `NorseBackpack/norse-hints.html` and
+  expecting it to be the live copy anymore. Keep both in sync by hand until/unless a better workflow
+  is set up.
+- No changes in this repo this session beyond this handoff entry.
+
+### Checks run
+
+- Diffed the local `NorseBackpack/styles.css`/`assets/logo.png` against the escape-backpack-games
+  repo's own copies — content-identical (one added comment line in the CSS, negligible size
+  difference in the PNG from a base64 round-trip); used the repo's canonical files rather than
+  overwriting them.
+- Served the copied file locally against the repo's real assets (temporary `python -m http.server
+  8735` in the clone) before pushing: loaded clean, no console errors.
+- After pushing, polled the live GitHub Pages URL until it returned 200, then loaded it in the
+  browser: correct title, no console errors, matches the pre-push local check.
+
+### Next action
+
+Decide whether/when to make Norse discoverable site-wide (homepage card + nav dropdown on every
+other page) — deliberately not done this session. Also decide how the two copies of
+`norse-hints.html` (this repo's `NorseBackpack/` original and the pushed one in the separate clone)
+should be kept in sync going forward, since they are two different files on disk now.
+
+### Blockers / open items
+
+- `C:\EscapeBackpack\escape-backpack-games` is a separate git repo/clone, not a submodule or
+  otherwise linked from this repo — a future session needs to know it exists and where, since
+  nothing in this repo's structure points to it.
+- Same 4 illustrative-only Norse puzzles (rune relic, family connection, king's escape, saga in
+  pieces) and station 3's unwritten in-fiction hint text remain open from the prior session.
+
+## Session Close — 2026-09-14 — Postcards tab: new "All 18, by trail" overview
+
+**Task:** the user asked for a visual overview on the Postcards tab: all four trails with their
+colours, one small box per postcard showing the front art (where built), a checkmark on completed
+cards, and a highlight on specific postcards. The highlight criterion went through two rounds —
+first proposed as "the last stop of each trail" (guessed, per the user's phrasing "to stay out"),
+then corrected once the user clarified they meant the cards decided in `PZ-11` to be held back
+until the final container, so the map/deck doesn't leak a digit early. Searched
+`Norse_Brainstorm.html` for that decision rather than relying on memory, since `PZ-11` isn't
+something recorded in Claude Code's cross-session memory.
+
+**Built:** a new "All 18, by trail" block in the Postcards tab, above the existing card gallery.
+Four `trail-group`s (Leif `#216580`, Rollo `#a2562d`, Aud `#6d528b`, Harald `#467444`, matching the
+stamp-series colours already decided), each showing its real route stops from
+`TravelMap/Norse_Aunt_Route_Plan.json`'s `visits` block in order (3+6+3+6 = 18, confirmed against
+that file). Built cards (01, 02, 03 — all Leif's) show their real front art with a checkmark badge;
+unbuilt stops show a dashed, trail-tinted placeholder box with just the stop name. A rust "Held
+back" banner marks the three `PZ-11` cards: **Rollo — Roumare forest** (stop 6), **Aud — Hvammur**
+(stop 2), **Harald — Staraya Ladoga** (stop 2, labelled "Held back?" since `PZ-11` itself calls that
+one provisional pending Harald's map sheet). Leif's trail carries no held-back badge — `PZ-11`
+explicitly excludes it as the deliberate "teaching trail." A legend at the bottom of the block spells
+out all three states and links back to `PZ-11`.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — new `.trail-overview`/`.pc-box`/`.pc-held` CSS block; new
+  "All 18, by trail" markup in the `#postcards` section, with a full pass correcting it from a
+  first (wrong) "final leg of trail" framing to the actual `PZ-11` held-back set.
+
+### Checks run
+
+- Served over local HTTP (`static-preview`, port 8734): no console errors. Verified via a
+  cache-busted reload (`?cb=2`, same known caching quirk as prior sessions — the shared server
+  returns a stale response on a plain re-navigate to an already-visited URL) that all three
+  "Held back" badges landed on the correct boxes (Roumare forest, Hvammur, Staraya Ladoga) and that
+  Leif's cards carry only the checkmark, no held-back badge.
+- Cross-checked the 18-stop count and per-trail split (3/6/3/6) against
+  `TravelMap/Norse_Aunt_Route_Plan.json` directly rather than assuming.
+
+### Next action
+
+Nothing queued specifically from this session. If continuing on postcards, cards 04–18 (Rollo, Aud,
+Harald) are still entirely unwritten — same backlog as before (`PC-07`/`PZ-05`).
+
+### Blockers / open items
+
+- Harald's held-back card (Staraya Ladoga) is provisional per `PZ-11` itself — re-test once Harald's
+  real map sheet exists (`build_trail_maps_pdf.py` currently has no Harald sheet; two of his stops
+  are still regions, not named places).
+- All the pre-existing blockers below (postmark dates, Hnefatafl placement, 15 unbuilt cards, etc.)
+  are unchanged by this session.
+
+## Session Close — 2026-09-14 — Five Bayeux-style postcard margin symbols
+
+**Task:** create a Roman numeral I, an arrow/2 hybrid, a face-on die showing five, a separate plain
+right-pointing arrow meaning “to,” and a fish-scale patch meaning “scale,” matching Aunt Liv's
+existing multicolour Bayeux-style postcard drawings.
+
+**Done:** generated all five with the built-in ImageGen workflow using
+`Postcards/RebusIcons/Sources/Bayeux_Reference_Crop.png` as a style/palette reference. The first
+three source renders baked a fake transparency checkerboard into RGB; the plain arrow arrived with
+genuine alpha, as did the fish-scale patch. `prepare_bayeux_margin_symbols.py` handles both source types, removes isolated grid
+fragments where needed, recentres the artwork and writes genuine 1024 × 1024 RGBA PNGs at 300 dpi.
+Updated `PC-15` from five to ten unassigned margin drawings and added the new gallery and exact
+prompts to the Design guide. No postcard builder or card-to-symbol assignment was changed.
+
+### Files changed
+
+- `NorseBackpack/Postcards/RebusIcons/Rebus_{Roman_I,Arrow_2,Die_5,Arrow_To,Fish_Scales}_Bayeux_v1.png` — production
+  assets.
+- `NorseBackpack/Postcards/RebusIcons/Sources/Rebus_{Roman_I,Arrow_2,Die_5,Arrow_To,Fish_Scales}_Bayeux_v1_ImageGen_Source.png`
+  — untouched ImageGen renders.
+- `NorseBackpack/Postcards/RebusIcons/prepare_bayeux_margin_symbols.py` — reproducible alpha cleanup.
+- `NorseBackpack/Postcards/RebusIcons/Bayeux_Margin_Symbols_v1_PrintScale_Preview.png` — 0.45 in
+  proof at 300 dpi on the project cream ground.
+- `NorseBackpack/Norse_Brainstorm.html` — `PC-15`, gallery, production notes and exact prompts.
+
+### Checks run
+
+- Full-size visual inspection: exactly one I, one right-pointing arrow/2 hybrid, one flat die with
+  exactly five pips, one separate straight right-pointing arrow and one seven-scale patch; no extra
+  objects or competing meanings of “scale.”
+- Pixel checks: each production asset is 1024 × 1024 RGBA at 300 dpi, alpha spans 0–255, has one
+  connected visible component and does not touch the canvas edge.
+- 0.45 in / 135 px proof inspected: all five remain distinct and readable.
+- Served the HTML over local HTTP and inspected the Design guide: all eight gallery images render,
+  the new row fits cleanly, and the prompt disclosure is present. HTML tag counts remain balanced.
+
+### Next action
+
+Decide the card-to-symbol mapping and reading order for `PC-15`, then place the selected symbols in
+the relevant postcard builders at 0.4–0.5 in and rebuild those PDFs.
+
+### Blockers / open items
+
+- `PC-15` remains open by design; no target postcards were specified.
+
+## Session Close — 2026-09-13 (later still) — Norse public hint-companion page, v1 (5 real stations)
+
+**Task:** start a public player-facing hint page for the Norse Backpack, matching the format of the
+live Hiking Backpack hint companion the user pointed to
+(`https://ottawavisuals.github.io/escape-backpack-games/hiking-hints.html`). That site is a
+**separate GitHub repo** (`ottawavisuals.github.io/escape-backpack-games`), not this one — this
+session read its rendered structure and the shared `styles.css`/`assets/logo.png` from the live
+site (plus a local reference copy of its full HTML the user provided at
+`NorseBackpack/Source_Info/hiking-hints.html`) to reproduce the format here, but did not get push
+access to that other repo.
+
+**Format reproduced exactly:** single self-contained HTML file, team-name entry → timer →
+station grid → progressive per-station hint modal (Hint #1/#2/#3/Solution, expand-one-at-a-time) →
+completion screen, with localStorage session persistence and an optional fire-and-forget Google
+Apps Script logger (same shared nav/palette as the live site: forest green + brass + rust, Young
+Serif/Inter Tight/JetBrains Mono).
+
+**Content scope — asked and answered before writing anything:** the user chose "5 real stations
+only" over including all of Norse's puzzle set. Cross-checked every entry in `Norse_Brainstorm.html`'s
+`puzzles` array first and found four of them (`the rune-labelled relic`, `the family connection`,
+`the king's unfinished escape`, `the saga in pieces`) explicitly carry **illustrative, not-real**
+codes (the array literally says "Values illustrative" against 582/427/2468/231) — publishing those
+as if they were real answers would hand players a wrong solution, so they are deliberately left off
+this page entirely rather than shown as placeholders. The 5 stations that do appear use only
+puzzle-array content that is real:
+
+1. The Opening Puzzle → `1021`
+2. The Beasts on the Chart → `3212` (BEAR)
+3. The Joined Top Edge → `1576` (real code; the source array's hint text is literally
+   `['Not written yet.']` for this one, so hint #1 here states plainly that no in-fiction nudge
+   exists yet and just gives the decided physical mechanism instead of inventing flavour text)
+4. The Route Hidden in Plain Sight (final) → `1972`
+5. See You in Norway (ending, no code)
+
+No invented time estimates or benchmark numbers: the Hiking page's completion screen compares your
+time to a benchmark best/average, but Norse has never been playtested, so those numbers would be
+fabricated. The Norse completion screen instead shows only your own time plus a note that no
+benchmark exists yet. `LOGGER_URL` is left empty (not a fake endpoint) — the existing `logAsync()`
+guard already no-ops safely when it's blank, exactly like the Hiking page's own guard against
+placeholder URLs.
+
+### Files changed
+
+- `NorseBackpack/norse-hints.html` — new. The public hint-companion page.
+- `NorseBackpack/styles.css` — new. Copy of the live site's shared stylesheet, so the page renders
+  correctly both here and if later dropped into the `escape-backpack-games` repo.
+- `NorseBackpack/assets/logo.png` — new. Copy of the live site's nav brand-mark image.
+
+### Checks run
+
+- Served over local HTTP (`static-preview`, port 8734): no console errors on
+  `NorseBackpack/norse-hints.html`.
+- Walked the flow live: entered a team name, started the timer, opened hint panels for stations 3
+  (2 hint levels) and 5 (1 hint level) and confirmed only the real number of levels renders (no
+  phantom "Solution" label when fewer than 4 entries exist) — the hint-count logic scales correctly
+  per station.
+- Confirmed the nav "Hints" dropdown lists both Hiking and Norse as Live with correct relative
+  links, matching the live site's pattern.
+- Did not fully exercise the Done→complete-screen confirm flow interactively (a click-coordinate
+  mismatch after a viewport resize got in the way, not a code issue) — that logic is unmodified from
+  the Hiking page's already-proven implementation, so it was not re-verified line-by-line.
+
+### Next action
+
+Decide whether/how to port this file into the actual `escape-backpack-games` repo (this session has
+no access to it) — or keep developing it here until Norse's remaining puzzle stations are decided,
+then add them as real stations rather than placeholders.
+
+### Blockers / open items
+
+- No access to the `escape-backpack-games` repo, so this page cannot go live at the same URL as the
+  Hiking page without a manual copy-over by the user (or granting access in a future session).
+- The 4 illustrative-only puzzles (rune relic, family connection, king's escape, saga in pieces)
+  still need real decided answers before they can be added to this page.
+- Station 3's hint ladder still has no real in-fiction hint text (`PZ-05` backlog) — only the
+  mechanism and solution are written.
+
+## Session Close — 2026-09-13 (later) — Fixed a real stop dropped from Rollo's map; brainstormed the Châlus/Saint-Clair-sur-Epte rebus lock
+
+**Task:** review Codex's newly-built Rollo map icons (previous session below), then design the next
+lock mechanism (2+ cards, per the user's request for locks needing more than one card) around a
+Bayeux-Tapestry-style rebus.
+
+**Rebus lock designed (not yet written into `Norse_Brainstorm.html` as a `PZ-` entry):** two
+postcard rebuses — cross+bow+lightning → CROSSBOW BOLT (Châlus) and tree+teacup → TREATY
+(Saint-Clair-sur-Epte) — point players to the matching full icon on Rollo's map; the distance
+between those two icons, read with the architect's scale ruler already on hand, is the lock input.
+5 postcard rebus icons (cross, bow, lightning, tree, teacup) were generated by Codex in tapestry
+style (`NorseBackpack/Postcards/RebusIcons/`, v2/Bayeux palette kept, v1 flat-icon version rejected
+as not tapestry-like enough) and a scratch placement mockup was rendered to check legibility on an
+actual card back (scratchpad only, not committed — placeholder message text, Rollo's real card copy
+is still unwritten per `PZ-05`).
+
+**Real bug found and fixed while inspecting Codex's Rollo map build:** `Trail_Map_2_Rollo_Print.pdf`
+was silently dropping the label for **Roumare forest** — one of the six real route stops needed to
+draw Rollo's final digit-9 shape — to a label-collision with the newly-added icon boxes. This was
+already present in Codex's build before this session touched anything (confirmed by reverting the
+file and reproducing it); the console output has always reported dropped labels via a
+`STOPS NOT LABELLED ON SHEET` line, but nobody had checked it since the icons were added. Also
+opportunistically confirmed neither `Saint-Clair-sur-Epte` nor `Roumare forest` printed on the map
+before the fix (contradicts `PZ-09`'s claim that Saint-Clair-sur-Epte is "already labelled" — that
+claim is stale and should be corrected next time `PZ-09` is touched).
+
+**Fix:** nudged the treaty-scroll and ducal-coronet icon boxes in `ROLLO_ART`
+(`build_trail_maps_pdf.py`) by a small offset found via a brute-force search over nearby positions,
+checking the script's own `missing + collided` return value after each try rather than guessing.
+The result is zero real stops dropped (only decorative corpus towns — Caen, Hastings, Lewes, etc. —
+are dropped, same as before the icons existed). The coronet still isn't perfectly centred on the
+Rouen dot — every tighter position tried reopened the Roumare collision — so it reads as "near
+Rouen" rather than sitting exactly on it. A cleaner fix would need Codex to re-flow more of the
+cluster (Rouen, Roumare, Saint-Clair-sur-Epte, Bayeux icons all sit within ~50pt of each other), not
+just a two-box nudge.
+
+### Files changed
+
+- `NorseBackpack/TravelMap/build_trail_maps_pdf.py` — `ROLLO_ART` treaty-scroll and ducal-coronet
+  box positions.
+- `output/pdf/Trail_Map_2_Rollo_{Print,ANSWER}.pdf` — rebuilt with the fix.
+- `NorseBackpack/Postcards/RebusIcons/` (Codex, this session) — 5 rebus icons, v1 and v2, plus
+  ImageGen source renders.
+- `NorseBackpack/TravelMap/Art/Rollo_*_v1.png` (Codex, this session) — 7 map icons; see Codex's
+  session entry below for the generation details.
+
+### Checks run
+
+- Reproduced the pre-existing label-collision bug by reverting the file and rebuilding; confirmed
+  it predates this session's edits.
+- Ran `build_trail_maps_pdf.py rollo` after the fix: console reports zero real stops in
+  `STOPS NOT LABELLED ON SHEET` (that line no longer appears at all).
+- Visually inspected the fixed region at 600 dpi: Rouen, Roumare forest and Saint-Clair-sur-Epte all
+  print clearly; crossbow bolt (Châlus) and needle-and-thread (Bayeux) were already correctly
+  anchored and untouched.
+- Rendered the 5 rebus icons (v1 and v2) at print scale; v2 (Bayeux palette) confirmed legible and
+  kept, v1 rejected.
+- Did not re-run the full HTML QA pass (no `Norse_Brainstorm.html` changes yet — the rebus lock is
+  not written up as a `PZ-` entry, see below).
+
+### Next action
+
+Write the crossbow-bolt/treaty rebus lock up as a new `PZ-` entry in `Norse_Brainstorm.html` (design
+is agreed in chat but not yet recorded on the page, per `AGENTS.md`'s "Where Design State Lives"
+rule), and correct `PZ-09`'s stale claim that Saint-Clair-sur-Epte was already labelled.
+
+### Blockers / open items
+
+- Rollo's card message content is still unwritten (`PZ-05`) — the placement mockup used placeholder
+  text only.
+- The coronet-vs-Rouen-dot centring is a minor cosmetic gap, not a functional one; leaving it unless
+  Codex does a fuller layout pass.
+- The user separately raised a possible third rebus (fish = "scale," combined with a ratio number
+  from the architect's ruler's marked scales) as a further clue layer on the same lock — still being
+  brainstormed, not designed.
+
+## Session Close — 2026-09-13 — Rollo map vignettes
+
+**Task:** add the supplied seven rust-brown story icons to the second printable Norse trail map,
+matching the decorative treatment already used on Leif's first map.
+
+**Done:** generated a crossbow bolt, treaty scroll, ducal coronet, needle and thread, royal crown,
+longship and boar with the built-in ImageGen tool. The untouched source renders are retained. A
+reproducible normalization pass removes ImageGen's low-alpha glow, fits each subject to a consistent
+1024 px square canvas, adds 300 dpi metadata and sets every visible pixel to exact `#A2562D` while
+preserving transparency. Added all seven to Rollo's print and answer maps at 0.55–0.7 in visible
+size, beneath labels and outside the solved route's 26 pt keep-clear corridor. The crown stays on
+England and the longship at sea. Exact prompts and the full icon gallery are recorded in the Design
+guide; the Travel routes gallery now describes the illustrated Rollo sheet.
+
+### Files changed
+
+- `NorseBackpack/TravelMap/Art/Rollo_*_v1.png` — seven normalized production icons.
+- `NorseBackpack/TravelMap/Art/Sources/Rollo_*_v1_ImageGen_Source.png` — seven untouched renders.
+- `NorseBackpack/TravelMap/normalize_rollo_vignettes.py` — reproducible cleanup step.
+- `NorseBackpack/TravelMap/build_trail_maps_pdf.py` — Rollo placement table and compositing.
+- `output/pdf/Trail_Map_2_Rollo_{Print,ANSWER}.pdf` — rebuilt map and designer answer key.
+- `NorseBackpack/Norse_Brainstorm.html` — PR-11 state, gallery and exact prompts.
+- `HANDOFF.md` — this session record.
+
+### Checks run
+
+- Visually inspected all seven normalized icons together; each subject is recognizable and the
+  coronet/closed crown remain distinct.
+- Verified all seven production PNGs are 1024 × 1024, 300 dpi, RGBA, alpha 0–255, and use only
+  RGB `(162, 86, 45)` / `#A2562D` in visible pixels.
+- Rebuilt and visually inspected both one-page US Letter PDFs. Labels remain readable, the longship
+  is at sea, the crown is on England, and the answer route does not cross any vignette.
+- Served `Norse_Brainstorm.html` over local HTTP. The Travel routes and Design guide entries render,
+  all nine Rollo image references load at 1024 × 1024, and the browser reports no console errors.
+- Python compile checks and targeted `git diff --check` passed.
+
+### Next action
+
+Print Rollo's map at true size and confirm all seven icons remain recognizable through the intended
+lamination and reduced-opacity treatment.
+
+### Blockers / open items
+
+- No implementation blocker. The true-size physical print check remains outstanding.
+
+## Session Close — 2026-09-13 — Aunt Liv's multicolour Bayeux rebus drawings
+
+**Task:** revise the five postcard rebus icons so they read as drawings by Aunt Liv and use the
+style and colours of the supplied Bayeux Tapestry reference, rather than the earlier single rust
+colour.
+
+**Done:** created a v2 set for cross, horizontal recurve bow, lightning bolt, flattened tree and
+teacup. The new drawings use irregular blue-black outlines and restrained terracotta, ochre and
+sage-blue fills sampled visually from the reference. They remain compact transparent assets rather
+than photographed embroidery. The original one-colour files are retained as v1. Added `PC-15`
+because the repo still does not say which postcard carries which symbol or what the rebus order is;
+no postcard builder was changed without that mapping.
+
+### Files changed
+
+- `NorseBackpack/Postcards/RebusIcons/Rebus_*_Bayeux_v2.png` — five revised 1024 px assets.
+- `NorseBackpack/Postcards/RebusIcons/Rebus_Icons_Bayeux_v2_{Preview,PrintScale_Preview}.png` —
+  full-size and true 0.5 in review sheets.
+- `NorseBackpack/Postcards/RebusIcons/Sources/*_Bayeux_v2_ImageGen_Source.png` — raw renders.
+- `NorseBackpack/Postcards/RebusIcons/Sources/Bayeux_Reference_Crop.png` — lightweight reference crop.
+- `NorseBackpack/Norse_Brainstorm.html` — v2 gallery, exact prompts, attribution and `PC-15`.
+- `HANDOFF.md` — this session record.
+
+### Checks run
+
+- Visually inspected both five-up previews on the project cream ground; the set reads consistently
+  and all five silhouettes remain clear at 0.5 in / 150 px at 300 dpi.
+- Verified all five production PNGs are 1024 × 1024, 300 dpi, RGBA, with alpha spanning 0–255.
+- Served the design page over local HTTP: the five v2 images render in the gallery, `PC-15` appears
+  in Open questions, and the page reports no browser console errors.
+
+### Next action
+
+Decide the card-to-symbol mapping and reading order for `PC-15`, then place the drawings at a true
+0.4–0.5 in print size in the relevant postcard builders and rebuild those PDFs.
+
+### Blockers / open items
+
+- `PC-15`: target postcards and rebus order are not recorded.
+
+## Session Close — 2026-09-13 — Bayeux-style postcard rebus icons
+
+**Task:** generate five tiny transparent rebus icons for a printable postcard: cross, bow,
+lightning bolt, tree and teacup.
+
+**Done:** created five 1024 × 1024 transparent PNGs at 300 dpi. Each uses only exact rust-brown
+`#A2562D` in visible pixels. The silhouettes are intentionally simple at 0.4–0.5 in print size:
+plain Latin cross, horizontal strung recurve bow, single jagged bolt, flattened medieval tree and
+plain handled teacup on a saucer. ImageGen repeatedly introduced literal yarn texture or tonal glow,
+so the accepted flat alpha masks were normalized mechanically to one ink colour on consistent square
+canvases. The accepted source renders and exact production prompts are retained.
+
+### Files changed
+
+- `NorseBackpack/Postcards/RebusIcons/Rebus_{Cross,Bow,Lightning,Tree,Teacup}.png` — final icons.
+- `NorseBackpack/Postcards/RebusIcons/Rebus_Icons_Preview.png` — cream-background review sheet.
+- `NorseBackpack/Postcards/RebusIcons/Sources/*_ImageGen_Source.png` — accepted source renders.
+- `NorseBackpack/Norse_Brainstorm.html` — preview gallery, production notes and exact prompts.
+- `HANDOFF.md` — this session record.
+
+### Checks run
+
+- Inspected the five-icon montage on the project cream background: all silhouettes read clearly.
+- Verified every final file is 1024 × 1024, carries 300 dpi metadata, has alpha from 0–255, and
+  every visible pixel is exactly RGB `(162, 86, 45)` / `#A2562D`.
+- Served the design page over local HTTP: all five gallery images load at their natural 1024 ×
+  1024 dimensions and the page reports no console errors.
+
+### Next action
+
+Place the five icons at their intended 0.4–0.5 in size on the target postcard layout and run a
+true-size print test.
+
+### Blockers / open items
+
+- The target postcard and exact rebus arrangement were not provided in this session, so the icons
+  are not yet placed into a card build.
+
+## Session Close — 2026-09-13 (actually final for today) — Card 03 built; card 01's imprint bug caught and fixed; all three of Leif's cards complete
+
+**Task:** draft and build card 03's message (Helluland/Baffin Island). User wanted a sky/scenery beat,
+specifically the aurora borealis — confirmed message option A with a "Love, Aunt Liv" sign-off, and
+the safer (no-date) Fun Fact option paralleling card 02's saga-identification approach.
+
+**Real bug found before it shipped:** while building card 03 with a flavour-only imprint (per
+`PZ-10`, only the live pointer card gets a real grid reference), checked card 01's imprint and found
+it still read `Vinland Editions · Series F, No. 1` — the actual beasts-chain answer — left over from
+before last session moved that pointer to card 02 (`PZ-13`). Two cards were both claiming to be the
+real answer. Fixed card 01's imprint to a flavour value (`Series A, No. 1`), rebuilt its PDF and
+regenerated its gallery back PNG.
+
+**Card 03 built** the same way as card 02: new `build_postcard_03_pdf.py`, cloned from the proven
+card 01/02 pattern (same fonts, same `PC-13` layout table, Leif's stamp reused, postmark place-only
+with no invented date). Imprint is flavour (`Series C, No. 3`, no referent).
+
+**Collection builder fully reconciled.** `build_postcard_collection.py`'s `CARDS` list is now empty
+— all three of Leif's cards have their own dedicated scripts, so the shared placeholder path has
+nothing left to silently overwrite. Its `main()` now assembles the full collection PDF from all
+three dedicated scripts' outputs. Rebuilt `Norse_Postcards_Full_Print.pdf` (6 pages, verified: 3
+cards × front+back) and regenerated both cards' gallery back PNGs from the real builds.
+
+### Files changed
+
+- `NorseBackpack/Postcards/build_postcard_03_pdf.py` — new.
+- `NorseBackpack/Postcards/build_postcard_01_pdf.py` — imprint fixed from the real pointer to a
+  flavour value.
+- `NorseBackpack/Postcards/build_postcard_collection.py` — `CARDS` emptied (all three cards now have
+  dedicated scripts); `main()` updated to assemble from all three.
+- `NorseBackpack/Postcards/Postcard_01_LAnse_Back.png`, `Postcard_03_Baffin_Island_Back.png` —
+  regenerated from the real builds.
+- `output/pdf/Postcard_01_LAnse_{Print,Letter_Print}.pdf` — rebuilt with the corrected imprint.
+- `output/pdf/Postcard_03_Baffin_Island_{Print,Letter_Print}.pdf` — new.
+- `output/pdf/Norse_Postcards_Full_Print.pdf` — rebuilt, 6 pages.
+- `NorseBackpack/Norse_Brainstorm.html` — `PZ-05` (card 03 content, card 01 bug note), `PC-07`
+  (3 of 18), Postcards gallery toolbar note and card 03's caption/alt text.
+
+### Checks run
+
+- `build_postcard_03_pdf.py` ran clean (front-size guard passed).
+- Rendered both pages via PyMuPDF at 300 dpi and visually inspected: front unstretched, message
+  correct, Fun Fact box fits with no overflow, imprint reads `Series C, No. 3`.
+- Verified `Norse_Postcards_Full_Print.pdf` is exactly 6 pages after rebuild.
+- Served over local HTTP: no console errors; confirmed via `find` (cache-busted query string needed
+  — the shared server this session is attached to cached an earlier response once) that both `PZ-05`
+  and the gallery captions show the new text.
+- Deleted temporary preview PNGs from `output/pdf/` after inspection.
+
+### Next action
+
+Cards 04–18 are all still unwritten (`PC-07`, `PZ-05`) — Leif's trail (the first three) is the only
+one fully built. Rollo, Aud and Harald's cards are next whenever the user wants to continue.
+
+### Blockers / open items
+
+- Postmark dates remain unassigned for every card (`PC-03`/`PC-04`).
+- Where Hnefatafl (`PZ-01`) sits in the sequence — still open.
+- Museum ticket physical print test — still outstanding.
+
+## Session Close — 2026-09-13 (final for today) — Card 02 fully built (front + real back); postcard-voice standard moved into the project HTML
+
+**Task:** two follow-ups from the same thread. First, the user pointed out that a tone/voice
+decision had been saved only to Claude Code's personal memory and should live in the project itself
+— moved it into `Norse_Brainstorm.html`'s Design guide → Tone & voice section, and strengthened
+`AGENTS.md`'s "Where Design State Lives" to say the HTML page is the project's main repository, not
+just a status board. Second, the user finalized card 02's message text (two typos fixed:
+"exaggerating.," → "exaggerating," and "It sound like" → "It sounded like") and asked for a Fun Fact,
+then said to generate the actual postcard.
+
+**Fun Fact:** offered two options — a timber-trade one needing a date I couldn't verify, and a safer
+saga-citation one. User picked the safe option (no date to source-check).
+
+**Card 02 built end to end.** New `NorseBackpack/Postcards/build_postcard_02_pdf.py`, cloned from
+card 01's proven reportlab pattern (same fonts, same `PC-13` standard layout table) rather than the
+simplified placeholder path in `build_postcard_collection.py`. Reuses Leif's longship stamp (one
+stamp per traveller, not per card) and the existing Battle Harbour front art (already 1500×1050, no
+guard failures). Postmark shows the place only — **no date drawn**, since the eighteen postmark
+dates are still unassigned (`PC-03`/`PC-04`) and `PZ-08` needs those checked against a trail-order
+constraint before any go on a card; inventing one would violate "do not invent dates" and could
+conflict later. The imprint line now reads the real pointer, `Vinland Editions · Series F, No. 1`,
+since `PZ-13` moved that from card 03 to card 02 last session.
+
+**Found and fixed a collision before it caused damage:** `build_postcard_collection.py` still had
+card 02 in its `CARDS` list with placeholder text. Running it would have silently overwritten the
+new hand-built PDF. Removed card 02 from that list, added a comment explaining why, and pointed the
+collection assembler at the new dedicated script's output instead.
+
+Regenerated `Postcard_02_Battle_Harbour_Back.png` from the real PDF (was the stale placeholder image)
+and updated the Postcards gallery tab's caption and alt text to match.
+
+### Files changed
+
+- `NorseBackpack/Postcards/build_postcard_02_pdf.py` — new.
+- `NorseBackpack/Postcards/build_postcard_collection.py` — card 02 removed from `CARDS`; assembler
+  now references the dedicated script's PDF output.
+- `NorseBackpack/Postcards/Postcard_02_Battle_Harbour_Back.png` — regenerated from the real build.
+- `output/pdf/Postcard_02_Battle_Harbour_Print.pdf`, `Postcard_02_Battle_Harbour_Letter_Print.pdf` —
+  new.
+- `NorseBackpack/Norse_Brainstorm.html` — `PZ-05` (final message + Fun Fact + build status), `PC-07`
+  (2 of 18), Design guide's Tone & voice section (new "Liv's postcard voice" card), Postcards gallery
+  caption/alt text for card 02.
+- `AGENTS.md` — "Where Design State Lives" strengthened per the user's correction.
+- `~/.claude/projects/.../memory/` — removed the postcard-voice content memory; added a process-only
+  memory about where durable project content belongs (repo, not personal memory).
+
+### Checks run
+
+- `build_postcard_02_pdf.py` ran clean (front-size guard passed, no stretching).
+- Rendered both pages of the single-card PDF and the two-up letter PDF via PyMuPDF at 300/150 dpi
+  and visually inspected: front unstretched, message/typos correct, stamp and postmark legible,
+  address and Fun Fact box fit with no overflow, imprint reads correctly, crop marks outside trim on
+  the letter sheet.
+- Served over local HTTP (port 8734): no console errors; confirmed via `find` + screenshot (not
+  `get_page_text`, which locks onto the journey article regardless of hash) that the Postcards
+  gallery caption and back image updated correctly.
+- Deleted temporary preview PNGs from `output/pdf/` after inspection; real outputs left in place.
+
+### Next action
+
+Draft card 03's message (scenery/sky angle, per the earlier lock-sequence discussion) in the same
+confirmed voice, then decide its Fun Fact and build it the same way.
+
+### Blockers / open items
+
+- 16 of 18 cards still have no message text; card 03 has none yet.
+- Postmark dates remain unassigned for every card (`PC-03`/`PC-04`) — card 02's postmark will need
+  a date added once that's resolved.
+- Where Hnefatafl (`PZ-01`) sits in the sequence — still open.
+- Museum ticket physical print test — still outstanding.
+
+## Session Close — 2026-09-13 (later still, once more) — Card 02's message decided; postcard voice standard set
+
+**Task:** draft card 02's (Markland) message. Offered four short options in chat, varying how directly
+each buried its animal mention. The user picked option B and said its tone — enthusiastic, warm, fun,
+friendly — should be the standard for all 18 cards, not just this one.
+
+**Written into `PZ-05`:** the voice standard, and card 02's decided message text (*"Second stop:
+Markland, 'Forest Land' to the old sagas, and they weren't exaggerating. Trees for miles, and
+something with claws walked past my tent last night — I didn't sleep a wink! Still, you'd love it
+here."*). Its Fun Fact trivia and its build script/PDF are still outstanding — this only fixes the
+message text.
+
+**Corrected mid-session:** the voice standard was first saved only to Claude Code's personal
+cross-session memory. The user pointed out durable design content belongs in the project itself, not
+somewhere invisible to the repo. Moved it into the Design guide tab's existing "Tone & voice" section
+(a new "Liv's postcard voice" card, alongside the game-wide tone cards already there) and deleted the
+memory file. Kept a process note in memory instead — *how to decide where content goes*, not the
+content itself.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — `PZ-05` updated: voice standard, card 02 message text,
+  status pill. Design guide tab's "Tone & voice" section gained a "Liv's postcard voice" card (the
+  durable version of the standard).
+
+### Checks run
+
+- Served over local HTTP (port 8734, shared server): no console errors, card 02's message text
+  renders correctly under `PZ-05`.
+
+### Next action
+
+Draft card 03's message next (scenery/sky, per the earlier lock-sequence discussion), in the same
+confirmed voice. Then card 02's Fun Fact trivia (real Markland/Labrador-coast fact, `PC-07`).
+
+### Blockers / open items
+
+- 16 of 18 cards still have no message text at all; card 03 has none yet either.
+- Where Hnefatafl (`PZ-01`) sits in the sequence — still open from the prior entry.
+- Museum ticket physical print test — still outstanding.
+
+## Session Close — 2026-09-13 (later still again) — Leif's opening lock sequence decided (`PZ-13`); `PZ-10` superseded to card 02
+
+**Task:** the user asked for Leif's route/props state, flagged cards 02/03 as unwritten, then sketched
+an actual lock sequence: card 01 opens lock 1, releasing card 02 + map + ticket together; solving the
+beasts chain opens lock 2, releasing card 03. That structure directly contradicts the placement this
+session's earlier entry had just decided (card 03) — worked out before this sequencing existed.
+
+**Discussed and confirmed in chat first**, then written in:
+
+- **`PZ-13` (new, decided).** Records the two-lock sequence itself: card 01 → lock 1 → (card 02 + map +
+  ticket) → beasts chain solved → lock 2 → card 03. Card 02's animal mention is flavour/immersion only,
+  kept separate from the disguised "You know me" nudge line, which stays in the imprint. Hnefatafl
+  (`PZ-01`) is moved out of this early chain entirely — timing left undecided, consistent with
+  `ST-01`/`ST-02` staying unfrozen.
+- **`PZ-10` superseded.** Pointer card moved from card 03 to **card 02** — under the new sequence, card
+  02 is what's actually in hand alongside the map and ticket when the chain runs, not card 03.
+- **Puzzle array (`puzzles` JS, journey view) updated to match:** opening-puzzle entry's `reward` now
+  names what lock 1 releases; beasts-on-the-chart entry's `input`/`clue`/`reward`/`status` updated to
+  name card 02 as the pointer and lock 2 as what it opens.
+
+**Still unwritten:** the actual text of cards 02 and 03 (`PC-07`/`PZ-05`) — this session only fixed
+the mechanism and which card does what, not the message content itself.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — new `PZ-13`; `PZ-10` placement text rewritten; `puzzles`
+  array entries for "The opening puzzle" and "The beasts on the chart" updated (`reward`, `input`,
+  `clue`, `status` fields).
+
+### Checks run
+
+- Served over local HTTP (`static-preview`, port 8734, shared with another already-running session —
+  navigated directly rather than restarting it): no console errors, `PZ-13` renders and its
+  cross-references resolve.
+
+### Next action
+
+Write card 02 and card 03's actual messages. Working ideas from this session: card 02 mentions the
+animals in passing (pure flavour); card 03 mentions scenery or sky (no puzzle mechanism required of
+it). Both still need real text — part of the `PC-07`/`PZ-05` backlog.
+
+### Blockers / open items
+
+- Where Hnefatafl (`PZ-01`) actually sits in the sequence — deliberately left open this session.
+- `PZ-05` (full letter/message content) remains the largest unwritten piece overall.
+- Museum ticket physical print test (from an earlier session) is still outstanding.
+
+## Session Close — 2026-09-13 (later still) — `PZ-10` pointer card placement decided
+
+**Task:** pick up the "beasts-chain sequencing" open item from the prior session. That item had two
+parts — which of the 18 cards is live when the chain runs, and the rule-line wording. The wording was
+already decided (*"You know me — every little detail counts."*); only placement was open.
+
+**Decided in chat first, then written in:** card 03 (Helluland) carries the rule line, not card 01
+(already full) and not card 02. Reasoning: card 03 is the last of Leif's three stops, so by then his
+full trail set and his map (with the beast chart already on it, `PZ-09`) are both in hand — the line
+reads as a "now go use what you've got" beat. Card 02 was the only other real candidate and was set
+aside on pacing alone, not ruled out by any hard constraint. Full sequencing (`PZ-05`, the aunt's
+letters) is still unwritten, so this only fixes *which* card, not the exact wording in context — card
+03's message is still placeholder text (`PC-07`).
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — `PZ-10` pill changed from "one piece unwritten" to "card
+  text unwritten"; placement paragraph rewritten from open to decided.
+
+### Checks run
+
+- Served over local HTTP (`static-preview`, port 8734 — shared with another session already running
+  it, so `preview_start` was skipped and the existing server used directly): no console errors,
+  Open questions tab renders `PZ-10`'s new text correctly. Screenshot came back blank (the known
+  preview-pane painting artifact noted in earlier sessions, not a page fault) — verified via
+  `get_page_text` instead.
+
+### Next action
+
+Write card 03's actual message (part of the still-unwritten `PC-07`/`PZ-05` backlog) so the rule
+line has real surrounding context, once the user wants to tackle postcard message-writing generally.
+
+### Blockers / open items
+
+- `PZ-05` (the aunt's letters/card messages) remains the largest unwritten piece and still blocks
+  full puzzle sequencing beyond this one placement decision.
+- Physical print test for the museum ticket (from the prior session) is still outstanding —
+  unchanged by this session.
+
+## Session Close — 2026-09-13 (later same day) — Museum ticket back built; Codex's v2 front verified; `PZ-10` decided
+
+**Task:** design and build the museum ticket prop end to end, then settle `PZ-10`'s one remaining
+open question (imprint on all 18 postcards, or only the pointer card).
+
+**Museum ticket, front to back.** Discussed and settled the ticket concept in chat first, per
+"Propose before editing": a fictional **Viking Museum of L'Anse aux Meadows** (avoids naming a real
+institution), front carries the museum name and a flavour-only numbered site map, back carries the
+A–Z visitor index the beasts-chain puzzle needs. Wrote the full 26-letter exhibit list, the user
+supplied the digit for each, and this session computed and recorded all seven resulting beast codes
+in a new `PZ-12` — BEAR (the currently live pointer, per `PZ-10`) resolves to **3212**. Wrote Codex's
+art brief for the front (2 × 5.5 in, clean-map style, 9 flavour-only markers, explicit "no meaningful
+pattern" constraint) — Codex had already built it by the time it was reviewed.
+
+Built the back myself (text/data layout is Claude Code's lane, not Codex's, per the Agent Roles
+split): `NorseBackpack/Props/MuseumTicket/build_museum_ticket_pdf.py` combines Codex's front PNG with
+a drawn A–Z index into one print-ready card, following the project's established reportlab
+conventions (same palette, crop-mark helper, front-size guard pattern as `build_postcard_01_pdf.py`).
+Single alphabetical column, not two — a 2 in-wide ticket doesn't fit two legible columns at a real
+font size once the front art pinned the physical dimensions the earlier chat guess hadn't accounted
+for. Zebra-striped for scanning. Rendered and visually confirmed before handing off.
+
+**Codex's v2 front fix, reviewed rather than taken on faith.** The user flagged that Codex's revised
+front (remapping its 9 markers to match the back's digit groupings thematically — e.g. marker 3 now
+sits on the quay/boat shed, matching Boat Shed/Compass Room/Keel Yard/Navigation Room/Quay all
+resolving to digit 3) needed checking. Verified all nine marker-to-group assignments by hand against
+the `PZ-12` letter table — all nine are correct. Rebuilt the ticket PDF against the new front (size
+guard passed, no stretching) and regenerated the back-page preview PNG to match the front's updated
+ticket number (`No. 0847` → `No. 084726`, now consistent on both faces). Found and removed one stray
+duplicate back-image file this session had generated under the wrong version suffix before Codex's
+fix landed.
+
+**`PZ-10` decided.** The one open sub-question — does every postcard carry the publisher's imprint,
+or only the pointer card — is settled: **all 18 get the imprint line.** Reasoning discussed in chat
+first: the imprint only hides by reading as routine production metadata, and that only works if
+every card has one — a single card being the only one with a publisher's line would itself be the
+tell. Seventeen of the eighteen imprints are pure flavour with no real referent (no other trail map
+currently has a lettered grid); only the live pointer card's Series letter means anything. Recorded
+the consequence for the shared card builder: `build_postcard_collection.py` must reserve the
+credit-strip imprint line for every future card back, not just Card 01's custom script — costs
+nothing now since 15 cards are unbuilt and 02/03 are still placeholders.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — new `PZ-12` (full A–Z index, all seven beast codes); beasts-
+  chain puzzle entry updated from "illustrative" to decided `BEAR = 3212`; props list updated;
+  `PZ-10` updated to decided on the all-18-imprint question.
+- `NorseBackpack/Props/MuseumTicket/build_museum_ticket_pdf.py` — new. Builds the combined front+back
+  print PDF and a letter-sheet version with crop marks.
+- `NorseBackpack/Props/MuseumTicket/Museum_Ticket_Back_300dpi_v2.png` — regenerated to match the v2
+  front's ticket number after Codex's fix.
+- `output/pdf/Museum_Ticket_Print.pdf`, `Museum_Ticket_Letter_Print.pdf` — rebuilt against the v2
+  front.
+
+### Checks run
+
+- Ran `build_museum_ticket_pdf.py` clean against both the v1 and v2 fronts (the front-size guard
+  raises loudly on a mismatched image instead of stretching).
+- Rendered both PDF pages at high resolution (PyMuPDF) and visually inspected: front markers
+  unstretched, back index legible with all 26 rows fitting comfortably, both faces share the same
+  ticket number.
+- Hand-verified all nine v2 marker-to-digit-group assignments against the `PZ-12` letter table —
+  correct.
+- Verified all seven beast codes (BEAR 3212, WOLF 4865, SEAL 4216, ORCA 8231, LOON 6883, HARE 5122,
+  DEER 4222) against every other code already in the game (`1021`, `1972`, `231`, `582`, `427`,
+  `2468`) — no collisions. Noted, not fixed: DEER lands on three repeated digits, and no letter in
+  the table maps to `0`, so no code drawn from this index can ever contain a `0` — both invisible to
+  players.
+- Served the page over local HTTP (`static-preview`, port 8734): no console errors, both ticket
+  images load, `PZ-12` and the updated `PZ-10` text render correctly in the Open questions tab.
+- Checked `AGENTS.md` for stale museum-ticket references — none found; this session's decisions
+  correctly live only in `Norse_Brainstorm.html` per "Where Design State Lives," since neither rises
+  to the level of the file's two hard invariants.
+
+### Next action
+
+Physical print test: print the letter-sheet PDF at 100% and confirm the A–Z index is comfortable to
+read at true size, and that Codex's v2 front holds up on paper (not just screen).
+
+### Blockers / open items
+
+- Still open on the beasts-chain: which of the 18 cards is actually live when the chain runs, and
+  the exact wording of the pointer rule line — both blocked on `PZ-05`/`PZ-09` sequencing, unchanged
+  by this session.
+
+## Session Close — 2026-09-13 — Museum ticket front, revised map
+
+**Task:** build the fictional Viking Museum of L'Anse aux Meadows ticket front, then revise its
+numbered site features so they agree with the A–Z visitor index already decided in `PZ-12`.
+
+**Done:** version 2 keeps the clean-map style and established palette but remaps all nine visible
+zones: entrance/visitor centre 1, excavation 2, quay/boat work 3, crafts 4, forge 5, longhouse 6,
+Jarl's quarters 7, great hall/ocean gallery 8, and an outlying palisaded building 9. The markers
+remain equal-weight scenery: no route, ordering cue or visual code. The ticket number was lengthened
+from `No. 0847` to `No. 084726` on both sides. Production front and back PNGs are exactly 600 ×
+1650 px at 300 dpi (2 × 5.5 in). Version 1 is retained for comparison. Both exact ImageGen prompts
+are recorded in the Design guide tab.
+
+### Files changed
+
+- `NorseBackpack/Props/MuseumTicket/Museum_Ticket_Front_300dpi_v2.png` — revised production front.
+- `NorseBackpack/Props/MuseumTicket/Museum_Ticket_Front_Source_v2.png` — revised original render.
+- `NorseBackpack/Props/MuseumTicket/Museum_Ticket_Back_300dpi_v2.png` — refreshed back preview.
+- `NorseBackpack/Props/MuseumTicket/build_museum_ticket_pdf.py` — now uses the version-2 front and
+  prints `No. 084726` on the back.
+- `output/pdf/Museum_Ticket_Print.pdf` and `Museum_Ticket_Letter_Print.pdf` — rebuilt.
+- `NorseBackpack/Norse_Brainstorm.html` — current previews, feature mapping and revision prompt.
+- `HANDOFF.md` — this session record.
+
+### Checks run
+
+- Inspected the revised front at full size: text is correct; digits 1–9 each appear once with
+  consistent styling; all nine visible features agree with their room-number groups.
+- Read front and back image metadata: both are 600 × 1650 px at 300 dpi.
+- Rendered and visually inspected both pages of the direct ticket PDF and letter-sheet PDF. Front
+  and back are sharp, within trim marks, and both display `No. 084726`.
+- Served the design page over local HTTP: both version-2 previews load at 600 × 1650 px and the
+  page reports no console errors.
+
+### Next action
+
+Print the letter-sheet PDF at 100% and confirm that the small A–Z index remains comfortable to read
+at physical size.
+
+### Blockers / open items
+
+- No design blocker. Physical print legibility has not yet been tested.
 
 ## Session Close — 2026-09-12 (later same day) — HTML readability fix + stale-status sync
 

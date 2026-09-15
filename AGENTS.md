@@ -21,7 +21,7 @@ Read this before assuming what a prompt is asking for.
 
 ## Where Design State Lives
 
-- **Each project's main HTML page is the source of truth for design state** — what is decided, what is open, what the options are. For Norse that is `NorseBackpack/Norse_Brainstorm.html`. Update it as the work happens, in the same session, rather than leaving decisions only in chat.
+- **Each project's main HTML page is the main repository for that project** — not just a status board. Decisions, brainstormed options, puzzles, clues, props, tone/voice guides, and any other durable design content belong there, written in full, not summarized elsewhere. If it is part of the game's design, a human or agent should be able to find it by reading the page — not by asking Claude, not by digging through chat history, and not in any agent's private memory. For Norse that is `NorseBackpack/Norse_Brainstorm.html`. Update it as the work happens, in the same session, rather than leaving decisions only in chat.
 - **`HANDOFF.md` carries session continuity only**: what this session did, which files changed, what was checked, one next action. It must not hold a backlog of open design questions — that backlog belongs in the project page, and keeping it in two places is how the two drift apart.
 - **Every open question gets a stable ID** so chat, the handoff and the page all refer to the same thing. Norse uses `ST-` structure, `PC-` postcards, `PZ-` puzzles, `PR-` props, `HI-` history, listed in the Open questions tab.
 - When a decision is taken, move the pill in the page. When something is superseded, say so where the old text was rather than deleting it silently.

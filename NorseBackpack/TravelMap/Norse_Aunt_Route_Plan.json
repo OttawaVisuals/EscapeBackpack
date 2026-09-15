@@ -286,29 +286,29 @@
         "order": 5,
         "id": "h-sicily",
         "person": "harald",
-        "name": "Sicily · Italy",
-        "lat": 37.6,
-        "lng": 14.2,
+        "name": "Syracuse · Sicily",
+        "lat": 37.069,
+        "lng": 15.288,
         "evidence": "supported",
-        "precision": "Island anchor",
-        "note": "Service in the Byzantine Sicilian campaign.",
-        "source": "haraldStudy",
+        "precision": "City anchor",
+        "note": "Captured by the Byzantine army Harald served in during the 1038-1040 campaign under George Maniakes -- one of the specific cities the sources name as taken.",
+        "source": "haraldSyracuse",
         "figure": "Harald Hardrada",
-        "sourceUrl": "https://pressto.amu.edu.pl/index.php/bp/article/view/53087"
+        "sourceUrl": "https://www.medievalists.net/2022/05/harald-hardrada-fighting-in-sicily-and-italy/"
       },
       {
         "order": 6,
         "id": "h-anatolia",
         "person": "harald",
-        "name": "Asia Minor · Anatolia",
-        "lat": 39,
-        "lng": 32,
-        "evidence": "supported",
-        "precision": "Regional anchor",
-        "note": "Broad military-service region; not a specific battle site.",
-        "source": "haraldMuseum",
+        "name": "Melitene · Asia Minor",
+        "lat": 38.35,
+        "lng": 38.32,
+        "evidence": "illustrative",
+        "precision": "Illustrative placement",
+        "note": "No single city is attested as Harald's own site in Asia Minor -- sources describe a broad campaign capturing roughly 80 strongholds east to the Euphrates. Melitene (modern Malatya) is a real, well-documented Byzantine-Arab frontier fortress directly on that river frontier, chosen as a representative point for the map, not a sourced fact about Harald himself.",
+        "source": "meliteneHistory",
         "figure": "Harald Hardrada",
-        "sourceUrl": "https://www.vikingeskibsmuseet.dk/en/professions/education/viking-age-people/historical-characters/harald-hardrada-of-norway"
+        "sourceUrl": "https://en.wikipedia.org/wiki/Conquest_of_Melitene_(934)"
       }
     ]
   }
