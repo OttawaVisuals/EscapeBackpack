@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "pdf" / "Postcard_06_Bayeux_Print.pdf"
 OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_06_Bayeux_Letter_Print.pdf"
 FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_06_Bayeux_Front.png"
-STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Rollo_Comet_v1.png"
+STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Rollo_Comet_v2_flat.png"
 REBUS_DIR = ROOT / "NorseBackpack" / "Postcards" / "RebusIcons"
 FONT_DIR = ROOT / "Fonts"
 
