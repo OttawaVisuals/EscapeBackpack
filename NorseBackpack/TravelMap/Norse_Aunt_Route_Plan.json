@@ -300,15 +300,15 @@
         "order": 6,
         "id": "h-anatolia",
         "person": "harald",
-        "name": "Melitene · Asia Minor",
-        "lat": 38.35,
-        "lng": 38.32,
+        "name": "Patara · Asia Minor",
+        "lat": 36.27,
+        "lng": 29.29,
         "evidence": "illustrative",
         "precision": "Illustrative placement",
-        "note": "No single city is attested as Harald's own site in Asia Minor -- sources describe a broad campaign capturing roughly 80 strongholds east to the Euphrates. Melitene (modern Malatya) is a real, well-documented Byzantine-Arab frontier fortress directly on that river frontier, chosen as a representative point for the map, not a sourced fact about Harald himself.",
-        "source": "meliteneHistory",
+        "note": "No single city is attested as Harald's own site in Asia Minor -- sources describe a broad campaign capturing roughly 80 strongholds east to the Euphrates. Patara, on Lycia's Mediterranean coast, is where archaeologists found a real ninth/tenth-century Viking sword in 2018 -- likely a Varangian Guard soldier's, not proven to be Harald's own -- chosen as a representative point for the map because it is a real site with genuine Viking-era material evidence, not a sourced fact about Harald himself.",
+        "source": "pataraSword",
         "figure": "Harald Hardrada",
-        "sourceUrl": "https://en.wikipedia.org/wiki/Conquest_of_Melitene_(934)"
+        "sourceUrl": "https://www.dailysabah.com/history/2018/11/19/viking-sword-found-in-turkeys-ancient-mediterranean-city-of-patara"
       }
     ]
   }

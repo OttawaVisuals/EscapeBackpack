@@ -30,7 +30,7 @@ window.NORSE_SOURCES = {
   haraldStudy: ['Balcanica Posnaniensia · Harald’s Sicilian service', 'https://pressto.amu.edu.pl/index.php/bp/article/view/53087'],
   haraldBio: ['Harald Hardrada · biography and source bibliography', 'https://en.wikipedia.org/wiki/Harald_Hardrada'],
   haraldSyracuse: ['Medievalists.net · Harald Hardrada, fighting in Sicily and Italy (Messina and Syracuse taken, 1040)', 'https://www.medievalists.net/2022/05/harald-hardrada-fighting-in-sicily-and-italy/'],
-  meliteneHistory: ['Wikipedia · Conquest of Melitene (934) — Byzantine frontier fortress on the Euphrates', 'https://en.wikipedia.org/wiki/Conquest_of_Melitene_(934)']
+  pataraSword: ['Daily Sabah · Viking sword found in Turkey’s ancient Mediterranean city of Patara (2018)', 'https://www.dailysabah.com/history/2018/11/19/viking-sword-found-in-turkeys-ancient-mediterranean-city-of-patara']
 };
 window.NORSE_PEOPLE = [
   {id:'leif',name:'Leif Erikson',short:'Leif',theme:'Across the Atlantic',color:'#216580',note:'Homes, saga voyages and candidate American landfalls. Helluland and Markland are regions with debated boundaries; Vinland has no single agreed pin.'},
@@ -92,7 +92,7 @@ window.NORSE_STOPS = [
   ['h-novgorod','harald','Holmgard / Novgorod',58.522,31.275,'saga','City anchor','Saga’s Rus’ setting; distinguish it from historical Kyiv connections.','haraldEast'],
   ['h-kyiv','harald','Kyiv · Ukraine',50.45,30.523,'supported','City anchor','Service with Yaroslav and later marriage to Elisiv.','haraldCambridge'],
   ['h-constantinople','harald','Constantinople / Istanbul',41.008,28.978,'supported','City anchor','Byzantine imperial service.','haraldCambridge'],
-  ['h-anatolia','harald','Melitene · Asia Minor',38.35,38.32,'illustrative','Illustrative placement','No single city is attested as Harald’s own site in Asia Minor — sources describe a broad campaign capturing roughly 80 strongholds east to the Euphrates. Melitene (modern Malatya) is a real, well-documented Byzantine-Arab frontier fortress directly on that river frontier, chosen as a representative point for the map, not a sourced fact about Harald himself.','meliteneHistory'],
+  ['h-anatolia','harald','Patara · Asia Minor',36.27,29.29,'illustrative','Illustrative placement','No single city is attested as Harald’s own site in Asia Minor — sources describe a broad campaign capturing roughly 80 strongholds east to the Euphrates. Patara, on Lycia’s Mediterranean coast, is where archaeologists found a real ninth/tenth-century Viking sword in 2018 — likely a Varangian Guard soldier’s, not proven to be Harald’s own — chosen as a representative point for the map because it is a real site with genuine Viking-era material evidence, not a sourced fact about Harald himself.','pataraSword'],
   ['h-sicily','harald','Syracuse · Sicily',37.069,15.288,'supported','City anchor','Captured by the Byzantine army Harald served in during the 1038–1040 campaign under George Maniakes — one of the specific cities the sources name as taken.','haraldSyracuse'],
   ['h-bulgaria','harald','Bulgaria · campaign region',42.7,25.3,'supported','Regional anchor','Participation in suppressing Peter Deljan’s uprising; approximate regional pin.','haraldStudy'],
   ['h-jerusalem','harald','Jerusalem',31.778,35.235,'saga','City anchor','Holy Land journey reported in his saga.','haraldEast'],

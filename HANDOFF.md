@@ -1,10 +1,740 @@
 # Project Handoff
 
-Last updated: 2026-09-15 by Claude Code
+Last updated: 2026-09-16 by Claude Code
 
 > Session continuity only. Open design questions are **not** tracked here — they live in the
 > Open questions tab of `NorseBackpack/Norse_Brainstorm.html`, each with a stable ID.
 > See "Where Design State Lives" in `AGENTS.md`.
+
+## Session Close — 2026-09-16 (continued, 5) — PC-19 fixed: painted the missing title band on Harald's six off-spec fronts
+
+**Task:** the user picked a direction for `PC-19` (six of Harald's fronts had the title baked
+straight onto full-bleed art, no blank band underneath, unlike the rest of the series): "build
+the strip and text over it" — composite the missing band myself rather than sending the art back
+to Codex, since this is a build-script fix, not new asset generation.
+
+**Fixed in `build_postcard_front_images.py`:** added a `NEEDS_BAND` set (the six affected output
+filenames) and, in `build_card()`, paint a solid deep-navy rectangle over the lower 20% plus a
+thin cream divider line — sampled from the already-correct cards' own bands `(18, 52, 60)` navy,
+`(235, 226, 185)` divider, not invented — before the existing title/subtitle drawing code runs.
+Scoped to exactly those six by filename check so the sixteen already-correct fronts take the same
+code path they always did.
+
+**Rebuilt only the six affected cards**, not the whole deck — ran `build_card()` directly on the
+six `NEEDS_BAND` entries rather than `main()` (which reruns all 22 and hit an intermittent Windows
+file-lock error partway through on unrelated files, likely antivirus scanning a freshly-written
+PNG; retrying the full run didn't help, so it seemed safer to scope down to the six that actually
+needed changes anyway). Rebuilt from each card's clean `Illustration_v1.png` source (which never
+had a baked title), not by patching the broken `_Front.png` — avoids any leftover double-text
+artifact from the old bad composite.
+
+**Verified, not assumed:** hashed the three known-good fronts (`L1`, `H1`, `A1`) before and after —
+identical, confirming the fix didn't touch anything outside the six targets. Opened both fixed
+images directly and visually confirmed the band and clean title match `H1`'s established look.
+Fetched the live served image through the running preview server and sampled a pixel in the band
+region — exact navy `(18, 52, 60)`, confirming the server isn't caching the old broken version.
+
+**Written into `Norse_Brainstorm.html`:** `PC-19` changed from "Needs a decision" to **Fixed**,
+with what actually happened; removed the "(title-band deviation, PC-19)" flag from all six gallery
+captions (no longer true); corrected the Postcards tab intro paragraph, which had said six fronts
+had a layout deviation — now says all 22 fronts match the standard layout.
+
+### Files changed
+
+- `NorseBackpack/Postcards/build_postcard_front_images.py` — `NEEDS_BAND` set, band-painting in
+  `build_card()`.
+- `NorseBackpack/Postcards/Postcard_{H2_Staraya_Ladoga,H3_Kyiv,H4_Hedeby,H5_Sicily,H6_Patara,
+  HD_Constantinople}_Front.png` — rebuilt in place with the band.
+- `NorseBackpack/Norse_Brainstorm.html` — `PC-19` status and body, six gallery captions, intro
+  paragraph.
+
+### Checks run
+
+- `python -m py_compile build_postcard_front_images.py` — no syntax errors.
+- MD5 hash of `Postcard_{L1_LAnse,H1_Oslo,A1_Dogurdarnes}_Front.png` before and after the six-card
+  rebuild — unchanged, confirming no collateral changes to already-correct cards.
+- Opened `Postcard_H2_Staraya_Ladoga_Front.png` and `Postcard_HD_Constantinople_Front.png` directly
+  and visually inspected the band/title against `H1`'s known-good layout.
+- Full-file tag-balance check on the HTML — all paired (1018 div, 13 section, 36 article, 38
+  details, 15 ul, 116 li, 113 a, 11 table, 77 tr, 259 td, 41 th, 258 p, 251 span).
+- Fetched the live image through the running `static-preview` server via `fetch`/canvas and
+  sampled a band pixel — exact match to the intended navy, confirming the server serves the
+  rebuilt file and not a stale cached copy. No console errors on the Postcards tab.
+
+### Next action
+
+Start writing backs/messages for whichever card the user wants next — `PC-19` no longer blocks
+that decision for Harald's cards.
+
+### Blockers / open items
+
+- Per-trail decoy slot (`PC-16`) and in-game release order (`PC-18`) are both still unstarted.
+- Harald's Kyiv → Hedeby → Syracuse zigzag is still an accepted known risk, unaffected by this
+  session.
+- Only `H3` Kyiv, `H4` Hedeby and `H5` Sicily were not individually re-opened and eyeballed after
+  the rebuild (only `H2` and `HD` were); they ran through the identical code path as those two, but
+  a full visual pass on all six before printing is still worth doing.
+
+## Session Close — 2026-09-16 (continued, 4) — Harald's remaining fronts synced; new PC-19: six of them break the title-band spec
+
+**Task:** the user said Codex finished the remaining postcard artwork and asked me to review and
+update the design doc's text to match. Found that Harald's six missing fronts (`H2` Staraya
+Ladoga, `H3` Kyiv, `H4` Hedeby, `H5` Sicily, `H6` Patara, `HD` Constantinople decoy) now exist —
+the trail-grid boxes and counts were already synced (by Codex or a parallel session; not this
+one), and the gallery already had full entries with sources and exact prompts for all six. All 22
+cards now have front art.
+
+**Real problem found while reviewing, not assumed fixed:** opened all six new fronts (plus `H1`
+Oslo as a known-good baseline) to actually look at them rather than trust the "front artwork
+built" status line. `H1` correctly reserves the lower ~20% as a blank navy title band, matching
+every other card in the series (`PC-13`'s standard). The six new ones do not — the place name and
+country are baked directly onto the scenery with a drop-shadow, no band underneath. Checked the
+prompts already recorded in the gallery: they explicitly ask for "full-bleed image... the title
+band will be added separately," so whatever step was meant to add that band on top either didn't
+run for these six or used a different method than the rest of the series. This is a real visual
+inconsistency across a third of the deck, not a nitpick — flagged as **new `PC-19`**, cross-linked
+from each of the six affected gallery captions. Not fixed here: regenerating/recompositing
+artwork is Codex's job per `AGENTS.md`'s role split, so `PC-19` asks for a decision (redo the six,
+or accept the deviation and rewrite the other sixteen's captions) rather than picking one myself.
+
+**Also fixed while syncing:** the Postcards tab's intro paragraph still said the decoy-per-trail
+card count was "not yet built," which stopped being true once Aud's and Harald's decoys got front
+art across earlier sessions. Rewritten to state plainly that front art now exists for all 22, only
+Leif's four are fully built end to end, and to point at `PC-19`.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — new `PC-19` open item; six gallery captions
+  cross-linked to it; intro paragraph corrected.
+
+### Checks run
+
+- Opened `Postcard_H1_Oslo_Front.png` (baseline) and all six new fronts directly and compared
+  band treatment by eye — confirmed the deviation on all six, not assumed from one sample.
+- Full-file tag-balance check — all paired (1018 div, 13 section, 36 article, 38 details, 15 ul,
+  116 li, 113 a, 11 table, 77 tr, 259 td, 41 th, 258 p, 251 span).
+- Served over local HTTP and confirmed live: all six new front images return 200 OK, no console
+  errors, and all 8 `PC-19` references (1 open-question row, 1 intro paragraph, 6 gallery
+  captions) render.
+
+### Next action
+
+Get a decision on `PC-19` — send `H2`–`H6`/`HD` back for a title-band pass, or accept the
+full-bleed treatment and update the rest of the series' captions instead.
+
+### Blockers / open items
+
+- `PC-19` needs a decision before any of these six get backs/messages built (building on top of
+  an art layout that might still change would be wasted work).
+- Per-trail decoy slot (`PC-16`) and in-game release order (`PC-18`) are both still unstarted.
+- Harald's Kyiv → Hedeby → Syracuse zigzag (from the Patara swap session) is still an accepted
+  known risk, unaffected by this session.
+
+## Session Close — 2026-09-16 — Harald postcard front art
+
+**Task:** build the six remaining Harald postcard fronts from user-selected Wikimedia Commons sources.
+
+**Done:** H2 Staraya Ladoga, H3 Kyiv, H4 Hedeby, H5 Sicily, H6 Patara and HD Constantinople (decoy) now have 1500 × 1050 px, 300 dpi front art and raw ImageGen sources in `NorseBackpack/Postcards/`. The front-image builder, postcard gallery, Harald trail overview and source register are updated. Sources: Hunanuk (CC0); Pannuccis, Александр Байдуков, Rbrechko and Matti Blume (CC BY-SA 4.0); Erp (CC BY 2.5).
+
+**Checks:** visually inspected each source and generated illustration; normalized each to the PC-13 canvas without rescaling.
+
+**Next action:** write Harald postcard backs and print PDFs when their clue text is decided.
+
+## Session Close — 2026-09-16 (continued, 3) — Harald's Asia Minor stop swapped Melitene → Patara
+
+**Task:** the user asked to swap Harald's illustrative Asia Minor stop to Yümüktepe (Mersin),
+citing "the recent discovery of a Viking sword there." Checked the claim before touching anything,
+per `AGENTS.md`'s "say when you do not know" rule — this is a real-world historical fact being
+added to a sourced dataset (`stops.js`'s evidence-category system exists specifically to keep
+sourced fact separate from illustrative choice), not a design opinion to take on faith.
+
+**What the fact-check found:** a Viking-age sword really was found at Yümüktepe, but in **2010**,
+not recently, and it wasn't tied to Harald specifically (general Byzantine-era Norse/Varangian
+evidence in Anatolia). A second, later find at **Patara** (Antalya province, 2018) got the actual
+recent news coverage and better matches "recent discovery." Neither sword is attested to Harald
+himself — same caveat that already applied to the outgoing Melitene pick. Asked the user which
+one they meant and how far to take it; they chose **Patara, full rebuild** (not record-only).
+
+**Decided and changed:** Harald's `h-anatolia` stop is now **Patara · Asia Minor** (36.27, 29.29),
+evidence category stays `illustrative` (a real site with genuine Viking-era material evidence, but
+still not a sourced fact about Harald's own presence there), sourced to the Daily Sabah article on
+the 2018 find.
+
+**Rebuilt Harald's trail map** (`build_trail_maps_pdf.py harald`) since the build script reads
+stop coordinates from `stops.js` at build time, not from a hardcoded value — no code change
+needed there, just the data swap. **Rendered and inspected the new `ANSWER` PDF directly** rather
+than assuming the swap fixed or worsened the shape: Patara sits at nearly the same latitude as
+Syracuse, so the final leg (Syracuse → Patara) now draws a cleaner, shorter, flatter rightward
+stroke than the old Melitene endpoint did. The route's actual documented problem — the zigzag
+between Kyiv → Hedeby → Syracuse (points 3–4–5), which reverses direction instead of continuing
+a smooth diagonal — is unchanged by this swap, since it doesn't involve the endpoint that moved.
+Still an accepted known risk from an earlier session, not fixed and not worsened here.
+
+### Files changed
+
+- `NorseBackpack/TravelMap/stops.js` — `h-anatolia` entry (name, coordinates, note, source key);
+  replaced the now-unused `meliteneHistory` source entry with `pataraSword`.
+- `NorseBackpack/TravelMap/Norse_Aunt_Route_Plan.json` — matching update to the embedded
+  `visits.harald` copy of the same stop.
+- `NorseBackpack/Norse_Brainstorm.html` — three prose mentions (`PZ-09`'s build note, the trail
+  map caption, and the Travel routes tab's static source-citation list item, which duplicates
+  `stops.js` content by hand per an earlier session's finding that it isn't runtime-driven).
+- `output/pdf/Trail_Map_4_Harald_{Print,ANSWER}.pdf` — rebuilt with Patara's real coordinates.
+
+### Checks run
+
+- `python -c "import json; json.load(...)"` — route plan JSON still parses after editing.
+- Full-file tag-balance check on the HTML — all paired (995 div, 13 section, 30 article, 32
+  details, 15 ul, 116 li, 107 a, 11 table, 77 tr, 259 td, 41 th, 246 p, 255 span).
+- Rebuilt Harald's trail map via the real build script (not hand-edited), rendered the `ANSWER`
+  PDF page to PNG with PyMuPDF and visually inspected the actual traced route rather than assuming
+  the swap's effect on the digit-2 shape check.
+- Served over local HTTP and confirmed live: the Travel routes tab's interactive Leaflet mini-map
+  (which reads `stops.js` at runtime, unlike the static citation list) shows "Patara" correctly,
+  and the hand-edited static citation + source link also render. No console errors.
+- Repo-wide `grep` for "Melitene" across the three edited files — zero remaining.
+
+### Next action
+
+Write each decoy's place in Aunt Liv's travel story for its trail (`PC-16`'s open item, unaffected
+by this session — carried over).
+
+### Blockers / open items
+
+- Harald's Kyiv → Hedeby → Syracuse zigzag (see above) is still an accepted known risk, not fixed.
+- Per-trail decoy slot (`PC-16`) and in-game release order (`PC-18`) are both still unstarted.
+- Pre-existing backlog (Walcheren's missing back/PDF, card `LD`'s release point, `AD`/`HD`'s lock
+  jobs) is unchanged.
+
+## Session Close — 2026-09-16 (continued, 2) — Postcards renamed to trail-letter + position codes (resolves PC-17); Aud's front art incorporated
+
+**Task:** the user decided the canonical postcard numbering scheme (`PC-17`, left open earlier this
+session): each card's code is its trail's first letter plus its 1-based position in that trail
+(`L1`, `L2`, `L3` for Leif; `R1`–`R6` for Rollo; `A1`–`A3` for Aud; `H1`–`H6` for Harald), with each
+trail's decoy as that letter plus `D` (`LD`, `RD`, `AD`, `HD`). Asked to rename both the HTML and
+every file on disk to match. Also noted Codex had just finished Aud's front art in a parallel
+session.
+
+**Found already done:** Codex's Aud artwork (`Postcard_11_Dogurdarnes`, `_12_Hvammur`,
+`_13_Esjuberg` fronts, plus the `Postcard_D_Bjarnarhofn` decoy front) had already landed on disk
+and in the HTML's trail grid (real images, updated counts) before this session touched it — no
+separate sync step was needed, just folding it into the rename.
+
+**Renamed on disk** (`git mv` for tracked files, plain `mv` + `git add` for Codex's untracked new
+files, since `git mv` refuses untracked paths): every postcard front/back/illustration/ImageGen
+source PNG, the two Leif hold-to-light joint files (`Postcard_02_03_*` → `Postcard_L2_L3_*`), all
+built print PDFs in `output/pdf/`, the References folder's ImageGen source copies, and all eight
+`build_postcard_0X_pdf.py` scripts → `build_postcard_{L1,L2,L3,LD,R2,R3,R4,R5}_pdf.py`. Two
+superseded dev-prototype files (`Postcard_01_Harbor_Base.png`, `Postcard_01_Prototype.html`) were
+deliberately left unrenamed — they're not part of the live card pipeline.
+
+**Fixed internal references so nothing 404s or fails to build:**
+- `build_postcard_{L1,L2,L3,LD,R2,R3,R4,R5}_pdf.py` — `OUT`/`OUT_LETTER`/`FRONT` path constants,
+  `setTitle` strings, and the size-check error message, all updated to the new filenames.
+  Compile-checked with `python -m py_compile` after editing.
+- `build_postcard_collection.py`, `build_postcard_front_images.py` — `CARDS` list entries and
+  path comments updated to the new filenames.
+- `build_topedge_test_sheet.py` — was still pointing at the old `Postcard_02_Battle_Harbour`/
+  `Postcard_03_Baffin_Island` filenames and would have failed to find its input images; fixed.
+- `Postcards/References/README.md` — every `Postcard NN`/`Postcard_NN_Name` mention and the stale
+  "Postcard 13" mislabel on the Oslo photo (should have said 14 even under the old scheme) fixed.
+- `Postcards/Image_Credits.html` — stale `Postcard 01/02/03` headings and a broken
+  `href="Postcard_01_LAnse.html"` back-link fixed.
+- `Postcards/Postcard_L1_LAnse.html`, `Postcard_L1_LAnse_Style_Study.html` — these old dev-preview
+  pages (found while sweeping for stale references) had broken image/PDF links after the rename;
+  fixed to point at the new filenames.
+
+**Written into `Norse_Brainstorm.html`:**
+- Every `Postcard_NN_*` filename token, `build_postcard_NN_pdf.py` mention, and prose "card
+  NN"/"Postcard NN" reference across the whole page (gallery headings, figcaptions, `PZ-05`,
+  `PZ-14`, the codes table, etc.) converted to the new codes — done with a scripted regex pass,
+  not by hand, then swept twice more for leftovers a first-pass regex couldn't catch (mixed
+  "letter + bare old number" forms like "R2–09", and old numbers following an already-converted
+  code with no repeated "card" word, like "L2 and 03").
+- Trail-grid `pc-num` badges now show the actual code (`L1`, `R6`, `HD`, …) instead of a bare
+  per-trail digit — the two were always meant to be the same thing under this scheme, so showing
+  both would just invite drift.
+- `PC-17` changed from open to **Decided**: full code table for all 22 cards, and a note that this
+  deliberately collapses "canonical numbering" and "per-trail order" into one code — there's no
+  longer a separate continuous 01–22 sequence.
+- `PC-16` updated to point at `PC-17` as resolved.
+- **Real, pre-existing bug caught while sweeping, unrelated to the rename itself:** Roumare
+  Forest's (`R6`) gallery figcaption still said "held back for the final bundle" — directly
+  contradicting this session's earlier no-hold-back decision (`PC-16`). Fixed to "no longer held
+  back... (PC-16)".
+
+### Files changed
+
+- ~90 renamed/added files under `NorseBackpack/Postcards/`, `Postcards/References/`, and
+  `output/pdf/` (see `git status` — every rename shows as `R` or `RM`, nothing was deleted and
+  re-added blind).
+- `NorseBackpack/Postcards/build_postcard_{L1,L2,L3,LD,R2,R3,R4,R5}_pdf.py`,
+  `build_postcard_collection.py`, `build_postcard_front_images.py`, `build_topedge_test_sheet.py`.
+- `NorseBackpack/Postcards/References/README.md`, `Postcards/Image_Credits.html`,
+  `Postcards/Postcard_L1_LAnse.html`, `Postcards/Postcard_L1_LAnse_Style_Study.html`.
+- `NorseBackpack/Norse_Brainstorm.html` — sections listed above.
+
+### Checks run
+
+- `python -m py_compile` on all eight renamed build scripts plus the two shared scripts — no
+  syntax errors.
+- Full-file tag-balance check on the HTML (div/section/article/details/ul/li/a/table/tr/td/th/p/
+  span) — all paired (995 div, 13 section, 30 article, 32 details, 15 ul, 116 li, 107 a, 11 table,
+  77 tr, 259 td, 41 th, 246 p, 255 span).
+- Repo-wide `grep` for `Postcard_(0[1-9]|1[0-4])_`/`Postcard_D_`/`build_postcard_0[1-9]_pdf` across
+  `.py`/`.html`/`.md` — clean except `HANDOFF.md`'s own historical entries (intentionally not
+  retconned) and the two dev-prototype files left unrenamed on purpose.
+- Served over local HTTP (`static-preview`, port 8734, joined an already-running server) and
+  checked `read_network_requests` on the Postcards tab: every `Postcard_*` image request resolved
+  200 OK, none 404. `get_page_text` confirmed the trail grid, gallery headings and figcaptions all
+  read the new codes correctly end to end.
+- Visual screenshot verification was attempted but the Browser pane returned blank captures for
+  this page regardless of scroll position, while `get_page_text`/`read_network_requests`/DOM
+  inspection via `javascript_tool` all confirmed correct rendering and content — treated as a
+  screenshot-tool issue in this session, not a page bug, but flagging it since it means this
+  session's visual check leaned on text/network extraction rather than an actual screenshot.
+
+### Next action
+
+Write each decoy's place in Aunt Liv's travel story for its trail (`PC-16`'s remaining open item —
+the per-trail decoy slot depends on this).
+
+### Blockers / open items
+
+- Per-trail decoy slot (`PC-16`) still needs each decoy's narrative placement written.
+- In-game release order (`PC-18`) is unstarted.
+- Screenshot capture in the Browser pane was unreliable this session (see Checks run) — worth
+  retrying cold in a future session before trusting it for a visual-only check.
+- Pre-existing backlog (Walcheren's missing back/PDF, card `LD`'s release point, `AD`/`HD`'s lock
+  jobs) is unchanged.
+
+## Session Close — 2026-09-16 (continued) — No postcards held back; Brattahlíð's decoy label fixed; three separate orderings named
+
+**Task:** the user made three calls on the Postcards tab: (1) stop holding any postcards back for
+the final container, (2) fix Brattahlíð, which was displaying as an ordinary numbered card ("04")
+instead of a decoy in the "All 18, by trail" grid, and (3) recognize that postcard order is not one
+thing — there's the order within each trail (including where each trail's decoy sits), a canonical
+numbering independent of trail, and the order cards actually get released in play. Asked to start
+with the decoy-placement question.
+
+**Found while reading the tab:** Brattahlíð was the one decoy not flagged as a decoy — it showed
+`04` with a checkmark like Leif's three real stops, while the other three trails' decoys correctly
+showed `D` + a rust "Decoy" tag. This was a display bug relative to the other three, not a new
+design call.
+
+**Decided in chat:**
+- No postcards are held back for the final container. This fully supersedes `PZ-11`'s hold-back
+  mechanism (already noted as superseded-by-candidate on 15 Sept; now firmly decided) in favour of
+  the one-decoy-per-trail filter (`PZ-18`).
+- Each trail's decoy sits wherever it fits Aunt Liv's actual travel story for that leg — not a
+  fixed slot (e.g. always last), and not chosen to optimize the map-shape read. The exact slot per
+  trail is still open, since it depends on writing each decoy's place in her story, not done yet.
+- The other two orderings — canonical 01–22 numbering, and in-game release/reveal order — are
+  confirmed as separate questions from each other and from the per-trail order, and were not
+  designed this session. Recorded as new open items rather than guessed.
+
+**Written into `Norse_Brainstorm.html`:**
+- Fixed Brattahlíð's box in the "All 18, by trail" grid to show `D` + "Decoy" like the other three
+  trails, instead of `04` with just a checkmark.
+- Removed the live "Held back"/"Held back?" labels from Roumare, Hvammur and Staraya Ladoga's boxes
+  and the trail legend's "held back until the final container" line (now just "decoy").
+- Rewrote the intro paragraph above the grid to state the no-hold-back decision plainly instead of
+  describing a mechanism that's no longer in effect.
+- `PZ-11`'s pill changed from "Superseded (candidate)" to plain "Superseded"; its opening line now
+  states the 16 Sept decision explicitly.
+- New `PC-16` (records both decisions above and flags PC-17/PC-18 as distinct), `PC-17` (canonical
+  numbering, open), `PC-18` (in-game release order, open) in the Postcard system tab.
+
+**Deliberately not done:** did not invent where in each trail's story a decoy falls (needs the
+decoy's actual travel narrative, unwritten), did not invent a canonical numbering scheme, and did
+not map the release order — all three need their own design passes, not a guess to fill space.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — sections listed above.
+
+### Checks run
+
+- Served over local HTTP (`static-preview`, port 8734, already running from another session —
+  joined rather than starting a duplicate) and viewed the Postcards tab live: all four trail groups'
+  decoy boxes now render consistently (`D` + rust "Decoy" tag), no more "Held back" labels anywhere
+  in the grid, legend shows "decoy" instead of the old PZ-11 wording. No console errors.
+
+### Next action
+
+Write each decoy's place in Aunt Liv's travel story for its trail (needed before the per-trail
+decoy slot in `PC-16` can be pinned down), starting with whichever trail's decoy the user wants to
+tackle first.
+
+### Blockers / open items
+
+- Per-trail decoy slot (`PC-16`) needs each decoy's narrative placement written first.
+- Canonical numbering (`PC-17`) and in-game release order (`PC-18`) are both unstarted.
+- Pre-existing backlog below (Walcheren's missing back/PDF, card 04's release point, Bjarnarhöfn/
+  Constantinople's lock jobs) is unchanged.
+
+## Session Close — 2026-09-16 — PZ-19's three counts confirmed; caught and fixed a digit-order bug
+
+**Task:** picked up `PZ-19` (the Châlus/Roumare/Walcheren "counting in the illustration" lock) after
+Codex finished all three cards' front art in a parallel session. Verified each count by inspection
+rather than trusting the art brief alone, since a puzzle's actual code has to match what's really
+drawn.
+
+**Verified by looking at the actual images:**
+- **Roumare = 3 boars** — confirmed earlier this session, unchanged.
+- **Châlus = 2 crossbow bolts** — Codex's v2 art (replacing the original bolt-free landscape) has
+  one small bolt in the left tower's masonry and one on the foreground wall, both subtle but
+  countable. The user had said 3 in chat; the art landed on 2, and the user's follow-up confirmed 2
+  is correct — recorded as decided, not flagged as a discrepancy.
+- **Walcheren = 5 Viking boats** — five individually findable longships spread across the water above
+  the dune foreground. Good thematic swap from the earlier windmills/ships brainstorm — longships
+  fit the Rollo-raiding legend better than a modern harbor scene, and Codex's choice of 5 (not 3)
+  avoided the repeated-triple-digit problem flagged last session.
+
+**Real bug caught and fixed:** Codex's own update to `PZ-19` stated the resulting code as `523`, but
+the decided read order is Walcheren(5) → Roumare(3) → Châlus(2), which concatenates to **532**, not
+523 — a transcription/arithmetic slip, not a new design call. Fixed in both places it appeared
+(the summary line and the closing note). Checked `532` against every other code in the page
+(`0734`, `1021`, `1576`, `1972`, `231`, `2468`, `253`, `427`, `582`) — no collision.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — `PZ-19`'s pill status and both `523`→`532` fixes.
+
+### Checks run
+
+- Visually inspected `Postcard_05_Chalus_Front.png` (v2) and `Postcard_D_Walcheren_Front.png` to
+  count bolts and boats directly rather than trusting the prose description.
+- Grepped every `<code>NNNN</code>` in the page to check `532` for collisions — none found.
+- Full-file tag-balance check — stayed paired (968 div, 13 section, 26 article, 28 details, 15 ul,
+  116 li, 99 a, 11 table, 77 tr, 259 td, 41 th, 238 p, 257 span). `git diff --check` clean.
+- Confirmed live over local HTTP: both `532` mentions render, no console errors.
+
+### Next action
+
+Draft the three messages (Walcheren → Roumare → Châlus order, "story goes" framing for the first
+two, already drafted once in chat and awaiting final counts — now unblocked). Then decide what
+physical lock `PZ-19`'s code feeds (`ST-01`), and whether/when Walcheren gets a real card number
+(it's still file-named `Postcard_D_Walcheren_*`, a placeholder, since giving it a real number means
+another renumbering pass — cheaper this time since no back/PDF exists yet for it, but Harald's
+already-built Oslo card (14) would still need to shift if Walcheren slots in ahead of Aud/Harald).
+
+### Blockers / open items
+
+- The three messages are drafted in chat but not yet written into `build_postcard_0X_pdf.py` scripts
+  or the page — final counts were the blocker, now resolved.
+- Walcheren has no real card number, back, or print PDF yet.
+- Card 04's release point in Leif's lock sequence (from four sessions ago) is still open.
+- Bjarnarhöfn and Constantinople (Aud's and Harald's decoys) still have no lock job assigned.
+
+## Session Close — 2026-09-15 (continued, 5) — "Every card gates a lock" rule, and a new combined lock for Châlus/Roumare/Walcheren
+
+**Task:** the user set a stronger standing rule — every postcard, including decoys, must feed an
+actual physical lock, not just flavour, a calendar statement, or an element mark. That immediately
+flagged five cards with no lock job: Rollo's Châlus and Roumare (blank slates, no mechanism at all
+yet), and three of the four decoys (Walcheren, Bjarnarhöfn, Constantinople — Brattahlíð already
+qualified via the beasts-chain imprint). Brainstormed options for the first three with the user, who
+picked combining all three into one new lock: **"counting in the illustration."**
+
+**Decided in chat:**
+- **Mechanism:** each of the three front illustrations hides a count of one small object; the three
+  digits, read in the right order, are the lock code. The order comes from natural in-voice
+  sequencing phrases in each handwritten message ("before that," "between the two"), not explicit
+  numbering — which also doubles as the relative-order calendar statements the Final riddle still
+  needs for Rollo's trail.
+- **Order: Walcheren → Roumare → Châlus**, mirroring the existing Rollo → William → Richard
+  family-line thread. Checked the history first rather than picking arbitrarily: Walcheren ties to
+  Rollo's disputed pre-Normandy raiding (evidence category `uncertain` in `stops.js`), Roumare to a
+  ducal-forest naming legend near his capital (category `context`, the weakest tier), Châlus to
+  Richard the Lionheart's well-documented 1199 death (category `supported`). Flagged in the page
+  that the first two need "the story goes" framing in their messages, not stated-as-fact — the
+  underlying evidence really is that uneven, and the page already tracks it that way.
+- **What each illustration counts:** Châlus = two small crossbow bolts (now built in v2; echoes the
+  existing rebus that already points here from Bayeux); Roumare = three wild boars (now built,
+  echoing the boar vignette on Rollo's map); Walcheren = five Viking boats (now built). The decided
+  order produces code 523.
+
+**Written into `Norse_Brainstorm.html`:** new `PZ-19` with the full mechanism, order, and evidence
+reasoning; the Postcard system tab's new rule cross-updated to show Châlus/Roumare/Walcheren as now
+assigned (only Bjarnarhöfn/Constantinople still open); same update in the Final riddle tab's decoy
+section; Rollo's constraint-worksheet row updated to point at `PZ-19` for its remaining postcard
+statements.
+
+**Noted, not reverted:** Codex added Roumare's front art and gallery wiring in a parallel session
+(`build_postcard_front_images.py` now has a `Postcard_10_Roumare_Forest` entry) — consistent with
+the renumbering from two sessions ago (Roumare is Rollo's 6th real stop, slot 10).
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — sections listed above; Roumare gallery entry now records
+  the v2 three-boar edit and exact prompt.
+- `NorseBackpack/Postcards/Postcard_10_Roumare_Forest_Illustration_v2.png` — new source artwork
+  with three countable boars; v1 retained.
+- `NorseBackpack/Postcards/build_postcard_front_images.py` — Roumare front now builds from v2.
+- `NorseBackpack/Postcards/Postcard_D_Walcheren_Illustration_v1.png` and
+  `Postcard_D_Walcheren_Front.png` — new CC BY-SA 4.0-derived Walcheren decoy front with five boats.
+- `NorseBackpack/Postcards/References/README.md` — Walcheren source attribution and adaptation note.
+- `NorseBackpack/Postcards/Postcard_05_Chalus_Illustration_v2.png` and
+  `Postcard_05_Chalus_Front.png` — Châlus v2 with two smaller countable crossbow bolts; v1 retained.
+- `NorseBackpack/Postcards/Postcard_11_Dogurdarnes_*`, `Postcard_12_Hvammur_*`,
+  `Postcard_13_Esjuberg_*`, and `Postcard_D_Bjarnarhofn_*` — Aud's three real postcard fronts and
+  Bjarnarhöfn decoy front, all built from newly recorded Commons sources.
+
+### Checks run
+
+- Full-file tag-balance check — stayed paired (965 div, 13 section, 25 article, 27 details, 14 ul,
+  113 li, 97 a, 11 table, 77 tr, 259 td, 41 th, 235 p, 257 span; the article/details/li counts moved
+  from more than just this session's edits, consistent with Codex's parallel front-art work also
+  landing in the same file). `git diff --check` clean.
+- Confirmed over local HTTP (a server another session already had running on port 8734, joined
+  directly rather than starting a duplicate) that `PZ-19` and its three cross-references render with
+  no console errors.
+
+### Next action
+
+Decide the lock jobs and draft the messages for Aud's now-art-complete trail; all four backs and
+print PDFs remain to build.
+
+### Blockers / open items
+
+- The illustration count code is fixed at 523. All three messages remain open.
+- Which physical lock this feeds is undecided (`ST-01`, same as most other locks).
+- Bjarnarhöfn and Constantinople still have no lock job assigned.
+- Card 04's release point in Leif's lock sequence (from three sessions ago) is still open and
+  unaffected by this session.
+
+## Session Close — 2026-09-15 — Roumare Forest postcard front art
+
+**Task:** create the front art for postcard 10, Roumare Forest, from the user-selected Commons reference.
+
+**Created:** a 1500 × 1050 px, 300 dpi vintage travel-poster front. A young roe deer stands on a fern-lined Normandy woodland track under dappled early-evening light. The front has the series' titled navy band: `ROUMARE FOREST · NORMANDY`. The chosen source is retained as `References/Roumare_Forest_Daguet_Nadine_Toudic_CC-BY-SA-4.0.jpg`, from Nadine Toudic's *Daguet (2)* photo, CC BY-SA 4.0. The original illustrated composition, attribution, licence and exact generation prompt are recorded in the Postcards tab.
+
+**Files changed:** `NorseBackpack/Postcards/Postcard_10_Roumare_Forest_Illustration_v1.png`, `Postcard_10_Roumare_Forest_Front.png`, `References/Roumare_Forest_Daguet_Nadine_Toudic_CC-BY-SA-4.0.jpg`, `build_postcard_front_images.py`, `Norse_Brainstorm.html`.
+
+**Checks:** visually inspected source, illustration and titled front; confirmed final artwork is 1500 × 1050 px at 300 dpi; `git diff --check` passed; `Norse_Brainstorm.html` has 960 matching `<div>` pairs. Live HTTP page check was not completed: the in-app browser's first localhost request was refused while the preview server restarted, then the browser session held its generated error page and rejected a fresh navigation. The direct artifact inspection and source checks passed.
+
+**Next action:** write Roumare's message/Fun Fact, decide its required lock job, then build its back and print PDF. It remains held for the final bundle under the candidate final-riddle direction.
+
+## Session Close — 2026-09-15 (continued, 4) — Card 04's message, Fun Fact, imprint and back built
+
+**Task:** write and build the actual content for decoy card 04 (Brattahlíð), picking up where the
+prior session left off. Codex had already generated the front art in a parallel session (found via
+the disk-change notice, not reverted — see the session below). Drafted message/Fun Fact in chat,
+the user gave exact final wording for the message, and confirmed the drafted Fun Fact as-is.
+
+**Built `build_postcard_04_pdf.py`** (new, modelled on card 02's script, same Leif trail stamp):
+- Message and Fun Fact per the user's exact text.
+- **Real bug caught and fixed:** the handwriting font (`NothingYouCouldDo`) renders `ð` as a broken
+  glyph — confirmed by rendering the card and comparing against the typed Fun Fact box (Helvetica),
+  which renders `Brattahlíð` and `Þjóðhildar's` correctly. Fixed by spelling it "Brattahlid" in the
+  handwritten message only — Liv's casual handwriting dropping the diacritic while the typed Fun
+  Fact keeps it accurate is a deliberate, plausible difference, not a workaround dressed up as one.
+- Carries the real `Vinland Editions · Series F, No. 1` imprint (moved here from card 02 last
+  session, `PZ-10`/`PZ-18`) and, for the first time on any built card, the "You know me — every
+  little detail counts" rule line (`PZ-10`, decided in an earlier session but never actually
+  written onto a card) — worked into the message itself ("I really enjoy those small details!")
+  rather than printed as a separate line.
+- Postmark reads "BRATTAHLÍÐ" (Helvetica renders it fine; only the handwriting font has the bug).
+- Rendered `Postcard_04_Brattahlid_Back.png` from the built PDF for the gallery, matching the
+  pattern used for other cards' back images.
+
+**Written into `Norse_Brainstorm.html`:** `PZ-05` gained card 04's full message/Fun Fact writeup and
+the imprint/rule-line notes; the Postcards toolbar intro, Leif's trail-group count and pc-box, and
+a full gallery entry (front + back + View PDF) all updated from "unbuilt" to built. Also fixed two
+stale "in their own dedicated scripts" / `build_postcard_collection.py` claims that predated this
+card's script.
+
+**Also fixed, found while working:** `References/README.md` had five stale "for Postcard 0X" prose
+mentions left over from last session's renumbering (my sweep then only caught literal filenames, not
+this prose) — Bayeux/Winchester/Battle/Rouen/Châlus each still claimed their pre-renumbering card
+number. Fixed, and added a new README section for the Brattahlíð source photo (Claire Rowland, CC
+BY 2.0), which had art but no credit entry yet.
+
+### Files changed
+
+- `NorseBackpack/Postcards/build_postcard_04_pdf.py` — new.
+- `NorseBackpack/Postcards/Postcard_04_Brattahlid_Back.png` — new, rendered from the built PDF.
+- `output/pdf/Postcard_04_Brattahlid_{Print,Letter_Print}.pdf` — new.
+- `NorseBackpack/Postcards/References/README.md` — new Brattahlíð section; five stale card-number
+  mentions fixed.
+- `NorseBackpack/Norse_Brainstorm.html` — sections listed above.
+
+### Checks run
+
+- Rebuilt the PDF twice (once before, once after the eth-glyph fix) and rendered both at 3× to
+  inspect visually — caught the bug on the first pass, confirmed clean on the second.
+- Full-file tag-balance check — stayed paired (956 div, 13 section, 24 article, 26 details, 13 ul,
+  110 li, 95 a, 11 table, 77 tr, 259 td, 41 th, 233 p, 257 span). `git diff --check` clean.
+- Served over local HTTP and checked the Postcards tab: card 04's gallery entry (front + back +
+  View PDF) renders, no console errors.
+- Deleted temporary preview PNGs from the scratchpad after inspection.
+
+### Next action
+
+Decide where/how card 04 gets released relative to Leif's existing three-lock sequence (`PZ-13`) —
+the beasts chain now needs this card in hand, and that's still unplaced. Then start on the other
+three decoys (Rollo/Walcheren, Aud/Bjarnarhöfn, Harald/Constantinople), each of which will trigger
+its own renumbering cascade like this one did.
+
+### Blockers / open items
+
+- Card 04's release point in the lock sequence is undecided.
+- The other three decoy cards have no numbers, art, or text yet.
+- Per-stop element-mark assignment and decoy-city shape-checks (from two sessions ago) are still
+  open and unaffected by this session.
+
+## Session Close — 2026-09-15 — Brattahlíð decoy postcard front art
+
+**Task:** create the new art for decoy postcard 04, Brattahlíð/Qassiarsuk, from the supplied Wikimedia church reference.
+
+**Created:** a 1500 × 1050 px, 300 dpi vintage travel-poster front: turf-roofed timber church, separate bell frame, Greenland fjord and hills, with the series' blank navy title band. `build_postcard_front_images.py` now generates the titled `Postcard_04_Brattahlid_Front.png`. The source reference is retained locally as `References/Brattahlid_Church_Wikimedia_CC-BY-2.0.jpg` (Claire Rowland, CC BY 2.0). The design page records the source, attribution and exact generation prompt; card 04's trail thumbnail now shows the real front.
+
+**Files changed:** `NorseBackpack/Postcards/Postcard_04_Brattahlid_Illustration_v1.png`, `Postcard_04_Brattahlid_Front.png`, `References/Brattahlid_Church_Wikimedia_CC-BY-2.0.jpg`, `build_postcard_front_images.py`, `Norse_Brainstorm.html`.
+
+**Checks:** inspected the illustration and titled front visually; confirmed 1500 × 1050 px and 300 dpi; rebuilt postcard fronts; `git diff --check` passed; `Norse_Brainstorm.html` has 953 matching `<div>` pairs; served the Postcards tab over local HTTP, confirmed card 04's image loads and page has no console errors.
+
+**Next action:** write card 04's message/Fun Fact, add its real `Vinland Editions · Series F, No. 1` imprint, then build its back and print PDF. Its release position in Leif's lock sequence remains open under `PZ-13`.
+
+## Session Close — 2026-09-15 (continued, 3) — Leif's decoy postcard inserted as card 04; beasts-chain pointer moved off card 02
+
+**Task:** the user's design fix for the beasts-chain lock: postcard 02 was doing two jobs (the
+`Series F, No. 1` grid-reference imprint, and half of the hold-to-light 1576 pair with card 03).
+Move the imprint job onto the new Leif decoy card, insert it as card 04 (right after Leif's three
+real cards), and remove the "every card carries a flavour imprint" camouflage (`PZ-10`) — only card
+04 keeps an imprint now. Confirmed with the user this meant renumbering every built card from 04
+onward, and to do that renumbering now rather than defer it.
+
+**Renumbered (highest-first via `git mv` to avoid collisions), rebuilt, and verified:**
+- Châlus 04→05, Rouen 05→06, Bayeux 06→07, Winchester 07→08, Battle 08→09, Oslo 13→14 — front/back/
+  illustration PNGs, `References/*_ImageGen_Source.png`, `build_postcard_0X_pdf.py` scripts (OUT
+  paths, FRONT paths, `setTitle` strings), `output/pdf/*.pdf`, `build_postcard_front_images.py`'s
+  `CARDS` list, and `References/README.md`'s file-name mentions.
+- Rebuilt the four PDFs that have build scripts (Rouen, Bayeux, Winchester, Battle) plus Leif's
+  01–03 (imprint removal); Châlus and Oslo are front-art-only, no PDF to rebuild.
+- Removed the `Vinland Editions · Series [x], No. [n]` imprint line from all seven existing build
+  scripts (01, 02, 03, 06 Rouen, 07 Bayeux, 08 Winchester, 09 Battle) — visually confirmed on a
+  re-rendered Rouen card back that the line is gone and nothing else shifted.
+
+**Written into `Norse_Brainstorm.html`:**
+- Lock table's beasts-chain row now points to "decoy postcard 04" instead of card 02, marked
+  candidate rather than decided.
+- `PZ-10` (the imprint mechanism) and `PZ-13` (Leif's opening lock sequence) both marked superseded/
+  candidate with a note explaining what changed and what's now unresolved: **card 04 must be in the
+  player's hands by the time the beasts chain runs, and where/how it gets released relative to the
+  existing three-lock opening is not decided.** The old reasoning is kept below each note, per
+  `AGENTS.md`'s "say so where the old text was" rule, not deleted.
+- `PZ-05`'s card-02/card-03/Rouen paragraphs updated to say their imprints were removed rather than
+  silently dropping the old claims; the historical card-01/card-03 imprint bug note is kept but
+  marked no-longer-applicable.
+- All stale card-number mentions swept and fixed: gallery headings, `View PDF` links, image `src`
+  paths, the Postcard-system lockflow diagram (both Leif's and Rollo's), the Puzzle Details lock
+  table's Rollo rows (`05`→`06`, `06,07,08`→`07,08,09`), and three "card 06" mentions that meant
+  Bayeux (now card 07).
+- Postcards tab: Leif's decoy box now shows the real number `04` instead of a generic placeholder,
+  since that number is now decided (the other three trails' decoy boxes stay generic — their
+  numbers aren't chosen yet and will shift again when inserted).
+
+**Deliberately not done:** the new card 04's actual message, Fun Fact, and front art (still no
+Brattahlíð artwork or written text — this session only secured its number and mechanism role); and
+where/how card 04 gets released into play relative to Leif's existing three-lock sequence, flagged
+as newly open in `PZ-13`.
+
+### Files changed
+
+- `NorseBackpack/Postcards/*` — renamed image/reference files (see above), edited build scripts
+  (`build_postcard_0{1,2,3,6,7,8,9}_pdf.py`, `build_postcard_front_images.py`).
+- `NorseBackpack/Postcards/References/README.md` — renumbered filename mentions.
+- `output/pdf/Postcard_{01,02,03,06,07,08,09}_*.pdf` — rebuilt.
+- `NorseBackpack/Norse_Brainstorm.html` — sections listed above.
+
+### Checks run
+
+- Full-file tag-balance check after every batch of edits — stayed paired throughout (953 div, 13
+  section, 23 article, 26 details, 13 ul, 110 li, 93 a, 11 table, 77 tr, 259 td, 41 th, 231 p, 257
+  span at the end).
+- `git diff --check` on the HTML — no whitespace errors.
+- Re-ran all seven affected `build_postcard_0X_pdf.py` scripts — all built cleanly, no exceptions.
+- Rendered the rebuilt Rouen card back at 3× and inspected it: message, Fun Fact, postmark, stamp
+  and address all intact, no imprint line, nothing else shifted out of place.
+- Served over local HTTP (`static-preview`, port 8734) and checked the Postcards and Open Questions
+  tabs live: no console errors, decoy boxes and PZ-10/PZ-13's new candidate notes render correctly.
+- Grepped the whole page repeatedly for stale `Postcard_0X_Name`/`build_postcard_0X_pdf.py`
+  filenames and bare card-number mentions until none remained.
+
+### Next action
+
+Draft the actual Leif decoy card (04, Brattahlíð): message and Fun Fact in Liv's voice, matching the
+built-card pattern, carrying the real `Vinland Editions · Series F, No. 1` imprint. Then decide
+where/how it's released relative to Leif's existing three-lock sequence, since the beasts chain now
+needs it in hand — that's the open item this session added to `PZ-13`.
+
+### Blockers / open items
+
+- Card 04 has no text, front art, or release point in the lock sequence yet.
+- The other three decoy cards (Rollo/Walcheren, Aud/Bjarnarhöfn, Harald/Constantinople) are still
+  unnumbered and unbuilt — each insertion will trigger another renumbering cascade of everything
+  after it, same as this session's.
+- Per-stop element-mark assignment and decoy-city shape-checks (from the session below) are still
+  open and unaffected by this session's work.
+
+## Session Close — 2026-09-15 (continued, 2) — Crest/symbol elements and four decoy stops decided
+
+**Task:** the user asked to fill in the `PZ-18` open items from the Final riddle v2 session below:
+the symbol/crest element designs and the four decoy cities. Proposed a draft in chat first (crest,
+symbol, fake elements, decoy cities), the user changed two of the four decoy cities from the draft,
+then approved the rest as drafted.
+
+**Decided and written into `Norse_Brainstorm.html`:**
+- **Symbol (3 elements, covers Leif + Aud):** raven, longship, compass rose/sun-wheel.
+- **Crest (6 elements, covers Rollo + Harald):** battle-axe, shield, wolf, anchor, drinking horn,
+  valknut.
+- **Fake elements:** Leif/Aud decoys share Mjölnir (Thor's hammer); Rollo/Harald decoys share a
+  crown (both trails are about rulers, which is what makes it convincing).
+- **Four decoy stops**, all real Liv-visited places already in `stops.js`'s research corpus, just
+  not on that trail's six postcard stops: Leif = Brattahlíð/Qassiarsuk (Greenland), Rollo =
+  Walcheren (Netherlands, user's choice — not the earlier Caen/Falaise candidates), Aud =
+  Bjarnarhöfn (Iceland, user's choice — not the earlier Krosshólaborg candidate), Harald =
+  Constantinople/Istanbul.
+
+**Updated:** the Final riddle tab's four panels (element/fake/decoy-city designs stated, no longer
+just candidates), the constraint worksheet's decoy-city column, `PZ-18`'s open-items list (elements
+and cities struck through as decided), the Postcards tab's "All 18, by trail" boxes (one new decoy
+box per trail group, counts relabelled "real built" vs. decoy), and the Travel routes tab's pending
+note.
+
+**Deliberately not done:** which specific element sits on which real stop's card (per-stop
+assignment), the shape-check of each decoy city against its trail's map projection, and the four
+decoy postcards' actual message/Fun Fact text — all still open, the last being the literal "4 new
+cards" the user asked for that this session didn't reach.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — sections listed above.
+
+### Checks run
+
+- Full-file tag-balance check (div/section/article/details/ul/li/a/table/tr/td/th/p/span) — all
+  paired (951 div, 13 section, 23 article, 26 details, 13 ul, 110 li, 93 a, 11 table, 77 tr, 259 td,
+  41 th, 231 p, 256 span).
+- Served over local HTTP (`static-preview`, port 8734) and checked live: Final riddle tab's four
+  updated panels and Postcards tab's four new decoy boxes (Brattahlíð, Walcheren, Bjarnarhöfn,
+  Constantinople) render correctly under their trail colours. No console errors.
+
+### Next action
+
+Draft the four decoy postcards' message/Fun Fact text (in Liv's voice, matching the built-card
+pattern), then shape-check each decoy city against its trail's real map projection before touching
+`stops.js`/`Norse_Aunt_Route_Plan.json` or the trail-map PDFs.
+
+### Blockers / open items
+
+- Per-stop element-mark assignment (which of the 3 symbol / 6 crest elements goes on which real
+  card) is unassigned.
+- No decoy city is shape-checked yet — a city that doesn't draw a plausible wrong digit would need
+  replacing before any art or map work starts.
+- The four decoy postcards have no text, front art, or back/print PDF.
+- Rest of `PZ-18` (dated-vs-undated decoys, final-bundle contents, the constraint-solver build) is
+  unchanged from the session below.
 
 ## Session Close — 2026-09-15 (continued) — Final riddle v2 recorded: decoy postcards + crest/logo filter
 
