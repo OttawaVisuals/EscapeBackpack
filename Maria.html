@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Project CABER · Emergency Recommissioning</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --bg:#0e1519;--panel:#16232a;--panel2:#1d2f38;--line:#2b444f;
+  --ink:#dfe9ea;--dim:#8fa5ad;--cy:#43bdc9;--am:#e2a441;--rd:#d1584a;--gn:#57b87e;
+  --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 'Segoe UI',system-ui,sans-serif}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+button:focus-visible,input:focus-visible{outline:3px solid var(--am);outline-offset:3px}
+h1,h2,h3,p{margin:0}
+.mono{font-family:var(--mono)}
+.wrap{max-width:900px;margin:auto;padding:0 18px}
+
+/* ---------- status bar ---------- */
+header{background:#0a1114;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+/* .bar's own padding replaces .wrap's, so the side gutter has to be repeated here */
+.bar{display:flex;align-items:center;gap:18px;padding:12px 18px;flex-wrap:wrap}
+.unit{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.unit b{color:var(--cy);font-weight:700}
+.charge{flex:1;min-width:210px}
+.charge .row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+.track{height:9px;border-radius:5px;background:#0a1114;border:1px solid var(--line);overflow:hidden}
+#fill{height:100%;width:100%;background:var(--cy);transition:width 1s linear,background .6s}
+.letters{display:flex;gap:6px}
+.letters span{width:30px;height:30px;display:grid;place-items:center;border:1px solid var(--line);border-radius:6px;
+  font-family:var(--mono);font-weight:700;color:#3d565f;background:#0a1114;transition:.35s}
+.letters span.on{color:#07161a;background:var(--cy);border-color:var(--cy);box-shadow:0 0 14px #43bdc955}
+
+/* ---------- panels ---------- */
+main{padding:30px 0 70px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:26px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--am);margin-bottom:10px}
+h2{font-size:clamp(23px,4vw,31px);line-height:1.2;margin-bottom:12px}
+.lede{color:#b6c8cd;margin-bottom:20px}
+p+p{margin-top:12px}
+.dim{color:var(--dim)}
+.small{font-size:14px}
+.note{background:#0f1c22;border-left:3px solid var(--am);padding:13px 16px;border-radius:0 8px 8px 0;margin:18px 0;font-size:14.5px;color:#c3d3d7}
+
+/* readouts */
+/* 190px keeps the six gauge tiles as 3 + 3, so superheat sits above subcooling */
+.readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:18px 0}
+.ro{background:#0f1c22;border:1px solid var(--line);border-radius:9px;padding:13px 15px}
+.ro b{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);margin-bottom:6px;font-weight:700}
+.ro .v{font-family:var(--mono);font-size:21px;color:var(--cy)}
+.ro.warn .v{color:var(--am)}
+
+/* nameplates */
+.plates{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin:18px 0}
+.plate{background:#243038;border:1px solid #415a63;border-radius:7px;padding:15px;font-family:var(--mono);font-size:13px;
+  background-image:linear-gradient(#ffffff08 1px,transparent 1px);background-size:100% 3px}
+.plate h4{margin:0 0 10px;font-size:12px;letter-spacing:.15em;color:var(--am)}
+.plate div{display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-bottom:1px solid #ffffff10}
+.plate div:last-child{border:0}
+.plate span:last-child{color:#fff}
+
+/* choices */
+.choices{display:grid;gap:10px;margin:18px 0}
+.choice{text-align:left;background:#0f1c22;border:1px solid var(--line);border-radius:9px;padding:14px 16px;transition:.15s}
+.choice:hover{border-color:var(--cy);transform:translateX(3px)}
+.choice.bad{border-color:var(--rd);background:#2a1618}
+.choice.good{border-color:var(--gn);background:#132a20}
+.choice b{display:block;margin-bottom:3px}
+.choice small{color:var(--dim)}
+
+/* thermal svg */
+.thermal{background:#000;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:18px 0}
+.thermal svg{display:block;width:100%;height:auto}
+.hot{cursor:crosshair;fill:transparent}
+.hot:hover{fill:#ffffff22;stroke:#fff;stroke-width:2}
+
+/* sequence */
+.seq{display:grid;gap:9px;margin:18px 0}
+.step{display:flex;align-items:center;gap:13px;background:#0f1c22;border:1px solid var(--line);border-radius:9px;padding:12px 14px}
+.step .n{width:26px;height:26px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--panel2);
+  font-family:var(--mono);font-size:13px;color:var(--cy)}
+.step .t{flex:1;font-size:15px}
+.step .mv{display:flex;gap:5px}
+.step .mv button{width:32px;height:30px;border:1px solid var(--line);background:#16232a;border-radius:6px;line-height:1}
+.step .mv button:hover{border-color:var(--cy)}
+.seq.locked .mv{opacity:.3;pointer-events:none}
+
+/* entry */
+.entry{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:20px}
+.entry input{background:#0a1114;border:1px solid var(--line);border-radius:8px;padding:12px 15px;
+  font-family:var(--mono);font-size:20px;letter-spacing:.18em;width:190px;text-align:center}
+.btn{background:var(--cy);color:#06161a;border:0;border-radius:8px;padding:12px 22px;font-weight:700}
+.btn:hover{background:#5fd2dd}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--dim);font-weight:400;padding:11px 16px}
+.btn.ghost:hover{border-color:var(--am);color:var(--am)}
+.msg{min-height:24px;margin-top:14px;font-size:15px}
+.msg.err{color:var(--rd)}
+.msg.ok{color:var(--gn)}
+.hintbox{margin-top:16px;background:#0f1c22;border:1px dashed #3d5b66;border-radius:9px;padding:14px 16px;font-size:14.5px;color:#bfd0d4}
+.hintbox p+p{margin-top:8px}
+
+/* solved banner */
+.solved{border-color:var(--gn)}
+.stamp{display:inline-flex;align-items:center;gap:9px;background:#132a20;border:1px solid var(--gn);color:var(--gn);
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:7px 13px;border-radius:6px;margin-bottom:16px}
+
+/* finale */
+.finale h2{font-size:clamp(26px,5vw,40px)}
+.hand{background:#0f1c22;border:1px solid var(--line);border-left:3px solid var(--cy);border-radius:0 10px 10px 0;
+  padding:20px 22px;margin:22px 0;font-family:var(--mono);font-size:14px;line-height:1.75}
+.hand .k{color:var(--dim);display:inline-block;min-width:160px}
+.hand .vv{color:var(--cy)}
+.cop{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;margin:24px 0;
+  font-family:var(--mono);font-size:clamp(28px,7vw,48px)}
+.cop .was{color:var(--rd);text-decoration:line-through;opacity:.7}
+.cop .arrow{color:var(--dim);font-size:24px}
+.cop .now{color:var(--gn)}
+.thanks{font-size:clamp(20px,3.6vw,26px);color:var(--cy);margin-top:18px!important}
+.wall{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:26px}
+.wall figure{margin:0;background:#0f1c22;border:1px dashed #3d5b66;border-radius:9px;padding:18px;text-align:center;color:var(--dim);font-size:13.5px}
+
+[hidden]{display:none!important}
+@media(max-width:620px){
+  .bar{gap:10px;padding:10px 16px}
+  .unit{font-size:11px;letter-spacing:.06em}
+  .letters span{width:26px;height:26px;font-size:13px}
+  .card{padding:20px 17px}.entry input{width:100%}
+  .hand .k{display:block;min-width:0}
+  /* six stacked gauge tiles is a lot of scrolling on a phone - pair them up */
+  .readouts{grid-template-columns:1fr 1fr;gap:9px}
+  .ro{padding:11px 12px}
+  .ro b{font-size:9.5px;letter-spacing:.08em}
+  .ro .v{font-size:18px}
+  .step .t{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="unit">Unit <b>AHP-01</b> · Plant room · <span id="clock">20:00</span></div>
+    <div class="charge">
+      <div class="row"><span>Refrigerant charge</span><span id="pct">100%</span></div>
+      <div class="track"><div id="fill"></div></div>
+    </div>
+    <div class="letters" id="letters" aria-label="Procedure progress">
+      <span>C</span><span>A</span><span>B</span><span>E</span><span>R</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap"><div id="stage"></div></main>
+
+<script>
+/* ============================================================
+   Project CABER - five-gate recommissioning game
+   Self-contained: no network, no backend, one file.
+   To re-skin for a different retirement, edit RETIREE below
+   and the three gates that reference it (1, E and handover).
+   ============================================================ */
+
+var RETIREE = {
+  name: 'Maria',
+  startYear: 2001,
+  endDate: '28 September 2026',
+  dateCode: '280926'
+};
+
+var TOTAL_MS = 20 * 60 * 1000;   // gauge drains over 20 minutes
+var FLOOR_PCT = 4;               // never reaches zero - the game never locks anyone out
+
+var state = { gate: 0, started: null, hints: {}, order: null };
+
+/* ---------- persistence (best effort; a party laptop will get refreshed) ---------- */
+function save(){ try { localStorage.setItem('caber', JSON.stringify(state)); } catch (e) {} }
+function load(){
+  try { var r = localStorage.getItem('caber'); if (r) { var o = JSON.parse(r); for (var k in o) state[k] = o[k]; } }
+  catch (e) {}
+}
+
+/* ---------- gauge ---------- */
+function remaining(){
+  if (!state.started) return 100;
+  var used = (Date.now() - state.started) / TOTAL_MS;
+  return Math.max(FLOOR_PCT, Math.round((1 - used) * 100));
+}
+function tick(){
+  var p = remaining();
+  var fill = document.getElementById('fill');
+  fill.style.width = p + '%';
+  fill.style.background = p > 45 ? 'var(--cy)' : (p > 18 ? 'var(--am)' : 'var(--rd)');
+  document.getElementById('pct').textContent = p + '%';
+  var left = state.started ? Math.max(0, TOTAL_MS - (Date.now() - state.started)) : TOTAL_MS;
+  var m = Math.floor(left / 60000), s = Math.floor((left % 60000) / 1000);
+  document.getElementById('clock').textContent = m + ':' + String(s).padStart(2, '0');
+}
+setInterval(tick, 1000);
+
+/* ---------- letters ---------- */
+function paintLetters(){
+  // gate 0 is the briefing, so stage C is gate 1. A letter lights only once its stage is solved.
+  var els = document.querySelectorAll('#letters span');
+  for (var i = 0; i < els.length; i++) {
+    els[i].className = (i < state.gate - 1) ? 'on' : '';
+  }
+}
+
+/* ---------- shared helpers ---------- */
+function say(text, cls){
+  var m = document.getElementById('msg');
+  if (m) { m.textContent = text; m.className = 'msg ' + (cls || ''); }
+}
+function pass(line){
+  say(line, 'ok');
+  state.gate++; save(); paintLetters();
+  setTimeout(render, 1200);
+}
+function digits(s){ return (s || '').replace(/\D/g, ''); }
+
+/* ============================================================
+   THE GATES
+   ============================================================ */
+var GATES = [
+
+/* ---------- BRIEFING ---------- */
+{
+  render: function(){ return '' +
+    '<div class="card">' +
+      '<div class="eyebrow">Building services &middot; Priority 1</div>' +
+      '<h2>Project CABER &mdash; emergency recommissioning</h2>' +
+      '<p class="lede">The air source heat pump on the roof is losing refrigerant. Pressure is falling, the gauge above ' +
+      'is your remaining charge, and the person who normally fixes this is at their own leaving party downstairs.</p>' +
+      '<p>Work the standard procedure. Five stages, one letter each. Get all five and the unit can be handed over.</p>' +
+      '<div class="note"><b>C</b>onfirm the unit &middot; <b>A</b>ssess the envelope &middot; <b>B</b>alance the charge ' +
+      '&middot; <b>E</b>valuate performance &middot; <b>R</b>estart and hand over</div>' +
+      '<p class="small dim">Nothing here can lock you out. The charge drains, but the system always keeps a reserve. ' +
+      'It only decides how good you look in the report.</p>' +
+      '<div class="entry"><button class="btn" id="go">Start the callout</button></div>' +
+    '</div>'; },
+  wire: function(){
+    document.getElementById('go').onclick = function(){
+      state.started = Date.now(); state.gate++; save(); paintLetters(); render();
+    };
+  }
+},
+
+/* ---------- GATE 1 - C ---------- */
+{
+  hints: [
+    'Two things on the works order have to match the same plate, not just one.',
+    'One plate is the wrong output. One is the wrong refrigerant. The survivor is your unit.'
+  ],
+  render: function(){ return '' +
+    '<div class="card">' +
+      '<div class="eyebrow">Stage C &middot; Confirm the unit</div>' +
+      '<h2>Three plant rooms, three plates</h2>' +
+      '<p class="lede">Before you touch anything, confirm you are standing in front of the right machine. The works ' +
+      'order is thin, but it is enough.</p>' +
+      '<div class="note mono small">WORKS ORDER 4417 &mdash; Air source heat pump, nominal heat output <b>11.0 kW</b>, ' +
+      'refrigerant <b>R-410A</b>. Original install, still on its first charge.</div>' +
+      '<div class="plates">' +
+        '<div class="plate"><h4>PLANT ROOM A</h4>' +
+          '<div><span>Output</span><span>8.5 kW</span></div>' +
+          '<div><span>Refrigerant</span><span>R-410A</span></div>' +
+          '<div><span>Serial</span><span>HP-4412-1998</span></div></div>' +
+        '<div class="plate"><h4>PLANT ROOM B</h4>' +
+          '<div><span>Output</span><span>11.0 kW</span></div>' +
+          '<div><span>Refrigerant</span><span>R-410A</span></div>' +
+          '<div><span>Serial</span><span>HP-4419-2001</span></div></div>' +
+        '<div class="plate"><h4>PLANT ROOM C</h4>' +
+          '<div><span>Output</span><span>11.0 kW</span></div>' +
+          '<div><span>Refrigerant</span><span>R-32</span></div>' +
+          '<div><span>Serial</span><span>HP-4407-2014</span></div></div>' +
+      '</div>' +
+      '<p>Enter the <b>last four digits</b> of the correct serial number.</p>' +
+      '<div class="entry">' +
+        '<input id="in" maxlength="4" inputmode="numeric" placeholder="____" autocomplete="off" aria-label="Serial digits">' +
+        '<button class="btn" id="ok">Confirm unit</button>' +
+      '</div>' +
+      '<div class="msg" id="msg"></div>' +
+    '</div>'; },
+  check: function(v){ return digits(v) === '2001'; },
+  win: 'Unit confirmed: HP-4419-2001. Commissioned 2001, and running ever since.'
+},
+
+/* ---------- GATE 2 - A ---------- */
+{
+  hints: [
+    'Warm glass and a warm flue are doing their jobs. Look for heat escaping through something structural.',
+    'It runs horizontally, straight through the insulation line, on every floor.'
+  ],
+  render: function(){ return '' +
+    '<div class="card">' +
+      '<div class="eyebrow">Stage A &middot; Assess the envelope</div>' +
+      '<h2>Why is it working this hard?</h2>' +
+      '<p class="lede">A heat pump that never stops is usually a building problem, not a plant problem. Here is the ' +
+      'facade at 04:00, outside air minus 4 &deg;C.</p>' +
+      '<div class="thermal">' +
+        '<svg viewBox="0 0 600 360" role="img" aria-label="Thermal image of a four storey facade">' +
+          '<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">' +
+            '<stop offset="0" stop-color="#05040f"/><stop offset="1" stop-color="#0d1030"/>' +
+          '</linearGradient></defs>' +
+          '<rect width="600" height="360" fill="url(#sky)"/>' +
+          '<rect x="60" y="40" width="480" height="290" fill="#1e2a63"/>' +
+          '<rect x="48" y="28" width="504" height="14" fill="#3a2a6b"/>' +
+          '<rect x="60" y="112" width="480" height="11" fill="#f2b23c"/>' +
+          '<rect x="60" y="184" width="480" height="11" fill="#f5c451"/>' +
+          '<rect x="60" y="256" width="480" height="11" fill="#f2b23c"/>' +
+          '<rect x="60" y="110" width="480" height="15" fill="#ff9a2e" opacity=".35"/>' +
+          '<rect x="60" y="182" width="480" height="15" fill="#ff9a2e" opacity=".35"/>' +
+          '<rect x="60" y="254" width="480" height="15" fill="#ff9a2e" opacity=".35"/>' +
+          '<g fill="#a83f2c">' +
+            '<rect x="95" y="60" width="76" height="42" rx="2"/><rect x="215" y="60" width="76" height="42" rx="2"/>' +
+            '<rect x="335" y="60" width="76" height="42" rx="2"/><rect x="455" y="60" width="60" height="42" rx="2"/>' +
+            '<rect x="95" y="132" width="76" height="42" rx="2"/><rect x="215" y="132" width="76" height="42" rx="2"/>' +
+            '<rect x="335" y="132" width="76" height="42" rx="2"/><rect x="455" y="132" width="60" height="42" rx="2"/>' +
+            '<rect x="95" y="204" width="76" height="42" rx="2"/><rect x="215" y="204" width="76" height="42" rx="2"/>' +
+            '<rect x="335" y="204" width="76" height="42" rx="2"/><rect x="455" y="204" width="60" height="42" rx="2"/>' +
+          '</g>' +
+          '<rect x="556" y="90" width="16" height="230" fill="#ffd66b"/>' +
+          '<rect x="552" y="86" width="24" height="238" fill="#ff9a2e" opacity=".3"/>' +
+          '<rect x="270" y="278" width="66" height="52" fill="#7a3b3f"/>' +
+          '<rect x="0" y="330" width="600" height="30" fill="#0a0a1c"/>' +
+          // Hotspots. Window rows come first so the slab bands sit on top of them:
+          // on a phone the bands are only ~15px tall, so overlap is deliberately
+          // resolved in favour of the correct answer.
+          '<rect class="hot" data-z="roof" x="48" y="20" width="504" height="24"/>' +
+          '<rect class="hot" data-z="win" x="88" y="55" width="434" height="52"/>' +
+          '<rect class="hot" data-z="win" x="88" y="127" width="434" height="52"/>' +
+          '<rect class="hot" data-z="win" x="88" y="199" width="434" height="52"/>' +
+          '<rect class="hot" data-z="slab" x="60" y="96" width="480" height="42"/>' +
+          '<rect class="hot" data-z="slab" x="60" y="168" width="480" height="42"/>' +
+          '<rect class="hot" data-z="slab" x="60" y="240" width="480" height="42"/>' +
+          '<rect class="hot" data-z="flue" x="548" y="84" width="34" height="242"/>' +
+          '<rect class="hot" data-z="door" x="266" y="284" width="74" height="48"/>' +
+        '</svg>' +
+      '</div>' +
+      '<p>Click the <b>thermal bridge</b> &mdash; the heat loss the plant can never win against.</p>' +
+      '<div class="msg" id="msg"></div>' +
+    '</div>'; },
+  wire: function(){
+    var talk = {
+      roof: 'Roof edge, warm, but that is the eaves detail and it is within tolerance.',
+      win:  'The glazing is warm because glazing is always warm. Expected, not a defect.',
+      flue: 'That is the flue. It is meant to be hot.',
+      door: 'Heated entrance lobby. Not your problem tonight.'
+    };
+    var hots = document.querySelectorAll('.hot');
+    for (var i = 0; i < hots.length; i++) {
+      hots[i].onclick = function(){
+        var z = this.getAttribute('data-z');
+        if (z === 'slab') pass('Uninsulated floor slabs, running clean through the envelope on every storey.');
+        else say(talk[z], 'err');
+      };
+    }
+  }
+},
+
+/* ---------- GATE 3 - B ---------- */
+{
+  hints: [
+    'High superheat has more than one cause. The second reading tells you which one.',
+    'A blocked expansion valve starves the evaporator but stacks liquid up in the condenser, so subcooling would be HIGH. Yours is 1 K.'
+  ],
+  render: function(){ return '' +
+    '<div class="card">' +
+      '<div class="eyebrow">Stage B &middot; Balance the charge</div>' +
+      '<h2>Gauges on, and they are not happy</h2>' +
+      '<p class="lede">Manifold connected, unit running steady in heating, outside air 7 &deg;C. Read it and name the fault.</p>' +
+      '<div class="readouts">' +
+        '<div class="ro"><b>Suction saturation</b><div class="v">0 &deg;C</div></div>' +
+        '<div class="ro warn"><b>Suction line temp</b><div class="v">18 &deg;C</div></div>' +
+        '<div class="ro warn"><b>Superheat</b><div class="v">18 K</div></div>' +
+        '<div class="ro"><b>Liquid saturation</b><div class="v">40 &deg;C</div></div>' +
+        '<div class="ro"><b>Liquid line temp</b><div class="v">39 &deg;C</div></div>' +
+        '<div class="ro warn"><b>Subcooling</b><div class="v">1 K</div></div>' +
+      '</div>' +
+      '<p class="small dim">Design targets for this unit: superheat 5&ndash;8 K, subcooling 5&ndash;7 K.</p>' +
+      '<div class="choices">' +
+        '<button class="choice" data-a="over"><b>Overcharged</b><small>Too much refrigerant in the system</small></button>' +
+        '<button class="choice" data-a="under"><b>Undercharged &mdash; refrigerant loss</b><small>The system has lost charge and is starving</small></button>' +
+        '<button class="choice" data-a="txv"><b>Restricted expansion valve</b><small>Metering device blocked or seized shut</small></button>' +
+        '<button class="choice" data-a="ncg"><b>Non-condensables in the system</b><small>Air or moisture drawn in during a past service</small></button>' +
+      '</div>' +
+      '<div class="msg" id="msg"></div>' +
+    '</div>'; },
+  wire: function(){
+    var talk = {
+      over: 'Overcharge would drive subcooling up and superheat down. You have the opposite.',
+      txv:  'Close. A restriction starves the evaporator too, but it would stack liquid in the condenser and subcooling would be high. Yours is 1 K.',
+      ncg:  'Non-condensables would push head pressure and liquid saturation up. 40 degrees is normal for these conditions.'
+    };
+    var bs = document.querySelectorAll('.choice');
+    for (var i = 0; i < bs.length; i++) {
+      bs[i].onclick = function(){
+        var a = this.getAttribute('data-a');
+        if (a === 'under') {
+          this.className = 'choice good';
+          pass('Superheat high AND subcooling low. There is simply not enough refrigerant in there. Leak confirmed.');
+        } else {
+          this.className = 'choice bad';
+          say(talk[a], 'err');
+        }
+      };
+    }
+  }
+},
+
+/* ---------- GATE 4 - E ---------- */
+{
+  hints: [
+    'Coefficient of performance = heat delivered divided by electricity consumed.',
+    '11.0 divided by 4.4. One decimal place.'
+  ],
+  render: function(){ return '' +
+    '<div class="card">' +
+      '<div class="eyebrow">Stage E &middot; Evaluate performance</div>' +
+      '<h2>Put a number on it</h2>' +
+      '<p class="lede">Before you fix anything, log what the unit is actually doing. The report needs a figure, not an adjective.</p>' +
+      '<div class="readouts">' +
+        '<div class="ro"><b>Heat delivered</b><div class="v">11.0 kW</div></div>' +
+        '<div class="ro"><b>Electrical input</b><div class="v">4.4 kW</div></div>' +
+        '<div class="ro warn"><b>Measured COP</b><div class="v">?</div></div>' +
+      '</div>' +
+      '<div class="note">' + RETIREE.name + ' has been telling people to write the number down before picking up the ' +
+      'spanners since ' + RETIREE.startYear + '. Broadly speaking, nobody listened. Hence tonight.</div>' +
+      '<p>Enter the measured COP to one decimal place.</p>' +
+      '<div class="entry">' +
+        '<input id="in" maxlength="4" inputmode="decimal" placeholder="_._" autocomplete="off" aria-label="Measured COP">' +
+        '<button class="btn" id="ok">Log reading</button>' +
+      '</div>' +
+      '<div class="msg" id="msg"></div>' +
+    '</div>'; },
+  check: function(v){
+    var t = (v || '').trim().replace(/\s/g, '').replace(',', '.');
+    return t === '2.5' || t === '25';
+  },
+  win: 'COP 2.5 logged. Twenty-five years of service, and the machine picks tonight to match the number.'
+},
+
+/* ---------- GATE 5 - R ---------- */
+{
+  hints: [
+    'You cannot repair a pipe with gas still in it, and you cannot charge a system with air still in it.',
+    'Recover, repair and pressure test, evacuate, weigh in the charge, restart and log.'
+  ],
+  render: function(){ return '' +
+    '<div class="card">' +
+      '<div class="eyebrow">Stage R &middot; Restart and hand over</div>' +
+      '<h2>Do it in the right order</h2>' +
+      '<p class="lede">Five steps, currently in the order an enthusiastic apprentice would do them. Put them right.</p>' +
+      '<div class="seq" id="seq"></div>' +
+      '<div class="entry"><button class="btn" id="run">Run procedure</button></div>' +
+      '<div class="msg" id="msg"></div>' +
+    '</div>'; },
+  wire: function(){
+    var RIGHT = [
+      'Recover the remaining refrigerant to a cylinder',
+      'Repair the leak and pressure test with dry nitrogen',
+      'Evacuate the system to vacuum and hold it',
+      'Weigh in the correct charge from the nameplate',
+      'Restart, log performance and sign the record'
+    ];
+    var order = state.order || [3, 0, 4, 1, 2];
+    var seq = document.getElementById('seq');
+
+    function draw(){
+      var html = '';
+      for (var i = 0; i < order.length; i++) {
+        html += '<div class="step">' +
+          '<div class="n">' + (i + 1) + '</div>' +
+          '<div class="t">' + RIGHT[order[i]] + '</div>' +
+          '<div class="mv">' +
+            '<button data-d="-1" data-i="' + i + '" aria-label="Move up"' + (i === 0 ? ' disabled' : '') + '>&uarr;</button>' +
+            '<button data-d="1" data-i="' + i + '" aria-label="Move down"' + (i === 4 ? ' disabled' : '') + '>&darr;</button>' +
+          '</div></div>';
+      }
+      seq.innerHTML = html;
+      var bs = seq.querySelectorAll('button');
+      for (var k = 0; k < bs.length; k++) {
+        bs[k].onclick = function(){
+          var i = +this.getAttribute('data-i'), j = i + (+this.getAttribute('data-d'));
+          if (j < 0 || j > 4) return;
+          var tmp = order[i]; order[i] = order[j]; order[j] = tmp;
+          state.order = order; save(); draw(); say('');
+        };
+      }
+    }
+    draw();
+
+    document.getElementById('run').onclick = function(){
+      var wrong = -1;
+      for (var i = 0; i < order.length; i++) { if (order[i] !== i) { wrong = i; break; } }
+      if (wrong === -1) {
+        seq.className = 'seq locked';
+        pass('Procedure accepted. Charge weighed in, unit running.');
+      } else {
+        say('Step ' + (wrong + 1) + ' cannot happen yet. Something above it has not been done.', 'err');
+      }
+    };
+  }
+},
+
+/* ---------- HANDOVER ---------- */
+{
+  hints: [
+    'It is on the invitation that brought you all here tonight.',
+    'Six digits, day month year. The 28th.'
+  ],
+  render: function(){ return '' +
+    '<div class="card">' +
+      '<div class="eyebrow">Handover &middot; Final entry</div>' +
+      '<h2>The record needs a date</h2>' +
+      '<p class="lede">The unit is running. The commissioning record is open on the screen and it will not close ' +
+      'without a handover date.</p>' +
+      '<div class="hand">' +
+        '<div><span class="k">ASSET</span> <span class="vv">AHP-01 &middot; Project CABER</span></div>' +
+        '<div><span class="k">IN SERVICE</span> <span class="vv">' + RETIREE.startYear + '</span></div>' +
+        '<div><span class="k">FAULT</span> <span class="vv">Loss of charge &mdash; rectified</span></div>' +
+        '<div><span class="k">HANDOVER DATE</span> <span class="vv">_ _ / _ _ / _ _</span></div>' +
+      '</div>' +
+      '<p>Enter the handover date as six digits, <span class="mono">DDMMYY</span>.</p>' +
+      '<div class="entry">' +
+        '<input id="in" maxlength="10" inputmode="numeric" placeholder="______" autocomplete="off" aria-label="Handover date">' +
+        '<button class="btn" id="ok">Close the record</button>' +
+      '</div>' +
+      '<div class="msg" id="msg"></div>' +
+    '</div>'; },
+  check: function(v){
+    var d = digits(v);
+    return d === '280926' || d === '28092026' || d === '20260928';
+  },
+  win: 'Record closed.'
+}
+];
+
+/* ============================================================
+   FINALE
+   ============================================================ */
+function finale(){
+  var p = remaining();
+  var line = p > 45 ? 'Charge recovered with reserve in hand. Textbook. Somebody taught you well.'
+           : p > 18 ? 'Charge recovered, cylinder nearly dry. Tight, but the unit is running and the record is signed.'
+           : 'Charge fully vented and replaced from stock. Ugly on paper, fixed in practice. There is a tradition of this.';
+
+  document.getElementById('stage').innerHTML = '' +
+    '<div class="card solved finale">' +
+      '<div class="stamp">&#10003; CABER &middot; Recommissioned</div>' +
+      '<h2>Unit AHP-01 is back on line</h2>' +
+      '<p class="lede">' + line + '</p>' +
+      '<div class="cop"><span class="was">2.5</span><span class="arrow">&#9654;</span><span class="now">4.2</span></div>' +
+      '<p class="small dim" style="text-align:center">Coefficient of performance, before and after. The fault was never ' +
+      'the machine. It was everything around it that nobody had looked at.</p>' +
+      '<div class="hand">' +
+        '<div><span class="k">ASSET</span> <span class="vv">AHP-01 &middot; Project CABER</span></div>' +
+        '<div><span class="k">STATUS</span> <span class="vv">Recommissioned, performance verified</span></div>' +
+        '<div><span class="k">HANDOVER</span> <span class="vv">' + RETIREE.endDate + '</span></div>' +
+        '<div><span class="k">OPERATOR ON RECORD</span> <span class="vv">' + RETIREE.name + ' &middot; ' + RETIREE.startYear + '&ndash;2026</span></div>' +
+        '<div><span class="k">REMARKS</span> <span class="vv">Ran quietly. Ran efficiently. Ran for twenty-five years.</span></div>' +
+      '</div>' +
+      '<p>The unit being handed over tonight was never the heat pump.</p>' +
+      '<p class="thanks">Thank you, ' + RETIREE.name + '.</p>' +
+      '<div class="wall">' +
+        '<figure>Photo slot 1</figure><figure>Photo slot 2</figure><figure>Message from the team</figure>' +
+      '</div>' +
+      '<div class="entry"><button class="btn ghost" id="again">Run the callout again</button></div>' +
+    '</div>';
+
+  document.getElementById('again').onclick = function(){
+    state.gate = 0; state.started = null; state.hints = {}; state.order = null;
+    save(); paintLetters(); render();
+  };
+}
+
+/* ============================================================
+   RENDER LOOP
+   ============================================================ */
+function render(){
+  if (state.gate >= GATES.length) { finale(); return; }
+  var g = GATES[state.gate];
+  var stage = document.getElementById('stage');
+  stage.innerHTML = g.render();
+  var card = stage.querySelector('.card');
+
+  if (g.hints) {
+    var n = state.hints[state.gate] || 0;
+    if (n > 0) {
+      var box = document.createElement('div');
+      box.className = 'hintbox';
+      var h = '';
+      for (var i = 0; i < n && i < g.hints.length; i++) h += '<p>' + g.hints[i] + '</p>';
+      box.innerHTML = h;
+      card.appendChild(box);
+    }
+    if (n < g.hints.length) {
+      var b = document.createElement('button');
+      b.className = 'btn ghost';
+      b.style.marginTop = '14px';
+      b.textContent = n === 0 ? 'Need a nudge?' : 'Another nudge';
+      b.onclick = function(){ state.hints[state.gate] = (state.hints[state.gate] || 0) + 1; save(); render(); };
+      card.appendChild(b);
+    }
+  }
+
+  if (g.wire) g.wire();
+
+  var ok = document.getElementById('ok'), input = document.getElementById('in');
+  if (ok && input && g.check) {
+    var submit = function(){
+      if (g.check(input.value)) pass(g.win);
+      else { say('Rejected. Check it again.', 'err'); input.select(); }
+    };
+    ok.onclick = submit;
+    input.onkeydown = function(e){ if (e.key === 'Enter') submit(); };
+    input.focus();
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+load(); paintLetters(); tick(); render();
+</script>
+</body>
+</html>
