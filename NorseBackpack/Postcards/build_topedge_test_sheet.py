@@ -15,7 +15,7 @@ from reportlab.lib.utils import ImageReader
 
 ROOT = Path(__file__).resolve().parents[2]
 POSTCARDS = ROOT / "NorseBackpack" / "Postcards"
-OUT = ROOT / "output" / "pdf" / "Postcard_02_03_TopEdge_Test.pdf"
+OUT = ROOT / "output" / "pdf" / "Postcard_L2_L3_TopEdge_Test.pdf"
 
 DPI = 300.0  # PC-13: 1500x1050 art over a 5 x 3.5 in card
 STRIP_PX = 300  # crop height in source pixels; digits sit in roughly the first 30-40 px
@@ -33,8 +33,8 @@ PAGE_W = STRIP_W_IN * inch + MARGIN + RIGHT_LABEL_W
 PAGE_H = 2 * (LABEL_H + STRIP_H_IN * inch) + GAP + RULER_H + RULER_NOTE_H + 2 * MARGIN
 
 CARDS = [
-    ("Postcard_02_Battle_Harbour_Front.png", "CARD 02 · Battle Harbour — as printed, right side up"),
-    ("Postcard_03_Baffin_Island_Front.png", "CARD 03 · Baffin Island — as printed, right side up"),
+    ("Postcard_L2_Battle_Harbour_Front.png", "CARD L2 · Battle Harbour — as printed, right side up"),
+    ("Postcard_L3_Baffin_Island_Front.png", "CARD L3 · Baffin Island — as printed, right side up"),
 ]
 
 

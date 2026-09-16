@@ -9,11 +9,10 @@ from reportlab.lib.utils import ImageReader
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "output" / "pdf" / "Postcard_08_Battle_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_08_Battle_Letter_Print.pdf"
-FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_08_Battle_Front.png"
+OUT = ROOT / "output" / "pdf" / "Postcard_R2_Rouen_Print.pdf"
+OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_R2_Rouen_Letter_Print.pdf"
+FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_R2_Rouen_Front.png"
 STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Rollo_Comet_v2_flat.png"
-REBUS_DIR = ROOT / "NorseBackpack" / "Postcards" / "RebusIcons"
 FONT_DIR = ROOT / "Fonts"
 
 PAGE = landscape((3.5 * 72, 5 * 72))
@@ -54,7 +53,7 @@ def draw_front_card(c, x=0, y=0):
     # PC-13: same guard as build_postcard_01_pdf.py -- fail loud rather than stretch.
     if (fw, fh) != (1500, 1050):
         raise ValueError(
-            f"Postcard_08_Battle_Front.png is {fw}x{fh}, expected 1500x1050 (PC-13, "
+            f"Postcard_R2_Rouen_Front.png is {fw}x{fh}, expected 1500x1050 (PC-13, "
             f"5x3.5in @300dpi). Drawing it here would stretch it to fit the page."
         )
     c.drawImage(front, 0, 0, W, H, preserveAspectRatio=False, mask="auto")
@@ -78,13 +77,17 @@ def draw_back_card(c, x=0, y=0):
     c.setStrokeColor(RULE)
     c.line(divider, 24, divider, H - 30)
 
-    # Message text decided in chat (PZ-05): enthusiastic/warm/fun/friendly voice, matching
-    # cards 01-03, 06 and 07. Names William the Conqueror's 1066 victory and loops back to the
-    # Bayeux Tapestry from card 06, per the "more history" direction. This card carries no rebus
-    # -- its earlier TREATY-rebus candidacy moved to Winchester (PZ-14).
+    # Message decided in chat (PZ-05): Liv's own text, kept verbatim including "fighting" and
+    # "cows" rather than the ticket's exact "fight"/"cow" -- accepted as deliberate extra
+    # friction (PZ-15), not a typo to fix. Carries the word-lock order clue: fight, forest,
+    # cow, people, poultry, inn, in that order (PZ-15) -- resolves to the directional-lock
+    # combination RIGHT, DOWN, DOWN, UP, LEFT, LEFT. No rebus on this card.
     paragraphs = [
-        "Today I visited Battle, the village where the Battle of Hastings happened. This is where William the Conqueror fought King Harold. William’s victory sealed the conquest of England by the Normans.",
-        "It’s so cool to be able to see it in person, especially after spending hours looking at the tapestry!",
+        "Today I got to visit Rouen, and it might be my favourite so far!",
+        "This was Rollo’s own capital! The King gave Rollo all of Normandy so the fighting would stop.",
+        "This morning I hiked in the forest outside of town and got to see some of those famous Normande cows!",
+        "This afternoon was the city proper, the cathedral and the famous half-timbered houses. The city was vibrant today with lots of people milling about.",
+        "All that walking around made me crave fast-food: the battered poultry from Kentucky. Tonight’s dinner was a bit fancier, the Inn I’m staying at is famous for their snails!",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 7.7, 8.6
@@ -97,26 +100,8 @@ def draw_back_card(c, x=0, y=0):
         y -= 1.8
 
     c.setFont("NothingYouCouldDo", 8)
-    c.drawString(left, y, "Love,")
+    c.drawString(left, y, "With love,")
     c.drawString(left, y - 9, "Aunt Liv")
-
-    # Rebus icons (PZ-14): fish ("scale") + Roman numeral I + plain arrow ("to") + die showing
-    # 5 reads as SCALE 1 TO 5 -- the third rebus layer, telling players which of the architect's
-    # scale ruler's six marked scales to use when measuring the crossbow-bolt/treaty distance
-    # (Bayeux and Winchester, PZ-14). Anchored below the signature like the other two cards.
-    def draw_rebus_icon(filename, cx, cy, size, angle):
-        icon = ImageReader(str(REBUS_DIR / filename))
-        c.saveState()
-        c.translate(cx, cy)
-        c.rotate(angle)
-        c.drawImage(icon, -size / 2, -size / 2, size, size, mask="auto")
-        c.restoreState()
-
-    row_y = (y - 9) - 26
-    draw_rebus_icon("Rebus_Fish_Scales_Bayeux_v1.png", 38, row_y + 3, 22, -4)
-    draw_rebus_icon("Rebus_Roman_I_Bayeux_v1.png", 76, row_y - 4, 16, 6)
-    draw_rebus_icon("Rebus_Arrow_To_Bayeux_v1.png", 112, row_y + 2, 24, -3)
-    draw_rebus_icon("Rebus_Die_5_Bayeux_v1.png", 150, row_y - 3, 22, 8)
 
     # Rollo's trail stamp (comet) -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72
@@ -141,11 +126,11 @@ def draw_back_card(c, x=0, y=0):
     c.circle(postmark_x, postmark_y, 19.5, fill=0, stroke=1)
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 4.8)
-    c.drawCentredString(postmark_x, postmark_y - 1, "BATTLE")
+    c.drawCentredString(postmark_x, postmark_y - 1, "ROUEN")
     for offset in (-7, -2, 3, 8):
         c.line(postmark_x + 23, postmark_y + offset, right, postmark_y + offset)
 
-    # Address -- same recipient and layout as cards 01-03, 06 and 07 (PC-13 standard).
+    # Address -- same recipient and layout as cards 01-03, 06-08 (PC-13 standard).
     address_x = divider + 17
     box_right = right + 5
     rule_right = 278
@@ -172,7 +157,9 @@ def draw_back_card(c, x=0, y=0):
         c.setLineWidth(0.4)
         c.line(address_x, line_y - 3, rule_right, line_y - 3)
 
-    # Fun Fact -- typed, real trivia (PC-12). Loops back to the Bayeux Tapestry from card 06.
+    # Fun Fact -- typed, real trivia (PC-12). Both supplied facts combined into one callout
+    # (decided in chat): the Lionheart's heart entombed at Rouen Cathedral, plus its spire's
+    # height record.
     funfact_top, funfact_bottom = 120, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
@@ -183,9 +170,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(INK)
     fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
     fact_text = (
-        "The Bayeux Tapestry’s famous scene of Harold clutching an arrow in his eye may not be "
-        "original — Victorian restorers reworked stitching in that exact spot, so historians "
-        "still argue about how his death was actually shown."
+        "Rouen Cathedral holds the actual heart of Richard the Lionheart, King of England and "
+        "Duke of Normandy. Its spire also once held a record of its own: at 151 metres "
+        "(495 feet) it’s the tallest church spire in France, and was briefly the tallest "
+        "structure in the world in the late 19th century."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):
@@ -199,16 +187,12 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(HexColor("#59635D"))
     c.setFont("Helvetica", 4)
     credit_lines = [
-        'Image adaptation: "Sculpture at the Site of the Battle of Hastings - geograph.org.uk - 5801680" - Richard Cooke, CC BY-SA 2.0.',
+        'Image adaptation: "Rouen Place du Vieux-Marché 05" - Zairon, CC BY-SA 4.0.',
     ]
     for index, line in enumerate(credit_lines):
         c.drawString(left, credit_top - index * 5, line)
 
-    # Publisher's imprint -- pure flavour, no referent (PZ-10). The real beasts-chain grid
-    # reference is on card 02, not this card (PZ-13). Avoids letters already used elsewhere
-    # (A card01, C card03, D card06, E card07, F the real F1 pointer).
-    c.setFont("Helvetica", 5)
-    c.drawRightString(right, credit_top, "Vinland Editions  ·  Series G, No. 8")
+    # Publisher's imprint removed (PZ-18): only the new decoy card 04 carries this line now.
     c.restoreState()
 
 
@@ -228,7 +212,7 @@ def draw_crop_marks(c, x, y):
 
 def build_single():
     c = canvas.Canvas(str(OUT), pagesize=PAGE, pageCompression=1)
-    c.setTitle("Aunt Liv's Postcard 08 - Battle")
+    c.setTitle("Aunt Liv's Postcard R2 - Rouen")
     c.setAuthor("Escape Backpack")
     draw_front_card(c)
     c.showPage()
@@ -245,7 +229,7 @@ def build_letter():
     lower_y = (letter_h - group_h) / 2
     positions = [(x, lower_y + H + gap), (x, lower_y)]
     c = canvas.Canvas(str(OUT_LETTER), pagesize=LETTER, pageCompression=1)
-    c.setTitle("Two-up Postcard 08 print sheet - Battle")
+    c.setTitle("Two-up Postcard R2 print sheet - Rouen")
     c.setAuthor("Escape Backpack")
     for card_x, card_y in positions:
         draw_front_card(c, card_x, card_y)

@@ -12,60 +12,155 @@ SHADOW = "#071B1E"
 
 CARDS = [
     (
-        POSTCARDS / "Postcard_01_LAnse_Illustration_v3.png",
-        POSTCARDS / "Postcard_01_LAnse_Front.png",
+        POSTCARDS / "Postcard_L1_LAnse_Illustration_v3.png",
+        POSTCARDS / "Postcard_L1_LAnse_Front.png",
         "L'ANSE AUX MEADOWS",
         "NEWFOUNDLAND AND LABRADOR",
     ),
     (
-        POSTCARDS / "Postcard_02_Battle_Harbour_Illustration_v1.png",
-        POSTCARDS / "Postcard_02_Battle_Harbour_Front.png",
+        POSTCARDS / "Postcard_L2_Battle_Harbour_Illustration_v1.png",
+        POSTCARDS / "Postcard_L2_Battle_Harbour_Front.png",
         "BATTLE HARBOUR",
         "NEWFOUNDLAND AND LABRADOR",
     ),
     (
-        POSTCARDS / "Postcard_03_Baffin_Island_Illustration_v1.png",
-        POSTCARDS / "Postcard_03_Baffin_Island_Front.png",
+        POSTCARDS / "Postcard_L3_Baffin_Island_Illustration_v1.png",
+        POSTCARDS / "Postcard_L3_Baffin_Island_Front.png",
         "BAFFIN ISLAND",
         "NUNAVUT",
     ),
     (
-        POSTCARDS / "Postcard_04_Chalus_Illustration_v1.png",
-        POSTCARDS / "Postcard_04_Chalus_Front.png",
+        POSTCARDS / "Postcard_LD_Brattahlid_Illustration_v1.png",
+        POSTCARDS / "Postcard_LD_Brattahlid_Front.png",
+        "BRATTAHLÍÐ",
+        "GREENLAND",
+    ),
+    (
+        POSTCARDS / "Postcard_R1_Chalus_Illustration_v2.png",
+        POSTCARDS / "Postcard_R1_Chalus_Front.png",
         "CHÂLUS",
         "HAUTE-VIENNE",
     ),
     (
-        POSTCARDS / "Postcard_05_Rouen_Illustration_v1.png",
-        POSTCARDS / "Postcard_05_Rouen_Front.png",
+        POSTCARDS / "Postcard_R2_Rouen_Illustration_v1.png",
+        POSTCARDS / "Postcard_R2_Rouen_Front.png",
         "ROUEN",
         "NORMANDY",
     ),
     (
-        POSTCARDS / "Postcard_06_Bayeux_Illustration_v1.png",
-        POSTCARDS / "Postcard_06_Bayeux_Front.png",
+        POSTCARDS / "Postcard_R3_Bayeux_Illustration_v1.png",
+        POSTCARDS / "Postcard_R3_Bayeux_Front.png",
         "BAYEUX",
         "NORMANDY",
     ),
     (
-        POSTCARDS / "Postcard_07_Winchester_Illustration_v1.png",
-        POSTCARDS / "Postcard_07_Winchester_Front.png",
+        POSTCARDS / "Postcard_R4_Winchester_Illustration_v1.png",
+        POSTCARDS / "Postcard_R4_Winchester_Front.png",
         "WINCHESTER",
         "ENGLAND",
     ),
     (
-        POSTCARDS / "Postcard_08_Battle_Illustration_v1.png",
-        POSTCARDS / "Postcard_08_Battle_Front.png",
+        POSTCARDS / "Postcard_R5_Battle_Illustration_v1.png",
+        POSTCARDS / "Postcard_R5_Battle_Front.png",
         "BATTLE",
         "EAST SUSSEX",
     ),
     (
-        POSTCARDS / "Postcard_13_Oslo_Illustration_v1.png",
-        POSTCARDS / "Postcard_13_Oslo_Front.png",
+        POSTCARDS / "Postcard_R6_Roumare_Forest_Illustration_v2.png",
+        POSTCARDS / "Postcard_R6_Roumare_Forest_Front.png",
+        "ROUMARE FOREST",
+        "NORMANDY",
+    ),
+    (
+        POSTCARDS / "Postcard_RD_Walcheren_Illustration_v1.png",
+        POSTCARDS / "Postcard_RD_Walcheren_Front.png",
+        "WALCHEREN",
+        "NETHERLANDS",
+    ),
+    (
+        POSTCARDS / "Postcard_A1_Dogurdarnes_Illustration_v1.png",
+        POSTCARDS / "Postcard_A1_Dogurdarnes_Front.png",
+        "DÖGURÐARNES",
+        "ICELAND",
+    ),
+    (
+        POSTCARDS / "Postcard_A2_Hvammur_Illustration_v1.png",
+        POSTCARDS / "Postcard_A2_Hvammur_Front.png",
+        "HVAMMUR",
+        "ICELAND",
+    ),
+    (
+        POSTCARDS / "Postcard_A3_Esjuberg_Illustration_v1.png",
+        POSTCARDS / "Postcard_A3_Esjuberg_Front.png",
+        "ESJUBERG",
+        "ICELAND",
+    ),
+    (
+        POSTCARDS / "Postcard_AD_Bjarnarhofn_Illustration_v1.png",
+        POSTCARDS / "Postcard_AD_Bjarnarhofn_Front.png",
+        "BJARNARHÖFN",
+        "ICELAND",
+    ),
+    (
+        POSTCARDS / "Postcard_H1_Oslo_Illustration_v1.png",
+        POSTCARDS / "Postcard_H1_Oslo_Front.png",
         "OSLO",
         "NORWAY",
     ),
+    (
+        POSTCARDS / "Postcard_H2_Staraya_Ladoga_Illustration_v1.png",
+        POSTCARDS / "Postcard_H2_Staraya_Ladoga_Front.png",
+        "STARAYA LADOGA",
+        "RUSSIA",
+    ),
+    (
+        POSTCARDS / "Postcard_H3_Kyiv_Illustration_v1.png",
+        POSTCARDS / "Postcard_H3_Kyiv_Front.png",
+        "KYIV",
+        "UKRAINE",
+    ),
+    (
+        POSTCARDS / "Postcard_H4_Hedeby_Illustration_v1.png",
+        POSTCARDS / "Postcard_H4_Hedeby_Front.png",
+        "HEDEBY",
+        "GERMANY",
+    ),
+    (
+        POSTCARDS / "Postcard_H5_Sicily_Illustration_v1.png",
+        POSTCARDS / "Postcard_H5_Sicily_Front.png",
+        "SICILY",
+        "ITALY",
+    ),
+    (
+        POSTCARDS / "Postcard_H6_Patara_Illustration_v1.png",
+        POSTCARDS / "Postcard_H6_Patara_Front.png",
+        "PATARA",
+        "TURKEY",
+    ),
+    (
+        POSTCARDS / "Postcard_HD_Constantinople_Illustration_v1.png",
+        POSTCARDS / "Postcard_HD_Constantinople_Front.png",
+        "CONSTANTINOPLE",
+        "TURKEY",
+    ),
 ]
+
+# PC-19: these six illustration sources were generated full-bleed, with no blank title band
+# reserved the way every other card's source has one -- their own ImageGen prompts even said
+# "the title band will be added separately," but that compositing step never ran. Painting the
+# band here, once, for exactly these six, rather than changing build_card() unconditionally for
+# every card and risking a slightly different navy shade on the sixteen that are already correct.
+NEEDS_BAND = {
+    "Postcard_H2_Staraya_Ladoga_Front.png",
+    "Postcard_H3_Kyiv_Front.png",
+    "Postcard_H4_Hedeby_Front.png",
+    "Postcard_H5_Sicily_Front.png",
+    "Postcard_H6_Patara_Front.png",
+    "Postcard_HD_Constantinople_Front.png",
+}
+# Sampled from the existing correctly-built cards' own bands (e.g. L1, H1) rather than invented.
+BAND_NAVY = (18, 52, 60)
+BAND_DIVIDER = (235, 226, 185)
 
 
 def spaced_width(draw, text, font, spacing):
@@ -92,7 +187,7 @@ def fit_title(draw, text, max_width):
 
 
 # PC-13: card is 5 x 3.5 in (10:7). At 300 dpi that is 1500 x 1050 px -- matches
-# build_postcard_01_pdf.py's PAGE exactly, so no aspect distortion at draw time.
+# build_postcard_L1_pdf.py's PAGE exactly, so no aspect distortion at draw time.
 EXPECTED_SIZE = (1500, 1050)
 
 
@@ -104,6 +199,13 @@ def build_card(source, output, title, subtitle):
             f"@300dpi), got {image.size}: {source}. Illustration art must be regenerated "
             f"or reframed to this size -- do not stretch or force-resize it here."
         )
+
+    if output.name in NEEDS_BAND:
+        w, h = image.size
+        band_top = round(h * 0.80)
+        draw = ImageDraw.Draw(image)
+        draw.rectangle((0, band_top, w, h), fill=BAND_NAVY)
+        draw.rectangle((0, band_top - 3, w, band_top), fill=BAND_DIVIDER)
 
     draw = ImageDraw.Draw(image)
     center_x = image.width / 2

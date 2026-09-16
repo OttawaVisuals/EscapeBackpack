@@ -9,9 +9,9 @@ from reportlab.lib.utils import ImageReader
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "output" / "pdf" / "Postcard_02_Battle_Harbour_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_02_Battle_Harbour_Letter_Print.pdf"
-FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_02_Battle_Harbour_Front.png"
+OUT = ROOT / "output" / "pdf" / "Postcard_LD_Brattahlid_Print.pdf"
+OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_LD_Brattahlid_Letter_Print.pdf"
+FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_LD_Brattahlid_Front.png"
 STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Leif_Longship_v2_flat.png"
 FONT_DIR = ROOT / "Fonts"
 
@@ -53,7 +53,7 @@ def draw_front_card(c, x=0, y=0):
     # PC-13: same guard as build_postcard_01_pdf.py -- fail loud rather than stretch.
     if (fw, fh) != (1500, 1050):
         raise ValueError(
-            f"Postcard_02_Battle_Harbour_Front.png is {fw}x{fh}, expected 1500x1050 (PC-13, "
+            f"Postcard_LD_Brattahlid_Front.png is {fw}x{fh}, expected 1500x1050 (PC-13, "
             f"5x3.5in @300dpi). Drawing it here would stretch it to fit the page."
         )
     c.drawImage(front, 0, 0, W, H, preserveAspectRatio=False, mask="auto")
@@ -77,13 +77,21 @@ def draw_back_card(c, x=0, y=0):
     c.setStrokeColor(RULE)
     c.line(divider, 24, divider, H - 30)
 
-    # Message text decided in chat (PZ-05): enthusiastic/warm/fun/friendly voice, matching
-    # card 01. The animal mention here is flavour only -- it is not the beasts-chain nudge,
-    # which stays hidden in the imprint below (PZ-10/PZ-13).
+    # Message decided in chat (15 Sept 2026, PZ-05/PZ-18): this is Leif's decoy card, a real
+    # place Liv visited that isn't one of his three trail stops. Carries the "You know me --
+    # every little detail counts" rule line (PZ-10) for the first time -- it belongs wherever
+    # the real F1 imprint lives, which is now this card, not card 02.
+    # "Brattahlid" is spelled without the eth here on purpose: the handwriting font
+    # (NothingYouCouldDo) renders "ð" as a broken glyph -- confirmed by comparing against the
+    # Fun Fact box below, set in Helvetica, which renders "Brattahlíð" and "Þjóðhildar's"
+    # correctly. Liv's casual handwriting dropping the diacritic (vs. the typed Fun Fact
+    # keeping it) is a plausible, deliberate difference, not a workaround pretending to be one.
     paragraphs = [
-        "Second stop: Markland, ‘Forest Land’ in the old sagas, and they weren’t exaggerating, it is gorgeous! Trees for miles, beautiful light and no one around!",
-        "It sounded like something with claws walked past my tent last night — I didn’t sleep a wink!",
-        "Still, you’d love it here.",
+        "Amazing place today! Brattahlid, Greenland where Leif actually grew up.",
+        "It's stunning here, green against the ice in a way the name “Greenland” never "
+        "prepared me for. Erik apparently picked that name on purpose, to lure settlers! "
+        "I really enjoy those small details!",
+        "Found the foundations of the little church his wife had built, right on the fjord.",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 7.7, 8.6
@@ -96,10 +104,10 @@ def draw_back_card(c, x=0, y=0):
         y -= 1.8
 
     c.setFont("NothingYouCouldDo", 8)
-    c.drawString(left, y, "Love,")
+    c.drawString(left, y, "With Love,")
     c.drawString(left, y - 9, "Aunt Liv")
 
-    # Same trail stamp as card 01 -- one stamp per traveller, not per card.
+    # Leif's trail stamp -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72
     stamp_x, stamp_y = right - stamp_w, H - 30 - stamp_h
     c.drawImage(
@@ -114,21 +122,19 @@ def draw_back_card(c, x=0, y=0):
     )
 
     # Postmark: place only. No date drawn -- PC-03/PC-04 (the eighteen postmark dates) are
-    # still open, and PZ-08 needs those dates to be checked against the trail-order constraint
-    # before any are printed. Do not invent one here.
+    # still open. Whether this decoy takes a calendar slot at all is also open (PZ-18).
     postmark_x, postmark_y = stamp_x - 5, H - 48
     c.setStrokeColor(TEAL)
     c.setLineWidth(0.8)
     c.circle(postmark_x, postmark_y, 23, fill=0, stroke=1)
     c.circle(postmark_x, postmark_y, 19.5, fill=0, stroke=1)
     c.setFillColor(TEAL)
-    c.setFont("Helvetica-Bold", 4.8)
-    c.drawCentredString(postmark_x, postmark_y + 4, "BATTLE")
-    c.drawCentredString(postmark_x, postmark_y - 2, "HARBOUR")
+    c.setFont("Helvetica-Bold", 4.0)
+    c.drawCentredString(postmark_x, postmark_y - 1, "BRATTAHLÍÐ")
     for offset in (-7, -2, 3, 8):
         c.line(postmark_x + 23, postmark_y + offset, right, postmark_y + offset)
 
-    # Address -- same recipient and layout as card 01 (PC-13 standard).
+    # Address -- same recipient and layout as cards 01-03, 06-09 (PC-13 standard).
     address_x = divider + 17
     box_right = right + 5
     rule_right = 278
@@ -155,8 +161,8 @@ def draw_back_card(c, x=0, y=0):
         c.setLineWidth(0.4)
         c.line(address_x, line_y - 3, rule_right, line_y - 3)
 
-    # Fun Fact -- typed, real trivia (PC-12). Safe/no-date option: ties to the "Forest Land"
-    # name in her message without needing a source-checked date.
+    # Fun Fact -- typed, real trivia (PC-12). Ties directly to the church foundations
+    # mentioned in the message above.
     funfact_top, funfact_bottom = 120, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
@@ -167,10 +173,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(INK)
     fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
     fact_text = (
-        "“Markland” appears in both the Saga of the Greenlanders and the Saga of "
-        "Erik the Red as the second landfall on the Vinland voyages. Its “Forest Land” "
-        "name likely marks the coast of Labrador, one of the few heavily wooded shores Norse "
-        "sailors would have passed after leaving treeless Greenland."
+        "Brattahlíð, Erik the Red's homestead near modern Qassiarsuk, seeded the Eastern "
+        "Settlement -- the larger of Greenland's two medieval Norse colonies, home to "
+        "thousands at its peak. Its ruins include Þjóðhildar's Church, a tiny turf chapel "
+        "Erik built for his Christian wife around the year 1000."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):
@@ -184,14 +190,14 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(HexColor("#59635D"))
     c.setFont("Helvetica", 4)
     credit_lines = [
-        'Image adaptation: "Battle Harbour - MacGillivray" - Matt MacGillivray, CC BY 2.0.',
+        'Image adaptation: "Reproduction of Brattahlíð Viking church" - Claire Rowland, CC BY 2.0.',
     ]
     for index, line in enumerate(credit_lines):
         c.drawString(left, credit_top - index * 5, line)
 
-    # Publisher's imprint -- the REAL grid reference this time (PZ-10, PZ-13). Card 02, not
-    # card 01, is what's in hand alongside Leif's map and the museum ticket when the beasts
-    # chain runs, so this card carries "Series F, No. 1" -- square F1, where the bear is drawn.
+    # Publisher's imprint -- the REAL grid reference (PZ-10, PZ-18). Moved here from card 02:
+    # this decoy card must be in hand by the time the beasts chain runs, since it's now the
+    # only card carrying the pointer to square F1 on Leif's map (polar bear).
     c.setFont("Helvetica", 5)
     c.drawRightString(right, credit_top, "Vinland Editions  ·  Series F, No. 1")
     c.restoreState()
@@ -213,7 +219,7 @@ def draw_crop_marks(c, x, y):
 
 def build_single():
     c = canvas.Canvas(str(OUT), pagesize=PAGE, pageCompression=1)
-    c.setTitle("Aunt Liv's Postcard 02 - Battle Harbour (Markland)")
+    c.setTitle("Aunt Liv's Postcard LD - Brattahlíð (decoy)")
     c.setAuthor("Escape Backpack")
     draw_front_card(c)
     c.showPage()
@@ -230,7 +236,7 @@ def build_letter():
     lower_y = (letter_h - group_h) / 2
     positions = [(x, lower_y + H + gap), (x, lower_y)]
     c = canvas.Canvas(str(OUT_LETTER), pagesize=LETTER, pageCompression=1)
-    c.setTitle("Two-up Postcard 02 print sheet - Battle Harbour (Markland)")
+    c.setTitle("Two-up Postcard LD print sheet - Brattahlíð (decoy)")
     c.setAuthor("Escape Backpack")
     for card_x, card_y in positions:
         draw_front_card(c, card_x, card_y)

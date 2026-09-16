@@ -10,7 +10,7 @@ from reportlab.pdfgen import canvas
 ROOT = Path(__file__).resolve().parents[2]
 POSTCARDS = ROOT / "NorseBackpack" / "Postcards"
 OUT = ROOT / "output" / "pdf"
-# PC-13: card is 5 x 3.5 in (10:7), matching build_postcard_01_pdf.py exactly.
+# PC-13: card is 5 x 3.5 in (10:7), matching build_postcard_L1_pdf.py exactly.
 SIZE = (1500, 1050)
 PAGE = landscape((3.5 * 72, 5 * 72))
 PAPER = "#EFE3C4"
@@ -22,11 +22,11 @@ HAND = ROOT / "Fonts" / "Nothing_You_Could_Do" / "NothingYouCouldDo-Regular.ttf"
 SANS = Path(r"C:\Windows\Fonts\arial.ttf")
 SANS_BOLD = Path(r"C:\Windows\Fonts\arialbd.ttf")
 
-# Cards 01-03 (Leif's trail) all now have their own dedicated scripts -- build_postcard_01_pdf.py,
-# build_postcard_02_pdf.py, build_postcard_03_pdf.py -- with real messages, Fun Facts and imprints
-# (PZ-05, PZ-10, PZ-13). None of them may be rebuilt here with placeholder text. CARDS stays empty
-# until a future card (04-18) is ready for its own dedicated script; build_back()/build_pdf() are
-# kept for whichever of those gets placeholder content first.
+# Leif's three real stops (L1, L2, L3) all now have their own dedicated scripts --
+# build_postcard_L1_pdf.py, build_postcard_L2_pdf.py, build_postcard_L3_pdf.py -- with real
+# messages, Fun Facts and imprints (PZ-05, PZ-10, PZ-13). None of them may be rebuilt here with
+# placeholder text. CARDS stays empty until some other future card is ready for its own dedicated
+# script; build_back()/build_pdf() are kept for whichever of those gets placeholder content first.
 CARDS = []
 
 
@@ -92,9 +92,9 @@ def combine_pdfs(inputs, output):
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     individual = [
-        OUT / "Postcard_01_LAnse_Print.pdf",
-        OUT / "Postcard_02_Battle_Harbour_Print.pdf",  # built by build_postcard_02_pdf.py
-        OUT / "Postcard_03_Baffin_Island_Print.pdf",  # built by build_postcard_03_pdf.py
+        OUT / "Postcard_L1_LAnse_Print.pdf",
+        OUT / "Postcard_L2_Battle_Harbour_Print.pdf",  # built by build_postcard_L2_pdf.py
+        OUT / "Postcard_L3_Baffin_Island_Print.pdf",  # built by build_postcard_L3_pdf.py
     ]
     for card in CARDS:
         back = build_back(card)

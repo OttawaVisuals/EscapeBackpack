@@ -9,11 +9,10 @@ from reportlab.lib.utils import ImageReader
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "output" / "pdf" / "Postcard_06_Bayeux_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_06_Bayeux_Letter_Print.pdf"
-FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_06_Bayeux_Front.png"
-STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Rollo_Comet_v2_flat.png"
-REBUS_DIR = ROOT / "NorseBackpack" / "Postcards" / "RebusIcons"
+OUT = ROOT / "output" / "pdf" / "Postcard_L3_Baffin_Island_Print.pdf"
+OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_L3_Baffin_Island_Letter_Print.pdf"
+FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_L3_Baffin_Island_Front.png"
+STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Leif_Longship_v2_flat.png"
 FONT_DIR = ROOT / "Fonts"
 
 PAGE = landscape((3.5 * 72, 5 * 72))
@@ -54,7 +53,7 @@ def draw_front_card(c, x=0, y=0):
     # PC-13: same guard as build_postcard_01_pdf.py -- fail loud rather than stretch.
     if (fw, fh) != (1500, 1050):
         raise ValueError(
-            f"Postcard_06_Bayeux_Front.png is {fw}x{fh}, expected 1500x1050 (PC-13, "
+            f"Postcard_L3_Baffin_Island_Front.png is {fw}x{fh}, expected 1500x1050 (PC-13, "
             f"5x3.5in @300dpi). Drawing it here would stretch it to fit the page."
         )
     c.drawImage(front, 0, 0, W, H, preserveAspectRatio=False, mask="auto")
@@ -79,12 +78,11 @@ def draw_back_card(c, x=0, y=0):
     c.line(divider, 24, divider, H - 30)
 
     # Message text decided in chat (PZ-05): enthusiastic/warm/fun/friendly voice, matching
-    # cards 01-03. This is the card that establishes, in-fiction, why Bayeux-style drawings
-    # start turning up in her later cards -- and it carries the first one itself (PZ-14).
-    # Revised to name the family-line history explicitly, per the "more history" direction.
+    # cards 01 and 02. Sky/scenery beat as agreed -- no puzzle mechanism required of this card
+    # (PZ-13); the real beasts-chain pointer is on card 02.
     paragraphs = [
-        "Today was Bayeux and its famous Norman tapestry. The tapestry was awesome! It tells the story of William the Conqueror taking England in 1066 — and get this, he’s one of Rollo’s own descendants!",
-        "I’m obsessed with the style and the details, I spent hours looking at it. You know how much I like drawing (despite being terrible at it), so don’t be surprised if you see a few drawings here and there.",
+        "Third stop: Helluland, “Flat Stone Land” to the sagas — and they weren’t kidding about the stone either, not a tree in sight!",
+        "But last night the sky put on a show I’ll never forget: green and purple curtains rippling right overhead. I stood out in the cold far too long just watching. Almost missed my supper!",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 7.7, 8.6
@@ -100,26 +98,7 @@ def draw_back_card(c, x=0, y=0):
     c.drawString(left, y, "Love,")
     c.drawString(left, y - 9, "Aunt Liv")
 
-    # Rebus icons (PZ-14): the crossbow-bolt rebus -- cross + bow + lightning bolt spells
-    # CROSSBOW BOLT, pointing to Chalus on Rollo's map -- lives on this card, scattered in the
-    # blank space below her signature like a first try at the drawing habit she just announced.
-    # Winchester carries a further piece of this rebus chain, not yet designed.
-    def draw_rebus_icon(filename, cx, cy, size, angle):
-        icon = ImageReader(str(REBUS_DIR / filename))
-        c.saveState()
-        c.translate(cx, cy)
-        c.rotate(angle)
-        c.drawImage(icon, -size / 2, -size / 2, size, size, mask="auto")
-        c.restoreState()
-
-    # Anchored below the signature (not a fixed y) so a longer message can't push the
-    # icons into overlapping "Aunt Liv" -- there is always a fixed 26pt gap below it.
-    row_y = (y - 9) - 26
-    draw_rebus_icon("Rebus_Cross_Bayeux_v2.png", 46, row_y + 4, 24, -6)
-    draw_rebus_icon("Rebus_Bow_Bayeux_v2.png", 92, row_y - 6, 30, 4)
-    draw_rebus_icon("Rebus_Lightning_Bayeux_v2.png", 138, row_y + 2, 22, 10)
-
-    # Rollo's trail stamp (comet) -- one stamp per traveller, not per card.
+    # Same trail stamp as cards 01 and 02 -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72
     stamp_x, stamp_y = right - stamp_w, H - 30 - stamp_h
     c.drawImage(
@@ -142,11 +121,12 @@ def draw_back_card(c, x=0, y=0):
     c.circle(postmark_x, postmark_y, 19.5, fill=0, stroke=1)
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 4.8)
-    c.drawCentredString(postmark_x, postmark_y + 1, "BAYEUX")
+    c.drawCentredString(postmark_x, postmark_y + 4, "BAFFIN")
+    c.drawCentredString(postmark_x, postmark_y - 2, "ISLAND")
     for offset in (-7, -2, 3, 8):
         c.line(postmark_x + 23, postmark_y + offset, right, postmark_y + offset)
 
-    # Address -- same recipient and layout as cards 01-03 (PC-13 standard).
+    # Address -- same recipient and layout as cards 01 and 02 (PC-13 standard).
     address_x = divider + 17
     box_right = right + 5
     rule_right = 278
@@ -173,7 +153,8 @@ def draw_back_card(c, x=0, y=0):
         c.setLineWidth(0.4)
         c.line(address_x, line_y - 3, rule_right, line_y - 3)
 
-    # Fun Fact -- typed, real trivia (PC-12). Both halves verifiable, no date needed.
+    # Fun Fact -- typed, real trivia (PC-12). Backup option chosen: parallels card 02's
+    # saga-identification fact rather than repeating the aurora content already in her message.
     funfact_top, funfact_bottom = 120, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
@@ -184,10 +165,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(INK)
     fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
     fact_text = (
-        "The Bayeux Tapestry shows Halley’s Comet blazing over King Harold’s court just before "
-        "Hastings — the earliest known depiction of the comet, centuries before it got its name. "
-        "A Victorian replica by the Leek Embroidery Society later added underpants to some of the "
-        "tapestry’s more, ah, undressed figures."
+        "In the sagas, Helluland (“Flat-Stone Land”) is generally identified with "
+        "Baffin Island — its bare, rocky terrain matches medieval descriptions of a land with "
+        "no grass, just glaciers and flat stones, in the Saga of Erik the Red and the Saga of "
+        "the Greenlanders."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):
@@ -201,16 +182,12 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(HexColor("#59635D"))
     c.setFont("Helvetica", 4)
     credit_lines = [
-        'Image adaptation: Bayeux Tapestry Scene 57, photograph by Myrabella, CC0; underlying artwork public domain.',
+        'Image adaptation: "Grinnell Glacier Bergie Bits, Baffin Island" - Gregory "Slobirdr" Smith, CC BY-SA 2.0.',
     ]
     for index, line in enumerate(credit_lines):
         c.drawString(left, credit_top - index * 5, line)
 
-    # Publisher's imprint -- pure flavour, no referent (PZ-10). The real beasts-chain grid
-    # reference is on card 02, not this card (PZ-13). Deliberately avoids letter F (used by
-    # the real F1 pointer) to keep this card unambiguously flavour-only.
-    c.setFont("Helvetica", 5)
-    c.drawRightString(right, credit_top, "Vinland Editions  ·  Series D, No. 6")
+    # Publisher's imprint removed (PZ-18): only the new decoy card 04 carries this line now.
     c.restoreState()
 
 
@@ -230,7 +207,7 @@ def draw_crop_marks(c, x, y):
 
 def build_single():
     c = canvas.Canvas(str(OUT), pagesize=PAGE, pageCompression=1)
-    c.setTitle("Aunt Liv's Postcard 06 - Bayeux")
+    c.setTitle("Aunt Liv's Postcard L3 - Baffin Island (Helluland)")
     c.setAuthor("Escape Backpack")
     draw_front_card(c)
     c.showPage()
@@ -247,7 +224,7 @@ def build_letter():
     lower_y = (letter_h - group_h) / 2
     positions = [(x, lower_y + H + gap), (x, lower_y)]
     c = canvas.Canvas(str(OUT_LETTER), pagesize=LETTER, pageCompression=1)
-    c.setTitle("Two-up Postcard 06 print sheet - Bayeux")
+    c.setTitle("Two-up Postcard L3 print sheet - Baffin Island (Helluland)")
     c.setAuthor("Escape Backpack")
     for card_x, card_y in positions:
         draw_front_card(c, card_x, card_y)
