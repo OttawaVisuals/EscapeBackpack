@@ -1,10 +1,1089 @@
 # Project Handoff
 
-Last updated: 2026-09-16 by Claude Code
+Last updated: 2026-09-17 by Claude Code
+
+## Session Close — 2026-09-17 (latest 3) — 4-up print-sheet combiner for Staples
+
+**Task:** printing/production question, not design — user is ordering duplex prints of the Norse
+postcards from Staples and wanted to fit multiple different cards per sheet (page-count pricing)
+plus asked whether a Cricut can cut them out. Answered the Cricut question in chat (yes — straight
+5x3.5in cuts, crop marks needed for alignment) and built the requested cut-line/multi-up tooling.
+
+**Found:** every `build_postcard_<CODE>_pdf.py` already draws crop marks, but only for its own
+2-up sheet (same card twice). Neither existing helper covers multiple *different* cards per sheet:
+`build_postcard_collection.py` just concatenates single-card pages; `build_topedge_test_sheet.py`
+is an unrelated scale-registration test. No combiner existed for the "4 different cards per
+Letter sheet" layout the user wants.
+
+**Built:**
+- `NorseBackpack/Postcards/build_postcard_sheet_pdf.py` (new) — imports `draw_front_card` /
+  `draw_back_card` from each existing card's own build script (via `importlib`, no duplication of
+  card content) and lays 4 cards 2x2 on a landscape Letter sheet, with the same crop-mark style as
+  the existing scripts. Chunks all 14 currently-built cards (`CARD_CODES` list in the script) into
+  4-per-sheet groups (last group has 2). Outputs to `output/pdf/Postcard_Sheet_0N_*.pdf`.
+- **Duplex flip ambiguity:** Staples's online order tool only offers "double sided," no flip-edge
+  detail. Rather than guess, the script builds both variants per sheet — `..._LongEdge_Print.pdf`
+  and `..._ShortEdge_Print.pdf` — so the user can test-print page 1 of each and keep whichever
+  aligns. Long-edge mirrors the two columns on the back page; short-edge mirrors the two rows.
+  Note: the existing single-column 2-up sheets (no mirroring at all) are only correct under a
+  long-edge assumption — worth keeping in mind if the short-edge variant turns out to be the one
+  that aligns at Staples, since that would mean the individual 2-up sheets need the same fix.
+
+**Checks run:** ran the script (all 8 output PDFs generated, no errors). Rendered
+`Postcard_Sheet_01_LongEdge_Print.pdf` (both pages) to PNG via PyMuPDF and inspected visually:
+front page shows 4 distinct cards (L1/L2/L3/LD) with crop marks at each corner; back page content
+and mapping checked by hand against the flip logic — L1's back (front top-left) is drawn in the
+back page's top-right slot, which is correct for a long-edge flip (front top-left ends up backed
+by back-page top-right before the physical flip lands it in the same physical corner).
+Short-edge variant and sheets 02-04 were not individually re-rendered (same code path, lower risk).
+
+**Next action:** user test-prints one page of `Postcard_Sheet_01_LongEdge_Print.pdf` and
+`..._ShortEdge_Print.pdf` at Staples to determine which flip-edge assumption matches their
+printer, then prints the matching variant for the remaining sheets.
+
+**Blockers / open questions:** none design-related. Only 14 of 18 postcards have build scripts yet
+(A1/A3/AD/H2/H3/H6/HD remain, per the prior session's note) — `CARD_CODES` in the new script will
+need those appended once they exist.
+
+## Session Close — 2026-09-17 (latest 2) — H1 Oslo built; Harald sequencing recorded
+
+**Task:** continuation of the same session. Decided and recorded Harald's leg sequencing (H4/H5
+rune cryptex opens the leg, H1/hnefatafl is next), refreshed H1's Fun Fact with a better-sourced
+detail, rewrote H1's stale "Last stop" message to fit its new position and to actually carry the
+counting instruction its own lock code depends on, then built H1 the same way as H4/H5.
+
+**Found while updating `PZ-05`:** H1 already had a drafted message and Fun Fact from an earlier
+(16 Sept) session — nearly duplicated it before noticing. That old draft opened "Last stop,
+and it feels fitting to end where legends get made," written when Oslo was conceived as ending
+Harald's trail rather than opening it, and separately claimed the trail map "does not exist yet"
+(stale — the map has existed since earlier this session). Surfaced both to the user before
+touching anything; they chose to keep the message's core content but rewrite the opening and
+add the missing "count how far he travels each time" line, which the `253` code actually depends
+on and the old draft never stated.
+
+**Built this session:**
+- `NorseBackpack/Postcards/build_postcard_H1_pdf.py` (new) — same template as H4/H5. No credit
+  line drawn: H1's front-art ImageGen prompt (Postcard system tab) never recorded a source photo
+  credit, unlike H4/H5, so none is invented here. Built both PDFs plus
+  `Postcard_H1_Oslo_Back.png` for the HTML gallery.
+- `NorseBackpack/Norse_Brainstorm.html` — `PZ-05`'s Harald section rewritten: H4/H5 entries added
+  (previously missing from this tracker entirely), H1's entry replaces the stale "Last stop"
+  draft and un-blocks it from the map dependency. The `hnefatafl` puzzle-array entry's `clue`,
+  `status` and `risk` fields synced to the new message and sequencing (`ST-01` destination,
+  not "position undecided"). Postcard system gallery entry for H1 updated to the full front+back
+  pattern with a real PDF link. Pill counts bumped: `PZ-05` now 12 of 18 real cards built; the
+  Harald trail-group header names all three built cards.
+
+**Checks run:** rendered both H1 PDF pages to PNG and inspected visually — message wraps
+correctly, Fun Fact box distinct from the message content, front art unaffected. Served
+`Norse_Brainstorm.html` over `http://localhost:8734` (had to hard-navigate past one stale browser
+cache mid-check — a `getElementById` probe first returned only the front `<img>`, re-navigating
+with a cache-busting query string showed both front and back correctly): no console errors, the
+new `Back.png` returns 200, gallery and puzzle-card text match the built card exactly.
+
+**Next action:** design Harald's third lock — directional lock vs `MEAD` (`PZ-20`) — the only
+piece of Harald's leg still without a mechanism. H1, H4 and H5 are now fully built; only the
+hnefatafl board-setup panel (composite onto the real map back) and cards A1/A3/AD/H2/H3/H6/HD
+remain as production work, not design work.
+
+**Blockers / open questions:** `ST-01` (which physical container each Harald lock feeds) is
+still unfrozen game-wide, same as every other lock in the bag.
+
+## Session Close — 2026-09-17 (latest) — Harald's branch-rune cipher designed and built, H4/H5 written
+
+**Task:** design the first lock of Harald's leg (3-4 locks across his 7 postcards, decided in
+chat), then write and build the two postcards it needs. Landed on: branch-rune cipher (`PZ-02`),
+delivered by postcards H4 and H5 plus Harald's own trail map instead of the old
+stick-and-museum-label props, which never got built. Also designed, but not yet implemented:
+Hnefatafl (already mostly built, `PZ-01`/`PZ-07`) and a map-based lock using either the
+directional lock or `MEAD` (`PZ-20`) — still open, next up.
+
+**Mechanism, fully decided:**
+- Harald's trail map grid is relettered on this sheet only — `A, C, E, I, K, N, R, T, V` in
+  place of the shared `A–I` columns (the other three trail sheets are untouched).
+- Five carved rune-stems sit at cells `G6, A10, I9, C3, F2` (displayed under the relettered
+  columns as `R6, A10, V9, E3, N2`), among seven decoy stems elsewhere on the sheet with
+  plausible but meaningless branch counts.
+- Postcard **H4** (Hedeby) carries the decode key: her message sets up that a woodcarver taught
+  her the branch-rune convention, and a hand-drawn table on the card (in her handwriting, not the
+  typed Fun Fact) gives the three Younger Futhark groups.
+- Postcard **H5** (Aci Castello, Sicily) carries the reading order: the word `raven`, drawn
+  underlined in her message. Reading the relettered columns in that literal order (R, A, V, E, N)
+  visits the five cells in H, R, A, F, N order — the existing `HRAFN` cryptex answer. No separate
+  ranking step or reading-direction clue needed; a three-piece mechanism (stick + museum label +
+  direction) collapsed to two postcards + the map.
+- **H5's place corrected mid-session:** its front art actually depicts Aci Castello (Norman
+  castle near Catania), not Syracuse (the site named in `stops.js` for Harald's real 1038–1040
+  campaign). User chose to retarget the card's text to Aci Castello rather than change the art.
+  Message and Fun Fact are both sourced to Aci Castello specifically (Cyclops-legend rocks,
+  1071–1081 castle, later three centuries as a prison).
+
+**Built this session:**
+- `NorseBackpack/TravelMap/build_trail_maps_pdf.py` — added the Harald-only `col_letters`
+  override, `HARALD_RUNES_REAL`/`HARALD_RUNES_DECOY` cell lists, and `draw_rune_stem`/
+  `cell_center` helpers. Rune stems are vector line art (tally strokes), not new image assets.
+  Rebuilt `Trail_Map_4_Harald_{Print,ANSWER}.pdf`; the answer copy labels each real cell with
+  its decoded letter for designer checking.
+- `NorseBackpack/Postcards/build_postcard_H4_pdf.py` and `build_postcard_H5_pdf.py` (new) — full
+  message/Fun Fact/address/stamp/postmark backs, matching the standard card template. H4 adds a
+  hand-drawn rune-key table under the message (her own copy, not typed reference material). H5
+  adds inline underline support so `raven` can be underlined mid-paragraph. Built all four PDFs
+  (`Print` and `Letter_Print` each) plus `Postcard_H4_Hedeby_Back.png` /
+  `Postcard_H5_Sicily_Back.png` for the HTML gallery.
+- `NorseBackpack/Norse_Brainstorm.html` — `PZ-02` now records the delivery mechanism and marks
+  it decided and built; `PZ-09` gives Harald's map its front-of-sheet job (was "still unplaced");
+  the `prop-runes` design section rewritten to drop the stick/museum-label props and describe the
+  map+H4+H5 split; the `puzzles` array (drives both Story and Puzzles & locks tabs) gained a new
+  `runes` entry, decided/built — puzzle count is now 13; the Postcard system tab's H4/H5 gallery
+  entries updated to the full front+back pattern with real PDF links; the prop-kit list's stale
+  rune-stick bullet points at the new design instead.
+
+**Checks run:** rebuilt both Harald trail-map PDFs and all four H4/H5 postcard PDFs, rendered
+every page to PNG and inspected visually — relettered grid band correct, all 5 real + 7 decoy
+stems placed with no collisions, all 6 real stops still labelled on the map, decoded letters on
+the answer copy match the intended cells; H4's rune-key table renders all 3 rows without overlap
+(fixed one collision bug caught by this render pass); H5's `raven` underline lands correctly
+mid-paragraph; both fronts confirmed unaffected. Served `Norse_Brainstorm.html` over
+`http://localhost:8734`: no console errors, both new `Back.png` files return 200, `prop-runes`
+anchor resolves, the `runes` card renders correctly in both the reference table and the
+full-mechanism list.
+
+**Honest flag, not yet resolved:** at print size the tally-stroke rune stems on the map read
+visually close to a small pine tree. Worth a look in person before committing to print — may
+want a less tree-like tick angle. Separately, H4's hand-copied rune key substitutes `ö` for `ą`
+and `r'` for `ʀ` (the handwriting font has no glyph for either) — noted in `PZ-02`, does not
+affect the answer since `HRAFN` never uses those two runes.
+
+**Next action:** design the second Harald lock — directional lock vs `MEAD` (`PZ-20`) — or move
+to Hnefatafl's position in the trail sequence. User's call.
+
+**Blockers / open questions:** `ST-01` (which physical container this cryptex feeds) is still
+unfrozen game-wide, same as every other lock in the bag.
+
+## Session Close — 2026-09-17 (later) — Aud split-panel shelved; map designer built
+
+**Task:** the split-panel concept was rejected. Shelve it, return Aud to one portrait map, and
+start the replacement — the treasure hunt drawn on that single map with proper cartographic
+symbols rather than isolated icons.
+
+**Shelved, not deleted** — `NorseBackpack/Drafts/2026-09-17_Aud_split_panel/` with a README
+explaining what it was, why it went, and what is worth reusing. It holds `aud_detail_panel.py`,
+`normalize_aud_vignettes.py`, the panel drawing code lifted verbatim out of the build script, and
+all the art. **Codex finished the ten v2 vignettes in a parallel session and wired them in
+minutes before the shelving** — they are intact and have never appeared in a delivered sheet.
+
+**Build script returned to one portrait sheet.** `AUD_PAGE`, `AUD_PANEL`, `AUD_MAIN_*`,
+`aud_split`, `_aud_offset`, `_aud_glyph`, `_aud_hachures` and `draw_aud_detail_panel` are all
+gone; the `landscape` import is dropped. All four trail maps build portrait again and Aud's route
+still traces the digit **7**.
+
+**The scale conflict, measured.** Aud's three stops span 34 km east–west and 110 km
+north–south — that spread *is* the 7. Holding all four stops needs a ~143 km frame, which is
+**1 pt ≈ 211 m**; a real 500 m hedge would be 2.4 pt. The user's call: keep the one real map and
+draw **markers out of scale** rather than invent a new landscape. A hedge on this sheet is tens of
+km long in real terms, and that is fine — it is a puzzle prop, not a survey.
+
+**Lock mechanic reopened from scratch.** The plot-number sum is *not* carried forward.
+
+**Built:**
+
+- `NorseBackpack/TravelMap/export_aud_base.py` — runs the real build at the zoomed frame and
+  writes `aud_base.js` (coastline, stops, towns, area labels) already in **PDF page points**. The
+  projection is never reimplemented in JS, so designer and print cannot drift.
+- `NorseBackpack/TravelMap/aud_base.js` — generated; do not hand-edit.
+- `NorseBackpack/TravelMap/Aud_Map_Designer.html` — the editor. 9 line symbols, 5 area symbols,
+  10 point symbols; click to place or draw, drag vertices, curve smoothing, per-feature width and
+  label, grid-reference readout, display zoom, undo, localStorage autosave, JSON export/import.
+  Hedges, walls and ditches draw their own ornament along the line.
+
+**Checks run:**
+
+- All four trail maps rebuild; page sizes confirmed 612x792 for every one.
+  `build_art_placement_guide.py` still runs.
+- Aud rebuilt to a temp directory and inspected at 130 dpi: single portrait map, digit 7 trace
+  intact. (The real `output/pdf/Trail_Map_3_Aud_*.pdf` could not be overwritten — see blockers.)
+- Designer served over local HTTP and driven in the browser: loads with no console errors, 20
+  imported features of every symbol type render correctly, a real click placed a Well at grid E5
+  and populated the properties panel, zoom and layout verified, then test data cleared.
+- `export_aud_base.py` reports 1 land ring, 3 stops, 6 towns, 4 area labels.
+
+**Frame panned east (later in the session).** `ZOOM_FRAME` is now
+`(-22.9751, -20.5451, 64.08, 65.37)`: same span, panned so stop 1 (Dögurðarnes) lands in grid
+column B at x 140.2 and far more land is in play. Bjarnarhöfn — decoy card AD's site — was
+7 pt off the west edge at exact column-B centre, so the pan is set to keep it 9 pt inside, at A4.
+It is a decoy card rather than a visit, so `build()`'s stop assertion does not cover it; the
+exporter checks it by hand. Stops now read B2, E2, E10.
+
+**Next action:** decide the puzzle mechanic — it is fully open again. Nothing else should be
+drawn on the map until it is known what the route has to produce.
+
+**Blockers / open:**
+
+- `output/pdf/Trail_Map_3_Aud_Print.pdf` is **locked by another process** (open in a viewer), so
+  the shipped Aud PDFs are still the landscape two-panel version. Close it and re-run
+  `python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud` to replace them.
+- The decorative labels `ÍSLAND`, `DENMARK STRAIT`, `FAXAFLÓI` and `Snæfellsnes` fall outside the zoomed
+  frame and need repositioning before a zoomed sheet is printed. `export_aud_base.py` drops them
+  and prints their names as a reminder.
+- The designer's JSON export is not yet read by `build_trail_maps_pdf.py`. Nothing placed in the
+  browser reaches paper yet.
+- The zoomed frame is only used by the exporter; the printed map still uses the shipped wider
+  frame. Switching it over is a one-line change to `TRAILS["aud"]["frame"]` once the labels are
+  repositioned.
+- `build_trail_maps_pdf.py` has mixed line endings (CRLF throughout, LF in one block), which makes
+  whole-file rewrites error-prone.
+
+## Session Close — 2026-09-17 — Aud PZ-17 v2 landmark artwork integrated
+
+**Task:** apply the revised PZ-17 visual instructions to Aud's landscape detail panel.
+
+**Done:** generated and normalized ten reusable purple-only, transparent v2 icons (ford, mill,
+falls, fold, chapel, cairn, standing stone, naust, farm, birch). No icon contains a hidden digit
+or countable code. The map now uses them in fixed 34 pt bounds; marsh remains deliberate vector
+terrain. Rebuilt both Aud PDFs and retained the raw ImageGen renders alongside production PNGs.
+
+**Files changed:** `NorseBackpack/TravelMap/normalize_aud_vignettes.py`,
+`NorseBackpack/TravelMap/build_trail_maps_pdf.py`, `NorseBackpack/Norse_Brainstorm.html`, ten
+`TravelMap/Art/Aud_*_v2.png` production assets and their source renders in
+`TravelMap/Art/Sources/`, plus the two Aud output PDFs.
+
+**Checks:** `aud_detail_panel.py` verifier passes: route `c7 > d7 > e4 > d3 > b4 > c9 > f8`,
+sum `467`, 95 plausible wrong routes, closest 20 away. All production icons have visible pixels
+only in `#6D528B`, with alpha; the Python sources compile. Rendered and visually inspected both
+landscape PDFs at 180 dpi. The PZ-17 HTML page was checked over local HTTP.
+
+**Next:** draft the user-approved ticket/postcard clue copy against the finished map, then run a
+true-size physical readability test. Do not invent that copy.
+
+## Session Close — 2026-09-17 — Aud treasure-route mechanic redesigned (PZ-17)
+
+**Task:** redesign Aud's treasure-hunt detail panel after the first Codex pass was rejected, then
+build it.
+
+**Done — the mechanic changed, not just the layout:**
+
+- **Digits no longer live in the artwork.** Every cell of the detail panel now carries a small
+  two-digit *survey plot number*; players follow a clue chain from landmark to landmark and the
+  lock code is the **sum of the stops' plot numbers**. This decouples art from puzzle, so icons
+  may repeat freely and Codex draws a landscape rather than digit-bearing icons.
+- **Lock drops from four digits to three.** Seven two-digit stops sum to the mid-hundreds; four
+  digits is arithmetically unreachable this way. `4816` is superseded by the working sum **`467`**.
+- **Two rules the mechanic forces.** (1) Every stop must be a *different landmark type*, because a
+  sum is order-independent and two same-type stops can be swapped for free — a first pass with
+  sheepfolds at stops 4 and 6 produced three wrong routes summing to exactly the right answer.
+  (2) The numbering must be *verified*: all same-type substitutions are enumerated and nothing
+  wrong may land within 15 of the answer.
+- **Working route:** `c7` ford → `d7` mill → `e4` falls → `d3` sheepfold → `b4` chapel →
+  `c9` cairn → `f8` standing stone. Sum **467**, verified against 95 wrong-but-plausible routes,
+  closest 20 away.
+- **Layout settled.** Sheet turns landscape (792×612 pt). Main map grows to 432×569 pt at scale
+  `0.760` (was 381×502 at `0.67`); detail panel grows to 307×569 pt with a 6×10 grid of
+  46×50 pt cells and 34 pt icons. Both panels get bigger — the dead space was portrait, not
+  the split.
+- **Ticket and route-record card merged into one A6 double-sided prop.** Front is the ticket face
+  and gives the starting point; reverse is a seven-row `STOP / SITE / PLOT No.` form with row 1
+  pre-filled by hand (*the old ford — 59*). Clues split: ticket gives the start, postcard 1 the
+  six-hop chain, postcard 2 the chapel disambiguator.
+
+**Files changed:**
+
+- `NorseBackpack/TravelMap/aud_detail_panel.py` (new) — single source for the panel's plot
+  numbers, landmark placements and the seven-stop route, plus the check that guards them. Four
+  invariants: seven distinct stop types; no wrong route within 15 of the answer; no stop plot
+  under 20; no two features in one cell.
+- `NorseBackpack/TravelMap/build_trail_maps_pdf.py` — Aud's sheet is now `landscape(letter)`;
+  `AUD_MAIN_SCALE` is computed (0.7596) rather than hardcoded 0.67; `AUD_DETAIL_ART` and the old
+  `draw_aud_detail_panel` are replaced by `_aud_offset` / `_aud_glyph` / `_aud_hachures` and a
+  rewritten panel that imports its data from `aud_detail_panel.py`.
+- `output/pdf/Trail_Map_3_Aud_{Print,ANSWER}.pdf` — rebuilt, landscape.
+- `NorseBackpack/Norse_Brainstorm.html` — PZ-17 rewritten with the new mechanic, the two rules,
+  the route table and the prop consolidation; the old digits-in-art design, the `4816` code, the
+  ImageGen prompt set and the split-panel diagram caption are all **marked superseded in place**,
+  not deleted. Cross-references updated in PZ-03, PZ-09, PC-A2, the museum-ticket panel, the Aud
+  lockflow node and the generated puzzle-card dataset.
+
+**Checks run:**
+
+- Near-miss sweep over all 95 same-type substitution routes: closest wrong sum is 20 from 467.
+  Now runs from the repo: `python NorseBackpack/TravelMap/aud_detail_panel.py` — passes.
+- Confirmed the check actually catches what it exists to catch, by reintroducing each bug in
+  memory: duplicate stop type, a decoy tuned within the margin, and two features sharing a cell.
+  All three fail the check.
+- `467` re-checked against every other code in the page (`1021`, `1576`, `1972`, `231`, `253`,
+  `427`, `582`, `562`, `2468`) — no collision.
+- Page served over local HTTP (`static-preview`, port 8734 was already running) and inspected in
+  the in-app browser: PZ-17 renders, route table shows 7 rows with the page's own table styling,
+  no console errors.
+- Rebuilt all four trail maps: all succeed; page sizes confirmed 792x612 for Aud only, 612x792 for
+  Leif/Rollo/Harald. `build_art_placement_guide.py`, which imports the build module, still runs.
+- Rendered both Aud PDFs at 150 dpi and inspected: main map is vector and larger than before,
+  detail panel draws terrain, 28 features, plot numbers and (on the answer key) the numbered route
+  with `SUM 467`.
+- Checked no glyph can cross a cell line: tightest margin is 13.89 x 16.64 pt at the c6 standing
+  stone, against a largest glyph half-extent of 12.5 x 10.0 pt. The budget is written into
+  `_aud_offset`'s docstring and must be rechecked if a glyph or the offset range grows.
+
+**Built, this session:** `build_trail_maps_pdf.py` now makes Aud's sheet landscape and draws the
+surveyed-valley detail panel from `aud_detail_panel.py`. `AUD_DETAIL_ART` is gone. All four trail
+maps rebuild; only Aud is landscape.
+
+**Prompt set written.** PZ-17 now carries the v2 ImageGen prompts for ten vignettes — ford, mill,
+falls, fold, chapel, cairn, stone, naust, farm, birch — with kind strings matching
+`aud_detail_panel.py`'s `FEATURES`. Marsh stays a vector texture; the farmstead's home-field is
+drawn by the script, so that icon is the building only. Two override rules are stated up front: no
+hidden counts (a countable detail is now an active red herring), and each icon is reused as-is
+across its decoys rather than varied.
+
+**Next action (Codex):** generate the ten vignettes, normalise them with
+`normalize_aud_vignettes.py` to flat `#6D528B` with clean alpha, then replace the placeholder
+bodies in `_aud_glyph()` with image draws. Keep each inside a 34 x 34 pt box — `_aud_offset`'s
+docstring records the clearance budget that stops a glyph crossing a cell line.
+
+**Blockers / open:**
+
+- No clue copy is written. It is drafted against the finished map, not before.
+- In the sketch the fjord still reads as a plain diagonal coastline rather than an inlet, and the
+  north river branch competes with it at similar line weight.
+- All detail-panel icons are placeholder vectors drawn by `_aud_glyph` in the build script. A
+  fresh Codex prompt set is needed for a full landscape vocabulary; cairn and standing stone must
+  read as clearly distinct, since they are stops 6 and 7. The rejected `Aud_*_v1.png` renders are
+  left on disk but are no longer referenced by any code.
+- `build_trail_maps_pdf.py` has mixed line endings (CRLF throughout, LF in the block the previous
+  session added). Not worth a reflow on its own, but it makes whole-file rewrites error-prone.
+
+## Session Close — 2026-09-17 — Aud two-panel treasure-map pass
+
+**Task:** implement the approved <code>PZ-17</code> map split and its four purple detail-panel
+icons. Museum-ticket and postcard clue copy were explicitly out of scope.
+
+**Done:**
+
+- Aud's letter-sized PDF is now two panels. The original full-region map is uniformly reduced
+  into the right panel, retaining its original frame bounds, projection, towns/waters and route
+  stops; the new left Dalir/Hvammur panel has an independent lowercase <code>a–b</code> / 1–4
+  reference grid. This is a 2×4 grid because the sheet cannot fit the original region at its
+  former physical width plus a 4×4 close-up; all five landmark placements still occupy separate
+  cells.
+- Generated and normalized four assets: watermill, Auðarsteinn, sheepfold and one reused ruined
+  chapel. Production pixels are flat <code>#6D528B</code> with transparent alpha. Detail
+  placements are mill → 4, stone → 8, sheepfold → 1, chapel pair (the inland target → 6;
+  the same six-bearing chapel is also the Bjarnarhöfn decoy). The answer PDF labels the four
+  relevant counts for designer checking.
+- Updated <code>PZ-17</code> and the generated puzzle-card source to state that museum-ticket
+  descriptions, A2's distinguishing observation and exact grid refs remain unwritten/open;
+  removed the prior invented chapel wording. Exact ImageGen prompts are recorded in PZ-17.
+
+**Files changed:**
+
+- <code>NorseBackpack/TravelMap/build_trail_maps_pdf.py</code>
+- <code>NorseBackpack/TravelMap/normalize_aud_vignettes.py</code> (new)
+- <code>NorseBackpack/TravelMap/Art/Aud_*_v1.png</code> and
+  <code>TravelMap/Art/Sources/Aud_*_ImageGen_Source.png</code> (new)
+- <code>output/pdf/Trail_Map_3_Aud_Print.pdf</code> and <code>Trail_Map_3_Aud_ANSWER.pdf</code>
+- <code>NorseBackpack/Norse_Brainstorm.html</code>
+
+**Checks:** rebuilt both Aud PDFs; rendered and visually inspected both at 160 dpi; the right
+panel visibly retains Dögurðarnes, Hvammur, Esjuberg and Bjarnarhöfn; icons are separated and
+the answer-panel labels read 4/8/1/6. Python compile passed. Every visible pixel in all four
+production assets is exact RGB <code>(109,82,139)</code>, with real transparent pixels. The live
+page loaded through <code>http://localhost:8734</code> with no console errors; PZ-17's generated
+puzzle card shows the clue wording is not written. Existing page-wide div balance remains
+one unclosed <code>div</code> at line 1052, in the pre-existing postcard/lab area, not introduced
+by this pass.
+
+**Next action:** write and test the museum-ticket landmark descriptions plus A2's distinguishing
+chapel observation, then choose final real-world placement/grid references before print testing.
+
+## Session Close — 2026-09-17 (continued) — Design spec / Design guide split; Props & choices folded in
+
+**Task:** the deferred item from earlier today — remove the overlap between Design spec, Design guide
+and Props & choices. Tabs are now **11** (from 12; 13 before this morning).
+
+**Split rule applied:** the Design guide holds how things *look and sound*; Props & specs holds the
+*physical objects and how they are built*; Open questions holds the *backlog*; the Postcard system
+tab holds *card mechanics and decisions*. Anything that sat in the wrong one moved.
+
+**Moved out of the Design spec:**
+
+| Content | New home | Why |
+|---|---|---|
+| "What makes a clue good here" | Puzzles & locks, collapsed at `#clue-standard` | It is a rule for writing puzzles |
+| "The postcard system" (count, size, format, recipient address) | Postcard system tab, retitled "Format, count and address" | Card decisions belong with card mechanics |
+| "Card back: the standard layout and type scale" | Design guide | Pure type/layout standard |
+| "The four stamp series" | Design guide (`#prop-stamps`) | Visual identity per trail |
+| "Next steps, in order" | Open questions, top, retitled "Do these next, in this order" | It orders IDs that already live there |
+| "What has to be prototyped" | Open questions, foot | Backlog |
+| "Unresolved" | Deleted stub; its one observation kept at `#leif-observation` | The stub was already only a pointer |
+| "Historical claims needing verification" | Open questions (`#historical-claims`) | Backlog; `HI-05` now points here |
+
+**Props & choices tab removed**, its content folded into Props & specs:
+
+- Core reusable prop kit, candidate pouch, "already at home" locks → `#prop-kit`.
+- Containers and release, reset/prototype checks, current assumptions → `#prop-containers`.
+- "Basis and limits" sources footer → foot of Props & specs.
+- "Presentation direction" → **dropped as a duplicate.** The Design guide's Tone & voice already
+  said in its own text that it was the canonical restatement of it; that note now records the fold.
+- "Other directions worth keeping" → **dropped as a duplicate of the Options tab**, except that its
+  fuller reasoning for retiring the pin-and-cord idea (Rouen and Roumare sit 0.13&nbsp;in apart on a
+  letter map, 0.38&nbsp;in on a 24&nbsp;×&nbsp;36 poster) was merged into the Options entry, which
+  had only the bare "superseded" line.
+- Its "Decided" summary → **kept, not deleted**, as a collapsed "Superseded snapshot" inside
+  `#prop-containers`, with a note naming the three claims in it that are now wrong (postmark dates,
+  18 vs 22 cards, interleaved-date ordering) and where the current text lives.
+
+**Corrections made while moving, not invented:**
+
+- The prototype test "Tafl solution uniqueness — confirm exactly one **four-move** escape" predated
+  `PZ-01`. Marked done, with the real result: one *three*-move escape on 11×11,
+  F6→H6→H11→K11.
+- "The final map mechanic" test still listed pinning and a transparent overlay as live candidates.
+  Marked partly superseded by `PZ-06`; only digit legibility at true print size is still to test.
+- The kept observation still used the old `02`/`03` card numbering. Updated to `L2`/`L3` per `PC-17`.
+
+**Bug found and fixed:** this morning's anchoring pass had an off-by-one
+(`len('<div class="designsection">')` is 27, not 26) that left a stray `>` rendering as visible text
+at the top of all seven anchored prop sections. Removed.
+
+**Navigation:** `Design spec` renamed to `Props & specs` but keeps `id="design"`, so every existing
+`data-view="design"` link still works. `#view-build` now aliases to `design` in `VIEW_ALIAS`
+alongside `locks` → `puzzles`, so old deep links to the removed tab still resolve.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — all of the above. No other file touched.
+
+### Checks run
+
+Served over local HTTP and checked in the in-app browser:
+
+- **No console errors.** No duplicate `id`s. No empty sections.
+- **Link check is now tab-aware:** every `data-view`/`data-anchor` pair was verified to resolve *and*
+  to point at an element that actually lives inside the named tab — this is what would catch a moved
+  block whose inbound links were left behind. Zero failures.
+- **Both aliases verified round-trip:** `navigate('build')` lands on `design`, `navigate('locks')`
+  lands on `puzzles`.
+- **Positional pointers re-scanned.** Phrases like "at the bottom of this tab", "the briefs above",
+  "used above" were searched for after the moves; three were stale and were rewritten as real links.
+- **Moved content confirmed present and styled** in its new tab (`.panel` and `.card` both resolve
+  inside `#design`; the sources footer and the folded prop kit render).
+- Nav shows 11 tabs; the generated Puzzles & locks content is unaffected (12 rows, 12 cards, 12 steps).
+
+**Screenshots were unreliable this session** — the browser pane repeatedly returned blank or timed
+out, apparently because the app window was backgrounded. Verification was done through
+`read_page`/`javascript_tool` measurements instead, which is why the checks above are stated as
+measured values rather than "looks right".
+
+### Next action
+
+Read the Props & specs tab end to end as a reader would. The moves are mechanically correct, but the
+tab's internal order was never redesigned — it now runs cipher → board → hoard → comb → tools →
+redirect clues → prop kit → containers, and the prop kit probably belongs first.
+
+### Blockers / open items
+
+- **Not done:** the Options tab still holds its own short menu of unplaced puzzles alongside the
+  generated "Ideas, not actioned yet" list. It links there and says which is canonical, but two
+  lists still exist.
+- The Postcard system tab now has both its original content and the moved "Format, count and
+  address" block. They do not contradict each other, but the tab was not re-ordered after the move.
+- Nothing was committed or pushed.
+
+## Session Close — 2026-09-17 — Puzzle details and Locks merged into one generated tab
+
+**Task:** the user reported three kinds of stale content in `Norse_Brainstorm.html` — Story & sequence,
+Puzzle details, and an overlap between Design spec and Design guide. Scope agreed in chat: fix the
+first two (items 1–3 below) and remove the L2/L3 alignment preview. The Design spec / Design guide
+split was explicitly deferred to a later session.
+
+**Root cause found.** One hand-written `const puzzles=[...]` array of 10 entries drove *both* the
+Story tab's journey grid and the whole Puzzle details tab. It was frozen at an old design: it listed
+the rune relic, the family connection and the saga strips as steps in the live sequence, contained
+none of the four decided chains (`PZ-13`, `PZ-15`, `PZ-17`, `PZ-19`), and still gave the hnefatafl
+code as `231` on a 7×7 board — superseded by `253` on 11×11 per `PZ-01`. The only current
+data lived in the Locks tab table, which nothing else read.
+
+**What changed:**
+
+1. **Puzzle details + Locks merged into one "Puzzles & locks" tab.** Nav is 13 tabs → 12.
+   `#view-locks` still resolves, via a `VIEW_ALIAS` map, so old deep links keep working.
+2. **The data array was rewritten** with structured fields (`code`, `lock`, `props`, `cards`,
+   `releases`, `refs`, `state`) instead of prose-only blobs, and grown from 10 stale entries to 12
+   current ones. Content was taken from the Locks table and the `PZ-*` open questions — nothing
+   invented. The table, the per-puzzle cards, the ideas list and the Story journey grid are all
+   generated from it, so they cannot drift apart again.
+3. **The Story journey grid is now generated, not typed.** It renders whatever is in the array, in
+   play order, with trail colour, code and status pill. Its intro paragraph says so explicitly.
+4. **"Ideas, not actioned yet"** added at the foot of the tab, from a second `ideas` array: `PZ-20`
+   MEAD on Harald's trail, the cryptex `HRAFN`, the rune relic, the family connection, the saga
+   strips, the wrong museum label. The Options tab's overlapping list now links here and says the
+   linked list is the one to edit.
+5. **Deep links added throughout.** Every postcard article (`#pc-L1` … 22 of them), seven prop
+   specs (`#prop-hoard`, `#prop-comb`, `#prop-hnefatafl`, …) and all 67 open-question rows
+   (`#q-PZ-13` …) now carry stable anchors. Navigation was rewritten as a delegated click handler
+   with `data-anchor` support, plus a `hashchange` listener, so `#view-puzzles/pz-treasure` works
+   from a pasted URL and from generated links alike.
+6. **The L2/L3 alignment preview was removed** from the Postcards tab (the two proof images). The
+   hold-to-light puzzle itself is untouched — still decided, still `1576`, still Leif's Lock 3. The
+   "Edge puzzle decided" paragraph above it was kept, as chosen in chat.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — all of the above. No other file touched.
+
+### Checks run
+
+Served over local HTTP (`python -m http.server 8734`, already running) and checked in the in-app
+browser, not as a `file://` snapshot:
+
+- **No console errors** on load.
+- **No broken navigation:** every `data-view` resolves to a real section and every `data-anchor`
+  resolves to a real element (checked programmatically across the whole page). No duplicate `id`s.
+- **Render counts correct:** 12 table rows, 12 puzzle cards, 12 journey steps, 6 ideas, 0 alignment
+  previews remaining.
+- **Deep links verified end to end:** story step → puzzle card, puzzle card prop link → open
+  question row, summary-table row → puzzle card, and a pasted `#view-puzzles/pz-hnefatafl` URL. All
+  land at 96&nbsp;px from the top, clear of the sticky nav, with the flash highlight applied.
+- **Layout:** lockflow diagrams render horizontally again after rescoping the old `#locks` CSS to
+  `#puzzles`; status pills render as pills in both new sections; the summary table scrolls inside
+  its own container with no page-level horizontal overflow.
+
+**Correction recorded in the page:** the hnefatafl entry now carries `253` and the 11×11
+`F6 → H6 → H11 → K11` solution, matching `PZ-01`. The old `231` is described as superseded.
+
+### Next action
+
+Do the deferred item 4: split the Design spec / Design guide overlap. The duplication is concrete —
+the Design spec contains its own `<h2>The postcard system</h2>` (a second copy of the Postcard system
+tab's), plus "Card back: the standard layout", "The four stamp series" and an illustration brief that
+belong in the Design guide; and its "Next steps", "What has to be prototyped", "Unresolved" and
+"Historical claims needing verification" sections duplicate the Open questions backlog. Proposed
+shape: rename the spec "Props & specs", keep only the prop specs in it, fold in the Props & choices
+tab, and leave the Design guide purely visual. That would take 12 tabs to 10.
+
+### Blockers / open items
+
+- **Not verified:** whether the `refs` list on each puzzle card is exhaustive. Each card lists the
+  open-question IDs that visibly govern it; a puzzle may be mentioned in a question not listed there.
+- The Options tab still carries its own short "Puzzles worked up but not placed" menu. It now points
+  at the Ideas list rather than duplicating it silently, but the two lists still need one owner —
+  worth folding Options' copy into the generated one in a later pass.
+- Nothing was committed or pushed.
+
+## Session Close — 2026-09-16 (continued, 12) — Treasure-route digits picked; A2's text complete
+
+**Task:** picked the four hidden digits for `PZ-17`'s treasure route and wrote A2's missing
+distinguishing-detail clue — the last two pieces blocking A2 from being a finished card.
+
+**Digits decided:** mill = 4, Auðarsteinn = 8, sheepfold = 1, chapel (final square, carries the
+coin-cache mark) = 6. Route order mill → Auðarsteinn → sheepfold → chapel gives code `4816`.
+Checked against every other code in the page — no collision, no repeated digit.
+
+**A2's chapel-distinguishing detail, written:** since the map's icons are plain single-colour
+silhouettes with no room for a visual variant between the two chapels, tied the clue to terrain
+instead of icon detail — the real chapel sits inland among birches, while the decoy at Bjarnarhöfn
+is the coastal one (consistent with that card's own already-built front art, which shows "pale sea
+and distant low islands"). Added to A2's message: "The old chapel on the trail was easy enough to
+find once I stopped looking by the water and checked the birch hollow instead." No new icon artwork
+needed to make this solvable — the two chapel placements are meant to differ by where they sit on
+the map, not by looking different.
+
+**Written into `Norse_Brainstorm.html`:** `PZ-17`'s landmark list annotated with each digit and the
+resulting code; `PZ-05`'s A2 entry marked complete (back/PDF the only remaining piece) and its status
+pill updated; the Locks-tab summary table row and lockflow diagram both updated from "exact code
+open" to `4816`.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — sections listed above.
+
+### Checks run
+
+- Checked `4816` against every other code in the page (`1021`, `1576`, `1972`, `231`, `253`, `427`,
+  `582`, `562`, `2468`) — no collision, confirmed no repeated digit within it either.
+- Full-file tag-balance check — all paired (1044 div, 13 section, 36 article, 38 details, 16 ul, 125
+  li, 118 a, 11 table, 79 tr, 271 td, 41 th, 260 p, 258 span, 8 ol, 84 figure).
+- Served over local HTTP (`static-preview`, port 8734) and confirmed via `document.documentElement.
+  innerHTML` checks (the Open questions tab's hidden sections return empty `innerText` even when
+  populated, so checked the DOM directly instead) that both `4816` and the birch-hollow clue render.
+  No console errors.
+
+### Next action
+
+Build A2's back and print PDF — it's now a complete card, just not yet rendered. Then write the
+museum ticket's actual front/back content (it can now reference real digits and a real distinguishing
+clue instead of placeholders), then A1, A3 and AD's card text.
+
+### Blockers / open items
+
+- A2's back/PDF not yet built (text is done).
+- Museum ticket unbuilt.
+- A1, A3, AD card text unwritten.
+- Pre-existing backlog (coin types/cache mark, `PR-02`'s scale, actual map-sheet rebuild for the
+  split-panel layout, comb's exposed-word mechanism, `PZ-20`'s Harald-trail `MEAD`, Constantinople's
+  lock job, `PC-05`, `PC-18`, `ST-01`/`ST-02`, Rollo's rebus-distance measurement) unchanged.
+
+## Session Close — 2026-09-16 (continued, 11) — Aud's treasure-route landmarks and map layout designed
+
+**Task:** designed the actual four-step treasure route for `PZ-17`'s wrinkle (the in-person-only
+observation clue), which last session deliberately left open pending this design pass.
+
+**Real scale problem caught before committing to landmarks:** the first landmark proposal (mill,
+Auðarsteinn, sheepfold, chapel pair, all clustered near Hvammur) would have collided on the actual
+map — checked with real numbers rather than eyeballing it, since Rollo's map already hit exactly
+this problem once (Rouen/Roumare, 10 km apart, landed 0.13 in apart on the printed sheet). Computed
+Aud's map's real scale from its existing frame and grid (`build_trail_maps_pdf.py`): ~23 km per grid
+cell. The whole Dalir area, where all four landmarks would sit, is smaller than that — they'd have
+landed in the same one or two cells.
+
+**Fix, decided in chat, sketched before writing:** split the one physical map sheet into two
+side-by-side panels instead of spreading the landmarks across the wider region (which would have
+lost the "coherent local trek" feel). Sketched the concept twice with the visualize tool before
+locking it in — first version put a small corner inset over open water, which wasn't what the user
+meant; second version, confirmed correct, shows the sheet split down the middle: a new zoomed detail
+panel (Dalir/Hvammur, its own small grid) on one side, the existing full-region map shifted over,
+completely unchanged in content, on the other.
+
+**The four landmarks, finalized:**
+- The old watermill, Auðarsteinn (real — Laxdæla saga ties this stone to Aud's own death account
+  near Hvammsfjörður), and a sheepfold — all findable from the museum ticket's plain description.
+- A lookalike chapel pair — the actual wrinkle. One sits at **Bjarnarhöfn**, the decoy card AD's own
+  real site, making it a plausible wrong answer since that location is already "in play" as a card.
+  The other is the real target. Card A2's message carries the one distinguishing detail (exact
+  wording still unwritten) that tells players which chapel is correct.
+
+**Saved a real sketch into the project**, not just chat: `Diagram_Aud_Map_Split.svg`, matching the
+existing diagram files' self-contained style (hardcoded hex, no external classes) rather than the
+visualize tool's runtime-dependent widget markup, since that widget CSS wouldn't render standalone
+in the static page.
+
+**Written into `Norse_Brainstorm.html`:** `PZ-17` gained the finalized four-landmark list and the
+new figure/diagram with caption; `PZ-09`'s Aud bullet — still describing the old, dropped
+`KAMBR`/Kambsnes idea from before `SOLE` even existed — corrected to point at the real, current job.
+
+### Files changed
+
+- `NorseBackpack/Art/Diagrams/Diagram_Aud_Map_Split.svg` — new.
+- `NorseBackpack/Norse_Brainstorm.html` — sections listed above.
+
+### Checks run
+
+- Computed Aud's map's actual km-per-grid-cell from its real frame and grid constants in
+  `build_trail_maps_pdf.py`, and the real lat/lon of every candidate landmark's anchor town, before
+  proposing any landmark placement — caught the collision risk with numbers, not a guess.
+- Full-file tag-balance check, including `figure` (new to this session) — all paired (1044 div, 13
+  section, 36 article, 38 details, 16 ul, 125 li, 118 a, 11 table, 79 tr, 271 td, 41 th, 259 p, 260
+  span, 8 ol, 84 figure).
+- Fetched the new SVG directly over local HTTP — 200 OK, valid content. Scrolled it into view in the
+  live page and screenshotted it to confirm it actually renders (not just that the file exists) —
+  labels, split line, both panels and the caption all visible. No console errors.
+
+### Next action
+
+Write the actual hidden digits at each of the four landmarks and the resulting code; write A2's
+missing distinguishing-detail sentence for the chapel pair (this unblocks A2's back/PDF, held back
+since last session); write the museum ticket's front/back content; then A1, A3 and AD's card text.
+
+### Blockers / open items
+
+- No digits or resulting code chosen yet for the four landmarks.
+- A2's card still can't be finished until the chapel-pair distinguishing detail is written.
+- The museum ticket itself (front/back, "Aud's Treasure Museum") is unbuilt.
+- The actual map-sheet rebuild (split-panel layout, new inset artwork) is a production task for
+  `build_trail_maps_pdf.py`, not started.
+- Pre-existing backlog (coin types/cache mark, `PR-02`'s scale, comb's exposed-word mechanism,
+  `PZ-20`'s Harald-trail `MEAD`, Constantinople's lock job, `PC-05`, `PC-18`, `ST-01`/`ST-02`,
+  Rollo's rebus-distance measurement) unchanged.
+
+## Session Close — 2026-09-16 (continued, 10) — A2's text drafted; deliberately held back for a treasure-hunt wrinkle
+
+**Task:** started writing Aud's cards, beginning with A2 (Hvammur) and the new museum ticket per
+last session's decided sequence. Drafted A2's message and Fun Fact with the user (fact-checked via
+WebSearch — Aud's real settlement history, freeing her thralls, Vífilsdalur). Caught and fixed one
+redundancy along the way: the first message draft repeated the same fact as the Fun Fact almost
+verbatim; the user flagged it, message was rewritten to a different angle (personal/sensory) so the
+two don't overlap, matching the established pattern (message = voice/flavour, Fun Fact = trivia).
+
+**New idea raised mid-draft, recorded but not designed:** the user proposed a wrinkle for `PZ-17`'s
+treasure hunt — the museum ticket's written clues shouldn't be enough on their own to find the final
+spot; one step should need an in-person-only observation (something Liv actually saw, not a fact
+anyone could read off a ticket). The user's own instruction was explicit: **store the draft, design
+the treasure hunt first, then come back and add the missing clue** — so A2's final message line
+("They had a treasure hunt at the Aud museum today... Let's see if you would have been able to
+solve it!") is a deliberate placeholder, not filler to be overwritten quietly later.
+
+**Not done, on purpose:** A2's back and print PDF were not built. Building now would mean rebuilding
+once the observation clue is added — the user's own sequencing call, not a shortcut taken here.
+
+**Written into `Norse_Brainstorm.html`:** `PZ-05` gained A2's full drafted message/Fun Fact, marked
+explicitly incomplete, plus its sources; `PZ-05`'s status pill updated (it was still stuck at "7 of
+18 · 1 of 4 decoys," pre-dating last session's R1/R6/RD builds — now correctly "9 of 18 · 2 of 4
+decoys · A2 drafted"); `PZ-17` gained a new note recording the in-person-observation wrinkle as a
+candidate, not yet designed; A2's gallery-entry subtitle updated to match.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — sections listed above. No image/PDF/build-script changes
+  this session — text-only, and deliberately incomplete text at that.
+
+### Checks run
+
+- Full-file tag-balance check — all paired (1043 div, 13 section, 36 article, 38 details, 15 ul,
+  121 li, 118 a, 11 table, 79 tr, 271 td, 41 th, 258 p, 260 span, 8 ol).
+- Served over local HTTP (`static-preview`, port 8734) and confirmed via `document.body.innerText`
+  checks (the Open questions tab's content isn't all in the DOM's visible scroll region at once, so
+  plain text-search tools undercounted matches) that A2's message, Fun Fact, the updated PZ-05 status
+  pill and the new PZ-17 wrinkle note all render. No console errors.
+
+### Next action
+
+Design `PZ-17`'s full four-step treasure route — including which step carries the in-person-only
+observation and what that observation actually is — before touching A2 again or starting the museum
+ticket's back content. A1, A3 and AD's card text are also still unwritten.
+
+### Blockers / open items
+
+- A2's card is incomplete by design: needs the in-person-observation clue before its back/PDF can be
+  built.
+- The four-step treasure-map route itself, the museum ticket's back content, the three coin
+  types/cache mark, and AD's message are all still unwritten.
+- Pre-existing backlog (`PR-02`'s scale, `PZ-20`'s Harald-trail `MEAD` mechanism, Constantinople's
+  lock job, `PC-05`, `PC-18`, `ST-01`/`ST-02`, Rollo's rebus-distance measurement) unchanged.
+
+## Session Close — 2026-09-16 (continued, 9) — Aud's full treasure/comb chain redesigned; gates entry to Harald's leg
+
+**Task:** continuing leg 3's review, the user redesigned Aud's whole lock chain in chat to close two
+gaps flagged in the review: Aud had no museum ticket, and decoy card AD (Bjarnarhöfn) had no lock
+job under the standing "every card gates a lock" rule (`PZ-18`). Worked through the new sequence
+with the user step by step before writing anything, per usual practice — this was a mechanism
+redesign, not just card text.
+
+**Decided in chat, full new sequence:**
+1. Postcard A2 (Hvammur) + Aud's map + a new fictional ticket, **Aud's Treasure Museum** (tied to
+   Hvammur; explicitly no historical-accuracy bar, unlike the other three trails' tickets) → give
+   the treasure-map's 4-digit code.
+2. That code opens a lock releasing the mixed coin hoard **plus postcards A1 (Dögurðarnes) and A3
+   (Esjuberg) together** — a change from the old design, where Dögurðarnes alone produced the code
+   and only got released later.
+3. Since Hvammur's old "weigh it" instruction moved with it to step 1, **Dögurðarnes now carries the
+   weighing instruction instead**, pairing with Esjuberg's unchanged upside-down scale-display sketch
+   to produce `SOLE` — preserves the original two-card weighing design the user remembered, just with
+   the two jobs swapped between cards.
+4. `SOLE` opens a lock releasing **decoy card AD (Bjarnarhöfn) and the comb together** — AD's message
+   to carry a "to me, this is the real treasure" line (exact wording not yet written).
+5. **The comb, laid across AD's message**, exposes words that open a lock **gating entry to Harald's
+   leg** — Aud's whole chain must finish before Harald's can start.
+
+**The comb moves back to Aud's trail**, reversing an earlier session's move to Harald's (which had
+left it with no exact card set or answer there anyway). The user called this a better fit; checking
+the doc confirmed why — `HI-02` already ties a comb specifically to Aud's own documented saga history
+(Landnámabók's account of the comb she lost at Kambsnes, which is what names the headland), so an
+unconnected Harald assignment was always weaker than this.
+
+**Effect on `PZ-18`'s decoy rule:** Bjarnarhöfn was one of two decoys still short of the "every card
+gates a lock" standard (the other being Constantinople, still open). This closes it.
+
+**Written into `Norse_Brainstorm.html`:** `PZ-03` and `PZ-17` rewritten for the new sequence (`PZ-17`
+gained a numbered player-flow list); new lockflow diagram for Aud's full chain in the Locks tab,
+matching the style of Leif's and Rollo's; two new/updated rows in the Locks-tab summary table plus a
+new row for the comb-grille/Harald-gate lock; the card-family matrix's Family C and F rows and its
+figcaption; the comb-grille design-guide section flipped back to Aud with its new job description;
+the museum-ticket panel and Final-riddle constraint worksheet both updated now that Aud has a ticket;
+both `PZ-18`-rule status paragraphs (Story & sequence tab) updated to move Bjarnarhöfn from
+"still needs one assigned" to done.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — sections listed above.
+
+### Checks run
+
+- Full-file tag-balance check, including `ol` (new to this session's edits) — all paired (1042 div,
+  13 section, 36 article, 38 details, 15 ul, 121 li, 116 a, 11 table, 79 tr, 271 td, 41 th, 258 p,
+  260 span, 8 ol).
+- Served over local HTTP (`static-preview`, port 8734 — an existing server process was still
+  running from an earlier session in this same conversation, but the browser pane's own tab
+  reference had been lost; opened a fresh tab against the same server rather than starting a
+  duplicate) and confirmed the new Aud lockflow diagram renders end to end, all five stages, with
+  no console errors.
+
+### Next action
+
+Aud's cards (A1, A2, A3, AD) and the new Aud's Treasure Museum ticket still need to be actually
+written and built — same as before this session, but now with a fully decided sequence to write
+against instead of an open question. AD's exact message text and the comb's exposed-word mechanism
+are the two pieces most tightly coupled to writing the cards themselves, so probably start there.
+
+### Blockers / open items
+
+- No card text exists yet for any of Aud's four cards or the new museum ticket.
+- The four-step treasure-map route, its digits, and the three coin types/cache mark are still
+  undecided (`PZ-17`).
+- The comb's exposed-word mechanism and resulting Harald-gate code are entirely open — needs AD's
+  message text to exist first, since the comb reads that message.
+- No physical scale (>370.56 g capacity, 0.01 g resolution) bought or tested (`PR-02`).
+- Constantinople (Harald's decoy) is now the only decoy still short of a lock job (`PZ-18`).
+- Pre-existing backlog (`PC-05`, `PC-18`, `ST-01`/`ST-02`, Rollo's rebus-distance measurement,
+  `PZ-20`'s Harald-trail `MEAD` mechanism) unchanged.
+
+## Session Close — 2026-09-16 (continued, 9) — New project: CABER retirement game (online, 5 gates)
+
+**Task:** brainstormed, then built, a short online escape game for a colleague's hybrid retirement
+party. Domain is energy efficiency in buildings; premise is repairing a heat pump that is losing
+refrigerant. Target play time 10–15 minutes, five gates. This is a new project unrelated to Norse,
+Aurora, Lego or Hiking.
+
+**Design agreed in chat:** CABER is both the project codename and the five-stage repair procedure,
+one letter per gate — **C**onfirm the unit, **A**ssess the envelope, **B**alance the charge,
+**E**valuate performance, **R**estart and hand over. Three facts about the retiree are wired into
+the answers: start year 2001 (gate C answer), 25 years of service echoed by the faulty COP of 2.5
+(gate E answer), and the retirement date 28 September 2026 (final handover code `280926`). The
+closing reveal is that the unit being handed over was never the heat pump. Retiree name: Maria.
+
+**Deliberate design decision — the timer never fails you.** The 20-minute refrigerant gauge drains
+and changes the wording of the ending, but floors at 4% and never locks anyone out. A hard lose
+state at a party with remote guests was judged worse than no lose state.
+
+**Tone call made without an explicit answer from the user:** they supplied the name but not the
+sentimental-vs-teasing preference that was asked for alongside it. Built as warm with one light dig
+(the gate E note about nobody listening about writing readings down). Easy to soften — it is a
+single `.note` string in the gate E render function.
+
+### Files changed
+
+- `Maria.html` — new, at the repo root. Self-contained single-file game: no backend, no
+  network, no build step. Opens from a plain URL on any device. `RETIREE` object at the top of the
+  script holds name/start year/end date so the game can be re-skinned for another party.
+
+### Checks run
+
+- Served over local HTTP (`static-preview` config, port 8734 was already occupied by a running
+  `python -m http.server`, so navigated to it rather than starting a second copy).
+- Played the full five-gate sequence to the finale in the in-app browser. All gates solve, all five
+  letters light, finale renders. No console errors at any point.
+- Tested the wrong-answer path on every gate that has one: wrong serial, four decoy hotspots on the
+  thermal image, all three wrong fault diagnoses, out-of-order procedure.
+- Checked at 375×812 (mobile) as well as desktop. No horizontal scroll.
+- Hint system exercised: both nudges display, button correctly disappears after the last hint.
+
+### Fixed during verification
+
+- Letters lit one stage early (off-by-one: gate 0 is the briefing).
+- `.bar` padding overrode `.wrap` padding, so the header had no side gutter at any width.
+- Gauge tiles stacked 1-up on mobile (6 tiles = excessive scrolling); now 2-up.
+- Only the top window row had a hotspot, so clicking 2nd/3rd floor windows gave no feedback at all.
+- Thermal-bridge hotspots were ~15px tall on a phone; enlarged, and layered above the window
+  hotspots so an ambiguous tap resolves in favour of the correct answer.
+
+### Next action
+
+Fill the three placeholder slots on the finale with real photos or messages. The game is committed
+and live at https://ottawavisuals.github.io/EscapeBackpack/Maria.html but is NOT linked from
+`index.html` — left unlinked on purpose so the landing page does not spoil it before the party.
+
+### Open / not done
+
+- Tone not confirmed by the user (see above).
+- The finale has three placeholder slots ("Photo slot 1", "Photo slot 2", "Message from the team").
+  Real photos or messages have not been added and no asset work was done.
+- Not tested with more than one simultaneous player, and there is no shared state between devices —
+  everyone plays their own copy. Fine for a screen-shared party, worth knowing if the plan changes.
+- Not hosted anywhere. Delivery method (emailed file, GitHub Pages, or shared screen) is undecided.
+
+## Session Close — 2026-09-16 (continued, 8) — Leg 3 (Aud) reviewed; MEAD pinned as a Harald-trail idea
+
+**Task:** reviewed leg 3 (Aud the Deep-Minded) the same way legs 1 and 2 were reviewed. Found Aud
+is the least-built trail so far — all 4 cards (A1, A2, A3, AD) have front art only, zero messages/
+backs/PDFs, and Aud has no museum ticket at all (unlike Leif, Rollo and planned Harald). The lock
+mechanism and answer (`SOLE`) are decided in principle, but the actual treasure-map route, coin
+design and a physical scale check are all still open. Did not start writing Aud's cards this
+session — the user redirected mid-review to a smaller, adjacent decision instead.
+
+**Found stale while reviewing:** two leftover references (Props tab, Puzzle-details tab) still
+described the owned four-letter lock's answer as "`MEAD` proposed" — pre-dating `PZ-03`'s decision
+weeks ago to use `SOLE` for Aud's trail instead. Not caught by whatever swept `PZ-03` at the time.
+
+**Decided in chat:** rather than let `MEAD` disappear as dead history, the user proposed reusing it
+on Harald's trail (leg 4) instead — pinned as a new idea, not designed. It has a natural anchor:
+Harald's crest-element set already includes a drinking horn (`PZ-16`). Deliberately did not invent
+a mechanism for it (a second physical lock? the still-jobless comb prop, per `PC-06`?) — leg 4
+hasn't had its own review pass yet, so forcing a mechanism now would be guessing ahead of the
+session's own pattern.
+
+**Written into `Norse_Brainstorm.html`:** new `PZ-20` records the `MEAD`-for-Harald idea with its
+open mechanism question; both stale `MEAD` references (Props tab's `PR`-adjacent owned-lock note,
+Puzzle-details tab's comb-reveal row) corrected to point at `SOLE` (decided, Aud) and cross-link to
+`PZ-20` instead of implying `MEAD` was still an open candidate for Aud's own lock.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — new `PZ-20`; two stale `MEAD` references fixed.
+
+### Checks run
+
+- Full-file tag-balance check — all paired (1025 div, 13 section, 36 article, 38 details, 15 ul,
+  116 li, 116 a, 11 table, 78 tr, 264 td, 41 th, 258 p, 257 span).
+- Served over local HTTP (`static-preview`, port 8734) and confirmed all three `PZ-20` mentions
+  (the entry itself plus its two cross-links) render. No console errors.
+
+### Next action
+
+Aud's cards (A1 Dögurðarnes, A2 Hvammur, A3 Esjuberg, AD Bjarnarhöfn) still need messages, Fun
+Facts, backs and print PDFs — same starting point leg 2's session began from, but Aud has further
+to go (zero of four built vs. Rollo's four of seven). The treasure-map route, coin design, and
+`MEAD`'s mechanism on Harald's trail (`PZ-20`) are the other open threads, but per this session's
+own working pattern, leg 4 gets its own review pass before any of that gets designed.
+
+### Blockers / open items
+
+- Aud has no museum ticket yet, unlike every other trail.
+- The four-step treasure-map route, its 4-digit code, and the three coin types/cache mark are all
+  undecided (`PZ-17`).
+- No physical scale (>370.56 g capacity, 0.01 g resolution) has been bought or tested (`PR-02`).
+- `PZ-20`'s mechanism is entirely open — needs leg 4's own review before it can be designed.
+- Pre-existing backlog (`PC-05`, `PC-18`, `ST-01`/`ST-02`, Rollo's rebus-distance measurement)
+  unchanged.
 
 > Session continuity only. Open design questions are **not** tracked here — they live in the
 > Open questions tab of `NorseBackpack/Norse_Brainstorm.html`, each with a stable ID.
 > See "Where Design State Lives" in `AGENTS.md`.
+
+## Session Close — 2026-09-16 (continued, 7) — Rollo's three missing cards written and built; two stale-doc sweeps
+
+**Task:** reviewed leg 2 (Rollo's trail) with the user the same way leg 1 was reviewed. Found two
+doc-accuracy bugs (fixed) and three unwritten cards (R1 Châlus, R6 Roumare Forest, RD Walcheren) —
+the only three Rollo-trail cards with no message/back/PDF, all three feeding `PZ-19`'s
+counting-in-the-illustration lock. Wrote and built all three, redesigning the lock's mechanism with
+the user along the way.
+
+**Doc bugs fixed (no design change):**
+- Locks-tab summary table still listed postcard R2 as `06` (leftover pre-rename numbering).
+- `PZ-19`'s counting lock had no row at all in that same summary table, despite being fully decided.
+
+**Mechanism redesigned in chat, then built:** the original `PZ-19` put the sorting job in each
+card's handwritten message ("before that," "between the two"). Discussing the draft messages
+surfaced a real conflict — the decided read order (Walcheren → Roumare → Châlus) is historical-era
+order, not Liv's actual trip order, and moving that logic into "natural" handwriting was getting
+contrived. The user's revision: the *sorting* clue moved into each Fun Fact instead, as a real
+date/century (checked against the doc's own already-sourced history — Walcheren "before 911" via
+Dudo of Saint-Quentin, Roumare "911" via Rollo's own grant, Châlus "1199," Richard's death); the
+*handwriting* now just mentions the counted object (boats/boars/bolts) without stating a number.
+The user also added a twist: Roumare's drawn count (3 boars) is doubled to 6 for the actual lock
+digit, hinted at in-voice rather than stated ("for every one I actually saw, I'd bet good money
+there was a second one just out of sight"). Checked first that doubling was even valid on all
+three — Walcheren's 5 would double to 10, not a valid single lock digit, so only Roumare or Châlus
+could take the twist; the user picked Roumare. **Code changed from the old draft's `532` to `562`**
+(5, 6-doubled-from-3, 2) — checked against every other code in the page, no collision.
+
+**Fact-checked before writing** (WebSearch, since Fun Facts are presented as real trivia): Richard
+the Lionheart's 1199 death at Châlus-Chabrol (crossbow bolt, gangrene, 6 April, the executed-shooter
+detail — trimmed from the final card text for space, not for accuracy); Roumare's genuine wild-boar
+wildlife park; Walcheren's real Viking-age history. Deliberately did **not** invent a specific
+etymology for "Roumare" itself when a search only turned up the etymology for a different, nearby
+forest (Forêt de Rouvray) — the card's Fun Fact hedges the naming legend instead of stating an
+unverified origin as fact.
+
+**Built** `build_postcard_{R1,R6,RD}_pdf.py` (new, modelled on `build_postcard_R2_pdf.py` — no
+rebus, place-only postmark already matching the earlier session's decision). Two production issues
+caught by inspection, not assumed fixed:
+- R1's Fun Fact overflowed its box by two lines; trimmed (dropped the executed-shooter sentence).
+- R6's and RD's postmark place-names (`ROUMARE`, `WALCHEREN`) were long enough to poke past the
+  inner circle rule at the standard 4.8pt — sized down per-card (4.2pt, 3.3pt) until each fit
+  cleanly, checked by cropping and inspecting the rendered PNG at each step rather than guessing a
+  size and moving on.
+
+**Written into `Norse_Brainstorm.html`:** `PZ-19` rewritten in full (new mechanism, new code, all
+three messages/Fun Facts quoted, doubling-twist reasoning); the Locks-tab table's counting-lock row
+and the Rollo constraint-worksheet row updated to the new code and mechanism; three postcard gallery
+entries got their back image, View PDF link and updated captions; Rollo's trail-grid header changed
+from "4 of 6 real built" to "6 of 6 real built · decoy built"; three trail-grid boxes gained
+checkmarks.
+
+**Also swept while in there:** the "postmark date still pending" / "postmark has no date yet
+(PC-03/PC-04)" caption on L2, L3, LD, R2, R3, R4 and R5 — seven cards, all stale since last
+session's decision that postmarks never carry a date at all. Replaced with "postmark carries place
+only, no date." L1's caption also still described the now-removed `07 JUL` date and underline;
+fixed to match the rebuilt back.
+
+### Files changed
+
+- `NorseBackpack/Postcards/build_postcard_{R1,R6,RD}_pdf.py` — new.
+- `output/pdf/Postcard_{R1_Chalus,R6_Roumare_Forest,RD_Walcheren}_{Print,Letter_Print}.pdf` — new.
+- `NorseBackpack/Postcards/Postcard_{R1_Chalus,R6_Roumare_Forest,RD_Walcheren}_Back.png` — new.
+- `NorseBackpack/Norse_Brainstorm.html` — sections listed above.
+
+### Checks run
+
+- `python -m py_compile` on all three new build scripts — no syntax errors.
+- Ran all three scripts; rendered each PDF's back page to PNG at 300 dpi and opened every one
+  directly to check layout, wrap and postmark fit — caught and fixed the R1 overflow and the
+  R6/RD postmark-circle overflow this way, not by assuming the first render was correct.
+- Full-file tag-balance check on the HTML — all paired (1020 div, 13 section, 36 article, 38
+  details, 15 ul, 116 li, 116 a, 11 table, 78 tr, 264 td, 41 th, 258 p, 256 span).
+- Manually recomputed the Fun-Fact text box's actual usable width in `build_postcard_R1_pdf.py`
+  after the first render overflowed — found the wrap-width variable had used the wrong reference
+  point (`rule_right` instead of the box's real right edge), explaining the overflow; verified the
+  corrected wrap fits in 6 of ~7 available lines before rebuilding.
+- Checked `562` against every other code in the page (`1021`, `1576`, `1972`, `231`, `253`, `427`,
+  `582`, `2468`) — no collision.
+- Served over local HTTP (`static-preview`, port 8734, already running from another session) and
+  scrolled to all three new gallery entries plus LD's (spot-checking the caption sweep): images
+  load (200 OK), captions read correctly, no console errors.
+
+### Next action
+
+Rollo's trail is now fully built end to end (all 6 real cards + decoy, all with backs and PDFs).
+Remaining open items are the same ones flagged after leg 1: which physical lock the word-lock
+(`RIGHT, DOWN, DOWN, UP, LEFT, LEFT`) and this new counting lock (`562`) each feed (`ST-01`), and
+the rebus-distance lock's code is still unmeasured against the real printed map (`PZ-14`). `PC-05`
+(family D's missing selection rule), `PC-18` (in-game release order) and leg 3/4 (Aud, Harald) are
+still untouched.
+
+### Blockers / open items
+
+- `ST-01`/`ST-02` (which physical lock each Rollo mechanism feeds) still entirely open.
+- `PZ-14`'s rebus-distance code needs a real 1:5 scale measurement against the printed map.
+- Pre-existing backlog (`PC-05`, `PC-18`, Harald's Kyiv → Hedeby → Syracuse zigzag) unchanged.
+
+## Session Close — 2026-09-16 (continued, 6) — Leif's leg-1 release order decided; postmark dates dropped entirely; card L1 rebuilt
+
+**Task:** the user asked to review the first leg of the journey (Leif's trail) — what postcards/props/locks exist for it. While reviewing, the user made two decisions in chat: (1) the exact release order for Leif's three-lock opening, resolving `PZ-18`'s open item on where decoy card LD gets released, and (2) drop postmark dates from the design entirely (place-only stamp), superseding the whole "interleaved dates" ordering mechanism.
+
+**Decided in chat:**
+- **Leif's release order (`PZ-13`, now fully decided):** card L1 is given at the start → Lock 1 (`1021`) releases decoy card LD + Leif's map + the museum ticket together → Lock 2 (`BEAR 3212`, the beasts chain using LD's imprint) releases cards L2 and L3 together → Lock 3 (`1576`, hold-to-light on L2+L3) opens a fourth container. This changes what Lock 1 and Lock 2 each release — previously Lock 1 sent out card L2 and Lock 2 sent out card L3 alone.
+- **Postmarks carry place only, never a date** — not even as flavour, confirmed after asking the user to clarify scope (a full removal of the postmark graphic was the other option; place-only flavour was chosen). This drops the entire "interleaved dates" mechanism and closes `PC-02`/`PC-03`/`PC-04` as moot rather than leaving them open or blocked.
+
+**Written into `Norse_Brainstorm.html`:**
+- Leif's lockflow diagram and the Locks-tab lock table updated to the new release order; also fixed stale `01`/`04`/`02 + 03` postcard-column numbering in that table left over from the September `PC-17` rename (should have read `L1`/`LD`/`L2 + L3`).
+- `PZ-13` changed from "candidate, re-check needed" to **Decided**; `PZ-10` changed from "superseded (candidate)" to **Superseded** (placement confirmed, no more re-check needed).
+- `PC-02`/`PC-03`/`PC-04` changed from Open/Blocked to **Resolved/Removed**, each explaining why (no date field exists at all now).
+- The "Interleaved dates" designsection marked **Superseded**, reasoning kept below per `AGENTS.md`'s "say so where the old text was" rule.
+- Design spec table's "Postmark date" row removed (struck through, marked Removed).
+- Fixed three other stale mentions found while sweeping: `PC-08`'s "once dates are assigned" line, `PZ-08`'s "exact date is open again under the calendar start" line, and the Postcards tab's intro paragraph (still said card LD's release point and postmark dates were both open — both were decided this session).
+- Next-steps punch list item changed from "settle the date span, assign all 18 postmark dates" to "rebuild card L1's back to drop its postmark date."
+
+**Rebuilt card L1's back** (`build_postcard_L1_pdf.py`): removed the date-drawing block (`07 JUL` text, the day-underline, the width calculations feeding it) and re-centred the two-line place text (`L'ANSE AUX` / `MEADOWS`) vertically in the postmark circle to fill the space the date left behind. Rebuilt `Postcard_L1_LAnse_{Print,Letter_Print}.pdf` and re-rendered `Postcard_L1_LAnse_Back.png` (300 dpi from the PDF's back page, matching the gallery's existing 1500×1050 size) for the gallery.
+
+### Files changed
+
+- `NorseBackpack/Norse_Brainstorm.html` — sections listed above.
+- `NorseBackpack/Postcards/build_postcard_L1_pdf.py` — postmark date removed, place text re-centred.
+- `output/pdf/Postcard_L1_LAnse_{Print,Letter_Print}.pdf` — rebuilt.
+- `NorseBackpack/Postcards/Postcard_L1_LAnse_Back.png` — rebuilt.
+
+### Checks run
+
+- Full-file tag-balance check on the HTML — all paired (1019 div, 13 section, 36 article, 38 details, 15 ul, 116 li, 113 a, 11 table, 77 tr, 257 td, 41 th, 258 p, 251 span; td dropped by 2 from the postmark-date row's `colspan` collapse, expected).
+- `python -m py_compile build_postcard_L1_pdf.py` — no syntax errors; confirmed `pdfmetrics` import still used elsewhere before assuming it was safe to leave in place.
+- Rebuilt the PDF and rendered its back page to PNG at 300 dpi; opened it directly and visually confirmed no date, no underline, and the place text sits centred in the circle.
+- Served over local HTTP (`static-preview`, port 8734, already running from another session — joined rather than starting a duplicate) and confirmed the gallery image request returns 200 OK with the new file's byte size. The Browser pane's own `<img>` cache initially still showed the old `07 JUL` version after reload; force-refetching the image confirmed the live page does serve the corrected art. No console errors.
+
+### Next action
+
+Leif's leg is now fully consistent front-to-back (art, backs, lock sequence, no dangling date mechanism). Move to another trail or open item — `PC-05` (family D's missing selection rule), `PC-18` (in-game release order across all 22 cards), or the per-trail decoy narrative placement (`PC-16`) are the next unresolved items in the Open questions tab.
+
+### Blockers / open items
+
+- None new from this session. Pre-existing backlog (per-trail decoy slot `PC-16`, in-game release order `PC-18`, Harald's Kyiv → Hedeby → Syracuse zigzag) is unchanged.
 
 ## Session Close — 2026-09-16 (continued, 5) — PC-19 fixed: painted the missing title band on Harald's six off-spec fronts
 
