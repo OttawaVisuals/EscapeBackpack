@@ -172,6 +172,69 @@ Fun Fact boxes unaffected. Page re-served over `http://localhost:8734` (cache-bu
 console errors, 0 broken `#view-` links, 0 unrendered HTML entities, 11 tabs, 3 tables in the
 Final riddle tab, `PZ-05` and `PZ-18` both render.
 
+## Session Close — 2026-09-17 (latest 8) — Everything committed and pushed; designer made mobile-friendly
+
+**Task:** commit and push the session's work, publish the Aud map designer online, then make it
+usable on a phone.
+
+**Committed and pushed** (`b810aae..5e708fb` on `main`), five commits:
+- `2786160` Aud map designer, `aud_base.js`, `export_aud_base.py`, `aud_features.json`, portrait
+  rebuild of the trail maps, shelved split panel under `Drafts/`
+- `595c554` postcards H1-H5, HD, R1, R6, RD plus refreshed L1/L2/R2
+- `09303ce` final-riddle tooling under `NorseBackpack/Tools/`
+- `b620ac2` `PZ-17` build brief and handoff
+- `5e708fb` mobile support for the designer
+
+**Left uncommitted on purpose:** eight scratch QA renders in `output/pdf/` (`_H1_Oslo_p0.png`,
+`_harald_print_preview.png` and similar). Referenced by nothing, and no `_*.png` has ever been
+tracked. Flagged to the user rather than added.
+
+**Published:** https://claude.ai/artifact/26d6YkdDjuSkN2WS5Uc2fL — private to the account,
+`index.html` plus `aud_base.js`. Now at version 2 with mobile support. Republish to that same URL
+after any change to the local designer; publishing without the URL would create a second artifact.
+
+**Mobile work, in `Aud_Map_Designer.html`:** the tool was mouse-only — touch could tap but not
+drag — and the sheet rendered 734 px wide on a 375 px screen.
+- Pointer events replace mouse events. `touch-action:none` on the SVG keeps a drag inside the app
+  instead of scrolling the page; a **Pan** toggle switches it back to `auto` when the map needs
+  moving.
+- Vertex handles gain an invisible 9 pt hit disc behind the visible 2.2 pt dot.
+- An action bar (Finish line, Undo, Delete, Fit, Pan) sits in the Tool card on desktop and pins to
+  the bottom of the viewport below 780 px. `undo()` and `deleteSelected()` were extracted from the
+  keydown handler so both entry points share them.
+- Fit-to-width zoom, automatic below 780 px; the zoom floor dropped 60% -> 30%.
+- The readout updates on tap as well as move, so a touch draft shows its point count.
+
+**Two pre-existing bugs found while testing, both fixed:**
+- **Nine invalid `font:` shorthands.** `font: 11px/1 inherit` is invalid — `inherit` is a CSS-wide
+  keyword, legal only as a whole value, never as one component of a shorthand — so Chrome dropped
+  each declaration and used its own defaults. The header was rendering at 26 px instead of 14, and
+  buttons at 13.3 px instead of 11, **on desktop as well**. Replaced with longhand.
+- **The mobile media query had no effect.** It was written beside the layout rules it belonged
+  with, but a media query adds no specificity, so the later component rules won every tie. Moved to
+  the end of the stylesheet. Worth remembering for any future block in this file.
+
+**Checks run:** `node --check` after each patch — clean. At 375x812: no horizontal overflow
+(`scrollWidth` 375 = `clientWidth`), 4-column palette, bar fixed, auto-fit to 50% giving a 306 px
+sheet. Computed styles verified after the font fix (h1 13 px on mobile / 14 px desktop, tool
+buttons 12/11, family correctly IBM Plex Mono). **Touch interaction tested with synthetic
+`PointerEvent`s at `pointerType:'touch'`:** tap placed a cave at D6; a touch drag moved it to F7
+with `defaultPrevented` true, confirming the page scroll was suppressed; Undo reverted the drag and
+then removed the cave; the Pan toggle flipped `touch-action` none <-> auto; three touch taps plus
+the Finish button committed a 3-point footpath; the readout showed "1 pts" then "2 pts" on taps.
+Desktop regression checked at 1050 px: bar static, 3-column palette, 120% zoom, long hint shown, no
+console errors. All test data removed and the user's 15-feature state restored in browser storage.
+
+**Next action:** unchanged — the user continues drawing the map southward against the brief. Fix
+the road's last vertex (10.5 pt from the Hvammur pin), join the two paths through the ditch, draw
+the watercourses early, then use "Place crossings".
+
+**Blockers / open questions:** unchanged — lock mechanic still undecided (A/B/C/D, A recommended,
+A1 vs A2 open); labels stay empty by design; `aud_features.json` still holds the superseded first
+layer and is not read by `build_trail_maps_pdf.py`; the zoomed frame is exporter-only; four
+decorative labels fall outside it; and `output/pdf/Trail_Map_3_Aud_*.pdf` are still the rejected
+landscape version — run `python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud`.
+
 ## Session Close — 2026-09-17 (latest 7) — Aud map rebuild reviewed; 5 symbols and crossing automation added
 
 **Task:** the user started redrawing Aud's map against the brief and pasted the first 15 features
