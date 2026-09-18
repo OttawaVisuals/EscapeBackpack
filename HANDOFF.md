@@ -172,6 +172,64 @@ Fun Fact boxes unaffected. Page re-served over `http://localhost:8734` (cache-bu
 console errors, 0 broken `#view-` links, 0 unrendered HTML entities, 11 tabs, 3 tables in the
 Final riddle tab, `PZ-05` and `PZ-18` both render.
 
+## Session Close — 2026-09-18 — Dogurdarnes plotted ashore; sea-check added to the build
+
+**Task:** the user asked whether it was normal that stop 1 sits in the sea. It was not.
+
+**Measured:** Dogurdarnes sat **12.1 pt / 2.6 km** from the coastline — about 4 mm off the shore at
+print size. An earlier note in this session blamed Natural Earth resolution for both this and
+Bjarnarhofn; that was right for Bjarnarhofn (0.7 km) and **wrong for this stop**, and has been
+corrected in `PZ-17`.
+
+**Cause:** `TravelMap/vendor/land.js` is Natural Earth **50m** (1:50 million), generalised to a few
+km. Fine on the other three sheets; Aud's is zoomed to 211 m/pt, where it is not. Dogurdarnes is a
+headland in Breidafjordur and at 1:50m its peninsula does not exist. `stops.js` already flags the
+coordinate `uncertain`, "represents the peninsula, not an exact landing".
+
+**Decision (user chose option 2 of three):** nudge the plotted position, keep the real coordinate.
+Re-vendoring `ne_10m_land` was declined.
+
+**Built:**
+- `PLOT_NUDGE` in `build_trail_maps_pdf.py` shifts the drawing only; `stops.js` untouched. The stop
+  must move 2.6 km to reach any land, so the shift is necessarily large: **3.5 km NE, 900 m
+  inshore, ~16 pt** on the zoomed sheet.
+- **Effect on the digit 7, measured before committing:** top bar 150.8 -> 138.9 pt (8% shorter),
+  angle **+9.3 -> +4.9 deg**. An improvement; a flatter top stroke reads more like a 7. The
+  descender is untouched and the grid refs still read **B2, E2, E10**.
+- `plot_nudge()` is shared with `export_aud_base.py`, which reads the plan directly — without it
+  the sheet was fixed while the designer still drew the stop at sea. Caught during verification.
+- **A stop-in-the-sea check.** The old assertion only asked whether a stop lands on the *page*,
+  which a stop in the water passes. Stops are now tested against the coastline and reported **in
+  points as well as km**, since 8 km is 2 pt on Leif's 500 km sheet and invisible. It immediately
+  found two more: **Battle Harbour** (8.2 km, **2.0 pt**) and **Patara** (1.8 km, **0.4 pt**) —
+  both invisible at those scales, both left alone.
+
+**Checks run:** all four sheets rebuilt; Aud reports no sea NOTE; `aud_base.js` regenerated and all
+three stops verified ON LAND by point-in-polygon against the exact drawn polygon; the Aud ANSWER
+sheet rendered at 140 dpi and the stop-1 area cropped at 420 dpi and inspected — the pin sits
+clearly on the headland. Page sizes confirmed 612x792 for all four. Artifact republished (version
+4) so the hosted designer carries the corrected `aud_base.js`.
+
+**Side effect, a good one:** rebuilding replaced `output/pdf/Trail_Map_3_Aud_*.pdf`, which had been
+stuck as the rejected **landscape two-panel** version since the file was locked by an open viewer.
+That blocker is now closed.
+
+**Left uncommitted, deliberately:** `NorseBackpack/Norse_Brainstorm.html` carries someone else's
+live edit from today — the comb grille lock gaining a candidate answer `BOOK`, with the comb now
+planned as 3D-printed. My `PZ-17` note about this fix is in the same file. Both are on disk and
+correct; the file was left for its author to commit rather than folded into a commit of mine. Also
+still uncommitted: the eight `output/pdf/_*.png` scratch renders.
+
+**Next action:** unchanged — continue the map southward against the brief. Fix the road's last
+vertex (10.5 pt from the Hvammur pin), join the two paths through the ditch, draw the watercourses
+early, then use "Place crossings".
+
+**Blockers / open questions:** lock mechanic still undecided (A/B/C/D, A recommended, A1 vs A2
+open); labels stay empty by design; `aud_features.json` still holds the superseded first layer and
+is not read by `build_trail_maps_pdf.py`; the printed sheet still uses the shipped **wide** frame
+while the designer uses `ZOOM_FRAME`; and the four decorative labels still fall outside the zoomed
+frame.
+
 ## Session Close — 2026-09-17 (latest 9) — Pinch-zoom fix: the action bar was sliding off screen
 
 **Task:** the user reported that zooming in Pan mode pushed the Pan button and the rest of the
