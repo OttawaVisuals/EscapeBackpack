@@ -27,6 +27,8 @@ import sys
 from pathlib import Path
 
 from pyproj import CRS, Transformer
+
+import aud_layer
 from reportlab.lib.colors import HexColor
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.utils import ImageReader
@@ -130,11 +132,18 @@ TRAILS = {
     ),
     "aud": dict(
         n=3, title="THE ISLAND SETTLEMENT", sub="Aud the Deep-Minded", band="#6D528B",
-        parallels=(64, 66), lon0=-22, frame=(-24.5, -20.0, 63.6, 65.9),
+        parallels=(64, 66), lon0=-22,
+        # ZOOM_FRAME. Must stay identical to export_aud_base.py's: aud_features.json stores
+        # page points, so the drawn layer only lines up with the coastline at this frame.
+        frame=(-22.9751, -20.5451, 64.08, 65.37),
         regions=[("ÍSLAND", "Iceland", 64.72, -20.75)],
-        areas=[("Breiðafjörður", 65.36, -22.90), ("Dalir", 65.16, -21.40),
-               ("Snæfellsnes", 64.87, -23.20), ("Kjalarnes", 64.28, -21.70)],
-        waters=[("DENMARK STRAIT", 65.90, -25.40, -8), ("FAXAFLÓI", 64.45, -22.80, 0)],
+        # Repositioned for the zoomed frame. Breiðafjörður ran off the west edge at its old
+        # spot and now sits out in the bay; Snæfellsnes and DENMARK STRAIT are dropped because
+        # both project well off this sheet -- the peninsula and the strait are simply not on it
+        # any more. They are still correct for the old wide frame if it is ever restored.
+        areas=[("Breiðafjörður", 65.34, -22.33), ("Dalir", 65.16, -21.40),
+               ("Kjalarnes", 64.28, -21.70)],
+        waters=[("FAXAFLÓI", 64.45, -22.80, 0)],
         # APPROX -- typed from general knowledge, not source-checked. See PR-10.
         extra_towns=[("Reykjavík", 64.15, -21.94), ("Akranes", 64.32, -22.08),
                      ("Borgarnes", 64.54, -21.92), ("Búðardalur", 65.11, -21.76),
@@ -505,6 +514,15 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
             p.moveTo(x, y) if i == 0 else p.lineTo(x, y)
         p.close()
         c.drawPath(p, stroke=1, fill=1)
+
+    # The drawn symbol layer (PZ-17). Over the coastline, under the grid, the stop pins and
+    # every label: the base map's own labels must win any overlap, the way they do on a real map.
+    # Clipped to the map area so a wood running off the edge stops at the neat line.
+    if key == "aud" and aud_layer.LAYER.exists():
+        _frame, _feats = aud_layer.load()
+        aud_layer.assert_frame(_frame, cfg["frame"], key)
+        aud_layer.draw(c, _feats, clip_rect=(MX0, MY0, MX1, MY1))
+        print("        symbol layer: %d features from aud_features.json" % len(_feats))
 
     # Reference grid: over the land, so a settlement can be given a square reference -- but under
     # every label drawn below, so no line printed here can ever sit on top of a clue.

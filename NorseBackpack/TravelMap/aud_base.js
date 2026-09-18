@@ -1865,11 +1865,42 @@ window.AUD_BASE = {
    "y": 163.03
   }
  ],
+ "reserved": [
+  {
+   "name": "scale bar",
+   "x0": 420.4,
+   "y0": 35.599999999999994,
+   "x1": 582.4,
+   "y1": 67.6
+  },
+  {
+   "name": "compass",
+   "x0": 518.4,
+   "y0": 94.24,
+   "x1": 574.4,
+   "y1": 146.24
+  }
+ ],
  "towns": [
+  {
+   "name": "Akranes",
+   "x": 234.44,
+   "y": 209.07
+  },
   {
    "name": "Bjarnarhöfn",
    "x": 42.61,
    "y": 557.98
+  },
+  {
+   "name": "Borgarnes",
+   "x": 269.86,
+   "y": 321.77
+  },
+  {
+   "name": "Búðardalur",
+   "x": 304.03,
+   "y": 613.85
   },
   {
    "name": "Dögurðarnes / Dagverðarnes",
@@ -1895,13 +1926,33 @@ window.AUD_BASE = {
    "name": "Krosshólaborg / Krosshólar",
    "x": 297.48,
    "y": 668.23
+  },
+  {
+   "name": "Mosfellsbær",
+   "x": 323.74,
+   "y": 132.4
+  },
+  {
+   "name": "Reykholt",
+   "x": 408.07,
+   "y": 384.1
+  },
+  {
+   "name": "Reykjavík",
+   "x": 265.64,
+   "y": 121.98
+  },
+  {
+   "name": "Stykkishólmur",
+   "x": 94.41,
+   "y": 594.17
   }
  ],
  "areas": [
   {
    "name": "Breiðafjörður",
-   "x": 59.77,
-   "y": 743.19
+   "x": 181.6,
+   "y": 731.76
   },
   {
    "name": "Dalir",

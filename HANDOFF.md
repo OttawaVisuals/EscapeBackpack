@@ -271,10 +271,32 @@ printed total so they cannot drift.
 **Caught in the first render:** the stub number read `No. 531-A` — the answer, printed on the front
 of the ticket. Now `No. 209418`, deliberately unrelated.
 
-**Next action:** wire `aud_features.json` into `build_trail_maps_pdf.py` so the drawn layer actually
-reaches paper. Nothing in this design is printable until that exists. Draw designer features beneath
-the stop pins and labels, and switch `TRAILS["aud"]["frame"]` to `ZOOM_FRAME` once the four
-decorative labels are repositioned.
+**The layer reaches paper.** `TravelMap/aud_layer.py` (new) draws `aud_features.json` onto the
+sheet; `build_trail_maps_pdf.py` calls it over the coastline but under the grid, the stop pins and
+every label, clipped to the map area. Appearance is ported from the designer and the two share no
+source, so a symbol changed in one must be changed in the other.
+
+**Aud's frame is now ZOOM_FRAME** (-22.9751..-20.5451, 64.08..65.37). It had to be: the export
+stores page points, not coordinates. `assert_frame()` compares the export's frame with the sheet's
+on every build and fails loudly rather than printing a sheet whose coastline has slid out from under
+its symbols.
+
+**Decorative labels re-set:** Breidafjordur moved out into the bay (65.34, -22.33) after running off
+the west edge; Snaefellsnes and DENMARK STRAIT dropped, both projecting well off this sheet. Still
+correct for the old wide frame if it is ever restored.
+
+**Two toolchain gaps the first printed sheet exposed, both fixed:**
+- `export_aud_base.py` fed the designer only the research corpus, not the sheet's own
+  `extra_towns` — so the designer knew **6 town dots while the sheet prints 13**, and its 19 pt
+  clearance check never covered Budardalur, Akranes or Stykkisholmur. Symbols were drawn over them.
+- The exporter never mentioned the two boxes the sheet reserves for the **scale bar and compass
+  rose**, so symbols were being placed underneath both.
+Both are now exported; the designer draws the reserved boxes faintly and a new scorecard row
+**In a reserved box** counts them. The layer was re-cleared: 4 point symbols moved, largest 16.5 pt,
+crossing markers rebuilt. **Brief now 19/20 with section D clean.**
+
+**Next action:** print a test sheet and walk the seven legs by hand against the ticket, checking the
+tally really comes to 5 bridges, 3 fords, 1 gate on paper rather than only in the graph.
 
 **Blockers / open questions:**
 - A2's replacement wording is undecided; the requirement is fixed, the words are not.

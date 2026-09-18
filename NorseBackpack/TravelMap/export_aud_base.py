@@ -87,8 +87,11 @@ def main():
         stops.append({"name": s["name"], "order": s["order"],
                       "x": round(x, 2), "y": round(y, 2)})
 
+    # corpus AND the sheet's own extra_towns. Exporting only the corpus is how symbols ended up
+    # drawn straight over Budardalur, Akranes and Stykkisholmur: the designer could not see them,
+    # so its 19pt clearance check never covered them.
     towns = {}
-    for name, lat, lng in corpus:
+    for name, lat, lng in list(corpus) + list(cfg["extra_towns"]):
         if lo0 <= lng <= lo1 and la0 <= lat <= la1:
             towns.setdefault(name, (lat, lng))
     town_list = []
@@ -115,6 +118,14 @@ def main():
         "title": cfg["title"],
         "land": land,
         "stops": stops,
+        # Boxes the printed sheet keeps for itself -- the scale bar and the compass rose. Without
+        # these the designer happily draws symbols underneath both.
+        "reserved": [
+            {"name": "scale bar", "x0": M.NEAT[2] - 170, "y0": M.NEAT[1] + 14,
+             "x1": M.NEAT[2] - 8, "y1": M.NEAT[1] + 46},
+            {"name": "compass", "x0": M.NEAT[2] - 72, "y0": M.MY0 + 16,
+             "x1": M.NEAT[2] - 16, "y1": M.MY0 + 68},
+        ],
         "towns": town_list,
         "areas": areas,
     }
