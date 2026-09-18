@@ -253,8 +253,28 @@ spec, which still called the birch icon "load-bearing" for telling the two chape
 — the ambiguous hop is the fork at the standing stone now), and the cross-reference that still
 sent readers to the birch hollow.
 
-**Next action:** build Aud's museum ticket — seven rows, three tally columns (bridges, fords,
-gates), row 1 pre-filled as the worked example, directions only and no crossings listed.
+**Aud's museum ticket is built** — `NorseBackpack/Props/AudTicket/build_aud_ticket_pdf.py`,
+outputs `Aud_Ticket_Print.pdf` (3 pages: front, back, answer copy) and `Aud_Ticket_Letter_Print.pdf`
+(2-up with crop marks). Same 2x5.5 in stock, palette, header band and outer rule as the L'Anse
+ticket. Unlike L'Anse's it has **no ImageGen art** — both faces are vector, so wording changes cost
+nothing to re-render.
+
+Front: AUDAR SAFN / Treasure Museum / Hvammur, Dalir, admit-one, "admission incl. treasure hunt",
+and a rust roundel standing in for a crest that has no asset yet. Back: the seven legs, one per row,
+three tally boxes each, totals blank, row 1 pre-filled in purple as the worked example, and a footer
+spelling out BRG/FRD/GTE. Page 3 is an answer copy with every box filled and `ANSWER 5 3 1`.
+
+Two guards in the build: leg text is measured and wrapped before drawing, so a longer direction
+raises instead of silently overflowing the card; and an `assert` ties the per-leg answers to the
+printed total so they cannot drift.
+
+**Caught in the first render:** the stub number read `No. 531-A` — the answer, printed on the front
+of the ticket. Now `No. 209418`, deliberately unrelated.
+
+**Next action:** wire `aud_features.json` into `build_trail_maps_pdf.py` so the drawn layer actually
+reaches paper. Nothing in this design is printable until that exists. Draw designer features beneath
+the stop pins and labels, and switch `TRAILS["aud"]["frame"]` to `ZOOM_FRAME` once the four
+decorative labels are repositioned.
 
 **Blockers / open questions:**
 - A2's replacement wording is undecided; the requirement is fixed, the words are not.
