@@ -2,6 +2,442 @@
 
 Last updated: 2026-09-17 by Claude Code
 
+## Session Close — 2026-09-17 (latest 5) — Final-riddle dates, clue set and solver
+
+**Task:** review of the whole Norse game (sequence, clues/props, what is missing), then a request
+to propose dates and clues for the final puzzle, then a redesign of the timeline: start earlier
+(2 Feb), vary the stay lengths, finish around December. Ended with the L2 tent→cabin swap and this
+write-up, both approved in chat.
+
+**The finding that drove everything.** The Final riddle tab's calendar used a uniform 3-day slot,
+which meant a date *was* a position — `(date − start) ÷ 3 + 1` — so one dated ticket excluded every
+other card from that slot. That arithmetic carried most of the deduction. Variable stay lengths
+destroy it: a date then only orders the dated props among themselves. The 3-day clue set was
+re-run under the weaker semantics and **collapsed to 18+ answers over 400,000+ valid calendars**.
+The clue set was therefore rebuilt to be **purely ordinal** — the order is carried by what Liv
+writes, not by arithmetic on dates. That is what frees the stay lengths to vary. The slot grid and
+the "every stated gap is a multiple of 3 days" rule are both retired.
+
+**Built:**
+- `NorseBackpack/Tools/final_riddle_solver.py` (new) — constraint solver over the 22 cards and 22
+  sequence positions. Places cards slot-by-slot so ordering clues prune immediately.
+- `NorseBackpack/Tools/final_riddle_clues.py` (new) — the itinerary and the live clue set; run it
+  to re-check the endgame. This is the solver check `PZ-18` had listed as "not started".
+  Current run: **TEST 1 unique answer PASS, TEST 2 bundle gates PASS (3 answers without it),
+  TEST 3 NOT RUN (geometric), TEST 4 rules hold PASS.**
+
+**Decided and recorded (Final riddle tab):** a 2 Feb → 15 Dec travel year, 22 stops, variable
+stays (2–7 nights), 94 nights away across 309 days. First appearances land at positions 1, 4, 6, 8
+— Leif, Rollo, Aud, Harald — so the code still reads 1972. Full itinerary table, full clue table
+with load-bearing marks, and the four museum-ticket dates (2 Feb / 17 Mar / 13 Apr / 28 Apr) are
+all in the tab.
+
+**Season check — the move fixed four already-built cards.** H1 Oslo's "a whole week in Oslo" is
+now a true 7 nights instead of contradicting the 3-day slot; LD Brattahlíð's "green against the
+ice" moved from March (Greenland is white) to June; L3's aurora sits in February; H5's gelato in
+August. One card could not be rescued and was changed instead — see below.
+
+**Changed:** `NorseBackpack/Postcards/build_postcard_L2_pdf.py` — "walked past my tent" →
+"walked past the cabin". Battle Harbour is boat-access and shut in winter, and the itinerary puts
+it on 10 February. Positions 1–3 are locked to Leif by printed card text, so the journey starts
+when Leif starts and the leg could not simply be moved to summer. Rebuilt both PDFs and the
+gallery back PNG; joke unchanged.
+
+**Two solver results worth not rediscovering:**
+- *Individually redundant clues are not jointly redundant.* Six clues each tested as droppable
+  alone; removing all six together took the answer count from 1 to 8. Never prune the clue table
+  on drop-one results.
+- Two clue-set shapes were tried and **rejected on evidence**: moving Rollo's closing clue into
+  the bundle as a dated receipt (17 answers — a date pins R6's position but not its rank, so
+  R3–R5 can still follow it), and resolving Harald's tail from the bundle alone with no added card
+  clause (6 answers).
+
+**Files changed:**
+- `NorseBackpack/Tools/final_riddle_solver.py`, `final_riddle_clues.py` (both new)
+- `NorseBackpack/Postcards/build_postcard_L2_pdf.py`, `Postcard_L2_Battle_Harbour_Back.png`
+- `output/pdf/Postcard_L2_Battle_Harbour_{Print,Letter_Print}.pdf`
+- `NorseBackpack/Norse_Brainstorm.html` — Final riddle tab: section 2 replaced with the itinerary
+  and clue set, ticket/statement panels rewritten, constraint worksheet resolved, Validation
+  section now records the run. `PZ-18` and `PZ-08` updated; `PZ-05`'s quoted L2 message synced.
+  Story tab's "Dates remain open" replaced. **CSS fix:** `.pill` was scoped to
+  `#design/#system/#questions/#options/#puzzles/#story` and never `#final-riddle`, so pills in
+  that tab had been rendering as unstyled text all along; `#final-riddle` added to all five rules.
+
+**Checks run:** solver run in-repo (results above). L2's rebuilt back page rendered to PNG and
+inspected — text reflows correctly, layout and Fun Fact box unaffected. Page served over
+`http://localhost:8734` and inspected visually: Final riddle tab renders, 3 tables with 22/19/4
+data rows, no console errors, decoy and pass/not-run pills styled correctly after the CSS fix, 0
+broken `#view-` links, `PZ-18` renders with its closed items struck through. A stale browser cache
+masked the CSS fix on first reload — a `?v=` cache-buster was needed, same trap as an earlier
+session.
+
+**Blockers / open questions:**
+- **Validation test 3 is still unrun** and needs the map projections, not the solver: no
+  decoy-inclusive answer may draw a plausible digit. It is in direct tension with the Guessing
+  risks section, which wants each decoy to draw a *plausible* wrong digit so the shape cannot be
+  eyeballed off the map. One of the two has to give — a real design decision, not a check.
+- The per-card crest/logo element mark is still the one thing blocking the endgame, and all 22
+  cards need a re-print for it. That pass is where the marks should land.
+- Per-card element-mark assignment (22 of them) remains the one thing blocking the endgame.
+- A1, A3, AD and H6 are still unwritten; their clue text is specified in the Final riddle tab.
+
+**Next action:** decide the per-card element-mark assignment (which of the 3 symbol / 6 crest
+elements sits on each of the 18 real cards), since that is what still blocks the endgame, and
+settle the test-3 vs. Guessing-risks contradiction above.
+
+## Addendum 2 — same session — three visuals added to the Final riddle tab
+
+Requested: a timeline of events, a timeline of cards beneath it, and a per-leg map with numbered
+stops and the decoys highlighted. All three are now section **2c - At a glance** in the Final
+riddle tab, as static inline SVG generated from the itinerary data by
+`NorseBackpack/Tools/build_final_riddle_visuals.py` (new). Re-run it after any date or stop
+change so the drawings cannot drift from the table above them.
+
+**What was built:** (1) 22 stops on one dated line, coloured per trail, decoys hollow/dashed,
+labels staggered over three rows; (2) the same axis split into four trail lanes, showing the
+interleaving; (3) four leg panels, numbered in travel order, north-up Web Mercator at uniform
+scale per panel, with the real route solid and the decoy-inclusive route dashed.
+
+**Two findings that came out of drawing it — both worth acting on.**
+- **Harald's 2 is confirmed broken.** The H3 -> H4 leg runs back up and to the left, so the
+  figure reads as a zigzag with a spike. `PZ-09` had flagged the risk; the panel now shows it.
+- **Two decoys do not do their job.** Constantinople sits almost on the line between Sicily and
+  Patara, and Brattahlid only adds a hook to the end of Leif's stroke. Both pass validation
+  test 3 trivially (neither draws a rival digit) but both fail what Guessing risks asks of a
+  decoy: making an unfiltered trace visibly wrong. As drawn, a team that never solves the crest
+  filter still traces a usable 1 and a usable (if broken) 2. Aud's and Rollo's decoys do distort
+  their shapes properly.
+
+Also recorded: Rollo's 9 is the strongest shape, and it works *because* Roumare lands 3.6 px from
+Rouen so the loop closes - the same near-coincidence that killed the pin-and-cord idea. Leif's 1
+is effectively a two-point line (L1/L2 are 7.6 px apart on a 224 px trail), so Leif's trail
+carries almost no shape information. Aud's 7 reads but its descender is vertical, not slanted.
+
+**A labelling detail worth keeping:** dots are drawn at their true projected position and only
+the number badges are pushed apart, with a leader line back to the dot. Rouen/Roumare at 3.6 px
+and L'Anse/Battle Harbour at 7.6 px made the badges unreadable otherwise, and moving the dots
+themselves would have falsified the shape.
+
+**Known limitation:** the card-lane chart plots the date each card was *sent*, not the order
+players receive them. In-game release order is `PC-18` and is still open - Rollo's three puzzles
+have no internal order, so a release-order version cannot be drawn without inventing one. Said so
+on the page rather than guessing.
+
+**Files changed:** `NorseBackpack/Tools/build_final_riddle_visuals.py` (new),
+`NorseBackpack/Norse_Brainstorm.html` (section 2c plus `.legmaps` grid CSS).
+
+**Checks run:** page served over `http://localhost:8734` - 6 SVGs, 4 map panels, exactly one 2c
+block (the injector is idempotent), no console errors, 4-column grid at desktop and single column
+at 375 px with no horizontal scroll. Each map inspected visually at full size. A temporary
+standalone check page was used to work around a pane compositing issue that returns blank
+screenshots low down this very tall page; it was deleted afterwards.
+
+## Addendum — same session — the five clauses applied
+
+Applied and rebuilt, after the write-up above. **Solver re-run: TEST 1 unique answer PASS,
+TEST 2 bundle gates PASS (3 answers without it), TEST 4 rules hold PASS.** The answer is
+unchanged: Leif L1-L2-L3, Rollo R1..R6, Aud A1-A2-A3, Harald H1..H6, first appearances
+Leif/Rollo/Aud/Harald.
+
+**As printed:**
+- **R1 Chalus** - "Odd place to start his family's story, at the very end of it, but this is
+  where I began."
+- **R2 Rouen** - "The tapestry towns are still ahead of me - saving those for later."
+- **R6 Roumare** - "The last of Rollo's places on my list, and I've ended up right back beside
+  Rouen to finish."
+- **H1 Oslo** - second sentence now "It's Harald's city and the obvious place to begin with him
+  - so much Viking history."
+- **H4 Hedeby** - opening now "New stop: Hedeby - saltwater again, after all that river country.
+  Barely a Hedeby left to stand in: a green ring of earthworks where the ramparts ran."
+
+**Two layout constraints found, worth knowing before any further card text is added.** Message
+panels were measured against the real font metrics before editing rather than after.
+- **R2 is the tightest card in the deck** - about one spare line. It also carries the word-lock
+  reading order (`PZ-15`), so the new sentence was placed after all six Saxon words and uses none
+  of them; fight -> forest -> cow -> people -> poultry -> inn is unchanged.
+- **H4 tops out at ten message lines.** It draws the branch-rune key table below the signature,
+  and `table_bottom` clamps at `max(30, ...)`, so an eleventh line pushes the table's caption
+  outside its own box. First attempt did exactly that (caption baseline 28.2 vs box bottom 30);
+  the paragraph was tightened by a few words instead of moving the table.
+
+**Files changed in the addendum:** `build_postcard_{R1,R2,R6,H1,H4}_pdf.py`, their ten
+`output/pdf/Postcard_*_{Print,Letter_Print}.pdf`, their five `Postcard_*_Back.png` gallery
+images, and `NorseBackpack/Norse_Brainstorm.html` (`PZ-05` records the exact printed wording and
+both layout limits; `PZ-18` moves the five edits to its closed list; the clue-set note in the
+Final riddle tab now reads as applied).
+
+**Checks run:** all five backs rendered to PNG at 3x and inspected individually - no overflow,
+H4's rune key box intact with its caption inside, R2's signature clear of the credit line, all
+Fun Fact boxes unaffected. Page re-served over `http://localhost:8734` (cache-buster again): no
+console errors, 0 broken `#view-` links, 0 unrendered HTML entities, 11 tabs, 3 tables in the
+Final riddle tab, `PZ-05` and `PZ-18` both render.
+
+## Session Close — 2026-09-17 (latest 7) — Aud map rebuild reviewed; 5 symbols and crossing automation added
+
+**Task:** the user started redrawing Aud's map against the brief and pasted the first 15 features
+(grid rows 1–2 only) asking whether it was better, then asked two questions and requested three
+new symbols.
+
+**Verdict on the new map: yes, markedly.** Measured on rows 1–2 only, so ratios matter, not totals:
+
+| | old map, whole sheet | new, rows 1–2 |
+|---|---|---|
+| landmarks inside an area | 0 of 29 | **3 of 8** |
+| landmarks on a route (<=8pt) | 5 of 29 | **5 of 8** |
+| routes through an area | 0 | **1** |
+| confusable pair split by context | churches only | **stone x2** (wood vs shore) |
+
+Section D clean apart from clearance. The Port marker sits 0.1 pt off the coastline.
+
+**Three faults reported to the user:**
+- Road's last vertex `(281.15, 662.4)` is **10.5 pt from the Hvammur pin** and 17.3 pt from
+  Krosshólaborg; the vertex before is 18.8 pt. Suggested ending near `(268, 657)`.
+- **The bridge was a gap, not a crossing.** Path A ended 7.5 pt short of the ditch, path B started
+  2.4 pt short on the far side, 12.5 pt apart, bridge sitting between. Nothing crossed anything:
+  zero barrier crossings and a broken network.
+- **No water drawn yet**, and water crossings carry the largest target (5+). Advised drawing
+  watercourses early, while the tracks are still soft.
+- Also flagged: stranded landmarks now 0 (the opposite of the old map's 7 — target is 5–7), and
+  density at 1.9 features/cell against the old map's 0.9, projecting to ~128 features.
+
+**Answers to the two questions, both recorded in `PZ-17`:**
+- *Should roads avoid settlements?* The rule is about **labels, not roads**. A road serving a
+  village is correct cartography; 19 pt exists only because the build's label placer cannot see
+  designer geometry. Keep 19 pt for now, end routes at the outskirts; relax once the export feeds
+  the build and the placer reserves designer features — except Hvammur/Krosshólaborg, 8.5 pt
+  apart, which can never be threaded.
+- *Draw continuous routes and let the tool place bridges?* **Yes** — built it.
+
+**Built in `NorseBackpack/TravelMap/Aud_Map_Designer.html`:**
+- Five new symbols: `port` (anchor), `village` (three gables, distinct from the single-house
+  `farm`), `cave` (solid arch in a hillside), `ford` (stones between bank ticks), `gate` (two
+  posts, two bars). The palette, renderer and exporter all read from `SYMBOLS`, so adding the
+  entries was enough.
+- **"Place crossings" button** — scans every track x obstacle intersection and inserts the right
+  symbol on it: river->bridge, stream->ford, ditch->bridge, hedge/wall->gate. Skips any crossing
+  already marked within 10 pt (safe to re-run), pushes undo, reports a tally.
+- New scorecard row **"Crossings with no symbol"** (target 0) for the reverse case.
+- **Crossing markers excluded from landmark metrics.** `bridge`/`ford`/`gate` no longer count
+  toward landmarks-on-a-route, inside-an-area, stranded, or confusable pairs. The old map's
+  "5 landmarks on a route" was really 2 landmarks plus 3 bridges. Scorecard is now out of 19.
+
+**Checks run:** `node --check` on the extracted script after each patch — clean (caught one real
+bug: the undo helper is `push()`, not `pushUndo()`). Rendered all five new glyphs side by side at
+260% zoom and inspected — each is legible and distinguishable from the existing set and from each
+other. **Crossing automation tested both ways:** with the user's map as-is it correctly reported
+"No route crosses an obstacle yet — draw the line straight over it"; after joining the two paths
+into one continuous line over the ditch and adding a test stream and hedge, it placed a ford at
+`(300.0, 727.4)` and a gate at `(350.0, 734.3)` — both exactly on the intersections — and
+correctly skipped the ditch because the existing bridge was within 10 pt. "Crossings with no
+symbol" then read 0. Fixed one cosmetic bug found in testing: `save()` was overwriting the tally
+message, so the status line is now written after `save()`. No console errors throughout. All test
+data removed and the user's 15-feature state restored in browser storage.
+
+**Next action:** user continues the map southward. Fix the road's last vertex, join the two paths
+through the ditch, draw the watercourses early, then use "Place crossings".
+
+**Blockers / open questions:** unchanged — the lock mechanic is still undecided (A/B/C/D, A
+recommended, A1 vs A2 open); labels stay empty by design, though the user has one labelled
+`marker` reading "Port" (flagged as fine for a start anchor, not as a pattern); `aud_features.json`
+still holds the superseded first layer and is still not read by `build_trail_maps_pdf.py`; the
+zoomed frame is exporter-only; four decorative labels fall outside it; and
+`output/pdf/Trail_Map_3_Aud_*.pdf` are still the rejected landscape version — run
+`python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud`.
+
+## Session Close — 2026-09-17 (latest 6) — Designer label fix and live build-brief scorecard
+
+**Task:** the user reported overlapping labels in `Aud_Map_Designer.html` (screenshot showed
+Dögurðarnes and Hvammur double-labelled, Krosshólaborg on top of Hvammur) and asked for the build
+brief's targets to appear on the designer page as a design aid.
+
+**Cause of the overlap.** Dögurðarnes and Hvammur are each **both a stop and a town** in the
+corpus, and the designer drew `B.stops` and `B.towns` naively, so two labels landed on one point.
+Krosshólaborg then collided because it sits 8.5 pt from Hvammur. `build_trail_maps_pdf.py` already
+solves this (dedupe by name, then a reserve/place pass), so the designer was showing a sheet the
+printer would never produce.
+
+**Fixed in `NorseBackpack/TravelMap/Aud_Map_Designer.html`:**
+- `planBaseLabels()` / `findSpot()` — a reserve/place pass mirroring the build. Stop pins and town
+  dots are reserved first, then stop labels are planned (so the more important label wins the good
+  position), then towns, then area names. Eight candidate offsets per label; anything unplaceable
+  is pushed to `droppedLabels` and named in the panel rather than silently lost.
+- A town whose name matches a stop is labelled once, by the stop — same rule as the build.
+- With the current 59-feature layer, **zero labels are dropped**.
+
+**Built: a live Build brief panel.** The `PZ-17` brief's targets are now counted against whatever
+is drawn, in the same four sections (A countable events, B navigable skeleton, C ambiguity engine,
+D must not break), scored out of 18, each row green when met. Computation is debounced 140 ms off
+the render path because crossing detection is O(n²) on segments and would otherwise run on every
+drag frame. Two deliberate choices:
+- **Targets where more is harmless are minimums** (`5+`, `3+`), not ranges. The first version
+  flagged 11 forks as a failure against a "6–8" target, which is wrong for a design aid. Only the
+  hard-zero rules and the stranded-scenery count are true ranges. `Norse_Brainstorm.html` was
+  edited to match so the two cannot drift.
+- **The land test carries 2.5 pt of slack.** A wall or track running down to the shore legitimately
+  touches the coastline; without slack the stone wall showed as "over water" every time.
+
+**Current score for the existing layer: 11 of 18.** Short on: water crossings (2, want 5+),
+barrier crossings (2, want 3+), landmarks on a route (3, want 18+), landmark at a fork (0, want
+3+), routes through an area (0, want 3+), routes alongside a line (0, want 2+), landmarks inside
+an area (0, want 8+). All of section D is clean.
+
+**Files changed:** `NorseBackpack/TravelMap/Aud_Map_Designer.html`;
+`NorseBackpack/Norse_Brainstorm.html` (`PZ-17` records both changes; the eight range targets
+became minimums).
+
+**Checks run:** extracted the inline `<script>` and ran `node --check` — syntax clean. Served over
+`http://localhost:8734` and inspected: no console errors, labels now read cleanly with none
+dropped, panel renders all four sections. **Live update tested end to end** — clicked the Church
+tool and placed one inside a wood: "Landmarks inside an area" went 0 → 1 and the placed count 59
+→ 60; the score correctly fell 11 → 10 because that church also pushed stranded landmarks out of
+its 5–7 range. Test placement undone with Ctrl+Z and the 59-feature state confirmed restored.
+Cross-checked every panel figure against the independent Python analysis run earlier in the
+session (crossings 2/2, forks 11, dead ends 12, stranded 7, inside-area 0) — all agree.
+
+**Note:** a backup of the pre-patch designer is at
+`<scratchpad>/Designer_backup.html` for this session only; it is not in the repo.
+
+**Next action:** user redraws the map against the panel, aiming to turn section A, B and C rows
+green while keeping D at zero. Then export and paste back for an independent re-measurement.
+
+**Blockers / open questions:** unchanged from the previous entry — the lock mechanic is still
+undecided (options A/B/C/D put to the user, A recommended, A1 vs A2 sub-choice open); labels stay
+empty by design; `aud_features.json` still not read by `build_trail_maps_pdf.py`; the zoomed frame
+is still exporter-only; four decorative labels still fall outside it; and
+`output/pdf/Trail_Map_3_Aud_*.pdf` are still the rejected landscape version — run
+`python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud`.
+
+## Session Close — 2026-09-17 (latest 5) — Aud map build brief written; first symbol layer superseded
+
+**Task:** continuation. After the first symbol layer was verified and corrected, the conversation
+moved from "does this export work" to "what should the map contain at all". The user said they
+drew the first pass **because it looked nice**, asked what structures a puzzle map actually needs,
+then asked for that list to go into the project page as a want-only brief — they are redrawing the
+map from scratch.
+
+**What the measurements found** (the brief is derived from these, not invented):
+
+- **Not one of the 29 landmarks sat inside any area.** All in open ground. With 6 ruins and
+  6 standing stones on one sheet, no clue could point at a landmark without naming it. This is the
+  structural gap that blocked everything else.
+- Only **4 route crossings** on the whole sheet (2 water, 2 barrier).
+- **No route passed through an area** — 6 skirted, 4 areas (marsh D6, lake H11, moor I5, moor F6)
+  touched by nothing at all.
+- The path network was **fine**: 12 of 13 routes in one connected component, 11 junctions.
+- 64 of 67 land cells already carried a feature, so the sheet was full, not sparse.
+
+**Correction recorded mid-session.** An earlier claim in this conversation — "barely connected,
+only one junction" — was wrong. It came from testing endpoint-to-endpoint proximity only, which
+misses T-junctions where a path ends *on* a road. Counting those gives 11 junctions and one
+connected component. The same error made bridge `#3` at F6 look stranded; paths `#50`/`#51`
+actually meet there, 4.8 and 8.3 pt off the river. Conclusion changed from "rebuild the network"
+to "the network is fine, add crossings and context".
+
+**Advice given, recorded in the brief:** do *not* add more footpaths. Junctions were already
+sufficient; crossings and context were the shortage. One new line drawn across the grain of the
+existing tracks earns more than six new paths — a scan of candidate on-land lines found F8 → E3
+crossing 5 routes in 5 distinct grid cells. A dense lane network also reads as English enclosure
+country rather than settlement-era Dalir.
+
+**Files changed:**
+- `NorseBackpack/Norse_Brainstorm.html` — `PZ-17` now carries a **Build brief** in four parts:
+  **A** countable events (water and barrier crossings, each in its own grid cell, fords *and*
+  bridges), **B** navigable skeleton (landmarks on routes, forks, landmark at a fork, routes
+  through areas, routes alongside linear features, dead ends), **C** ambiguity engine (landmarks
+  inside areas, confusable pairs with different context, the water-vs-woodland pair card A2 needs,
+  both branches walkable, deliberately stranded scenery), **D** composition and production rules
+  (on-land sampling method, 19 pt clearance, map-area bounds, 16 pt icon spacing, keep column E
+  rows 2–10 quiet for the digit 7, do not add paths for their own sake, page-point/frame contract,
+  z-order). Target counts only — **no "have" column**, at the user's request, since the map is
+  being redrawn. The first-pass description is retained above the brief and explicitly marked
+  superseded rather than deleted. Pill now reads "Build brief written; map being redrawn; lock
+  mechanic open".
+
+**Checks run:** tag balance verified inside the `PZ-17` block (all of p/table/thead/tbody/tr/td/th/
+ul/li/h4 balanced; the single extra `</div>` is the qrow close outside the slice). Served over
+`http://localhost:8734` and inspected all four brief sections rendered — tables styled correctly,
+no console errors. Needed a cache-busting query string to see the change, same as the 17 Sept H1
+session.
+
+**Next action:** user redraws the map against the brief and exports. Then re-run the same
+measurements (landmarks inside areas, crossings per grid cell, routes through areas, forks,
+clearances, on-land sampling) and report what is still short before any route legs are written.
+
+**Blockers / open questions:**
+- **The lock mechanic is still undecided.** Four options were put to the user — A count-what-the-
+  route-crosses, B grid-columns-as-digits, C legend cipher, D scale-bar measurement — with A
+  recommended, and inside A a sub-choice between A1 (three tallies: water / barrier / junctions,
+  keyspace ~125) and A2 (leg numbers where you cross water, prettier but only 35 combinations,
+  brute-forceable). **The user has not chosen.** The brief is deliberately mechanic-agnostic so the
+  redraw is not wasted whichever way it goes.
+- Labels stay empty by design through the rebuild; naming the repeated symbols would undo the
+  ambiguity mechanic.
+- `aud_features.json` is the file of record until the rebuild lands, and is still not read by
+  `build_trail_maps_pdf.py`.
+- The zoomed frame is still exporter-only; the printed sheet uses the shipped wider frame.
+- `ÍSLAND`, `DENMARK STRAIT`, `FAXAFLÓI` and `Snæfellsnes` still fall outside the zoomed frame.
+- `output/pdf/Trail_Map_3_Aud_*.pdf` are **still the rejected landscape two-panel version**
+  (792x612). Files are writable; the rebuild was not run. Run
+  `python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud`.
+
+## Session Close — 2026-09-17 (latest 4) — Aud's first symbol layer checked and corrected
+
+**Task:** the user pasted a 59-feature Aud map-designer export into chat and asked whether it
+would work as a map, then said to fix what came back. Verification and correction, not new design.
+
+**Verdict: it works.** Frame matches `aud_base.js` exactly, so designer and print cannot drift.
+The layer reads as a surveyed valley rather than a scatter of icons, which was the point of
+replacing the shelved detail panel.
+
+**How it was checked.** A vertex-only land test is not sufficient and is also misleading: a road
+with both ends on land can still span a fjord between two vertices, and Dögurðarnes and
+Bjarnarhöfn themselves fall a fraction *outside* the Natural Earth polygon, so they read as "sea".
+Every line was therefore sampled every 2 pt and every area on a 30x30 grid against the coastline
+polygon. Result: **no feature lies over water**. The stone wall's two ends touch the shoreline,
+which is correct for a wall. No two of the 29 point symbols are closer than 16 pt.
+
+**Three placements corrected** (in `NorseBackpack/TravelMap/aud_features.json`):
+- River `#1` east end overhung the map area by 1.9 pt and would have bled into the grid band —
+  moved to x 577.0.
+- Paved road `#13` terminated 3 pt from the Hvammur stop pin and 12 pt from the Krosshólaborg
+  dot. Those two dots are only 8.5 pt apart, so *any* approach threads between them; rerouting was
+  tried numerically and could not clear both. Trimmed back to `(311.0, 682.6)` instead — it now
+  ends in open ground where the footpath network takes over.
+- Hedge `#56` (9 pt) and field `#38`'s corner (15 pt) were pulled east, clear of Eiríksstaðir.
+
+Minimum clearance from any stop or town dot is now **19 pt**.
+
+**Files changed:**
+- `NorseBackpack/TravelMap/aud_features.json` (new) — the corrected 59-feature export. The
+  designer had no repo-side home for its output before this; it lived only in browser storage.
+- `NorseBackpack/Norse_Brainstorm.html` — `PZ-17` records the layer, its composition, the
+  verification method, the three corrections, why nothing is labelled yet, and a z-order rule for
+  whoever wires the export into the build. Status pill now reads "Symbol layer placed and
+  verified; labels and lock mechanic both open".
+
+**Checks run:** re-ran the full geometry check on the corrected file (0 features outside the map
+area, 0 over water, 0 icon collisions, min clearance 19 pt); reloaded the corrected JSON into
+`Aud_Map_Designer.html` over `http://localhost:8734` and inspected the rendered sheet at
+1000x1450 — all 59 features draw, no console errors; served `Norse_Brainstorm.html` and confirmed
+the new `PZ-17` copy renders in the Open questions tab with no console errors.
+
+**Next action:** decide Aud's lock mechanic — what the seven-stop route has to produce. Still the
+single blocker, unchanged.
+
+**Blockers / open questions:**
+- **Nothing is labelled, deliberately.** All 59 features carry an empty label. With 6 ruins,
+  6 standing stones, 3 mills, 3 churches and 3 wells on one sheet, no clue can name a landmark
+  unambiguously until the mechanic is known. Labels and the route trace are the same task as the
+  lock, not separate tidying.
+- The route itself is not drawn.
+- `aud_features.json` is still not read by `build_trail_maps_pdf.py`. Nothing drawn reaches paper.
+- The zoomed frame is still exporter-only; the printed sheet uses the shipped wider frame.
+- `ÍSLAND`, `DENMARK STRAIT`, `FAXAFLÓI` and `Snæfellsnes` still fall outside the zoomed frame.
+- `output/pdf/Trail_Map_3_Aud_*.pdf` are **still the rejected landscape two-panel version**
+  (792x612). The file lock from the previous session is gone — the files are writable now — but
+  the rebuild was not run this session. Run
+  `python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud` to replace them.
+
 ## Session Close — 2026-09-17 (latest 3) — 4-up print-sheet combiner for Staples
 
 **Task:** printing/production question, not design — user is ordering duplex prints of the Norse
