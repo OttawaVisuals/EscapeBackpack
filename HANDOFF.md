@@ -319,9 +319,9 @@ The first printed sheet read as busy and under-styled. Six fixes:
 is fine; all 89 being the same purple at the same weight is what makes it read busy. A tone problem,
 not a deletion problem.
 
-**Blocked:** `output/pdf/Trail_Map_3_Aud_*.pdf` are **locked by an open viewer**, so the shipped PDFs
-still lack this pass. Everything was verified by building to a temp directory instead. Close the
-viewer and run `python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud`.
+**Shipped PDFs rebuilt** once the viewer lock cleared. Both `Trail_Map_3_Aud_Print.pdf` and
+`..._ANSWER.pdf` now carry the pass — verified 612x792, legend present, Stykkisholmur ashore, and
+the answer copy still reading as the digit 7.
 
 **Left for Codex:** area fills (marsh, wood, moor are flat tints where they want texture), the
 visual hierarchy, and the `bridge` glyph - now that it rotates correctly it reads awkwardly side-on
