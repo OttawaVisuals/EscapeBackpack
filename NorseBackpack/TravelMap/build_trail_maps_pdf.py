@@ -155,6 +155,11 @@ TRAILS = {
         areas=[],
         waters=[],
         extra_towns=[],
+        # Harald-only grid override (PZ-02 x PZ-09): the branch-rune puzzle's reading order
+        # comes from spelling RAVEN against the column letters, so this sheet's columns are
+        # relettered A,C,E,I,K,N,R,T,V instead of the shared A-I run. The other three trail
+        # sheets keep the plain alphabet -- their own grid references already depend on it.
+        col_letters=["A", "C", "E", "I", "K", "N", "R", "T", "V"],
     ),
 }
 
@@ -211,6 +216,64 @@ ROLLO_WORDLOCK_ART = (
     ("Rollo_Inn_v1.png",    (459.58, 223.36, 38.0, 38.0), 0.62),  # tavern  -> H9
     ("Rollo_Folk_v1.png",   (349.79,  80.62, 38.0, 38.0), 0.62),  # people  -> F11
 )
+
+# Harald's branch-rune reference grid (PZ-02 x PZ-09): five real stems, each a group/position
+# pair (left branches = group 1-3, right branches = position within it -- see the Props & specs
+# "Branch runes" section), decoding to H R A F N. The cell each sits in is chosen so that reading
+# the relettered columns (see col_letters above) in the literal order RAVEN spells -- R, A, V, E,
+# N -- visits them in H, R, A, F, N order, the cryptex answer. Seven decoys elsewhere on the
+# sheet carry plausible but meaningless group/position pairs so the five real cells cannot be
+# spotted by pattern alone; col_idx is 0-based (0=A .. 8=I in the ORIGINAL, unrelettered index),
+# row is 1-based from the top, matching the shared GRID_COLS x GRID_ROWS reference grid.
+HARALD_RUNES_REAL = (
+    (6, 6, 2, 1, "H"),   # G6  -> relettered R6
+    (0, 10, 1, 5, "R"),  # A10 -> relettered A10
+    (8, 9, 2, 4, "A"),   # I9  -> relettered V9
+    (2, 3, 1, 1, "F"),   # C3  -> relettered E3
+    (5, 2, 2, 2, "N"),   # F2  -> relettered N2
+)
+HARALD_RUNES_DECOY = (
+    (1, 4, 3, 3),
+    (3, 9, 1, 2),
+    (4, 2, 2, 5),
+    (4, 10, 3, 1),
+    (7, 4, 1, 6),
+    (7, 8, 2, 3),
+    (2, 7, 3, 4),
+)
+
+
+def cell_center(col_idx, row):
+    """Page-space centre of grid cell (col_idx 0-based, row 1-based from the top)."""
+    cw, ch = (MX1 - MX0) / GRID_COLS, (MY1 - MY0) / GRID_ROWS
+    return MX0 + (col_idx + 0.5) * cw, MY1 - (row - 0.5) * ch
+
+
+def draw_rune_stem(c, x, y, group, position):
+    """One branch-rune stem (kvistrunir): a vertical stroke with tally ticks -- left branches
+    count the group (1-3), right branches count the position within it (PZ-02)."""
+    c.saveState()
+    c.setStrokeColor(INK)
+    c.setLineWidth(1.1)
+    c.setLineCap(1)
+    half = 9.0
+    c.line(x, y - half, x, y + half)
+    step = 2 * half / 6
+    top = y + half - step * 0.6
+    for i in range(group):
+        ty = top - i * step
+        c.line(x, ty, x - 6.5, ty - 3.6)
+    for i in range(position):
+        ty = top - i * step
+        c.line(x, ty, x + 6.5, ty - 3.6)
+    c.restoreState()
+
+
+# Superseded 17 Sept 2026, then shelved: Aud briefly had a landscape two-panel sheet with a
+# zoomed Dalir/Hvammur survey panel beside the main map (AUD_DETAIL_ART, then AUD_PANEL and a
+# plot-number route).  The whole approach is parked under
+# NorseBackpack/Drafts/2026-09-17_Aud_split_panel/ -- see its README.  Aud's sheet is a plain
+# portrait map again, and its treasure hunt is being redesigned to live on that single map.
 
 
 def draw_vignette(c, path, box, alpha):
@@ -348,8 +411,6 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
     # boxes and projection this map uses, without rewriting (or locking) the real PDF.
     target = BytesIO() if _return_geometry else str(out)
     c = canvas.Canvas(target, pagesize=letter)
-    c.setTitle("Trail Map %d - %s%s" % (cfg["n"], key.capitalize(),
-                                        " (ANSWER KEY)" if answer else ""))
 
     c.setFillColor(SEA)
     c.rect(NEAT[0], NEAT[1], NEAT[2] - NEAT[0], NEAT[3] - NEAT[1], stroke=0, fill=1)
@@ -398,6 +459,19 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
             draw_vignette(c, SOURCE_ART_DIR / filename, box, alpha)
             x, y, w, h = box
             lab.reserve(x, y, x + w, y + h)
+    elif key == "harald":
+        for col_idx, row, group, position, rune_letter in HARALD_RUNES_REAL:
+            x, y = cell_center(col_idx, row)
+            draw_rune_stem(c, x, y, group, position)
+            lab.reserve_centred(x, y - 3, 30, 34, pad=2)
+            if answer:
+                c.setFillColor(RUST)
+                c.setFont("CinzelBold", 7.5)
+                c.drawCentredString(x, y - 17, rune_letter)
+        for col_idx, row, group, position in HARALD_RUNES_DECOY:
+            x, y = cell_center(col_idx, row)
+            draw_rune_stem(c, x, y, group, position)
+            lab.reserve_centred(x, y, 26, 26, pad=2)
 
     for nm, _m, la_, lo_ in cfg["regions"]:
         rx, ry = pt(lo_, la_)
@@ -508,10 +582,11 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
     c.rect(MX0, MY0, MX1 - MX0, MY1 - MY0, stroke=1, fill=0)
     c.setFillColor(WHITE)                      # grid references now sit on the tinted band
     c.setFont("Plex", 6.4)
+    col_letters = cfg.get("col_letters") or [chr(65 + i) for i in range(GRID_COLS)]
     for i in range(GRID_COLS):                 # letters across, repeated top and bottom
         x = MX0 + (i + 0.5) * cw
-        c.drawCentredString(x, MY1 + BAND / 2 - 2.3, chr(65 + i))
-        c.drawCentredString(x, MY0 - BAND / 2 - 2.3, chr(65 + i))
+        c.drawCentredString(x, MY1 + BAND / 2 - 2.3, col_letters[i])
+        c.drawCentredString(x, MY0 - BAND / 2 - 2.3, col_letters[i])
     for j in range(GRID_ROWS):                 # numbers down from the top, repeated both sides
         y = MY1 - (j + 0.5) * ch
         c.drawCentredString(MX0 - BAND / 2, y - 2.3, str(j + 1))
@@ -594,6 +669,7 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
     c.setFillColor(INK)
     c.setFont("CinzelBold", 7)
     c.drawCentredString(x, y + r + 4, "N")
+
 
     c.showPage()
     c.save()
