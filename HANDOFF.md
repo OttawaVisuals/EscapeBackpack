@@ -236,9 +236,25 @@ confirmed the `531` route now starts at the chapel. Tag balance checked inside t
 served over `http://localhost:8734` and read the rendered leg table back from the DOM, matching the
 intended seven legs, with no console errors.
 
-**Next action:** write A2's replacement chapel line — it has to name which road Liv took on from
-the standing stone, resolving leg 5. Then build the museum ticket: seven rows, three tally columns
-(bridges, fords, gates), row 1 pre-filled as the worked example.
+**A2's replacement line, written 18 Sept 2026:** *"The only place it caught me out was the standing
+stone — two roads leave it southward through the same gate, and I took the one that runs on into
+the trees. Wrong, of course. It's the open one you want."* The rest of the card is untouched.
+
+Every clause is checkable on the sheet: both roads leave the stone **south**, both cross **wall
+#81**, and their crossing points are 11 and 12 pt from the stone — close enough that they **share
+one gate symbol**, so the gate distinguishes nothing. That is precisely why an in-person detail is
+needed here. The only visible difference is where each road ends: the wrong branch finishes
+**inside a wood**, the route's branch in open ground. The card names that and nothing else — not
+the destination, not the count, not the code. The wrong branch picks up a second gate at I5 and
+scores `432`.
+
+**Two more stale blocks found and marked superseded in `PZ-17`:** the shelved split-panel vignette
+spec, which still called the birch icon "load-bearing" for telling the two chapels apart (it is not
+— the ambiguous hop is the fork at the standing stone now), and the cross-reference that still
+sent readers to the birch hollow.
+
+**Next action:** build Aud's museum ticket — seven rows, three tally columns (bridges, fords,
+gates), row 1 pre-filled as the worked example, directions only and no crossings listed.
 
 **Blockers / open questions:**
 - A2's replacement wording is undecided; the requirement is fixed, the words are not.
