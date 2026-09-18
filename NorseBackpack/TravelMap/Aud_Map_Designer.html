@@ -11,38 +11,55 @@
     --panel:#FBF7EC; --line:#D8CDB4;
   }
   *{box-sizing:border-box}
+  /* Without this, Chrome font-boosts headings on a narrow screen -- the 14px h1 renders at 26px. */
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   body{margin:0;font:13px/1.45 "IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
        background:#E7E1D2;color:var(--ink)}
   header{padding:8px 14px;background:var(--purple);color:#fff;display:flex;gap:16px;
          align-items:baseline;flex-wrap:wrap}
-  header h1{margin:0;font:600 14px/1 inherit;letter-spacing:.06em}
+  header h1{margin:0;font-family:inherit;font-weight:600;font-size:14px;line-height:1;letter-spacing:.06em}
   header .hint{font-size:11px;opacity:.85}
   main{display:flex;gap:12px;padding:12px;align-items:flex-start}
+  /* dvh, not vh: on a phone vh counts the space behind the browser chrome. */
   #stage{flex:1;min-width:0;background:var(--panel);border:1px solid var(--line);
-         padding:8px;border-radius:4px;overflow:auto;max-height:calc(100vh - 86px)}
-  svg{display:block;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.12);cursor:crosshair}
+         padding:8px;border-radius:4px;overflow:auto;max-height:calc(100dvh - 86px)}
+  svg{display:block;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.12);cursor:crosshair;
+      touch-action:none}
+  svg.panning{touch-action:auto}
   aside{flex:0 0 288px;display:flex;flex-direction:column;gap:10px;
-        max-height:calc(100vh - 86px);overflow:auto}
+        max-height:calc(100dvh - 86px);overflow:auto}
   @media (max-width:900px){ main{flex-wrap:wrap} aside{flex:1 1 100%;max-height:none} }
+  /* The action bar carries what the keyboard does on desktop. It sits in the Tool card on a
+     big screen and pins to the bottom of the viewport on a phone, where the palette is a
+     long scroll away from the map. */
+  .bar{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-top:8px;
+       padding-top:8px;border-top:1px solid var(--line)}
+  .bar .bartool{font-size:11px;color:var(--ink-soft);margin-right:auto}
+  .bar .bartool b{color:var(--purple)}
+  .bar button{font-family:inherit;font-size:11px;line-height:1;padding:7px 9px;border:1px solid var(--line);background:#fff;
+              border-radius:3px;cursor:pointer}
+  .bar button:hover{border-color:var(--purple)}
+  .bar button[aria-pressed="true"]{background:var(--purple);color:#fff;border-color:var(--purple)}
+
   .card{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px}
-  .card h2{margin:0 0 8px;font:600 11px/1 inherit;letter-spacing:.09em;text-transform:uppercase;
+  .card h2{margin:0 0 8px;font-family:inherit;font-weight:600;font-size:11px;line-height:1;letter-spacing:.09em;text-transform:uppercase;
            color:var(--ink-soft)}
   .tools{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
-  .tools button{font:11px/1 inherit;padding:6px 4px;border:1px solid var(--line);
+  .tools button{font-family:inherit;font-size:11px;line-height:1;padding:6px 4px;border:1px solid var(--line);
                 background:#fff;border-radius:3px;cursor:pointer;text-align:center}
   .tools button:hover{border-color:var(--purple)}
   .tools button[aria-pressed="true"]{background:var(--purple);color:#fff;border-color:var(--purple)}
   .row{display:flex;gap:6px;align-items:center;margin:6px 0}
   .row label{flex:0 0 74px;font-size:11px;color:var(--ink-soft)}
-  .row input[type=text],.row input[type=number],.row select{flex:1;font:12px/1 inherit;padding:4px;
+  .row input[type=text],.row input[type=number],.row select{flex:1;font-family:inherit;font-size:12px;line-height:1;padding:4px;
       border:1px solid var(--line);border-radius:3px;background:#fff}
   .row input[type=range]{flex:1}
-  button.act{font:12px/1 inherit;padding:7px 10px;border:1px solid var(--line);background:#fff;
+  button.act{font-family:inherit;font-size:12px;line-height:1;padding:7px 10px;border:1px solid var(--line);background:#fff;
              border-radius:3px;cursor:pointer}
   button.act:hover{border-color:var(--purple)}
   button.act.danger:hover{border-color:#B3322B;color:#B3322B}
   .acts{display:flex;gap:6px;flex-wrap:wrap}
-  textarea{width:100%;height:150px;font:11px/1.4 inherit;border:1px solid var(--line);
+  textarea{width:100%;height:150px;font-family:inherit;font-size:11px;line-height:1.4;border:1px solid var(--line);
            border-radius:3px;padding:6px;background:#fff;resize:vertical}
   .readout{font-size:11px;color:var(--ink-soft);min-height:1.4em}
   ul.list{list-style:none;margin:0;padding:0;max-height:170px;overflow:auto}
@@ -52,8 +69,8 @@
   ul.list li .k{opacity:.7;font-size:10px}
   .muted{color:var(--ink-soft);font-size:11px}
   kbd{background:#fff;border:1px solid var(--line);border-bottom-width:2px;border-radius:3px;
-      padding:0 4px;font:11px/1.5 inherit}
-  .brief h3{margin:9px 0 3px;font:600 10px/1 inherit;letter-spacing:.08em;text-transform:uppercase;
+      padding:0 4px;font-family:inherit;font-size:11px;line-height:1.5}
+  .brief h3{margin:9px 0 3px;font-family:inherit;font-weight:600;font-size:10px;line-height:1;letter-spacing:.08em;text-transform:uppercase;
             color:var(--ink-soft)}
   .brief h3:first-child{margin-top:0}
   .brow{display:flex;justify-content:space-between;gap:8px;padding:2px 5px;border-radius:3px;
@@ -65,6 +82,33 @@
   .brow.no{color:#9A3A32;background:#FBF0EE}
   .brow.info{color:var(--ink-soft)}
   .brief .foot{margin:8px 0 0;font-size:10px;color:var(--ink-soft)}
+
+  header .hint-sm{display:none}
+
+  /* ---- phones. Last in the sheet on purpose: a media query carries no extra specificity,
+     so these have to come after the component rules they override. ---- */
+  @media (max-width:780px){
+    header{padding:7px 10px}
+    header .hint{display:none}
+    header .hint-sm{display:block;font-size:11px;opacity:.85}
+    main{padding:8px;gap:8px}
+    #stage{max-height:none;padding:4px;width:100%;overflow:visible}
+    aside{gap:8px}
+    body{padding-bottom:58px}
+    .tools{grid-template-columns:repeat(4,1fr);gap:5px}
+    .tools button{padding:10px 2px;min-height:40px;font-size:12px}
+    header h1{font-size:13px}
+    button.act{padding:11px 12px;min-height:42px}
+    ul.list{max-height:200px}
+    textarea{height:110px}
+    /* Pinned so Finish / Undo / Delete stay reachable while the map fills the screen. */
+    .bar{position:fixed;left:0;right:0;bottom:0;z-index:20;margin:0;
+         background:var(--panel);border-top:1px solid var(--line);
+         padding:7px 8px calc(7px + env(safe-area-inset-bottom));
+         box-shadow:0 -2px 8px rgba(0,0,0,.10);gap:6px}
+    .bar button{padding:10px 11px;font-size:12px;min-height:40px}
+    .bar .bartool{flex:0 0 100%;margin:0 0 2px}
+  }
 </style>
 </head>
 <body>
@@ -72,6 +116,7 @@
   <h1>AUD MAP DESIGNER</h1>
   <span class="hint">Pick a symbol, click to place or draw. <kbd>Enter</kbd>/double-click finishes a line ·
     <kbd>Esc</kbd> cancels · <kbd>Del</kbd> removes · <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes</span>
+  <span class="hint-sm">Tap to place or draw &middot; use the bar at the bottom</span>
 </header>
 
 <main>
@@ -83,6 +128,14 @@
       <h2>Tool</h2>
       <div class="tools" id="tools"></div>
       <div class="readout" id="readout">&nbsp;</div>
+      <div class="bar" id="bar">
+        <span class="bartool">Drawing: <b id="barTool">Hedge</b></span>
+        <button id="btnFinish" type="button">Finish line</button>
+        <button id="btnUndo" type="button">Undo</button>
+        <button id="btnDel" type="button">Delete</button>
+        <button id="btnFit" type="button">Fit</button>
+        <button id="btnPan" type="button" aria-pressed="false">Pan</button>
+      </div>
     </div>
 
     <div class="card">
@@ -108,7 +161,7 @@
       <div class="row"><label><input type="checkbox" id="showStops" checked> Stops</label>
         <label><input type="checkbox" id="showVerts"> Vertices</label></div>
       <div class="row"><label for="zoom">Zoom</label>
-        <input type="range" id="zoom" min="60" max="260" step="10" value="120">
+        <input type="range" id="zoom" min="30" max="260" step="10" value="120">
         <span class="muted" id="zoomVal">120%</span></div>
     </div>
 
@@ -471,10 +524,15 @@ function render(){
                   stroke:'#B56A2A', 'stroke-width':.8, 'stroke-dasharray':'3 2'}, g);
     }
     if ($('showVerts').checked || f.id === selected)
-      for (let i=0;i<f.pts.length;i++)
+      for (let i=0;i<f.pts.length;i++){
+        /* An invisible disc behind each handle: 2.2pt is a fine mouse target and a hopeless
+           finger one, and growing the visible dot would clutter the sheet. */
+        el('circle', {cx:f.pts[i][0], cy:toY(f.pts[i][1]), r:9, fill:'transparent',
+                      stroke:'none', 'data-vi':i, style:'cursor:move'}, g);
         el('circle', {cx:f.pts[i][0], cy:toY(f.pts[i][1]), r:2.2, fill:'#fff',
                       stroke:'#B56A2A', 'stroke-width':.8, 'data-vi':i,
                       style:'cursor:move'}, g);
+      }
   }
 
   if ($('showStops').checked){
@@ -835,17 +893,24 @@ function mouse(ev){
 }
 function push(){ undoStack.push(JSON.stringify(state)); if (undoStack.length > 60) undoStack.shift(); }
 
-svg.addEventListener('mousedown', ev => {
+/* Pointer events, not mouse events: the same handlers then serve mouse, pen and touch, and a
+   finger can drag a vertex. The SVG carries touch-action:none so a drag on the map is ours
+   rather than a page scroll -- Pan mode hands it back when the map needs moving on a phone. */
+let panMode = false;
+
+svg.addEventListener('pointerdown', ev => {
+  if (panMode) return;
   const [x, y] = mouse(ev);
   const vi = ev.target.getAttribute && ev.target.getAttribute('data-vi');
   const gid = ev.target.closest && ev.target.closest('[data-id]');
   if (vi !== null && vi !== undefined && gid){
     push();
-    drag = {id: +gid.getAttribute('data-id'), vi: +vi};
-    selected = drag.id; render(); return;
+    drag = {id: +gid.getAttribute('data-id'), vi: +vi, pid: ev.pointerId};
+    try { svg.setPointerCapture(ev.pointerId); } catch {}
+    selected = drag.id; render(); ev.preventDefault(); return;
   }
   if (draft){
-    draft.pts.push([x, y]); render(); return;
+    draft.pts.push([x, y]); render(); showReadout(x, y); ev.preventDefault(); return;
   }
   if (gid && SYMBOLS[tool] === undefined){ selected = +gid.getAttribute('data-id'); render(); return; }
   const s = SYMBOLS[tool];
@@ -857,17 +922,31 @@ svg.addEventListener('mousedown', ev => {
   } else {
     draft = {kind: tool, pts: [[x,y]]}; render();
   }
+  showReadout(x, y);
+  ev.preventDefault();
 });
-svg.addEventListener('mousemove', ev => {
-  const [x, y] = mouse(ev);
+/* Also called on pointerdown: a finger taps without moving, so a touch draft would otherwise
+   never show how many points it has. */
+function showReadout(x, y){
+  if (panMode) return;
   $('readout').textContent = `${gridRef(x,y)}  ·  ${x.toFixed(0)}, ${y.toFixed(0)} pt`
-    + (draft ? `  ·  ${draft.pts.length} pts, Enter to finish` : '');
-  if (drag){
+    + (draft ? `  ·  ${draft.pts.length} pts, Finish to close` : '');
+}
+svg.addEventListener('pointermove', ev => {
+  const [x, y] = mouse(ev);
+  showReadout(x, y);
+  if (drag && (drag.pid === undefined || drag.pid === ev.pointerId)){
     const f = state.features.find(v => v.id === drag.id);
-    if (f){ f.pts[drag.vi] = [x, y]; render(); }
+    if (f){ f.pts[drag.vi] = [x, y]; render(); ev.preventDefault(); }
   }
 });
-window.addEventListener('mouseup', () => { if (drag){ drag = null; save(); } });
+function endDrag(ev){
+  if (!drag) return;
+  if (ev && drag.pid !== undefined){ try { svg.releasePointerCapture(drag.pid); } catch {} }
+  drag = null; save();
+}
+window.addEventListener('pointerup', endDrag);
+window.addEventListener('pointercancel', endDrag);
 svg.addEventListener('dblclick', () => finish());
 
 function finish(){
@@ -889,11 +968,20 @@ window.addEventListener('keydown', ev => {
     if (selected){ push(); state.features = state.features.filter(v => v.id !== selected);
                    selected = null; render(); save(); ev.preventDefault(); }
   } else if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 'z'){
-    const prev = undoStack.pop();
-    if (prev){ state = JSON.parse(prev); selected = null; draft = null; render(); save(); }
-    ev.preventDefault();
+    undo(); ev.preventDefault();
   }
 });
+
+/* Shared by the keyboard and by the action bar, which is the only way in on a touch screen. */
+function undo(){
+  const prev = undoStack.pop();
+  if (prev){ state = JSON.parse(prev); selected = null; draft = null; render(); save(); }
+}
+function deleteSelected(){
+  if (!selected) return;
+  push(); state.features = state.features.filter(v => v.id !== selected);
+  selected = null; render(); save();
+}
 
 /* ------------------------------------------------------------------ palette */
 (() => {
@@ -914,6 +1002,7 @@ window.addEventListener('keydown', ev => {
     b.onclick = () => { tool = k; draft = null;
       for (const o of host.querySelectorAll('button'))
         o.setAttribute('aria-pressed', o.dataset.kind === k ? 'true' : 'false');
+      $('barTool').textContent = s.name;
       render(); };
     host.appendChild(b);
   }
@@ -930,7 +1019,35 @@ function applyZoom(){
   $('zoomVal').textContent = $('zoom').value + '%';
 }
 $('zoom').oninput = applyZoom;
+
+/* Fit the sheet to the stage rather than trusting a fixed percentage: 612pt at 120% is far
+   wider than a phone, and a map you have to scroll sideways to read is not much of a map. */
+function fitZoom(){
+  const stage = $('stage');
+  const avail = stage.clientWidth - 10;
+  if (avail <= 0) return;
+  const z = Math.max(30, Math.min(260, Math.floor(avail / PW * 100 / 10) * 10));
+  $('zoom').value = z;
+  applyZoom();
+}
+$('btnFit').onclick = fitZoom;
+$('btnFinish').onclick = () => finish();
+$('btnUndo').onclick = () => undo();
+$('btnDel').onclick = () => deleteSelected();
+$('btnPan').onclick = () => {
+  panMode = !panMode;
+  draft = null;
+  $('btnPan').setAttribute('aria-pressed', panMode ? 'true' : 'false');
+  svg.classList.toggle('panning', panMode);
+  $('readout').textContent = panMode
+    ? 'Pan mode \u2014 drag to move the map, tap Pan again to draw'
+    : '\u00a0';
+  render();
+};
 applyZoom();
+/* Only auto-fit where the sheet cannot fit anyway; a desktop keeps its 120%. */
+if (window.matchMedia('(max-width:780px)').matches) fitZoom();
+window.addEventListener('orientationchange', () => setTimeout(fitZoom, 250));
 
 $('btnCross').onclick = placeCrossings;
 $('btnExport').onclick = () => {
