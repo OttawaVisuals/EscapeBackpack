@@ -172,6 +172,83 @@ Fun Fact boxes unaffected. Page re-served over `http://localhost:8734` (cache-bu
 console errors, 0 broken `#view-` links, 0 unrendered HTML entities, 11 tabs, 3 tables in the
 Final riddle tab, `PZ-05` and `PZ-18` both render.
 
+## Session Close — 2026-09-18 (later) — Aud's treasure hunt designed: route, mechanic and code
+
+**Task:** the user asked for a full adventure to go with the finished map, then chose **A1** for the
+mechanic and asked to move the road up to the northern church.
+
+**The mechanic is A1, in a refined form.** The three digits are **bridges, fords and gates** rather
+than the abstract water/barrier/junction categories originally proposed — three visually distinct
+symbols a player counts on the sheet, so nobody has to know that a ditch counts as a barrier.
+Keyspace ~1000 against A2's 35.
+
+**The route was found, not invented.** The layer was turned into a graph (nodes = junctions, dead
+ends and landmarks sitting on a track; edges = the stretches between, carrying what they cross) and
+every seven-leg walk ending at a cave was enumerated.
+
+| leg | from -> to | crosses |
+|---|---|---|
+| 1 | northern chapel C2 -> second chapel E3, road 218pt | 1 bridge |
+| 2 | -> well B5, road 328pt | 2 fords, 1 bridge |
+| 3 | -> landing C6, road 88pt | 1 bridge |
+| 4 | -> standing stone H5, road 408pt | 1 bridge, 1 ford |
+| 5 | -> second standing stone H7, road 122pt | 1 gate |
+| 6 | -> cairn H9, road 123pt | 1 bridge |
+| 7 | -> ruin I9, road 106pt; cave 23pt on, in the wood | nothing |
+
+**Code `531`** — 5 bridges, 3 fords, 1 gate. Treasure is the cave in the wood beyond the ruin.
+
+**Road extended to the chapel.** Its head sat 31pt short, which left the northernmost church
+unusable as a route step and forced a weaker route scoring `301` (a zero digit, and two legs
+stumbling through junctions in the same grid square). Extending the road beat adding a connector:
+fewer features, and the chapel becomes a fork where the road meets the footpath already starting
+there. New head **(172.25, 672.35)** — 12pt from the chapel, 26.3pt from the Dogurdarnes pin.
+Drawn straight at the chapel it would have passed 13.9pt from that pin, inside the 19pt rule, so it
+approaches from the south-east.
+
+**The deliberate ambiguity is leg 5 and it is genuine.** H5 is a four-way junction: one road runs
+on to a second standing stone (the route, `531`), another drops through a gate toward a well and a
+different cave, scoring `432`. Both are fully walkable, so a wrong reading gives a wrong code rather
+than a stuck player.
+
+**Found while writing this up:** `PZ-17` still contained the **old seven-leg route table** from the
+shelved split-panel sheet (old ford / watermill / falls / sheepfold / ruined chapel / cairn /
+standing stone, plot-number code `467`). It sat directly after the new route and contradicted it.
+Marked superseded in place rather than deleted, since the two design rules argued above it are still
+worth keeping.
+
+**Also established:** card **A2 has front art only** — no back, no print PDF — so its drafted
+"inland among birches" chapel line is free to change, and it must, because the wood chapel at E4 is
+14.5pt off the network and can never be a route step. And **Aud's museum ticket does not exist**
+(the built `Museum_Ticket` is L'Anse's), so the seven-row form is free; the row count survives by
+coincidence. The ticket gives **directions only** — listing the crossings would leave nothing to
+solve.
+
+**Files changed:** `NorseBackpack/TravelMap/aud_features.json` (road extended);
+`NorseBackpack/Norse_Brainstorm.html` (`PZ-17` carries the mechanic, the leg table, the code, the
+road extension, the ambiguity, the A2 supersession and the ticket design; old route table marked
+superseded; pill now "Route, mechanic and code decided; A2 rewording open").
+
+**Checks run:** re-audited the layer after extending the road — section D still clean (0 over
+water, 0 segments crossing water, 0 under 19pt from a pin, 0 icon collisions) and the crossing
+counts unchanged at 14 water / 11 barrier. Re-ran the route search on the updated layer and
+confirmed the `531` route now starts at the chapel. Tag balance checked inside the `PZ-17` block;
+served over `http://localhost:8734` and read the rendered leg table back from the DOM, matching the
+intended seven legs, with no console errors.
+
+**Next action:** write A2's replacement chapel line — it has to name which road Liv took on from
+the standing stone, resolving leg 5. Then build the museum ticket: seven rows, three tally columns
+(bridges, fords, gates), row 1 pre-filled as the worked example.
+
+**Blockers / open questions:**
+- A2's replacement wording is undecided; the requirement is fixed, the words are not.
+- Which coin pile the cache mark names, for `PZ-03`'s weighing step.
+- `aud_features.json` is still not read by `build_trail_maps_pdf.py`, so none of this reaches paper.
+- The printed sheet still uses the shipped wide frame while the designer uses `ZOOM_FRAME`.
+- Four decorative labels still fall outside the zoomed frame.
+- Brief scores 17/19; the two reds (3 crossings sharing a grid cell, 8 stranded landmarks against a
+  5-7 range) were judged not worth redrawing for.
+
 ## Session Close — 2026-09-18 — Dogurdarnes plotted ashore; sea-check added to the build
 
 **Task:** the user asked whether it was normal that stop 1 sits in the sea. It was not.
