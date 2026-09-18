@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aud Map Designer</title>
+<style>
+  :root{
+    --sea:#DCE7E4; --land:#EFE3C4; --coast:#59635D; --ink:#283B34; --ink-soft:#59635D;
+    --tan:#C0B291; --teal:#2F7775; --rust:#B56A2A; --purple:#6D528B; --paper:#F3EDDF;
+    --panel:#FBF7EC; --line:#D8CDB4;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:13px/1.45 "IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+       background:#E7E1D2;color:var(--ink)}
+  header{padding:8px 14px;background:var(--purple);color:#fff;display:flex;gap:16px;
+         align-items:baseline;flex-wrap:wrap}
+  header h1{margin:0;font:600 14px/1 inherit;letter-spacing:.06em}
+  header .hint{font-size:11px;opacity:.85}
+  main{display:flex;gap:12px;padding:12px;align-items:flex-start}
+  #stage{flex:1;min-width:0;background:var(--panel);border:1px solid var(--line);
+         padding:8px;border-radius:4px;overflow:auto;max-height:calc(100vh - 86px)}
+  svg{display:block;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.12);cursor:crosshair}
+  aside{flex:0 0 288px;display:flex;flex-direction:column;gap:10px;
+        max-height:calc(100vh - 86px);overflow:auto}
+  @media (max-width:900px){ main{flex-wrap:wrap} aside{flex:1 1 100%;max-height:none} }
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px}
+  .card h2{margin:0 0 8px;font:600 11px/1 inherit;letter-spacing:.09em;text-transform:uppercase;
+           color:var(--ink-soft)}
+  .tools{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+  .tools button{font:11px/1 inherit;padding:6px 4px;border:1px solid var(--line);
+                background:#fff;border-radius:3px;cursor:pointer;text-align:center}
+  .tools button:hover{border-color:var(--purple)}
+  .tools button[aria-pressed="true"]{background:var(--purple);color:#fff;border-color:var(--purple)}
+  .row{display:flex;gap:6px;align-items:center;margin:6px 0}
+  .row label{flex:0 0 74px;font-size:11px;color:var(--ink-soft)}
+  .row input[type=text],.row input[type=number],.row select{flex:1;font:12px/1 inherit;padding:4px;
+      border:1px solid var(--line);border-radius:3px;background:#fff}
+  .row input[type=range]{flex:1}
+  button.act{font:12px/1 inherit;padding:7px 10px;border:1px solid var(--line);background:#fff;
+             border-radius:3px;cursor:pointer}
+  button.act:hover{border-color:var(--purple)}
+  button.act.danger:hover{border-color:#B3322B;color:#B3322B}
+  .acts{display:flex;gap:6px;flex-wrap:wrap}
+  textarea{width:100%;height:150px;font:11px/1.4 inherit;border:1px solid var(--line);
+           border-radius:3px;padding:6px;background:#fff;resize:vertical}
+  .readout{font-size:11px;color:var(--ink-soft);min-height:1.4em}
+  ul.list{list-style:none;margin:0;padding:0;max-height:170px;overflow:auto}
+  ul.list li{padding:3px 5px;border-radius:3px;cursor:pointer;display:flex;justify-content:space-between;gap:6px}
+  ul.list li:hover{background:#fff}
+  ul.list li[aria-selected="true"]{background:var(--purple);color:#fff}
+  ul.list li .k{opacity:.7;font-size:10px}
+  .muted{color:var(--ink-soft);font-size:11px}
+  kbd{background:#fff;border:1px solid var(--line);border-bottom-width:2px;border-radius:3px;
+      padding:0 4px;font:11px/1.5 inherit}
+  .brief h3{margin:9px 0 3px;font:600 10px/1 inherit;letter-spacing:.08em;text-transform:uppercase;
+            color:var(--ink-soft)}
+  .brief h3:first-child{margin-top:0}
+  .brow{display:flex;justify-content:space-between;gap:8px;padding:2px 5px;border-radius:3px;
+        font-size:11px;line-height:1.35}
+  .brow .n{flex:1;min-width:0}
+  .brow b{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .brow .t{opacity:.55;font-size:10px;white-space:nowrap}
+  .brow.ok{color:#2F6B43}
+  .brow.no{color:#9A3A32;background:#FBF0EE}
+  .brow.info{color:var(--ink-soft)}
+  .brief .foot{margin:8px 0 0;font-size:10px;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+<header>
+  <h1>AUD MAP DESIGNER</h1>
+  <span class="hint">Pick a symbol, click to place or draw. <kbd>Enter</kbd>/double-click finishes a line ·
+    <kbd>Esc</kbd> cancels · <kbd>Del</kbd> removes · <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes</span>
+</header>
+
+<main>
+  <div id="stage"><svg id="map" width="612" height="792" viewBox="0 0 612 792"
+      aria-label="Aud's trail map with editable treasure-hunt symbols"></svg></div>
+
+  <aside>
+    <div class="card">
+      <h2>Tool</h2>
+      <div class="tools" id="tools"></div>
+      <div class="readout" id="readout">&nbsp;</div>
+    </div>
+
+    <div class="card">
+      <h2>Build brief <span class="muted" id="briefScore"></span></h2>
+      <div class="brief" id="brief"></div>
+      <p class="foot">Targets from <code>PZ-17</code> in Norse_Brainstorm.html. Counts update as you draw.</p>
+    </div>
+
+    <div class="card">
+      <h2>Selected</h2>
+      <div id="props"><p class="muted">Nothing selected.</p></div>
+    </div>
+
+    <div class="card">
+      <h2>Placed <span class="muted" id="count"></span></h2>
+      <ul class="list" id="list"></ul>
+    </div>
+
+    <div class="card">
+      <h2>View</h2>
+      <div class="row"><label><input type="checkbox" id="showGrid" checked> Grid</label>
+        <label><input type="checkbox" id="showTowns" checked> Towns</label></div>
+      <div class="row"><label><input type="checkbox" id="showStops" checked> Stops</label>
+        <label><input type="checkbox" id="showVerts"> Vertices</label></div>
+      <div class="row"><label for="zoom">Zoom</label>
+        <input type="range" id="zoom" min="60" max="260" step="10" value="120">
+        <span class="muted" id="zoomVal">120%</span></div>
+    </div>
+
+    <div class="card">
+      <h2>Data</h2>
+      <div class="acts">
+        <button class="act" id="btnCross">Place crossings</button>
+        <button class="act" id="btnExport">Copy JSON</button>
+        <button class="act" id="btnImport">Load JSON</button>
+        <button class="act danger" id="btnClear">Clear all</button>
+      </div>
+      <textarea id="json" spellcheck="false" placeholder="Export appears here. Paste a saved export and press Load JSON."></textarea>
+      <p class="muted" id="saveStatus">&nbsp;</p>
+    </div>
+  </aside>
+</main>
+
+<script src="aud_base.js"></script>
+<script>
+'use strict';
+(() => {
+const B = window.AUD_BASE;
+const SVGNS = 'http://www.w3.org/2000/svg';
+const PW = B.page.w, PH = B.page.h;
+const svg = document.getElementById('map');
+const $ = id => document.getElementById(id);
+
+/* Page points have y UP (PDF convention, matching the build script). SVG has y down.
+   Features are stored in PAGE coordinates so an export drops straight into the PDF with no
+   transform; these two helpers are the only place the flip happens. */
+const toY = y => PH - y;
+const fromY = y => PH - y;
+
+/* ------------------------------------------------------------------ symbol registry
+   Adding a symbol here is all it takes: the palette, the renderer and the exporter all read
+   from this table. `geom` decides how it is drawn and edited, not how it looks. */
+const SYMBOLS = {
+  /* line symbols -- the vocabulary the icon-based design could not express */
+  hedge:   {geom:'line', name:'Hedge',      color:'#4A6B3A', w:1.4, smooth:true},
+  wall:    {geom:'line', name:'Stone wall', color:'#6E6A5E', w:1.1},
+  road:    {geom:'line', name:'Paved road', color:'#8A5A32', w:2.6, smooth:true},
+  track:   {geom:'line', name:'Track',      color:'#B08A5A', w:1.0, dash:'3.2 2.2', smooth:true},
+  path:    {geom:'line', name:'Footpath',   color:'#9A8A6A', w:0.9, dash:'1.2 2.2', smooth:true},
+  river:   {geom:'line', name:'River',      color:'#2F7775', w:1.6, smooth:true},
+  stream:  {geom:'line', name:'Stream',     color:'#2F7775', w:0.8, smooth:true},
+  ditch:   {geom:'line', name:'Ditch',      color:'#6B7A6B', w:0.9},
+  contour: {geom:'line', name:'Contour',    color:'#A9895E', w:0.5, smooth:true, labelled:true},
+
+  /* area symbols */
+  wood:    {geom:'area', name:'Wood',   color:'#4A6B3A', fill:'#CBD9BE'},
+  marsh:   {geom:'area', name:'Marsh',  color:'#2F7775', fill:'#D5E2DC'},
+  lake:    {geom:'area', name:'Lake',   color:'#2F7775', fill:'#DCE7E4'},
+  field:   {geom:'area', name:'Field',  color:'#B08A5A', fill:'#F0E7CE'},
+  moor:    {geom:'area', name:'Moor',   color:'#8A7A5E', fill:'#E8DFC6'},
+
+  /* point symbols */
+  farm:    {geom:'point', name:'Farm',    color:'#6D528B'},
+  church:  {geom:'point', name:'Church',  color:'#6D528B'},
+  ruin:    {geom:'point', name:'Ruin',    color:'#6D528B'},
+  mill:    {geom:'point', name:'Mill',    color:'#6D528B'},
+  cairn:   {geom:'point', name:'Cairn',   color:'#6D528B'},
+  stone:   {geom:'point', name:'Stone',   color:'#6D528B'},
+  bridge:  {geom:'point', name:'Bridge',  color:'#6D528B', crossing:true},
+  ford:    {geom:'point', name:'Ford',    color:'#2F7775', crossing:true},
+  gate:    {geom:'point', name:'Gate',    color:'#6D528B', crossing:true},
+  well:    {geom:'point', name:'Well',    color:'#6D528B'},
+  village: {geom:'point', name:'Village', color:'#6D528B'},
+  port:    {geom:'point', name:'Port',    color:'#6D528B'},
+  cave:    {geom:'point', name:'Cave',    color:'#6D528B'},
+  marker:  {geom:'point', name:'Marker',  color:'#B56A2A'},
+  text:    {geom:'point', name:'Label',   color:'#283B34', labelled:true},
+};
+
+let state = {features: [], seq: 1};
+let tool = 'hedge';
+let draft = null;          // {kind, pts:[...]} while drawing
+let selected = null;       // feature id
+let drag = null;           // {id, vi, ox, oy}
+let undoStack = [];
+
+/* ------------------------------------------------------------------ persistence */
+const KEY = 'escape-backpack-aud-map-designer-v1';
+function save(){
+  try { localStorage.setItem(KEY, JSON.stringify(state));
+        $('saveStatus').textContent = 'Saved in this browser · export for a backup'; }
+  catch { $('saveStatus').textContent = 'Browser saving unavailable · export to keep your work'; }
+}
+function load(){
+  try { const raw = localStorage.getItem(KEY); if (raw) { adopt(JSON.parse(raw)); return true; } }
+  catch { $('saveStatus').textContent = 'Saved work could not be read · starting empty'; }
+  return false;
+}
+/* Imported data is untrusted: keep only known symbol kinds and finite numbers, and never let a
+   stored string reach the DOM as markup. */
+function adopt(value){
+  if (!value || !Array.isArray(value.features)) throw new Error('not a designer export');
+  const clean = [];
+  for (const f of value.features.slice(0, 2000)) {
+    if (!SYMBOLS[f.kind]) continue;
+    const pts = (Array.isArray(f.pts) ? f.pts : []).slice(0, 500)
+      .filter(p => Array.isArray(p) && p.length === 2 && p.every(Number.isFinite))
+      .map(p => [+p[0], +p[1]]);
+    if (!pts.length) continue;
+    clean.push({id: clean.length + 1, kind: f.kind, pts,
+                label: typeof f.label === 'string' ? f.label.slice(0, 60) : '',
+                w: Number.isFinite(f.w) ? Math.min(Math.max(+f.w, .2), 8) : null,
+                smooth: !!f.smooth});
+  }
+  state = {features: clean, seq: clean.length + 1};
+}
+
+/* ------------------------------------------------------------------ geometry helpers */
+function catmull(pts, closed){
+  if (pts.length < 3) return null;
+  const p = closed ? [pts[pts.length-1], ...pts, pts[0], pts[1]] : [pts[0], ...pts, pts[pts.length-1]];
+  let d = `M ${pts[0][0].toFixed(2)} ${toY(pts[0][1]).toFixed(2)}`;
+  for (let i = 1; i < p.length - 2; i++){
+    const [p0,p1,p2,p3] = [p[i-1],p[i],p[i+1],p[i+2]];
+    const c1 = [p1[0]+(p2[0]-p0[0])/6, p1[1]+(p2[1]-p0[1])/6];
+    const c2 = [p2[0]-(p3[0]-p1[0])/6, p2[1]-(p3[1]-p1[1])/6];
+    d += ` C ${c1[0].toFixed(2)} ${toY(c1[1]).toFixed(2)} ${c2[0].toFixed(2)} ${toY(c2[1]).toFixed(2)} ${p2[0].toFixed(2)} ${toY(p2[1]).toFixed(2)}`;
+  }
+  return d + (closed ? ' Z' : '');
+}
+function poly(pts, closed){
+  let d = pts.map((q,i) => `${i?'L':'M'} ${q[0].toFixed(2)} ${toY(q[1]).toFixed(2)}`).join(' ');
+  return d + (closed ? ' Z' : '');
+}
+function pathFor(f){
+  const s = SYMBOLS[f.kind], closed = s.geom === 'area';
+  const useSmooth = f.smooth !== undefined ? f.smooth : !!s.smooth;
+  return (useSmooth && f.pts.length > 2 ? catmull(f.pts, closed) : null) || poly(f.pts, closed);
+}
+function len(pts){
+  let t = 0; for (let i=1;i<pts.length;i++) t += Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]);
+  return t;
+}
+
+/* ------------------------------------------------------------------ rendering */
+function el(tag, attrs, parent){
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) if (attrs[k] !== null && attrs[k] !== undefined) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function label(text, x, y, size, color, parent, anchor){
+  const t = el('text', {x: x.toFixed(2), y: toY(y).toFixed(2), 'font-size': size,
+    fill: color, 'text-anchor': anchor || 'middle',
+    'font-family': 'IBM Plex Mono, ui-monospace, monospace'}, parent);
+  t.textContent = text;                       // textContent, never innerHTML
+  return t;
+}
+
+/* ------------------------------------------------------------------ base-map label placement
+   Dogurdarnes and Hvammur are each BOTH a stop and a town in the corpus, so drawing both lists
+   naively stacks two labels on one point; Krossholaborg then lands 8.5pt from Hvammur's. The
+   print build already solves this with a reserve/place pass (build_trail_maps_pdf.py), so mirror
+   it here -- otherwise the designer shows a sheet the printer will never produce. Dropped labels
+   are reported rather than silently lost. */
+const labelBoxes = [];
+const droppedLabels = [];
+const overlaps = (a, b) => !(a.x1 <= b.x0 || b.x1 <= a.x0 || a.y1 <= b.y0 || b.y1 <= a.y0);
+function reserve(x0, y0, x1, y1){ labelBoxes.push({x0, y0, x1, y1}); }
+
+/* Page coords, y UP. 0.6em advance is the IBM Plex Mono figure; close enough for a hit test. */
+function findSpot(text, x, y, size, gap){
+  const w = text.length * size * 0.6, h = size * 1.02, g = gap || 4;
+  const cands = [[x+g, y-2.4, 'start'], [x-g, y-2.4, 'end'],
+                 [x, y+g+3, 'middle'],  [x, y-g-8, 'middle'],
+                 [x+g, y+g+2, 'start'], [x-g, y+g+2, 'end'],
+                 [x+g, y-g-7, 'start'], [x-g, y-g-7, 'end']];
+  for (const [lx, ly, anchor] of cands){
+    const x0 = anchor === 'start' ? lx : anchor === 'end' ? lx - w : lx - w/2;
+    const box = {x0: x0-1.5, y0: ly-1.5, x1: x0+w+1.5, y1: ly+h+1.5};
+    if (labelBoxes.some(b => overlaps(box, b))) continue;
+    labelBoxes.push(box);
+    return {lx, ly, anchor};
+  }
+  droppedLabels.push(text);
+  return null;
+}
+
+const STOP_NAMES = new Set(B.stops.map(s => s.name.split(' \u00b7 ')[0]));
+let stopPlan = [];
+/* Stops are planned before towns so the more important label always wins the good position. */
+function planBaseLabels(){
+  labelBoxes.length = 0; droppedLabels.length = 0;
+  for (const s of B.stops) reserve(s.x-6, s.y-6, s.x+6, s.y+6);
+  for (const t of B.towns) reserve(t.x-2.4, t.y-2.4, t.x+2.4, t.y+2.4);
+  stopPlan = B.stops.map(s => {
+    const nm = s.name.split(' \u00b7 ')[0];
+    return {s, nm, spot: findSpot(nm, s.x, s.y, 6.4, 8)};
+  });
+}
+
+/* Point symbols are drawn as geometry rather than imported art: they must stay editable and
+   recolourable here, and the print pipeline redraws them from the same description. */
+function drawPoint(f, g){
+  const [x, y] = f.pts[0], c = SYMBOLS[f.kind].color, k = f.kind;
+  const S = v => v.toFixed(2);
+  const line = (x1,y1,x2,y2,w) => el('line', {x1:S(x1), y1:S(toY(y1)), x2:S(x2), y2:S(toY(y2)),
+      stroke:c, 'stroke-width': w||.8, 'stroke-linecap':'round'}, g);
+  const path = (d,w,fill) => el('path', {d, stroke:c, 'stroke-width':w||.8, fill: fill||'none',
+      'stroke-linejoin':'round'}, g);
+  if (k === 'farm' || k === 'church' || k === 'ruin'){
+    path(`M ${S(x-5)} ${S(toY(y-4))} L ${S(x-5)} ${S(toY(y+1))} L ${S(x)} ${S(toY(y+5))} `
+       + `L ${S(x+5)} ${S(toY(y+1))} L ${S(x+5)} ${S(toY(y-4))} ${k==='ruin'?'':'Z'}`, .9);
+    if (k === 'church'){ line(x, y+5, x, y+9, .9); line(x-2, y+7.5, x+2, y+7.5, .9); }
+    if (k === 'ruin'){ line(x-5, y-4, x+1, y-4, .9); }
+  } else if (k === 'mill'){
+    path(`M ${S(x-6)} ${S(toY(y-4))} L ${S(x-6)} ${S(toY(y+2))} L ${S(x-1)} ${S(toY(y+6))} `
+       + `L ${S(x+1)} ${S(toY(y+2))} L ${S(x+1)} ${S(toY(y-4))} Z`, .9);
+    el('circle', {cx:S(x+4.5), cy:S(toY(y-1)), r:4, stroke:c, 'stroke-width':.8, fill:'none'}, g);
+    for (let i=0;i<4;i++){ const a=i*Math.PI/4;
+      line(x+4.5-Math.cos(a)*4, y-1-Math.sin(a)*4, x+4.5+Math.cos(a)*4, y-1+Math.sin(a)*4, .6); }
+  } else if (k === 'cairn'){
+    path(`M ${S(x-5)} ${S(toY(y-4))} L ${S(x)} ${S(toY(y+6))} L ${S(x+5)} ${S(toY(y-4))} Z`, .9);
+    line(x-3, y-.5, x+3, y-.5, .6); line(x-4.2, y-2.4, x+4.2, y-2.4, .6);
+  } else if (k === 'stone'){
+    path(`M ${S(x-2.6)} ${S(toY(y-5))} L ${S(x-2)} ${S(toY(y+3))} L ${S(x)} ${S(toY(y+6))} `
+       + `L ${S(x+2)} ${S(toY(y+2.5))} L ${S(x+2.6)} ${S(toY(y-5))} Z`, .9);
+    line(x-4, y-5, x+4, y-5, .6);
+  } else if (k === 'bridge'){
+    path(`M ${S(x-6)} ${S(toY(y-2))} Q ${S(x)} ${S(toY(y+6))} ${S(x+6)} ${S(toY(y-2))}`, 1.1);
+    line(x-6, y-4, x-6, y-1, .8); line(x+6, y-4, x+6, y-1, .8);
+  } else if (k === 'ford'){
+    /* The map convention: the bed shown as stones between two bank ticks, so it reads as a
+       place you wade rather than a place you cross dry. */
+    line(x-5.5, y+3, x-5.5, y-3, .8); line(x+5.5, y+3, x+5.5, y-3, .8);
+    for (let i=-1;i<=1;i++) el('circle', {cx:S(x+i*3), cy:S(toY(y)), r:1.05, fill:c, stroke:'none'}, g);
+  } else if (k === 'gate'){
+    line(x-4.5, y+4, x-4.5, y-4, .9); line(x+4.5, y+4, x+4.5, y-4, .9);
+    line(x-4.5, y+1.6, x+4.5, y+1.6, .7); line(x-4.5, y-1.6, x+4.5, y-1.6, .7);
+  } else if (k === 'village'){
+    /* Three gables, not one: a village has to read as distinct from the single-house farm. */
+    const hut = (hx, hy, w) => path(`M ${S(hx-w)} ${S(toY(hy-w))} L ${S(hx-w)} ${S(toY(hy))} `
+      + `L ${S(hx)} ${S(toY(hy+w*0.9))} L ${S(hx+w)} ${S(toY(hy))} L ${S(hx+w)} ${S(toY(hy-w))} Z`, .8);
+    hut(x-4.2, y+1.2, 3); hut(x+3.4, y+2.2, 2.6); hut(x-0.4, y-4.2, 3);
+  } else if (k === 'port'){
+    /* An anchor, drawn to sit on the shoreline rather than inland. */
+    el('circle', {cx:S(x), cy:S(toY(y+5.4)), r:1.5, stroke:c, 'stroke-width':.8, fill:'none'}, g);
+    line(x, y+3.9, x, y-5.4, 1);
+    line(x-3.6, y+2.2, x+3.6, y+2.2, .8);
+    path(`M ${S(x-4.6)} ${S(toY(y-1.6))} Q ${S(x-4.2)} ${S(toY(y-5.6))} ${S(x)} ${S(toY(y-5.6))} `
+       + `Q ${S(x+4.2)} ${S(toY(y-5.6))} ${S(x+4.6)} ${S(toY(y-1.6))}`, 1);
+  } else if (k === 'cave'){
+    /* A mouth in a slope: solid arch so it reads as an opening, with the hillside above it. */
+    path(`M ${S(x-5)} ${S(toY(y-4))} L ${S(x-5)} ${S(toY(y-1))} Q ${S(x)} ${S(toY(y+5.6))} `
+       + `${S(x+5)} ${S(toY(y-1))} L ${S(x+5)} ${S(toY(y-4))} Z`, .9, c);
+    line(x-7.5, y-4, x+7.5, y-4, .9);
+  } else if (k === 'well'){
+    el('circle', {cx:S(x), cy:S(toY(y)), r:3.4, stroke:c, 'stroke-width':.9, fill:'none'}, g);
+    el('circle', {cx:S(x), cy:S(toY(y)), r:1.2, stroke:'none', fill:c}, g);
+  } else if (k === 'marker'){
+    el('circle', {cx:S(x), cy:S(toY(y)), r:4.5, fill:c}, g);
+  } else if (k === 'text'){
+    label(f.label || 'label', x, y, 8, c, g);
+    return;
+  }
+  if (f.label) label(f.label, x, y - 9, 6.4, '#283B34', g);
+}
+
+/* Line symbols carry their own ornament -- a hedge is blobs on a line, a wall is cross ticks.
+   This is the part an isolated icon could never do. */
+function drawOrnament(f, g, d){
+  const s = SYMBOLS[f.kind];
+  const probe = el('path', {d, fill:'none', stroke:'none'}, g);
+  const total = probe.getTotalLength ? probe.getTotalLength() : 0;
+  if (!total) return;
+  const step = f.kind === 'hedge' ? 4.2 : f.kind === 'wall' ? 5.0 : 7.0;
+  for (let l = step/2; l < total; l += step){
+    const p = probe.getPointAtLength(l);
+    if (f.kind === 'hedge'){
+      el('circle', {cx:p.x.toFixed(2), cy:p.y.toFixed(2), r:1.5, fill:s.color, opacity:.85}, g);
+    } else if (f.kind === 'wall' || f.kind === 'ditch'){
+      const q = probe.getPointAtLength(Math.min(l+.6, total));
+      const a = Math.atan2(q.y-p.y, q.x-p.x) + Math.PI/2, r = f.kind==='wall' ? 1.6 : 2.0;
+      el('line', {x1:(p.x-Math.cos(a)*r).toFixed(2), y1:(p.y-Math.sin(a)*r).toFixed(2),
+                  x2:(p.x+Math.cos(a)*r).toFixed(2), y2:(p.y+Math.sin(a)*r).toFixed(2),
+                  stroke:s.color, 'stroke-width':.55}, g);
+    }
+  }
+}
+
+function render(){
+  svg.textContent = '';
+  planBaseLabels();
+  const defs = el('defs', {}, svg);
+  const hatch = el('pattern', {id:'hatch', width:4, height:4, patternUnits:'userSpaceOnUse',
+                               patternTransform:'rotate(45)'}, defs);
+  el('line', {x1:0, y1:0, x2:0, y2:4, stroke:'#C0B291', 'stroke-width':.6}, hatch);
+
+  /* base */
+  el('rect', {x:0, y:0, width:PW, height:PH, fill:'#FFFFFF'}, svg);
+  const m = B.mapArea;
+  el('rect', {x:m.x0, y:toY(m.y1), width:m.x1-m.x0, height:m.y1-m.y0, fill:'var(--sea)'}, svg);
+  const gLand = el('g', {}, svg);
+  el('clipPath', {id:'clipMap'}, defs).appendChild(
+    el('rect', {x:m.x0, y:toY(m.y1), width:m.x1-m.x0, height:m.y1-m.y0}));
+  gLand.setAttribute('clip-path', 'url(#clipMap)');
+  for (const ring of B.land)
+    el('path', {d: poly(ring, true), fill:'var(--land)', stroke:'var(--coast)',
+                'stroke-width':.55}, gLand);
+
+  if ($('showGrid').checked){
+    const gg = el('g', {stroke:'#C0B291', 'stroke-width':.4, opacity:.8}, svg);
+    const cw = (m.x1-m.x0)/B.grid.cols, ch = (m.y1-m.y0)/B.grid.rows;
+    for (let i=1;i<B.grid.cols;i++) el('line', {x1:m.x0+i*cw, y1:toY(m.y1), x2:m.x0+i*cw, y2:toY(m.y0)}, gg);
+    for (let j=1;j<B.grid.rows;j++) el('line', {x1:m.x0, y1:toY(m.y1-j*ch), x2:m.x1, y2:toY(m.y1-j*ch)}, gg);
+    const gl = el('g', {}, svg);
+    for (let i=0;i<B.grid.cols;i++) label(String.fromCharCode(65+i), m.x0+(i+.5)*cw, m.y1+4, 6, '#59635D', gl);
+    for (let j=0;j<B.grid.rows;j++) label(String(j+1), m.x0-7, m.y1-(j+.5)*ch-2, 6, '#59635D', gl);
+  }
+
+  if ($('showTowns').checked){
+    const gt = el('g', {}, svg);
+    for (const t of B.towns){
+      el('circle', {cx:t.x, cy:toY(t.y), r:1.6, fill:'none', stroke:'#59635D', 'stroke-width':.7}, gt);
+      /* A town that is also a stop is labelled once, by the stop -- same rule as the build. */
+      if (STOP_NAMES.has(t.name)) continue;
+      const sp = findSpot(t.name, t.x, t.y, 6, 4);
+      if (sp) label(t.name, sp.lx, sp.ly, 6, '#59635D', gt, sp.anchor);
+    }
+    for (const a of B.areas){
+      const sp = findSpot(a.name, a.x, a.y, 8, 2);
+      if (sp) label(a.name, sp.lx, sp.ly, 8, '#8E8574', gt, sp.anchor);
+    }
+  }
+
+  /* user features, under the stop pins */
+  const gf = el('g', {}, svg);
+  for (const f of state.features){
+    const s = SYMBOLS[f.kind];
+    const g = el('g', {'data-id': f.id, style:'cursor:pointer'}, gf);
+    if (s.geom === 'point'){ drawPoint(f, g); }
+    else {
+      const d = pathFor(f);
+      if (s.geom === 'area')
+        el('path', {d, fill: f.kind==='field' ? 'url(#hatch)' : s.fill, 'fill-opacity':.85,
+                    stroke:s.color, 'stroke-width':.7}, g);
+      if (f.kind === 'road'){
+        el('path', {d, fill:'none', stroke:s.color, 'stroke-width':(f.w||s.w)+1.1,
+                    'stroke-linecap':'round', 'stroke-linejoin':'round'}, g);
+        el('path', {d, fill:'none', stroke:'#F6EFDC', 'stroke-width':(f.w||s.w)-0.6,
+                    'stroke-linecap':'round', 'stroke-linejoin':'round'}, g);
+      } else if (s.geom === 'line'){
+        el('path', {d, fill:'none', stroke:s.color, 'stroke-width':f.w||s.w,
+                    'stroke-dasharray':s.dash||null, 'stroke-linecap':'round',
+                    'stroke-linejoin':'round'}, g);
+      }
+      if (f.kind==='hedge'||f.kind==='wall'||f.kind==='ditch') drawOrnament(f, g, d);
+      if (f.label){
+        const mid = f.pts[Math.floor(f.pts.length/2)];
+        label(f.label, mid[0], mid[1]+3, 6.2, s.color, g);
+      }
+    }
+    if (f.id === selected){
+      const bb = g.getBBox();
+      el('rect', {x:bb.x-3, y:bb.y-3, width:bb.width+6, height:bb.height+6, fill:'none',
+                  stroke:'#B56A2A', 'stroke-width':.8, 'stroke-dasharray':'3 2'}, g);
+    }
+    if ($('showVerts').checked || f.id === selected)
+      for (let i=0;i<f.pts.length;i++)
+        el('circle', {cx:f.pts[i][0], cy:toY(f.pts[i][1]), r:2.2, fill:'#fff',
+                      stroke:'#B56A2A', 'stroke-width':.8, 'data-vi':i,
+                      style:'cursor:move'}, g);
+  }
+
+  if ($('showStops').checked){
+    const gs = el('g', {}, svg);
+    for (const pl of stopPlan){
+      const s = pl.s;
+      el('circle', {cx:s.x, cy:toY(s.y), r:5, fill:'#B56A2A'}, gs);
+      label(String(s.order), s.x, s.y-2, 6.5, '#fff', gs);
+      if (pl.spot) label(pl.nm, pl.spot.lx, pl.spot.ly, 6.4, '#283B34', gs, pl.spot.anchor);
+    }
+  }
+
+  if (draft && draft.pts.length){
+    const g = el('g', {}, svg);
+    el('path', {d: poly(draft.pts, false), fill:'none', stroke:'#B56A2A', 'stroke-width':1,
+                'stroke-dasharray':'2 2'}, g);
+    for (const p of draft.pts)
+      el('circle', {cx:p[0], cy:toY(p[1]), r:2, fill:'#B56A2A'}, g);
+  }
+
+  renderList();
+  renderProps();
+  scheduleBrief();
+}
+
+/* ------------------------------------------------------------------ build brief scorecard
+   The targets are PZ-17's build brief in Norse_Brainstorm.html, made checkable while drawing
+   instead of after exporting. Crossing detection is O(segments squared), so it is debounced off
+   the render path rather than run on every drag frame. */
+const TRACKS   = new Set(['path','road','track']);
+const WATERS   = new Set(['river','stream']);
+const BARRIERS = new Set(['hedge','wall','ditch']);
+const AREAKIND = new Set(['wood','marsh','lake','field','moor']);
+
+function segD(p, a, b){
+  const dx = b[0]-a[0], dy = b[1]-a[1], L2 = dx*dx + dy*dy;
+  const t = L2 === 0 ? 0 : Math.max(0, Math.min(1, ((p[0]-a[0])*dx + (p[1]-a[1])*dy) / L2));
+  return Math.hypot(p[0] - (a[0]+t*dx), p[1] - (a[1]+t*dy));
+}
+function dMin(p, f){
+  let best = Infinity;
+  for (let i = 0; i < f.pts.length-1; i++) best = Math.min(best, segD(p, f.pts[i], f.pts[i+1]));
+  return f.pts.length === 1 ? Math.hypot(p[0]-f.pts[0][0], p[1]-f.pts[0][1]) : best;
+}
+function inPoly(x, y, ring){
+  let c = false;
+  for (let i = 0, j = ring.length-1; i < ring.length; j = i++){
+    const [xi, yi] = ring[i], [xj, yj] = ring[j];
+    if ((yi > y) !== (yj > y) && x < xi + (y-yi) * (xj-xi) / (yj-yi)) c = !c;
+  }
+  return c;
+}
+/* 2.5pt of slack: a wall or track that runs down to the shore legitimately touches the
+   coastline, and the stops themselves sit a fraction outside the polygon at this resolution. */
+function coastD(x, y){
+  let best = Infinity;
+  for (const r of B.land)
+    for (let i = 0; i < r.length; i++)
+      best = Math.min(best, segD([x, y], r[i], r[(i+1) % r.length]));
+  return best;
+}
+const onLand = (x, y) => B.land.some(r => inPoly(x, y, r)) || coastD(x, y) <= 2.5;
+function xPoint(p1, p2, p3, p4){
+  const d = (p2[0]-p1[0])*(p4[1]-p3[1]) - (p2[1]-p1[1])*(p4[0]-p3[0]);
+  if (Math.abs(d) < 1e-9) return null;
+  const t = ((p3[0]-p1[0])*(p4[1]-p3[1]) - (p3[1]-p1[1])*(p4[0]-p3[0])) / d;
+  const u = ((p3[0]-p1[0])*(p2[1]-p1[1]) - (p3[1]-p1[1])*(p2[0]-p1[0])) / d;
+  return (t >= 0 && t <= 1 && u >= 0 && u <= 1) ? [p1[0]+t*(p2[0]-p1[0]), p1[1]+t*(p2[1]-p1[1])] : null;
+}
+function crossings(f, g){
+  const out = [];
+  for (let i = 0; i < f.pts.length-1; i++)
+    for (let j = 0; j < g.pts.length-1; j++){
+      const q = xPoint(f.pts[i], f.pts[i+1], g.pts[j], g.pts[j+1]);
+      if (q) out.push(q);
+    }
+  return out;
+}
+function cellOf(x, y){
+  const m = B.mapArea, cw = (m.x1-m.x0)/B.grid.cols, ch = (m.y1-m.y0)/B.grid.rows;
+  const c = Math.max(0, Math.min(B.grid.cols-1, Math.floor((x-m.x0)/cw)));
+  const r = Math.max(0, Math.min(B.grid.rows-1, Math.floor((y-m.y0)/ch)));
+  return String.fromCharCode(65+c) + (B.grid.rows - r);
+}
+
+function computeBrief(){
+  const F = state.features;
+  const marks  = F.filter(f => f.pts.length === 1 && (SYMBOLS[f.kind] || {}).crossing);
+  const pts    = F.filter(f => f.pts.length === 1 && !(SYMBOLS[f.kind] || {}).crossing
+                                                  && f.kind !== 'text');
+  const lines  = F.filter(f => f.pts.length > 1);
+  const tracks = lines.filter(f => TRACKS.has(f.kind));
+  const waters = lines.filter(f => WATERS.has(f.kind));
+  const bars   = lines.filter(f => BARRIERS.has(f.kind));
+  const areas  = F.filter(f => AREAKIND.has(f.kind) && f.pts.length > 2);
+
+  const waterX = [], barX = [];
+  for (const t of tracks){
+    for (const w of waters) for (const q of crossings(t, w)) waterX.push(q);
+    for (const b of bars)   for (const q of crossings(t, b)) barX.push(q);
+  }
+  const allX = waterX.concat(barX);
+  const cells = allX.map(q => cellOf(q[0], q[1]));
+  const shared = cells.length - new Set(cells).size;
+  const unmarked = allX.filter(q =>
+    !marks.some(m => Math.hypot(m.pts[0][0]-q[0], m.pts[0][1]-q[1]) < 10)).length;
+
+  const inArea = pts.filter(p => areas.some(a => inPoly(p.pts[0][0], p.pts[0][1], a.pts))).length;
+  const nearRoute = p => tracks.length ? Math.min(...tracks.map(t => dMin(p.pts[0], t))) : Infinity;
+  const onRoute  = pts.filter(p => nearRoute(p) <= 8).length;
+  const stranded = pts.filter(p => nearRoute(p) > 28).length;
+
+  /* A fork is three or more ways meeting -- a bend is not a decision. */
+  const nodes = [];
+  for (const t of tracks) for (const p of [t.pts[0], t.pts[t.pts.length-1]]) nodes.push(p);
+  for (let i = 0; i < tracks.length; i++)
+    for (let j = i+1; j < tracks.length; j++)
+      for (const q of crossings(tracks[i], tracks[j])) nodes.push(q);
+  const forks = [];
+  for (const n of nodes){
+    let deg = 0;
+    for (const t of tracks){
+      if (dMin(n, t) > 6) continue;
+      const ends = [t.pts[0], t.pts[t.pts.length-1]];
+      deg += ends.some(e => Math.hypot(e[0]-n[0], e[1]-n[1]) <= 6) ? 1 : 2;
+    }
+    if (deg >= 3 && !forks.some(f => Math.hypot(f[0]-n[0], f[1]-n[1]) < 10)) forks.push(n);
+  }
+  const forkMarked = pts.filter(p =>
+    forks.some(f => Math.hypot(f[0]-p.pts[0][0], f[1]-p.pts[0][1]) <= 14)).length;
+
+  const thruArea = tracks.filter(t => {
+    const ins = t.pts.filter(q => areas.some(a => inPoly(q[0], q[1], a.pts))).length;
+    return ins > 0 && ins < t.pts.length;
+  }).length;
+
+  /* Running alongside: a long stretch held close to a linear feature without crossing it. */
+  const alongside = tracks.filter(t => [...waters, ...bars].some(o => {
+    const close = t.pts.filter(q => dMin(q, o) <= 14).length;
+    return close >= 3 && crossings(t, o).length === 0;
+  })).length;
+
+  const deadEnds = tracks.reduce((a, t) => a + [t.pts[0], t.pts[t.pts.length-1]]
+    .filter(e => !tracks.some(o => o !== t && dMin(e, o) <= 14)).length, 0);
+
+  /* A confusable pair only works once the two can be told apart by their surroundings. */
+  const byKind = {};
+  for (const p of pts) (byKind[p.kind] = byKind[p.kind] || []).push(p);
+  const ctx = p => {
+    const a = areas.find(z => inPoly(p.pts[0][0], p.pts[0][1], z.pts));
+    if (a) return a.kind;
+    const cd = Math.min(...B.land.flatMap(r =>
+      r.map((_, i) => segD(p.pts[0], r[i], r[(i+1) % r.length]))));
+    return cd <= 22 ? 'shore' : 'open';
+  };
+  let pairs = 0;
+  for (const k in byKind){
+    if (byKind[k].length < 2) continue;
+    if (new Set(byKind[k].map(ctx)).size >= 2) pairs++;
+  }
+
+  const wet = [], outside = [], tooClose = [], tooNear = [];
+  const m = B.mapArea;
+  const pins = B.stops.map(s => [s.x, s.y]).concat(B.towns.map(t => [t.x, t.y]));
+  for (const f of F){
+    for (const q of f.pts){
+      if (!onLand(q[0], q[1])) wet.push(f);
+      if (q[0] < m.x0 || q[0] > m.x1 || q[1] < m.y0 || q[1] > m.y1) outside.push(f);
+      if (pins.some(pn => Math.hypot(q[0]-pn[0], q[1]-pn[1]) < 19)) tooNear.push(f);
+    }
+  }
+  for (let i = 0; i < pts.length; i++)
+    for (let j = i+1; j < pts.length; j++)
+      if (Math.hypot(pts[i].pts[0][0]-pts[j].pts[0][0], pts[i].pts[0][1]-pts[j].pts[0][1]) < 16)
+        tooClose.push(1);
+
+  return {
+    A: [['Water crossings', waterX.length, 5, 99],
+        ['Barrier crossings', barX.length, 3, 99],
+        ['Crossings sharing a cell', shared, 0, 0],
+        ['Crossings with no symbol', unmarked, 0, 0],
+        ['Water lines drawn', waters.length, 2, 99]],
+    B: [['Landmarks on a route', onRoute, 18, 99],
+        ['Forks (3+ ways)', forks.length, 6, 99],
+        ['Landmark at a fork', forkMarked, 3, 99],
+        ['Routes through an area', thruArea, 3, 99],
+        ['Routes alongside a line', alongside, 2, 99],
+        ['Dead ends', deadEnds, 6, 99]],
+    C: [['Landmarks inside an area', inArea, 8, 99],
+        ['Confusable pairs, split', pairs, 3, 99],
+        ['Stranded landmarks', stranded, 5, 7]],
+    D: [['Over water', new Set(wet).size, 0, 0],
+        ['Outside map area', new Set(outside).size, 0, 0],
+        ['Icons under 16pt apart', tooClose.length, 0, 0],
+        ['Under 19pt from a pin', new Set(tooNear).size, 0, 0],
+        ['Base labels dropped', droppedLabels.length, 0, 0]]
+  };
+}
+
+const BRIEF_SECTIONS = {A:'A \u00b7 Countable events', B:'B \u00b7 Navigable skeleton',
+                        C:'C \u00b7 Ambiguity engine', D:'D \u00b7 Must not break'};
+function renderBrief(){
+  const host = $('brief'); if (!host) return;
+  let data;
+  try { data = computeBrief(); }
+  catch (e){ host.textContent = 'Brief unavailable: ' + e.message; return; }
+  host.textContent = '';
+  let met = 0, total = 0;
+  for (const key of ['A','B','C','D']){
+    const h = document.createElement('h3'); h.textContent = BRIEF_SECTIONS[key]; host.appendChild(h);
+    for (const [name, got, lo, hi] of data[key]){
+      const ok = got >= lo && got <= hi;
+      met += ok ? 1 : 0; total++;
+      const row = document.createElement('div');
+      row.className = 'brow ' + (ok ? 'ok' : 'no');
+      const n = document.createElement('span'); n.className = 'n'; n.textContent = name;
+      const v = document.createElement('b');
+      v.textContent = got + (hi === 0 ? '' : hi === 99 ? ' / ' + lo + '+' : ' / ' + lo + (lo === hi ? '' : '-' + hi));
+      row.append(n, v); host.appendChild(row);
+    }
+  }
+  $('briefScore').textContent = '(' + met + '/' + total + ')';
+  if (droppedLabels.length){
+    const f = document.createElement('p'); f.className = 'foot';
+    f.textContent = 'Dropped base labels: ' + droppedLabels.join(', ');
+    host.appendChild(f);
+  }
+}
+/* ------------------------------------------------------------------ auto-place crossings
+   Draw the route straight over the obstacle and let this put the symbol on the intersection.
+   Doing it by hand is how the first attempt ended up with a bridge sitting in a 12.5pt gap
+   between two paths that never actually met the ditch. Which symbol depends on what is being
+   crossed: you bridge a river, wade a stream, and go through a gate in a hedge or a wall. */
+const CROSS_SYMBOL = {river:'bridge', stream:'ford', ditch:'bridge', hedge:'gate', wall:'gate'};
+
+function placeCrossings(){
+  const tracks = state.features.filter(f => TRACKS.has(f.kind));
+  const obstacles = state.features.filter(f => WATERS.has(f.kind) || BARRIERS.has(f.kind));
+  const existing = state.features.filter(f => (SYMBOLS[f.kind] || {}).crossing);
+  const found = [];
+  for (const t of tracks)
+    for (const o of obstacles)
+      for (const q of crossings(t, o)){
+        const kind = CROSS_SYMBOL[o.kind]; if (!kind) continue;
+        if (found.some(z => Math.hypot(z.q[0]-q[0], z.q[1]-q[1]) < 6)) continue;
+        found.push({q, kind});
+      }
+  const fresh = found.filter(z =>
+    !existing.some(e => Math.hypot(e.pts[0][0]-z.q[0], e.pts[0][1]-z.q[1]) < 10));
+  if (!fresh.length){
+    $('saveStatus').textContent = found.length
+      ? 'All ' + found.length + ' crossings already have a symbol.'
+      : 'No route crosses an obstacle yet \u2014 draw the line straight over it.';
+    return;
+  }
+  push();
+  for (const z of fresh)
+    state.features.push({id: state.seq++, kind: z.kind, pts: [[+z.q[0].toFixed(2), +z.q[1].toFixed(2)]],
+                         label:'', w:null, smooth:false});
+  const tally = {};
+  for (const z of fresh) tally[z.kind] = (tally[z.kind] || 0) + 1;
+  save(); render();
+  /* after save(), which writes its own message into the same line */
+  $('saveStatus').textContent = 'Placed ' + fresh.length + ' \u2014 '
+    + Object.entries(tally).map(([k, n]) => n + ' ' + SYMBOLS[k].name.toLowerCase()).join(', ');
+}
+
+let briefTimer = null;
+function scheduleBrief(){
+  clearTimeout(briefTimer);
+  briefTimer = setTimeout(renderBrief, 140);
+}
+
+/* ------------------------------------------------------------------ side panel */
+function renderList(){
+  const ul = $('list'); ul.textContent = '';
+  $('count').textContent = state.features.length ? `(${state.features.length})` : '';
+  for (const f of state.features){
+    const li = document.createElement('li');
+    li.setAttribute('aria-selected', f.id === selected ? 'true' : 'false');
+    const a = document.createElement('span');
+    a.textContent = SYMBOLS[f.kind].name + (f.label ? ' · ' + f.label : '');
+    const b = document.createElement('span'); b.className = 'k';
+    b.textContent = SYMBOLS[f.kind].geom === 'point'
+      ? gridRef(f.pts[0][0], f.pts[0][1])
+      : `${f.pts.length} pts`;
+    li.append(a, b);
+    li.onclick = () => { selected = f.id; render(); };
+    ul.appendChild(li);
+  }
+}
+function renderProps(){
+  const host = $('props'); host.textContent = '';
+  const f = state.features.find(v => v.id === selected);
+  if (!f){ const p = document.createElement('p'); p.className='muted';
+           p.textContent='Nothing selected.'; host.appendChild(p); return; }
+  const s = SYMBOLS[f.kind];
+  const mk = (labelText, node) => { const r = document.createElement('div'); r.className='row';
+    const l = document.createElement('label'); l.textContent = labelText;
+    r.append(l, node); host.appendChild(r); return node; };
+
+  const sel = document.createElement('select');
+  for (const k in SYMBOLS) if (SYMBOLS[k].geom === s.geom){
+    const o = document.createElement('option'); o.value = k; o.textContent = SYMBOLS[k].name;
+    if (k === f.kind) o.selected = true; sel.appendChild(o);
+  }
+  sel.onchange = () => { push(); f.kind = sel.value; render(); save(); };
+  mk('Type', sel);
+
+  const txt = document.createElement('input'); txt.type='text'; txt.value = f.label || '';
+  txt.oninput = () => { f.label = txt.value.slice(0,60); render(); save(); };
+  mk('Label', txt);
+
+  if (s.geom !== 'point'){
+    const w = document.createElement('input'); w.type='number'; w.step='0.1'; w.min='0.2'; w.max='8';
+    w.value = (f.w || s.w || 1).toFixed(1);
+    w.oninput = () => { f.w = Math.min(Math.max(parseFloat(w.value)||1, .2), 8); render(); save(); };
+    mk('Width pt', w);
+
+    const sm = document.createElement('input'); sm.type='checkbox';
+    sm.checked = f.smooth !== undefined ? f.smooth : !!s.smooth;
+    sm.onchange = () => { f.smooth = sm.checked; render(); save(); };
+    mk('Smooth', sm);
+
+    const info = document.createElement('span'); info.className='muted';
+    info.textContent = `${f.pts.length} vertices · ${len(f.pts).toFixed(0)} pt long`;
+    mk('Shape', info);
+  } else {
+    const info = document.createElement('span'); info.className='muted';
+    info.textContent = gridRef(f.pts[0][0], f.pts[0][1]);
+    mk('Square', info);
+  }
+
+  const acts = document.createElement('div'); acts.className='acts';
+  const del = document.createElement('button'); del.className='act danger'; del.textContent='Delete';
+  del.onclick = () => { push(); state.features = state.features.filter(v => v.id !== f.id);
+                        selected = null; render(); save(); };
+  const dup = document.createElement('button'); dup.className='act'; dup.textContent='Duplicate';
+  dup.onclick = () => { push(); const c = JSON.parse(JSON.stringify(f)); c.id = state.seq++;
+                        c.pts = c.pts.map(p => [p[0]+8, p[1]-8]); state.features.push(c);
+                        selected = c.id; render(); save(); };
+  acts.append(dup, del); host.appendChild(acts);
+}
+
+function gridRef(x, y){
+  const m = B.mapArea;
+  const cw = (m.x1-m.x0)/B.grid.cols, ch = (m.y1-m.y0)/B.grid.rows;
+  const i = Math.floor((x-m.x0)/cw), j = Math.floor((m.y1-y)/ch);
+  if (i < 0 || j < 0 || i >= B.grid.cols || j >= B.grid.rows) return 'off-map';
+  return String.fromCharCode(65+i) + (j+1);
+}
+
+/* ------------------------------------------------------------------ interaction */
+function mouse(ev){
+  const ctm = svg.getScreenCTM().inverse();
+  const p = new DOMPoint(ev.clientX, ev.clientY).matrixTransform(ctm);
+  return [p.x, fromY(p.y)];
+}
+function push(){ undoStack.push(JSON.stringify(state)); if (undoStack.length > 60) undoStack.shift(); }
+
+svg.addEventListener('mousedown', ev => {
+  const [x, y] = mouse(ev);
+  const vi = ev.target.getAttribute && ev.target.getAttribute('data-vi');
+  const gid = ev.target.closest && ev.target.closest('[data-id]');
+  if (vi !== null && vi !== undefined && gid){
+    push();
+    drag = {id: +gid.getAttribute('data-id'), vi: +vi};
+    selected = drag.id; render(); return;
+  }
+  if (draft){
+    draft.pts.push([x, y]); render(); return;
+  }
+  if (gid && SYMBOLS[tool] === undefined){ selected = +gid.getAttribute('data-id'); render(); return; }
+  const s = SYMBOLS[tool];
+  if (s.geom === 'point'){
+    push();
+    state.features.push({id: state.seq++, kind: tool, pts: [[x,y]], label: '', w: null, smooth: false});
+    selected = state.features[state.features.length-1].id;
+    render(); save();
+  } else {
+    draft = {kind: tool, pts: [[x,y]]}; render();
+  }
+});
+svg.addEventListener('mousemove', ev => {
+  const [x, y] = mouse(ev);
+  $('readout').textContent = `${gridRef(x,y)}  ·  ${x.toFixed(0)}, ${y.toFixed(0)} pt`
+    + (draft ? `  ·  ${draft.pts.length} pts, Enter to finish` : '');
+  if (drag){
+    const f = state.features.find(v => v.id === drag.id);
+    if (f){ f.pts[drag.vi] = [x, y]; render(); }
+  }
+});
+window.addEventListener('mouseup', () => { if (drag){ drag = null; save(); } });
+svg.addEventListener('dblclick', () => finish());
+
+function finish(){
+  if (!draft) return;
+  if (draft.pts.length > 1){
+    push();
+    state.features.push({id: state.seq++, kind: draft.kind, pts: draft.pts,
+                         label: '', w: null, smooth: undefined});
+    selected = state.features[state.features.length-1].id;
+    save();
+  }
+  draft = null; render();
+}
+window.addEventListener('keydown', ev => {
+  if (ev.target.tagName === 'INPUT' || ev.target.tagName === 'TEXTAREA') return;
+  if (ev.key === 'Enter') { finish(); }
+  else if (ev.key === 'Escape'){ draft = null; selected = null; render(); }
+  else if (ev.key === 'Delete' || ev.key === 'Backspace'){
+    if (selected){ push(); state.features = state.features.filter(v => v.id !== selected);
+                   selected = null; render(); save(); ev.preventDefault(); }
+  } else if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 'z'){
+    const prev = undoStack.pop();
+    if (prev){ state = JSON.parse(prev); selected = null; draft = null; render(); save(); }
+    ev.preventDefault();
+  }
+});
+
+/* ------------------------------------------------------------------ palette */
+(() => {
+  const host = $('tools');
+  let group = null;
+  for (const k in SYMBOLS){
+    const s = SYMBOLS[k];
+    if (s.geom !== group){
+      group = s.geom;
+      const h = document.createElement('div');
+      h.style.cssText = 'grid-column:1/-1;font-size:10px;letter-spacing:.08em;color:#59635D;margin-top:4px';
+      h.textContent = group === 'line' ? 'LINES' : group === 'area' ? 'AREAS' : 'POINTS';
+      host.appendChild(h);
+    }
+    const b = document.createElement('button');
+    b.textContent = s.name; b.dataset.kind = k;
+    b.setAttribute('aria-pressed', k === tool ? 'true' : 'false');
+    b.onclick = () => { tool = k; draft = null;
+      for (const o of host.querySelectorAll('button'))
+        o.setAttribute('aria-pressed', o.dataset.kind === k ? 'true' : 'false');
+      render(); };
+    host.appendChild(b);
+  }
+})();
+
+for (const id of ['showGrid','showTowns','showStops','showVerts']) $(id).onchange = render;
+
+/* Display zoom only -- the SVG viewBox stays 612x792, so every stored coordinate is still a
+   PDF page point no matter how big the page is drawn on screen. */
+function applyZoom(){
+  const z = +$('zoom').value / 100;
+  svg.setAttribute('width', (PW * z).toFixed(0));
+  svg.setAttribute('height', (PH * z).toFixed(0));
+  $('zoomVal').textContent = $('zoom').value + '%';
+}
+$('zoom').oninput = applyZoom;
+applyZoom();
+
+$('btnCross').onclick = placeCrossings;
+$('btnExport').onclick = () => {
+  const out = {
+    _note: 'Aud map designer export. Page points, y UP, 612x792 letter portrait.',
+    frame: B.frame, features: state.features.map(f => ({
+      kind: f.kind, label: f.label || '', w: f.w || null,
+      smooth: f.smooth !== undefined ? f.smooth : !!SYMBOLS[f.kind].smooth,
+      pts: f.pts.map(p => [+p[0].toFixed(2), +p[1].toFixed(2)])}))
+  };
+  $('json').value = JSON.stringify(out, null, 1);
+  $('json').select();
+  try { document.execCommand('copy'); $('saveStatus').textContent = 'Export copied to the clipboard'; }
+  catch { $('saveStatus').textContent = 'Export ready below · copy it manually'; }
+};
+$('btnImport').onclick = () => {
+  try { push(); adopt(JSON.parse($('json').value)); selected = null; render(); save();
+        $('saveStatus').textContent = 'Loaded'; }
+  catch (e) { $('saveStatus').textContent = 'Could not load: ' + e.message; }
+};
+$('btnClear').onclick = () => {
+  if (!state.features.length) return;
+  if (!confirm('Remove all ' + state.features.length + ' placed symbols?')) return;
+  push(); state = {features: [], seq: 1}; selected = null; render(); save();
+};
+
+load();
+render();
+})();
+</script>
+</body>
+</html>
