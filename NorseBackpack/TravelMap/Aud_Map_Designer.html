@@ -25,7 +25,7 @@
          padding:8px;border-radius:4px;overflow:auto;max-height:calc(100dvh - 86px)}
   svg{display:block;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.12);cursor:crosshair;
       touch-action:none}
-  svg.panning{touch-action:auto}
+  svg.panning{touch-action:pan-x pan-y}   /* scroll, but never browser zoom */
   aside{flex:0 0 288px;display:flex;flex-direction:column;gap:10px;
         max-height:calc(100dvh - 86px);overflow:auto}
   @media (max-width:900px){ main{flex-wrap:wrap} aside{flex:1 1 100%;max-height:none} }
@@ -92,7 +92,7 @@
     header .hint{display:none}
     header .hint-sm{display:block;font-size:11px;opacity:.85}
     main{padding:8px;gap:8px}
-    #stage{max-height:none;padding:4px;width:100%;overflow:visible}
+    #stage{max-height:58dvh;padding:4px;width:100%;overflow:auto}
     aside{gap:8px}
     body{padding-bottom:58px}
     .tools{grid-template-columns:repeat(4,1fr);gap:5px}
@@ -898,22 +898,43 @@ function push(){ undoStack.push(JSON.stringify(state)); if (undoStack.length > 6
    rather than a page scroll -- Pan mode hands it back when the map needs moving on a phone. */
 let panMode = false;
 
-svg.addEventListener('pointerdown', ev => {
-  if (panMode) return;
-  const [x, y] = mouse(ev);
-  const vi = ev.target.getAttribute && ev.target.getAttribute('data-vi');
-  const gid = ev.target.closest && ev.target.closest('[data-id]');
-  if (vi !== null && vi !== undefined && gid){
-    push();
-    drag = {id: +gid.getAttribute('data-id'), vi: +vi, pid: ev.pointerId};
-    try { svg.setPointerCapture(ev.pointerId); } catch {}
-    selected = drag.id; render(); ev.preventDefault(); return;
-  }
-  if (draft){
-    draft.pts.push([x, y]); render(); showReadout(x, y); ev.preventDefault(); return;
-  }
-  if (gid && SYMBOLS[tool] === undefined){ selected = +gid.getAttribute('data-id'); render(); return; }
+/* Pinch zooms the MAP, never the page. Browser page zoom moves the layout viewport out from
+   under position:fixed, which is exactly how the action bar ended up off screen -- so the page is
+   never allowed to zoom and the gesture drives our own zoom control instead. */
+const touches = new Map();
+let pinch = null;
+let pendingTap = null;
+
+const gap = (a, b) => Math.hypot(a[0]-b[0], a[1]-b[1]);
+
+const mid = (a, b) => [(a[0]+b[0])/2, (a[1]+b[1])/2];
+function beginPinch(){
+  const pts = [...touches.values()];
+  pinch = {d: Math.max(1, gap(pts[0], pts[1])), z: +$('zoom').value, c: mid(pts[0], pts[1])};
+  /* A pinch is not a drawing gesture: drop whatever the first finger started. */
+  pendingTap = null;
+  if (drag){ drag = null; undo(); }
+  if (draft && draft.pts.length === 1) draft = null;
+  render();
+}
+function updatePinch(){
+  if (!pinch || touches.size < 2) return;
+  const pts = [...touches.values()];
+  const z = Math.max(30, Math.min(260,
+    Math.round(pinch.z * (gap(pts[0], pts[1]) / pinch.d) / 10) * 10));
+  if (z !== +$('zoom').value){ $('zoom').value = z; applyZoom(); }
+  /* The same gesture drags: two fingers move the sheet, so a zoomed-in map does not need a trip
+     to Pan mode to reach its right-hand edge. */
+  const c = mid(pts[0], pts[1]);
+  const stage = $('stage');
+  stage.scrollLeft += pinch.c[0] - c[0];
+  stage.scrollTop  += pinch.c[1] - c[1];
+  pinch.c = c;
+}
+
+function commitTap(x, y){
   const s = SYMBOLS[tool];
+  if (draft){ draft.pts.push([x, y]); render(); showReadout(x, y); return; }
   if (s.geom === 'point'){
     push();
     state.features.push({id: state.seq++, kind: tool, pts: [[x,y]], label: '', w: null, smooth: false});
@@ -923,6 +944,31 @@ svg.addEventListener('pointerdown', ev => {
     draft = {kind: tool, pts: [[x,y]]}; render();
   }
   showReadout(x, y);
+}
+
+svg.addEventListener('pointerdown', ev => {
+  touches.set(ev.pointerId, [ev.clientX, ev.clientY]);
+  if (touches.size === 2){ beginPinch(); ev.preventDefault(); return; }
+  if (touches.size > 2 || panMode) return;
+  const [x, y] = mouse(ev);
+  const vi = ev.target.getAttribute && ev.target.getAttribute('data-vi');
+  const gid = ev.target.closest && ev.target.closest('[data-id]');
+  if (vi !== null && vi !== undefined && gid){
+    push();
+    drag = {id: +gid.getAttribute('data-id'), vi: +vi, pid: ev.pointerId};
+    try { svg.setPointerCapture(ev.pointerId); } catch {}
+    selected = drag.id; render(); ev.preventDefault(); return;
+  }
+  if (gid && SYMBOLS[tool] === undefined && !draft){
+    selected = +gid.getAttribute('data-id'); render(); return;
+  }
+  /* A finger's intent is not known until it lifts: it may be the first half of a pinch. Mice
+     have no such ambiguity, so they still act immediately. */
+  if (ev.pointerType === 'touch'){
+    pendingTap = {x, y, cx: ev.clientX, cy: ev.clientY};
+    ev.preventDefault(); return;
+  }
+  commitTap(x, y);
   ev.preventDefault();
 });
 /* Also called on pointerdown: a finger taps without moving, so a touch draft would otherwise
@@ -933,6 +979,9 @@ function showReadout(x, y){
     + (draft ? `  ·  ${draft.pts.length} pts, Finish to close` : '');
 }
 svg.addEventListener('pointermove', ev => {
+  if (touches.has(ev.pointerId)) touches.set(ev.pointerId, [ev.clientX, ev.clientY]);
+  if (pinch){ updatePinch(); ev.preventDefault(); return; }
+  if (pendingTap && gap([ev.clientX, ev.clientY], [pendingTap.cx, pendingTap.cy]) > 12) pendingTap = null;
   const [x, y] = mouse(ev);
   showReadout(x, y);
   if (drag && (drag.pid === undefined || drag.pid === ev.pointerId)){
@@ -941,6 +990,12 @@ svg.addEventListener('pointermove', ev => {
   }
 });
 function endDrag(ev){
+  if (ev) touches.delete(ev.pointerId);
+  if (pinch && touches.size < 2){ pinch = null; save(); }
+  if (pendingTap && !pinch && touches.size === 0){
+    const t = pendingTap; pendingTap = null;
+    commitTap(t.x, t.y);
+  }
   if (!drag) return;
   if (ev && drag.pid !== undefined){ try { svg.releasePointerCapture(drag.pid); } catch {} }
   drag = null; save();
@@ -1030,6 +1085,25 @@ function fitZoom(){
   $('zoom').value = z;
   applyZoom();
 }
+/* position:fixed is pinned to the LAYOUT viewport. If the page still gets zoomed by something we
+   do not control -- an OS accessibility zoom, a double-tap, a desktop browser's own zoom -- the
+   visual viewport shrinks inside it and a bottom-pinned bar slides out of sight. Follow the visual
+   viewport so the controls stay reachable whatever happens. */
+const vv = window.visualViewport;
+function trackBar(){
+  const bar = $('bar');
+  const zoomed = vv && (vv.scale !== 1 || vv.offsetTop !== 0 || vv.offsetLeft !== 0);
+  if (!zoomed || getComputedStyle(bar).position !== 'fixed'){ bar.style.transform = ''; return; }
+  const dy = vv.offsetTop + vv.height - document.documentElement.clientHeight;
+  bar.style.transform = `translate(${vv.offsetLeft.toFixed(1)}px, ${dy.toFixed(1)}px)`;
+}
+if (vv){
+  vv.addEventListener('resize', trackBar);
+  vv.addEventListener('scroll', trackBar);
+}
+window.addEventListener('resize', trackBar);
+trackBar();
+
 $('btnFit').onclick = fitZoom;
 $('btnFinish').onclick = () => finish();
 $('btnUndo').onclick = () => undo();
@@ -1039,8 +1113,9 @@ $('btnPan').onclick = () => {
   draft = null;
   $('btnPan').setAttribute('aria-pressed', panMode ? 'true' : 'false');
   svg.classList.toggle('panning', panMode);
+  touches.clear(); pinch = null; pendingTap = null;
   $('readout').textContent = panMode
-    ? 'Pan mode \u2014 drag to move the map, tap Pan again to draw'
+    ? 'Pan mode \u2014 drag to scroll, pinch to zoom, tap Pan again to draw'
     : '\u00a0';
   render();
 };
