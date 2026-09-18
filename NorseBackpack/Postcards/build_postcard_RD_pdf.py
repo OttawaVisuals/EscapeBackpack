@@ -9,9 +9,9 @@ from reportlab.lib.utils import ImageReader
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "output" / "pdf" / "Postcard_R2_Rouen_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_R2_Rouen_Letter_Print.pdf"
-FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_R2_Rouen_Front.png"
+OUT = ROOT / "output" / "pdf" / "Postcard_RD_Walcheren_Print.pdf"
+OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_RD_Walcheren_Letter_Print.pdf"
+FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_RD_Walcheren_Front.png"
 STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Rollo_Comet_v2_flat.png"
 FONT_DIR = ROOT / "Fonts"
 
@@ -50,10 +50,9 @@ def draw_front_card(c, x=0, y=0):
     c.translate(x, y)
     front = ImageReader(str(FRONT))
     fw, fh = front.getSize()
-    # PC-13: same guard as build_postcard_01_pdf.py -- fail loud rather than stretch.
     if (fw, fh) != (1500, 1050):
         raise ValueError(
-            f"Postcard_R2_Rouen_Front.png is {fw}x{fh}, expected 1500x1050 (PC-13, "
+            f"Postcard_RD_Walcheren_Front.png is {fw}x{fh}, expected 1500x1050 (PC-13, "
             f"5x3.5in @300dpi). Drawing it here would stretch it to fit the page."
         )
     c.drawImage(front, 0, 0, W, H, preserveAspectRatio=False, mask="auto")
@@ -77,18 +76,15 @@ def draw_back_card(c, x=0, y=0):
     c.setStrokeColor(RULE)
     c.line(divider, 24, divider, H - 30)
 
-    # Message decided in chat (PZ-05): Liv's own text, kept verbatim including "fighting" and
-    # "cows" rather than the ticket's exact "fight"/"cow" -- accepted as deliberate extra
-    # friction (PZ-15), not a typo to fix. Carries the word-lock order clue: fight, forest,
-    # cow, people, poultry, inn, in that order (PZ-15) -- resolves to the directional-lock
-    # combination RIGHT, DOWN, DOWN, UP, LEFT, LEFT. No rebus on this card.
+    # Message decided in chat (PZ-19): first of the counting-lock's three cards in read order
+    # (Walcheren -> Roumare -> Chalus, decided history, not trip chronology). Evidence category
+    # is "uncertain" (Dudo of Saint-Quentin's semi-legendary account), so it gets "if the old
+    # chronicles are to be believed" hedging rather than stated fact. Rollo's own decoy, chosen
+    # for the Rollo trail per PZ-16 -- placed as a detour before her real Rollo-trail stops,
+    # matching the geography of flying into the Netherlands before continuing south to France.
     paragraphs = [
-        "Today I got to visit Rouen, and it might be my favourite so far!",
-        "This was Rollo’s own capital! The King gave Rollo all of Normandy so the fighting would stop.",
-        "This morning I hiked in the forest outside of town and got to see some of those famous Normande cows!",
-        "This afternoon was the city proper, the cathedral and the famous half-timbered houses. The city was vibrant today with lots of people milling about.",
-        "All that walking around made me crave fast-food: the battered poultry from Kentucky. Tonight’s dinner was a bit fancier, the Inn I’m staying at is famous for their snails!",
-        "The tapestry towns are still ahead of me — saving those for later.",
+        "Made a detour to the Netherlands before really starting Rollo’s own trail — Walcheren, where Vikings had already carved out their own toeholds on this coast, maybe even Rollo himself if the old chronicles are to be believed.",
+        "Spent the evening watching the fishing boats come in with the tide and thought about him doing the exact same, centuries back.",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 7.7, 8.6
@@ -118,20 +114,19 @@ def draw_back_card(c, x=0, y=0):
         mask="auto",
     )
 
-    # Postmark: place only. No date drawn -- PC-03/PC-04 (the eighteen postmark dates) are
-    # still open; do not invent one here.
+    # Postmark: place only. No date drawn -- postmarks never carry one (PC-02/PC-03/PC-04).
     postmark_x, postmark_y = stamp_x - 5, H - 48
     c.setStrokeColor(TEAL)
     c.setLineWidth(0.8)
     c.circle(postmark_x, postmark_y, 23, fill=0, stroke=1)
     c.circle(postmark_x, postmark_y, 19.5, fill=0, stroke=1)
     c.setFillColor(TEAL)
-    c.setFont("Helvetica-Bold", 4.8)
-    c.drawCentredString(postmark_x, postmark_y - 1, "ROUEN")
+    c.setFont("Helvetica-Bold", 3.3)
+    c.drawCentredString(postmark_x, postmark_y - 1, "WALCHEREN")
     for offset in (-7, -2, 3, 8):
         c.line(postmark_x + 23, postmark_y + offset, right, postmark_y + offset)
 
-    # Address -- same recipient and layout as cards 01-03, 06-08 (PC-13 standard).
+    # Address -- same recipient and layout as the rest of the series (PC-13 standard).
     address_x = divider + 17
     box_right = right + 5
     rule_right = 278
@@ -158,9 +153,8 @@ def draw_back_card(c, x=0, y=0):
         c.setLineWidth(0.4)
         c.line(address_x, line_y - 3, rule_right, line_y - 3)
 
-    # Fun Fact -- typed, real trivia (PC-12). Both supplied facts combined into one callout
-    # (decided in chat): the Lionheart's heart entombed at Rouen Cathedral, plus its spire's
-    # height record.
+    # Fun Fact -- typed, real trivia (PC-12). Carries the counting-lock's sorting clue: "before
+    # 911", earliest of the three (PZ-19) -- sorts before Roumare's 911 and Chalus's 1199.
     funfact_top, funfact_bottom = 120, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
@@ -171,10 +165,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(INK)
     fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
     fact_text = (
-        "Rouen Cathedral holds the actual heart of Richard the Lionheart, King of England and "
-        "Duke of Normandy. Its spire also once held a record of its own: at 151 metres "
-        "(495 feet) it’s the tallest church spire in France, and was briefly the tallest "
-        "structure in the world in the late 19th century."
+        "Some medieval accounts say Rollo spent years raiding and wintering around Frisia and "
+        "Zeeland, this island included, before he ever became Duke of Normandy in 911. It’s "
+        "semi-legendary, but real Viking fleets were active on this exact coast in that same "
+        "period."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):
@@ -188,12 +182,11 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(HexColor("#59635D"))
     c.setFont("Helvetica", 4)
     credit_lines = [
-        'Image adaptation: "Rouen Place du Vieux-Marché 05" - Zairon, CC BY-SA 4.0.',
+        'Image adaptation: "Walcheren, Kop van Schouwen (33)" - FrDr, CC BY-SA 4.0.',
     ]
     for index, line in enumerate(credit_lines):
         c.drawString(left, credit_top - index * 5, line)
 
-    # Publisher's imprint removed (PZ-18): only the new decoy card 04 carries this line now.
     c.restoreState()
 
 
@@ -213,7 +206,7 @@ def draw_crop_marks(c, x, y):
 
 def build_single():
     c = canvas.Canvas(str(OUT), pagesize=PAGE, pageCompression=1)
-    c.setTitle("Aunt Liv's Postcard R2 - Rouen")
+    c.setTitle("Aunt Liv's Postcard RD - Walcheren")
     c.setAuthor("Escape Backpack")
     draw_front_card(c)
     c.showPage()
@@ -230,7 +223,7 @@ def build_letter():
     lower_y = (letter_h - group_h) / 2
     positions = [(x, lower_y + H + gap), (x, lower_y)]
     c = canvas.Canvas(str(OUT_LETTER), pagesize=LETTER, pageCompression=1)
-    c.setTitle("Two-up Postcard R2 print sheet - Rouen")
+    c.setTitle("Two-up Postcard RD print sheet - Walcheren")
     c.setAuthor("Escape Backpack")
     for card_x, card_y in positions:
         draw_front_card(c, card_x, card_y)

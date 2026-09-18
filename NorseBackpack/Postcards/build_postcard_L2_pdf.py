@@ -82,7 +82,7 @@ def draw_back_card(c, x=0, y=0):
     # which stays hidden in the imprint below (PZ-10/PZ-13).
     paragraphs = [
         "Second stop: Markland, ‘Forest Land’ in the old sagas, and they weren’t exaggerating, it is gorgeous! Trees for miles, beautiful light and no one around!",
-        "It sounded like something with claws walked past my tent last night — I didn’t sleep a wink!",
+        "It sounded like something with claws walked past the cabin last night — I didn’t sleep a wink!",
         "Still, you’d love it here.",
     ]
     c.setFillColor(INK)
