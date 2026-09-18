@@ -1944,8 +1944,8 @@ window.AUD_BASE = {
   },
   {
    "name": "Stykkishólmur",
-   "x": 94.41,
-   "y": 594.17
+   "x": 83.83,
+   "y": 577.7
   }
  ],
  "areas": [

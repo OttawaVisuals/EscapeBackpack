@@ -295,8 +295,43 @@ Both are now exported; the designer draws the reserved boxes faintly and a new s
 **In a reserved box** counts them. The layer was re-cleared: 4 point symbols moved, largest 16.5 pt,
 crossing markers rebuilt. **Brief now 19/20 with section D clean.**
 
-**Next action:** print a test sheet and walk the seven legs by hand against the ticket, checking the
-tally really comes to 5 bridges, 3 fords, 1 gate on paper rather than only in the graph.
+## Session Close — 2026-09-18 (later) — Sheet legibility pass
+
+The first printed sheet read as busy and under-styled. Six fixes:
+
+- **Converging roads now merge.** Each road drew its own casing then its fill, so the next road's
+  casing sliced across the previous one's carriageway - four roads meeting printed as a braid.
+  Roads now draw in **two passes**, every casing then every fill.
+- **Bridges, fords and gates are oriented** to what they cross: a bridge or ford along the route it
+  carries, a gate in the line of its wall, angles normalised so nothing prints upside down.
+- **Grid steps back** on Aud's sheet only: `#D9CDB2` at 0.3 pt against `TAN` at 0.45.
+- **A legend** at (40, 95), 160x200 pt in the clear water bottom-left, listing only the symbols
+  actually present; its box is reserved so labels route around it. `FAXAFLOI` moved to
+  64.242, -22.108 because it printed across the key.
+- **Two self-intersecting polygons repaired** (wood I10, moor H11 - the "broken forest"). 2-opt
+  reversal, so vertices are unchanged and only their order is rewritten. **The moor's outline moved
+  up to 95 pt** and is meaningfully a different shape than drawn - worth a look before print.
+- **Stykkisholmur plotted 16 pt (3.4 km) out to sea**, same coarse-coastline cause as Dogurdarnes.
+  Added to `PLOT_NUDGE` at (-0.0324, -0.0480), measured; the nudge now applies to town dots as well
+  as stops. Compass reservation gained 14 pt of headroom - a village was printing over its "N".
+
+**Density, measured:** 89 point symbols, mean 1.8 per occupied cell, only 2 cells with 4+. The count
+is fine; all 89 being the same purple at the same weight is what makes it read busy. A tone problem,
+not a deletion problem.
+
+**Blocked:** `output/pdf/Trail_Map_3_Aud_*.pdf` are **locked by an open viewer**, so the shipped PDFs
+still lack this pass. Everything was verified by building to a temp directory instead. Close the
+viewer and run `python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud`.
+
+**Left for Codex:** area fills (marsh, wood, moor are flat tints where they want texture), the
+visual hierarchy, and the `bridge` glyph - now that it rotates correctly it reads awkwardly side-on
+and would be better as two abutment strokes than an arch. **The symbol vocabulary lives in two
+places with no shared source** - `Aud_Map_Designer.html` (SVG) and `aud_layer.py` (ReportLab) - so
+any restyle must change both or the designer and the print will disagree. That belongs in the brief.
+
+**Next action:** close the PDF viewer and rebuild, then print a test sheet and walk the seven legs
+by hand against the ticket, checking the tally really comes to 5 bridges, 3 fords, 1 gate on paper
+rather than only in the graph.
 
 **Blockers / open questions:**
 - A2's replacement wording is undecided; the requirement is fixed, the words are not.
