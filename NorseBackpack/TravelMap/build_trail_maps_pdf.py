@@ -339,8 +339,71 @@ class Labeller:
         return None
 
 
+# Plotted-position nudges, applied to the drawing only -- stops.js keeps the real coordinate.
+#
+# The vendored coastline is Natural Earth 50m, generalised to a few kilometres. That is fine on
+# the other three sheets; Aud's is zoomed to about 211 m per point, where it is not. Dogurdarnes
+# is a headland in Breidafjordur, and at 1:50m the peninsula it sits on does not exist -- its
+# real locality anchor (65.17, -22.52, already flagged "uncertain" in stops.js as representing
+# the peninsula rather than an exact landing) projects 2.6 km out to sea.
+#
+# The stop must move at least 2.6 km to reach any land at all, so the shift is necessarily large:
+# 3.5 km north-east, landing 900 m inshore, about 16 pt on the zoomed sheet. That shortens the
+# digit 7's top bar by 8% and flattens it from +9.3 to +4.8 degrees, which if anything reads more
+# like a 7. Re-vendoring ne_10m_land for one dot was considered and declined; see PZ-17.
+PLOT_NUDGE = {
+    "D\u00f6gur\u00f0arnes / Dagver\u00f0arnes \u00b7 Iceland": (0.02448, 0.04800),  # (dlat, dlon)
+}
+
+
+def plot_nudge(name):
+    """The shift for a place, by full stop name or by the short form used for town labels.
+
+    Shared so the printed sheet and export_aud_base.py cannot disagree about where a stop is --
+    they did, briefly, and the designer went on showing Dogurdarnes at sea after the sheet was
+    fixed."""
+    short = name.split(" · ")[0]
+    for key, shift in PLOT_NUDGE.items():
+        if name == key or short == key.split(" · ")[0]:
+            return shift
+    return (0.0, 0.0)
+
+
+def _in_ring(lon, lat, ring):
+    inside = False
+    n = len(ring)
+    for i in range(n):
+        x1, y1 = ring[i][0], ring[i][1]
+        x2, y2 = ring[(i + 1) % n][0], ring[(i + 1) % n][1]
+        if (y1 > lat) != (y2 > lat):
+            if lon < x1 + (lat - y1) * (x2 - x1) / (y2 - y1):
+                inside = not inside
+    return inside
+
+
+def _coast_km(lon, lat, rings):
+    """Distance to the nearest coastline segment. Flat-earth locally, fine for a warning."""
+    kx = 111.320 * math.cos(math.radians(lat))
+    best = float("inf")
+    for ring in rings:
+        for i in range(len(ring)):
+            a, b = ring[i], ring[(i + 1) % len(ring)]
+            px, py = (lon - a[0]) * kx, (lat - a[1]) * 111.320
+            bx, by = (b[0] - a[0]) * kx, (b[1] - a[1]) * 111.320
+            l2 = bx * bx + by * by
+            t = 0.0 if l2 == 0 else max(0.0, min(1.0, (px * bx + py * by) / l2))
+            best = min(best, math.hypot(px - t * bx, py - t * by))
+    return best
+
+
 def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
-    stops = sorted(plan["visits"][key], key=lambda s: s["order"])
+    # Copied, not aliased: build() runs twice per trail (Print and ANSWER) from the same plan,
+    # and nudging in place would apply the shift twice on the second pass.
+    stops = [dict(s) for s in sorted(plan["visits"][key], key=lambda s: s["order"])]
+    for s_ in stops:
+        dlat, dlon = plot_nudge(s_["name"])
+        s_["lat"] += dlat
+        s_["lng"] += dlon
     lats = [s["lat"] for s in stops]
     lons = [s["lng"] for s in stops]
 
@@ -395,6 +458,18 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
                 if max(la) < la0 - 8 or min(la) > la1 + 8:
                     continue
                 rings.append(ring)
+
+    # The assertion above only asks whether a stop lands on the page, so a stop plotted in
+    # the water passes it happily -- which is how Dogurdarnes sat 2.6 km offshore unnoticed.
+    # Warn rather than fail: several real stops are genuinely coastal and 50m data is coarse.
+    # Reported in points as well as kilometres: 8 km is two points on Leif's 500 km sheet and
+    # invisible, but twelve on Aud's zoomed one and glaring. Only the points matter.
+    _m_per_pt = (la1 - la0) * 111320.0 / (MY1 - MY0)
+    for s_ in stops:
+        if not any(_in_ring(s_["lng"], s_["lat"], r) for r in rings):
+            _km = _coast_km(s_["lng"], s_["lat"], rings)
+            print("        NOTE: %s plots in the sea, %.1f km from the 50m coastline (%.1f pt here)"
+                  % (s_["name"].split(" · ")[0], _km, _km * 1000.0 / _m_per_pt))
 
     towns = {}
     for s_ in stops:                      # stops first, so they can never be crowded out

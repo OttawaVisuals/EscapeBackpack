@@ -80,7 +80,10 @@ def main():
 
     stops = []
     for s in sorted(plan["visits"]["aud"], key=lambda v: v["order"]):
-        x, y = pt(s["lng"], s["lat"])
+        # Same plotted-position shift the printed sheet uses, or the designer would place
+        # symbols against a coastline the sheet does not draw.
+        dlat, dlon = M.plot_nudge(s["name"])
+        x, y = pt(s["lng"] + dlon, s["lat"] + dlat)
         stops.append({"name": s["name"], "order": s["order"],
                       "x": round(x, 2), "y": round(y, 2)})
 
@@ -90,7 +93,8 @@ def main():
             towns.setdefault(name, (lat, lng))
     town_list = []
     for name, (lat, lng) in sorted(towns.items()):
-        x, y = pt(lng, lat)
+        dlat, dlon = M.plot_nudge(name)
+        x, y = pt(lng + dlon, lat + dlat)
         if inside(x, y, pad=0):
             town_list.append({"name": name, "x": round(x, 2), "y": round(y, 2)})
 
