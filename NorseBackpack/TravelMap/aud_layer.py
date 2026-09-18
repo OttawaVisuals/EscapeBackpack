@@ -256,35 +256,42 @@ def draw(c, features, clip_rect=None):
             c.setLineWidth(0.7)
             c.drawPath(_path(c, f, True, f.get("smooth", False)), stroke=1, fill=1)
 
+    # Non-road linework first, so roads sit over it and a bridge reads as carrying the road
+    # across the water.
     for f in features:
         k = f["kind"]
-        if k not in LINE or len(f["pts"]) < 2:
+        if k not in LINE or k == "road" or len(f["pts"]) < 2:
             continue
         s = LINE[k]
         smooth = f.get("smooth", s.get("smooth", False))
         w = f.get("w") or s["w"]
-        path = _path(c, f, False, smooth)
-        if k == "road":
-            # casing then fill, as the designer draws it
-            c.setStrokeColor(HexColor(s["color"]))
-            c.setLineWidth(w + 1.1)
-            c.setLineCap(1)
-            c.setLineJoin(1)
-            c.setDash()
-            c.drawPath(path, stroke=1, fill=0)
-            c.setStrokeColor(HexColor("#F6EFDC"))
-            c.setLineWidth(max(0.2, w - 0.6))
-            c.drawPath(path, stroke=1, fill=0)
-        else:
-            c.setStrokeColor(HexColor(s["color"]))
-            c.setLineWidth(w)
-            c.setLineCap(1)
-            c.setLineJoin(1)
-            c.setDash(*s["dash"]) if s.get("dash") else c.setDash()
-            c.drawPath(path, stroke=1, fill=0)
+        c.setStrokeColor(HexColor(s["color"]))
+        c.setLineWidth(w)
+        c.setLineCap(1)
+        c.setLineJoin(1)
+        c.setDash(*s["dash"]) if s.get("dash") else c.setDash()
+        c.drawPath(_path(c, f, False, smooth), stroke=1, fill=0)
         c.setDash()
         if k in ("hedge", "wall", "ditch"):
             _ornament(c, f)
+
+    # Roads in TWO passes: every casing, then every fill. Drawing each road casing-then-fill on
+    # its own makes the next road's dark casing slice across the previous one's pale carriageway,
+    # so converging roads print as a braid of parallel dark lines instead of merging into one
+    # junction. Casing-pass-then-fill-pass is what makes a road network read as a network.
+    roads = [f for f in features if f["kind"] == "road" and len(f["pts"]) > 1]
+    rs = LINE["road"]
+    c.setLineCap(1)
+    c.setLineJoin(1)
+    c.setDash()
+    c.setStrokeColor(HexColor(rs["color"]))
+    for f in roads:
+        c.setLineWidth((f.get("w") or rs["w"]) + 1.1)
+        c.drawPath(_path(c, f, False, f.get("smooth", True)), stroke=1, fill=0)
+    c.setStrokeColor(HexColor("#F6EFDC"))
+    for f in roads:
+        c.setLineWidth(max(0.2, (f.get("w") or rs["w"]) - 0.6))
+        c.drawPath(_path(c, f, False, f.get("smooth", True)), stroke=1, fill=0)
 
     for f in features:                                   # point symbols on top of the linework
         if len(f["pts"]) == 1:
