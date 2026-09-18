@@ -1849,8 +1849,8 @@ window.AUD_BASE = {
   {
    "name": "Dögurðarnes / Dagverðarnes · Iceland",
    "order": 1,
-   "x": 140.22,
-   "y": 644.95
+   "x": 150.66,
+   "y": 657.41
   },
   {
    "name": "Hvammur · Dalir, Iceland",
@@ -1873,8 +1873,8 @@ window.AUD_BASE = {
   },
   {
    "name": "Dögurðarnes / Dagverðarnes",
-   "x": 140.22,
-   "y": 644.95
+   "x": 150.66,
+   "y": 657.41
   },
   {
    "name": "Eiríksstaðir",
