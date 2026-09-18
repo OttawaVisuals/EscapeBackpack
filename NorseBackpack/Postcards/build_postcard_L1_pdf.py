@@ -114,8 +114,7 @@ def draw_back_card(c, x=0, y=0):
         mask="auto",
     )
 
-    # Place and date form the universal postmark. The day-of-month is
-    # underlined: it is the first two digits of the opening puzzle's code.
+    # The postmark carries the place only — no date (PC-02/PC-03/PC-04, removed).
     postmark_x, postmark_y = stamp_x - 5, H - 48
     c.setStrokeColor(TEAL)
     c.setLineWidth(0.8)
@@ -123,17 +122,8 @@ def draw_back_card(c, x=0, y=0):
     c.circle(postmark_x, postmark_y, 19.5, fill=0, stroke=1)
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 4.8)
-    c.drawCentredString(postmark_x, postmark_y + 7, "L'ANSE AUX")
-    c.drawCentredString(postmark_x, postmark_y + 1, "MEADOWS")
-    date_font, date_size = "Helvetica-Bold", 4.2
-    day_text, date_text = "07", "07 JUL"
-    c.setFont(date_font, date_size)
-    c.drawCentredString(postmark_x, postmark_y - 7, date_text)
-    full_width = pdfmetrics.stringWidth(date_text, date_font, date_size)
-    day_width = pdfmetrics.stringWidth(day_text, date_font, date_size)
-    underline_x = postmark_x - full_width / 2
-    c.setLineWidth(0.5)
-    c.line(underline_x, postmark_y - 9, underline_x + day_width, postmark_y - 9)
+    c.drawCentredString(postmark_x, postmark_y + 4, "L'ANSE AUX")
+    c.drawCentredString(postmark_x, postmark_y - 3, "MEADOWS")
     for offset in (-7, -2, 3, 8):
         c.line(postmark_x + 23, postmark_y + offset, right, postmark_y + offset)
 
