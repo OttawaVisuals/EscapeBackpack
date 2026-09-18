@@ -476,6 +476,15 @@ function render(){
     for (let j=0;j<B.grid.rows;j++) label(String(j+1), m.x0-7, m.y1-(j+.5)*ch-2, 6, '#59635D', gl);
   }
 
+  /* Boxes the printed sheet keeps for the scale bar and compass. Drawn faintly so they can be
+     avoided; symbols were being placed straight underneath both before they were exported. */
+  for (const r of (B.reserved || [])){
+    el('rect', {x:r.x0, y:toY(r.y1), width:r.x1-r.x0, height:r.y1-r.y0, fill:'#B56A2A',
+                'fill-opacity':.07, stroke:'#B56A2A', 'stroke-width':.5,
+                'stroke-dasharray':'3 2'}, svg);
+    label(r.name, (r.x0+r.x1)/2, r.y0+4, 5, '#B56A2A', svg);
+  }
+
   if ($('showTowns').checked){
     const gt = el('g', {}, svg);
     for (const t of B.towns){
@@ -696,13 +705,15 @@ function computeBrief(){
     if (new Set(byKind[k].map(ctx)).size >= 2) pairs++;
   }
 
-  const wet = [], outside = [], tooClose = [], tooNear = [];
+  const wet = [], outside = [], tooClose = [], tooNear = [], inBox = [];
   const m = B.mapArea;
   const pins = B.stops.map(s => [s.x, s.y]).concat(B.towns.map(t => [t.x, t.y]));
   for (const f of F){
     for (const q of f.pts){
       if (!onLand(q[0], q[1])) wet.push(f);
       if (pins.some(pn => Math.hypot(q[0]-pn[0], q[1]-pn[1]) < 19)) tooNear.push(f);
+      if ((B.reserved || []).some(r => q[0] >= r.x0-3 && q[0] <= r.x1+3
+                                    && q[1] >= r.y0-3 && q[1] <= r.y1+3)) inBox.push(f);
     }
     /* Entirely off the sheet, not merely running off its edge. */
     if (!f.pts.some(q => q[0] >= m.x0 && q[0] <= m.x1 && q[1] >= m.y0 && q[1] <= m.y1))
@@ -732,6 +743,7 @@ function computeBrief(){
         ['Wholly off the sheet', new Set(outside).size, 0, 0],
         ['Icons under 16pt apart', tooClose.length, 0, 0],
         ['Under 19pt from a pin', new Set(tooNear).size, 0, 0],
+        ['In a reserved box', new Set(inBox).size, 0, 0],
         ['Base labels dropped', droppedLabels.length, 0, 0]]
   };
 }
