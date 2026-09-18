@@ -172,6 +172,59 @@ Fun Fact boxes unaffected. Page re-served over `http://localhost:8734` (cache-bu
 console errors, 0 broken `#view-` links, 0 unrendered HTML entities, 11 tabs, 3 tables in the
 Final riddle tab, `PZ-05` and `PZ-18` both render.
 
+## Session Close — 2026-09-17 (latest 9) — Pinch-zoom fix: the action bar was sliding off screen
+
+**Task:** the user reported that zooming in Pan mode pushed the Pan button and the rest of the
+action bar off screen.
+
+**Cause.** Pan mode set `touch-action:auto`, which let the browser zoom the whole page. Page zoom
+shrinks the visual viewport *inside* the layout viewport, and `position:fixed` is pinned to the
+layout viewport — so the bottom-pinned bar went with it. General lesson worth keeping: **a
+bottom-pinned bar and browser page zoom cannot coexist.**
+
+**Fixed in `NorseBackpack/TravelMap/Aud_Map_Designer.html`:**
+- Pan mode now uses `touch-action:pan-x pan-y`: scrolling still works, browser zoom cannot happen.
+- **Pinch drives the designer's own zoom control**, so the sheet scales while the interface stays
+  put. Two-finger drag pans in the same gesture, so a zoomed-in map no longer needs Pan mode.
+- **The map pane is the scroll container on mobile** (`max-height:58dvh; overflow:auto`) rather
+  than overflowing the document, so a pan scrolls a known element. It shrinks to the sheet and
+  only scrolls once the sheet is taller than 58dvh.
+- **Touch taps commit on `pointerup`, not `pointerdown`.** The first finger of a pinch was landing
+  a symbol before the second arrived. Mouse input is unambiguous and still acts on pointerdown.
+- The bar additionally follows `window.visualViewport` as a fallback for a page zoom this code
+  cannot prevent (OS accessibility zoom, desktop browser zoom). Guarded to no-op unless the visual
+  viewport is genuinely offset or scaled, so it can never itself misplace the bar.
+
+**Checks run:** `node --check` after each patch — clean. At 375x812 with synthetic
+`PointerEvent`s at `pointerType:'touch'`: a two-finger spread from 80 px to 200 px took zoom 50% ->
+130% and **placed nothing** (count stayed 15, confirming the deferred-tap fix); sliding both
+fingers 80 px left scrolled the stage exactly 80 px with zoom unchanged; the bar stayed
+`position:fixed` with an empty transform throughout; a single tap still placed a cairn at E5 and
+Undo removed it; Pan mode reports `touch-action: pan-x pan-y` and draw mode `none`. At fit the
+stage is 404 px around a 396 px sheet with no scroll and no dead space; zoomed to 150% it caps at
+469 px and scrolls both axes; the Fit button returns to 50%. Desktop regression at 1050 px: bar
+static, 3-column palette, 120% zoom, mouse still places on pointerdown, Undo works, score 6/19, no
+console errors anywhere.
+
+**Measurement caveat:** the in-app browser's mobile emulation reports `innerWidth/innerHeight` as
+the pane's real size (931x2016) while `documentElement.clientWidth/Height` correctly report
+375x812, and document-level horizontal scrolling does not work there at all. That is what pushed
+the design toward scrolling the stage element instead of the document — which is the better
+design anyway, but it means `position:fixed` offsets could not be verified numerically in the
+emulator. The logic is standard and the guard makes it inert unless a real zoom occurs.
+
+**Published:** artifact version 3 at https://claude.ai/artifact/26d6YkdDjuSkN2WS5Uc2fL
+
+**Next action:** unchanged — the user continues the map southward against the brief. Fix the
+road's last vertex (10.5 pt from the Hvammur pin), join the two paths through the ditch, draw the
+watercourses early, then use "Place crossings".
+
+**Blockers / open questions:** unchanged — lock mechanic still undecided (A/B/C/D, A recommended,
+A1 vs A2 open); labels stay empty by design; `aud_features.json` still holds the superseded first
+layer and is not read by `build_trail_maps_pdf.py`; the zoomed frame is exporter-only; four
+decorative labels fall outside it; and `output/pdf/Trail_Map_3_Aud_*.pdf` are still the rejected
+landscape version — run `python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud`.
+
 ## Session Close — 2026-09-17 (latest 8) — Everything committed and pushed; designer made mobile-friendly
 
 **Task:** commit and push the session's work, publish the Aud map designer online, then make it
