@@ -143,11 +143,64 @@ def _ornament(c, f):
                    x + math.cos(a) * r, y + math.sin(a) * r)
 
 
-def _point(c, f):
+TRACKS = {"path", "road", "track"}
+BARRIERS = {"hedge", "wall", "ditch"}
+WATERS = {"river", "stream"}
+
+
+def _seg_dir(p, f):
+    """Direction of the nearest segment of f to point p, and how far away it is."""
+    best = (float("inf"), 0.0)
+    for a, b in zip(f["pts"], f["pts"][1:]):
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        L2 = dx * dx + dy * dy
+        t = 0 if L2 == 0 else max(0.0, min(1.0, ((p[0]-a[0])*dx + (p[1]-a[1])*dy) / L2))
+        d = math.hypot(p[0] - (a[0] + t*dx), p[1] - (a[1] + t*dy))
+        if d < best[0]:
+            best = (d, math.atan2(dy, dx))
+    return best
+
+
+def crossing_angles(features):
+    """A bridge or ford lies along the route it carries; a gate sits in the line of its wall.
+
+    Drawn unrotated they all point the same way regardless of what they cross, which is what made
+    them read as wrong at a glance. Angles are normalised to the nearer horizontal so text-sized
+    symbols never print upside down.
+    """
+    tracks = [f for f in features if f["kind"] in TRACKS and len(f["pts"]) > 1]
+    barriers = [f for f in features if f["kind"] in BARRIERS and len(f["pts"]) > 1]
+    waters = [f for f in features if f["kind"] in WATERS and len(f["pts"]) > 1]
+    out = {}
+    for i, f in enumerate(features):
+        k = f["kind"]
+        if k not in ("bridge", "ford", "gate") or len(f["pts"]) != 1:
+            continue
+        p = f["pts"][0]
+        pool = barriers if k == "gate" else tracks
+        if not pool:
+            pool = waters or tracks
+        best = min((_seg_dir(p, g) for g in pool), default=(float("inf"), 0.0))
+        a = best[1]
+        while a > math.pi / 2:
+            a -= math.pi
+        while a < -math.pi / 2:
+            a += math.pi
+        out[i] = math.degrees(a)
+    return out
+
+
+def _point(c, f, angle=0.0):
     """Ported from drawPoint() in the designer; keep the two in step."""
     x, y = f["pts"][0]
     k = f["kind"]
     col = HexColor(POINT_COLOR.get(k, PURPLE))
+    rotated = abs(angle) > 0.01
+    if rotated:
+        c.saveState()
+        c.translate(x, y)
+        c.rotate(angle)
+        c.translate(-x, -y)
     c.setStrokeColor(col)
     c.setFillColor(col)
     c.setLineWidth(0.9)
@@ -236,6 +289,8 @@ def _point(c, f):
         c.circle(x, y, 1.2, stroke=0, fill=1)
     elif k == "marker":
         c.circle(x, y, 4.5, stroke=0, fill=1)
+    if rotated:
+        c.restoreState()
 
 
 def draw(c, features, clip_rect=None):
@@ -293,8 +348,92 @@ def draw(c, features, clip_rect=None):
         c.setLineWidth(max(0.2, (f.get("w") or rs["w"]) - 0.6))
         c.drawPath(_path(c, f, False, f.get("smooth", True)), stroke=1, fill=0)
 
-    for f in features:                                   # point symbols on top of the linework
+    angles = crossing_angles(features)
+    for i, f in enumerate(features):                     # point symbols on top of the linework
         if len(f["pts"]) == 1:
-            _point(c, f)
+            _point(c, f, angles.get(i, 0.0))
 
+    c.restoreState()
+
+
+LEGEND_ORDER = [
+    ("road", "Paved road"), ("track", "Track"), ("path", "Footpath"),
+    ("river", "River"), ("stream", "Stream"), ("ditch", "Ditch"),
+    ("hedge", "Hedge"), ("wall", "Stone wall"), ("contour", "Contour"),
+    ("bridge", "Bridge"), ("ford", "Ford"), ("gate", "Gate"),
+    ("wood", "Wood"), ("marsh", "Marsh"), ("moor", "Moor"),
+    ("field", "Field"), ("lake", "Lake"),
+    ("village", "Village"), ("farm", "Farm"), ("church", "Chapel"),
+    ("mill", "Mill"), ("well", "Well"), ("port", "Landing"),
+    ("cairn", "Cairn"), ("stone", "Standing stone"), ("ruin", "Ruin"),
+    ("cave", "Cave"), ("marker", "Marker"),
+]
+
+
+def draw_legend(c, features, box, ink="#283B34", rule="#A99A7B", paper="#F4EEDD"):
+    """A key for the symbols actually on this sheet -- listing ones that are not drawn would be
+    worse than no legend at all. Sized to the entries it really needs."""
+    present = {f["kind"] for f in features}
+    rows = [(k, n) for k, n in LEGEND_ORDER if k in present]
+    if not rows:
+        return
+    x0, y0, x1, y1 = box
+    c.saveState()
+    c.setFillColor(HexColor(paper))
+    c.setStrokeColor(HexColor(rule))
+    c.setLineWidth(0.7)
+    c.rect(x0, y0, x1 - x0, y1 - y0, fill=1, stroke=1)
+
+    c.setFillColor(HexColor(ink))
+    c.setFont("Helvetica-Bold", 6.4)
+    c.drawCentredString((x0 + x1) / 2, y1 - 11, "LEGEND")
+    c.setStrokeColor(HexColor(rule))
+    c.setLineWidth(0.5)
+    c.line(x0 + 8, y1 - 15, x1 - 8, y1 - 15)
+
+    cols = 2
+    per = (len(rows) + cols - 1) // cols
+    col_w = (x1 - x0 - 12) / cols
+    top = y1 - 22
+    row_h = min(12.5, (top - y0 - 8) / per)
+    for i, (kind, name) in enumerate(rows):
+        col, row = divmod(i, per)
+        cx = x0 + 6 + col * col_w
+        cy = top - row * row_h - row_h / 2
+        sw = cx + 9                                   # swatch centre
+        if kind in LINE:
+            s = LINE[kind]
+            if kind == "road":
+                c.setStrokeColor(HexColor(s["color"]))
+                c.setLineWidth(s["w"] + 1.1)
+                c.setDash()
+                c.line(cx, cy, cx + 18, cy)
+                c.setStrokeColor(HexColor("#F6EFDC"))
+                c.setLineWidth(s["w"] - 0.6)
+                c.line(cx, cy, cx + 18, cy)
+            else:
+                c.setStrokeColor(HexColor(s["color"]))
+                c.setLineWidth(s["w"])
+                c.setDash(*s["dash"]) if s.get("dash") else c.setDash()
+                c.line(cx, cy, cx + 18, cy)
+                c.setDash()
+                if kind in ("hedge", "wall", "ditch"):
+                    _ornament(c, {"kind": kind, "smooth": False,
+                                  "pts": [[cx, cy], [cx + 18, cy]]})
+        elif kind in AREA:
+            s = AREA[kind]
+            c.setFillColor(HexColor(s["fill"]))
+            c.setStrokeColor(HexColor(s["color"]))
+            c.setLineWidth(0.6)
+            c.rect(cx, cy - 4, 18, 8, fill=1, stroke=1)
+        else:
+            c.saveState()
+            c.translate(sw, cy)
+            c.scale(0.62, 0.62)                       # a full-size symbol overruns the row
+            c.translate(-sw, -cy)
+            _point(c, {"kind": kind, "pts": [[sw, cy]], "label": ""})
+            c.restoreState()
+        c.setFillColor(HexColor(ink))
+        c.setFont("Helvetica", 5.0)
+        c.drawString(cx + 22, cy - 1.8, name)
     c.restoreState()

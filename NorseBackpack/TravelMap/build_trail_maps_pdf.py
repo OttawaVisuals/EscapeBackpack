@@ -143,7 +143,8 @@ TRAILS = {
         # any more. They are still correct for the old wide frame if it is ever restored.
         areas=[("Breiðafjörður", 65.34, -22.33), ("Dalir", 65.16, -21.40),
                ("Kjalarnes", 64.28, -21.70)],
-        waters=[("FAXAFLÓI", 64.45, -22.80, 0)],
+        # Moved south-east: at 64.45,-22.80 it printed across the legend box.
+        waters=[("FAXAFLÓI", 64.242, -22.108, 0)],
         # APPROX -- typed from general knowledge, not source-checked. See PR-10.
         extra_towns=[("Reykjavík", 64.15, -21.94), ("Akranes", 64.32, -22.08),
                      ("Borgarnes", 64.54, -21.92), ("Búðardalur", 65.11, -21.76),
@@ -361,6 +362,10 @@ class Labeller:
 # digit 7's top bar by 8% and flattens it from +9.3 to +4.8 degrees, which if anything reads more
 # like a 7. Re-vendoring ne_10m_land for one dot was considered and declined; see PZ-17.
 PLOT_NUDGE = {
+    # Stykkisholmur sits on a small peninsula in Breidafjordur that 1:50m does not resolve, so
+    # its own correct coordinate plots 16 pt -- about 3.4 km -- offshore. Same cause as
+    # Dogurdarnes, same remedy: the drawing moves, stops.js and the config do not.
+    "Stykkishólmur": (-0.0324, -0.0480),
     "D\u00f6gur\u00f0arnes / Dagver\u00f0arnes \u00b7 Iceland": (0.02448, 0.04800),  # (dlat, dlon)
 }
 
@@ -485,7 +490,8 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
         towns[s_["name"].split(" · ")[0]] = (s_["lat"], s_["lng"])
     for name, lat, lng in corpus + cfg["extra_towns"]:
         if lo0 <= lng <= lo1 and la0 <= lat <= la1:
-            towns.setdefault(name, (lat, lng))
+            dlat, dlon = plot_nudge(name)
+            towns.setdefault(name, (lat + dlat, lng + dlon))
 
     digit = next((d["digit"] for d in plan.get("digitOrder", []) if d["trip"] == key), "?")
     out = OUT_DIR / ("Trail_Map_%d_%s_%s.pdf"
@@ -527,8 +533,14 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
     # Reference grid: over the land, so a settlement can be given a square reference -- but under
     # every label drawn below, so no line printed here can ever sit on top of a clue.
     c.saveState()
-    c.setStrokeColor(TAN)
-    c.setLineWidth(0.45)
+    # Aud's sheet carries a drawn symbol layer, so the grid has to step further back than on the
+    # other three: at TAN/0.45 it competed with the linework and made the map read as busy.
+    if key == "aud":
+        c.setStrokeColor(HexColor("#D9CDB2"))
+        c.setLineWidth(0.3)
+    else:
+        c.setStrokeColor(TAN)
+        c.setLineWidth(0.45)
     for i in range(1, GRID_COLS):
         x = MX0 + i * (MX1 - MX0) / GRID_COLS
         c.line(x, MY0, x, MY1)
@@ -538,6 +550,14 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
     c.restoreState()
 
     lab = Labeller()
+    # Legend for Aud's sheet, in the clear water bottom-left. Reserved so the label placer
+    # routes town names around it rather than printing them across the key.
+    if key == "aud" and aud_layer.LAYER.exists():
+        _lx, _ly, _lw, _lh = 40, 95, 160, 200
+        aud_layer.draw_legend(c, _feats, (_lx, _ly, _lx + _lw, _ly + _lh),
+                              ink="#"+INK.hexval()[2:], rule="#"+TAN.hexval()[2:],
+                              paper="#F4EEDD")
+        lab.reserve(_lx - 2, _ly - 2, _lx + _lw + 2, _ly + _lh + 2)
     if key == "leif":
         for filename, box, alpha in LEIF_ART:
             draw_vignette(c, ART_DIR / filename, box, alpha)
@@ -606,7 +626,9 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
         c.drawCentredString(x, y, name)
 
     lab.reserve(NEAT[2] - 170, NEAT[1] + 14, NEAT[2] - 8, NEAT[1] + 46)
-    lab.reserve(NEAT[2] - 72, MY0 + 16, NEAT[2] - 16, MY0 + 68)
+    # +14pt of headroom: the box stopped at the rose itself, so a village symbol printed
+    # straight over the "N" above it.
+    lab.reserve(NEAT[2] - 72, MY0 + 16, NEAT[2] - 16, MY0 + 82)
 
     stop_names = [s_["name"].split(" · ")[0] for s_ in stops]
     ordered = stop_names + sorted(n for n in towns if n not in stop_names)
