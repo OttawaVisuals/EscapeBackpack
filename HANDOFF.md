@@ -329,9 +329,14 @@ and would be better as two abutment strokes than an arch. **The symbol vocabular
 places with no shared source** - `Aud_Map_Designer.html` (SVG) and `aud_layer.py` (ReportLab) - so
 any restyle must change both or the designer and the print will disagree. That belongs in the brief.
 
-**Next action:** close the PDF viewer and rebuild, then print a test sheet and walk the seven legs
-by hand against the ticket, checking the tally really comes to 5 bridges, 3 fords, 1 gate on paper
-rather than only in the graph.
+**State of Aud's leg is now recorded in `PZ-17`**, not here: a summary table of map / route / code
+/ card / ticket / designer with links, the two cosmetic loose ends (the moor at H11 is not the shape
+it was drawn, and the cave at I9 is half-clipped by the map edge), and the outstanding verification.
+Per AGENTS.md the backlog lives in the project page; this file keeps continuity only.
+
+**Next action:** print a test sheet and walk the seven legs by hand against the ticket. The tally of
+5 bridges, 3 fords and 1 gate is confirmed in the routing graph and has never been checked by eye on
+paper. Nothing else should be built on top of `531` until it passes.
 
 **Blockers / open questions:**
 - A2's replacement wording is undecided; the requirement is fixed, the words are not.
