@@ -218,19 +218,19 @@ const SYMBOLS = {
   moor:    {geom:'area', name:'Moor',   color:'#8A7A5E', fill:'#E8DFC6'},
 
   /* point symbols */
-  farm:    {geom:'point', name:'Farm',    color:'#6D528B'},
-  church:  {geom:'point', name:'Church',  color:'#6D528B'},
-  ruin:    {geom:'point', name:'Ruin',    color:'#6D528B'},
-  mill:    {geom:'point', name:'Mill',    color:'#6D528B'},
-  cairn:   {geom:'point', name:'Cairn',   color:'#6D528B'},
-  stone:   {geom:'point', name:'Stone',   color:'#6D528B'},
-  bridge:  {geom:'point', name:'Bridge',  color:'#6D528B', crossing:true},
-  ford:    {geom:'point', name:'Ford',    color:'#2F7775', crossing:true},
-  gate:    {geom:'point', name:'Gate',    color:'#6D528B', crossing:true},
-  well:    {geom:'point', name:'Well',    color:'#6D528B'},
-  village: {geom:'point', name:'Village', color:'#6D528B'},
-  port:    {geom:'point', name:'Port',    color:'#6D528B'},
-  cave:    {geom:'point', name:'Cave',    color:'#6D528B'},
+  farm:    {geom:'point', name:'Farm',    color:'#806F96'},
+  church:  {geom:'point', name:'Church',  color:'#806F96'},
+  ruin:    {geom:'point', name:'Ruin',    color:'#806F96'},
+  mill:    {geom:'point', name:'Mill',    color:'#806F96'},
+  cairn:   {geom:'point', name:'Cairn',   color:'#806F96'},
+  stone:   {geom:'point', name:'Stone',   color:'#806F96'},
+  bridge:  {geom:'point', name:'Bridge',  color:'#523A70', crossing:true},
+  ford:    {geom:'point', name:'Ford',    color:'#216866', crossing:true},
+  gate:    {geom:'point', name:'Gate',    color:'#523A70', crossing:true},
+  well:    {geom:'point', name:'Well',    color:'#806F96'},
+  village: {geom:'point', name:'Village', color:'#806F96'},
+  port:    {geom:'point', name:'Port',    color:'#806F96'},
+  cave:    {geom:'point', name:'Cave',    color:'#806F96'},
   marker:  {geom:'point', name:'Marker',  color:'#B56A2A'},
   text:    {geom:'point', name:'Label',   color:'#283B34', labelled:true},
 };
@@ -385,8 +385,8 @@ function drawPoint(f, g){
        + `L ${S(x+2)} ${S(toY(y+2.5))} L ${S(x+2.6)} ${S(toY(y-5))} Z`, .9);
     line(x-4, y-5, x+4, y-5, .6);
   } else if (k === 'bridge'){
-    path(`M ${S(x-6)} ${S(toY(y-2))} Q ${S(x)} ${S(toY(y+6))} ${S(x+6)} ${S(toY(y-2))}`, 1.1);
-    line(x-6, y-4, x-6, y-1, .8); line(x+6, y-4, x+6, y-1, .8);
+    /* Two abutments stay recognisable when the crossing is rotated with its route. */
+    line(x-3.6, y-4.2, x-3.6, y+4.2, 1.25); line(x+3.6, y-4.2, x+3.6, y+4.2, 1.25);
   } else if (k === 'ford'){
     /* The map convention: the bed shown as stones between two bank ticks, so it reads as a
        place you wade rather than a place you cross dry. */
@@ -453,6 +453,18 @@ function render(){
   const hatch = el('pattern', {id:'hatch', width:4, height:4, patternUnits:'userSpaceOnUse',
                                patternTransform:'rotate(45)'}, defs);
   el('line', {x1:0, y1:0, x2:0, y2:4, stroke:'#C0B291', 'stroke-width':.6}, hatch);
+  const woodTexture = el('pattern', {id:'woodTexture', width:16, height:15, patternUnits:'userSpaceOnUse'}, defs);
+  el('rect', {x:0, y:0, width:16, height:15, fill:'#CBD9BE'}, woodTexture);
+  el('path', {d:'M 8 12 L 8 6 M 6 9 L 8 6 L 10 9', fill:'none', stroke:'#6B8A57',
+              'stroke-width':.38, opacity:.42, 'stroke-linecap':'round'}, woodTexture);
+  const marshTexture = el('pattern', {id:'marshTexture', width:15, height:13, patternUnits:'userSpaceOnUse'}, defs);
+  el('rect', {x:0, y:0, width:15, height:13, fill:'#D5E2DC'}, marshTexture);
+  el('path', {d:'M 4 8 H 10 M 7 8 L 8.4 5.8', fill:'none', stroke:'#4F8985',
+              'stroke-width':.38, opacity:.42, 'stroke-linecap':'round'}, marshTexture);
+  const moorTexture = el('pattern', {id:'moorTexture', width:12, height:12, patternUnits:'userSpaceOnUse'}, defs);
+  el('rect', {x:0, y:0, width:12, height:12, fill:'#E8DFC6'}, moorTexture);
+  el('line', {x1:4.5, y1:8, x2:7.5, y2:4, stroke:'#B1A17F', 'stroke-width':.38,
+              opacity:.42, 'stroke-linecap':'round'}, moorTexture);
 
   /* base */
   el('rect', {x:0, y:0, width:PW, height:PH, fill:'#FFFFFF'}, svg);
@@ -511,7 +523,9 @@ function render(){
     else {
       const d = pathFor(f);
       if (s.geom === 'area')
-        el('path', {d, fill: f.kind==='field' ? 'url(#hatch)' : s.fill, 'fill-opacity':.85,
+        el('path', {d, fill: f.kind==='field' ? 'url(#hatch)' : f.kind==='wood' ? 'url(#woodTexture)' :
+                    f.kind==='marsh' ? 'url(#marshTexture)' : f.kind==='moor' ? 'url(#moorTexture)' : s.fill,
+                    'fill-opacity':.85,
                     stroke:s.color, 'stroke-width':.7}, g);
       if (f.kind === 'road'){
         el('path', {d, fill:'none', stroke:s.color, 'stroke-width':(f.w||s.w)+1.1,

@@ -2,6 +2,16 @@
 
 Last updated: 2026-09-17 by Claude Code
 
+## Session Close — 2026-09-18 — Aud map styling pass
+
+**Task:** make Aud's printed treasure map look more polished without changing its route, code or geometry.
+
+**Changed:** `NorseBackpack/TravelMap/Aud_Map_Designer.html` and `aud_layer.py` now use matching terrain textures: sparse tree marks for woods, reeds/ripples for marsh and short strokes for moor. Ordinary landmarks were softened to lavender `#806F96`. The countable puzzle crossings lead visually: bridges/gates are dark plum `#523A70`; fords dark teal `#216866`. The bridge glyph is now two strong abutment strokes rather than a rotated arch. Rebuilt both Aud map PDFs. `Norse_Brainstorm.html` records the styling decision.
+
+**Checks:** Python compile passed; the designer loaded over local HTTP with no console errors. Both print and answer PDFs were rendered at 180 dpi and inspected: texture stays quiet, crossings are distinct, the route still reads as 7, and the legend reflects the new bridge glyph. Poppler reported its existing unavailable Symbol/ArialUnicode display-font warnings only.
+
+**Next action:** print one physical test sheet and walk the seven ticket legs by hand. The graph confirms `531`; it still needs the on-paper usability check.
+
 ## Session Close — 2026-09-17 (latest 5) — Final-riddle dates, clue set and solver
 
 **Task:** review of the whole Norse game (sequence, clues/props, what is missing), then a request
