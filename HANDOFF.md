@@ -1,6 +1,254 @@
 # Project Handoff
 
-Last updated: 2026-09-17 by Claude Code
+Last updated: 2026-09-19 by Claude Code
+
+## Addendum — same session — Aud's map styling marked final
+
+Checked in on the concurrent Codex session: no further edits since its last entry below (`aud_layer.py`,
+`Aud_Map_Designer.html`, `build_trail_maps_pdf.py` all still at their 14:35 mtimes). Its three passes
+today (Option A &rarr; hybrid bridge-hiding &rarr; road-join/bridge-restore refinement) are done, and
+its own log already tracked `521` throughout (explicitly noted the bridge records were untouched
+during the hybrid trial). The canonical `Trail_Map_3_Aud_{Print,ANSWER}.pdf` rebuilt earlier in this
+entry already carries that final state.
+
+**Decided with the user:** this is Aud's map, final. Updated `Norse_Brainstorm.html`'s two leftover
+"current trial" notes (Option A, hybrid) to read Decided/Superseded instead of "current," and added
+an explicit final-styling note pointing at the canonical PDFs and the Drafts folder. Rendered and
+checked for console errors after the edit.
+
+## Session Close — 2026-09-19 — H6 built (all 22 postcards complete); output/pdf cleanup
+
+**Task:** draft and build the last unwritten postcard (H6, Patara), then a full inventory check of
+`output/pdf/` turned up map/ticket drift from a concurrent Codex session working the same files.
+
+**H6 built:** `build_postcard_H6_pdf.py` (new, from the H5 template), message and Fun Fact per the
+user's draft, `Postcard_H6_Patara_Print.pdf`/`_Letter_Print.pdf`/`_Back.png` built and checked.
+`Norse_Brainstorm.html`'s gallery card, `PZ-05` and `PC-07` pills updated: **18 of 18 real cards,
+22 of 22 total, complete.**
+
+**`output/pdf/` inventory turned up drift, not caused by this session:** a concurrent Codex
+session (see the entries below) was iterating on Aud's map styling in parallel and had left three
+undecided variants (`OPTION_A`, `HYBRID`, `REFINED`) alongside the canonical
+`Trail_Map_3_Aud_Print.pdf`/`_ANSWER.pdf`, none referenced from `Norse_Brainstorm.html`. Also
+found `Trail_Map_1_Leif_Print_UPDATED.pdf`, dated 12 Sept &mdash; a week *older* than the
+canonical 18 Sept `Trail_Map_1_Leif_Print.pdf` despite the filename.
+
+**Resolved with the user, in chat:** REFINED (Codex's most recent pass, 14:35) is the map to keep;
+the 18 Sept `Trail_Map_1_Leif_Print.pdf` is the Leif version to keep. Re-ran
+`python build_trail_maps_pdf.py aud` from the current (post-Codex) script state, which regenerated
+`Trail_Map_3_Aud_Print.pdf`/`_ANSWER.pdf` under their canonical names with REFINED's content &mdash;
+confirmed `aud_features.json` (the route geometry the `521` code depends on) is untouched since 18
+Sept, so this is a styling-only refresh, not a geometry change. Rendered and visually checked the
+rebuilt canonical PDF.
+
+**Moved to `NorseBackpack/Drafts/2026-09-19_Aud_map_style_options/`** (with a README, same pattern
+as the 17 Sept split-panel drafts): `Trail_Map_3_Aud_OPTION_A_{Print,ANSWER}.pdf`,
+`_HYBRID_{Print,ANSWER}.pdf`, `_REFINED_{Print,ANSWER}.pdf`, `Aud_Map_Legend_Options.pdf`, and
+`Trail_Map_1_Leif_Print_UPDATED.pdf`. `output/pdf/` now holds exactly one Print/ANSWER pair per
+trail map.
+
+**Files changed:** `NorseBackpack/Postcards/build_postcard_H6_pdf.py` (new);
+`output/pdf/Postcard_H6_Patara_{Print,Letter_Print}.pdf` (new);
+`NorseBackpack/Postcards/Postcard_H6_Patara_Back.png` (new); `Norse_Brainstorm.html` (H6 gallery
+card, PZ-05/PC-07 pills); `output/pdf/Trail_Map_3_Aud_{Print,ANSWER}.pdf` (rebuilt in place, same
+filenames); 8 files moved to the new Drafts folder (not tracked by git yet, so plain `mv`, not
+`git mv`).
+
+**Checks run:** H6's PDFs rendered to PNG and inspected (front art intact, message and Fun Fact
+both fit, postmark reads PATARA). `Norse_Brainstorm.html` served over `localhost:8734`, images
+confirmed loading at full 1500&times;1050, no console errors. Aud's rebuilt canonical map rendered
+to PNG and inspected &mdash; label placement clear of roads, legend intact, `521`'s digit-7 shape
+unaffected.
+
+**Not done:** did not touch `aud_layer.py`, `Aud_Map_Designer.html` or `build_trail_maps_pdf.py`
+themselves &mdash; those are mid-edit in the concurrent Codex session (see below); only re-ran the
+existing build to pick up already-committed changes under the canonical output filenames.
+
+**Next action:** none outstanding for Aud's leg or the postcard deck. If picking this up again,
+check whether the Codex session below has moved further since &mdash; it was still actively
+editing `aud_layer.py` as of this entry.
+
+## Session Close — 2026-09-19 — Aud road joins and crossing refinement
+
+**Task:** merge road geometry cleanly at forks, keep gates in the foreground, restore the original
+ford mark, and return bridges with a more natural design that follows the road.
+
+**Changed:** `aud_layer.py` and `Aud_Map_Designer.html` now draw every road casing first and every
+road interior second, removing the false overlap line where separate road features meet. Ordinary
+landmarks draw before bridges, fords and gates, keeping all countable crossings in front. Ford is
+again the original two-bank-ticks and three-stones symbol. Bridge is back in the map, legend and
+designer palette with a new bowed deck and light cross-planks; bridge and ford rotate to their
+nearest road/track/path, while gates rotate to their barrier. `build_trail_maps_pdf.py` again
+reserves bridge marks during label placement. `Norse_Brainstorm.html` records the refinement.
+
+**Outputs:** `Trail_Map_3_Aud_REFINED_Print.pdf` and `_ANSWER.pdf`. Review filenames remain in use
+because the stable print PDF has recently been open in PDFgear.
+
+**Checks:** Python compilation passed. Both one-page letter PDFs rendered at 180 dpi and were
+visually inspected: forked roads merge cleanly, the H5 gate is legible in the foreground, bridges
+follow their local route direction, the requested ford mark is present, and the answer remains 7.
+The editable designer loaded over local HTTP with Bridge restored and no console warnings/errors.
+
+**Gate follow-up:** wall blocks within the span of a gate are now omitted in both renderers. A
+240-dpi H5 crop confirms a clean opening between the posts without erasing the road underneath;
+the refined print/answer PDFs were rebuilt and the designer again reported no console errors.
+
+**Next action:** review the new bridge on paper or at 100% size. If approved, close any stable map
+PDF open in PDFgear and rebuild `Trail_Map_3_Aud_{Print,ANSWER}.pdf` from the refined source.
+
+## Session Close — 2026-09-19 — Aud map hybrid icon trial
+
+**Task:** keep the Option A map as the base, remove visible bridges, restore the existing landing
+icon, and use Option B for gates, fords and stone walls.
+
+**Changed:** `NorseBackpack/TravelMap/aud_layer.py` and `Aud_Map_Designer.html` now hide bridge
+symbols and omit Bridge from the legend/tool palette. The 11 bridge records remain in
+`aud_features.json`, so the corrected route logic and code `521` are unchanged. Landing is again
+the original anchor; gates, fords and stone walls use Option B. The sage-grey marsh and improved
+label placement remain. `build_trail_maps_pdf.py` excludes the now-invisible bridge points from
+label obstacles. `Norse_Brainstorm.html` records this hybrid as the current trial.
+
+**Outputs:** `Trail_Map_3_Aud_HYBRID_Print.pdf` and `_ANSWER.pdf`. The usual stable-name print PDF
+was open in PDFgear, so this review pair avoids overwriting only one half of the stable pair.
+
+**Checks:** Python compilation passed. Both one-page letter PDFs rendered at 180 dpi and were
+visually inspected: no bridge marks or Bridge legend row remain, the requested icon variants are
+present, label fixes remain intact, and the answer still reads 7. The editable designer loaded
+over local HTTP, showed no Bridge tool, and reported no browser console warnings or errors.
+
+**Next action:** choose whether to keep this hybrid. If approved, close the old print PDF in
+PDFgear and rebuild the stable-name `Trail_Map_3_Aud_{Print,ANSWER}.pdf` pair.
+
+## Session Close — 2026-09-19 — Aud's code corrected to 521; legs 5/6 merged; A2 rewritten and built
+
+**Task:** the user walked the printed Aud map (`Trail_Map_3_Aud_ANSWER.pdf`) against `PZ-17`'s leg
+table by hand and found it didn't match. Corrected the code, redesigned leg 5's ambiguity around
+the fix, and built the postcard that resolves it.
+
+**What was wrong:** leg 4 (landing &rarr; standing stone) crosses 1 bridge only, no ford. My own
+coordinate-snapping against `aud_features.json` got this wrong twice in a row (first credited the
+ford to leg 4, then wrongly to leg 3) before the user's on-paper count settled it: 2 fords total,
+both on leg 2. Corrected tally is **5 bridges, 2 fords, 1 gate &mdash; code `521`**, not `531`.
+Everything else in the leg table was already right.
+
+**Redesigned, same session:** legs 5 and 6 merged into one ticket row &mdash; from H5, the
+direction is now "Follow the road to the village at the crossing," crossing the H5 gate and the
+H7&ndash;H9 bridge together (tally `1 0 1`). The standing stone at H7 is still physically on the
+road but is no longer a named stop. The ticket is six legs now, not seven; confirmed with the user
+first that seven was never a real constraint (`PZ-17` already called the old row count
+"coincidence").
+
+New ambiguity: two village-at-a-crossing landmarks look alike on the sheet &mdash; H9 (real, the
+cairn/church/village cluster) and one near H3/G3 (decoy, off-route back near the start). Card A2
+resolves it by direction (south) and the wood the correct road runs beside (H5/H6/I5/I6). The old
+H5-fork mechanic (open ground vs. the trees, wrong branch scoring `432`) is superseded and marked
+so in place, not deleted.
+
+**A2 fully rewritten and built for the first time.** New message (drafted by the user, in Liv's
+voice) names the treasure hunt and hints at what to count &mdash; rivers, fords, gates &mdash;
+without stating the answer. Built `build_postcard_A2_pdf.py` from the A3 template; A2 had front
+art only until now, no back, no print PDF.
+
+**Files changed:**
+- `NorseBackpack/Norse_Brainstorm.html` &mdash; `PZ-17`: code `531`&rarr;`521` everywhere (6
+  refs), leg table collapsed 7&rarr;6 rows, the H5-fork mechanic marked superseded, A2's message
+  and Fun Fact rewritten, "seven legs" references (6 places) corrected to six. Also fixed in
+  passing: a duplicated `</i>` tag left by an earlier edit this session, and a stale reference to
+  the long-dead `467` code.
+- `NorseBackpack/Props/AudTicket/build_aud_ticket_pdf.py` &mdash; `LEGS`/`PER_LEG`/`ANSWER` updated
+  to the merged 6-leg, `521` route; docstring updated to match.
+- `output/pdf/Aud_Ticket_Print.pdf`, `Aud_Ticket_Letter_Print.pdf` &mdash; rebuilt.
+- `NorseBackpack/Postcards/build_postcard_A2_pdf.py` (new) &mdash; back-of-card builder, same
+  pattern as A3/AD.
+- `output/pdf/Postcard_A2_Hvammur_Print.pdf`, `Postcard_A2_Hvammur_Letter_Print.pdf` (new).
+
+**Checks run:** the ticket script's own `assert` (per-leg tallies sum to `ANSWER`) passed on
+rebuild. Both ticket PDFs rendered to PNG and inspected &mdash; 6 rows, `ANSWER 5 2 1` visible, leg
+5 reads `1 0 1`. A2's front and back both rendered to PNG and inspected &mdash; front art intact,
+back text fits its column, postmark reads HVAMMUR, Fun Fact box doesn't overflow.
+`Norse_Brainstorm.html` served over `http://localhost:8734`: no console errors, "village at the
+crossing" confirmed present in all three expected spots.
+
+**Resolved same session:** the user confirmed on the printed sheet that A2's forest clue works
+&mdash; the wood at H5/H6/I5/I6 reads as "the road follows the forest for a while," distinctly
+from the H3/G3 lookalike. No longer open.
+
+**Dropped as dead weight, same session:** the old H5-fork wrong-branch value (`432`) was never
+re-verified after the ford correction and no longer serves any puzzle function now that leg 5's
+ambiguity is the village-at-the-crossing mechanic, not the fork. Checked the repo for remaining
+`432` references &mdash; the two still in `Norse_Brainstorm.html` are unrelated (a page-size
+number) or already inside the marked-superseded note, and `build_aud_ticket_pdf.py` never
+mentioned it after this session's rewrite. Nothing left to clean.
+
+**Still open:**
+- The session below this one (Codex, same day) was editing `Aud_Map_Designer.html`, `aud_layer.py`
+  and `build_trail_maps_pdf.py` concurrently with this work. This session did not touch those
+  files, but both sessions were changing map-adjacent things at the same time &mdash; worth a
+  fresh read together before assuming either is fully caught up on the other.
+
+**Next action:** Aud's leg has nothing outstanding. Next real work across the project is `H6`
+(Harald's leg-closing card, PZ-05/PC-07) &mdash; the only one of 22 postcards still unwritten.
+
+## Session Close - 2026-09-19 - Aud map Option A trial and label avoidance
+
+**Task:** try Survey Option A on Aud's map and stop settlement labels from crossing roads and
+other feature lines.
+
+**Changed:** `aud_layer.py` and `Aud_Map_Designer.html` now use A across all 25 legend entries.
+The prior sage-grey marsh is retained so it stays distinct from the pale blue lake.
+`build_trail_maps_pdf.py` now reserves sampled feature linework and point symbols during label
+placement, tries positions right/left/above/below at two distances, and keeps labels inside the
+map frame. Búðardalur now prints left of its marker instead of through the road; Stykkishólmur's
+fallback position remains inside the frame. `Norse_Brainstorm.html` records this as the current
+comparison trial, leaving the B note as history.
+
+**Outputs:** `Trail_Map_3_Aud_OPTION_A_Print.pdf` and `_ANSWER.pdf` are the two review PDFs. The
+usual `Trail_Map_3_Aud_Print.pdf` was open in PDFgear and Windows denied replacing it, so the
+existing stable-name print/answer pair was intentionally left together rather than half-updated.
+
+**Checks:** Python compile passed. Both Option A PDFs are one-page letter sheets, rendered at
+180 dpi and visually inspected; labels stay in-frame, Búðardalur is clear of the road, crossings
+remain prominent, and the answer still reads 7. The designer loaded over local HTTP with no
+console warnings or errors.
+
+**Next action:** choose A or B. If A wins, close the old print PDF in PDFgear and rebuild the
+stable-name `Trail_Map_3_Aud_{Print,ANSWER}.pdf` pair from the already-updated A source.
+
+## Session Close - 2026-09-19 - Aud map switched to Saga option B
+
+**Task:** apply Option B from the legend comparison to Aud's map, while making marsh visibly less
+blue than lake.
+
+**Changed:** `NorseBackpack/TravelMap/aud_layer.py` and `Aud_Map_Designer.html` now use the full
+Saga family across all legend items: twin wheel tracks, walking-tick paths, double-bank rivers,
+wave streams, broken double ditches, leaf hedges, linked-stone walls, B crossings, organic terrain
+textures and B landmarks. Marsh is sage-grey (`#D9DDD0`, marks `#758676`) while lake remains pale
+blue-teal (`#DCE7E4`). Rebuilt `Trail_Map_3_Aud_Print.pdf` and `_ANSWER.pdf`.
+`Norse_Brainstorm.html` records the decision and supersedes the 18 Sept styling note.
+
+**Checks:** Python compile passed. Both one-page letter PDFs rebuilt, rendered at 180 dpi and
+visually inspected; the map remains legible, crossings remain the strongest marks, the answer
+route still reads as 7, and marsh/lake are distinct. The designer loaded over local HTTP and
+reported no browser console warnings or errors.
+
+**Next action:** print the new map once at 100% scale and confirm the denser Saga symbols and
+walking-tick footpaths remain clear on the intended printer.
+
+## Session Close - 2026-09-19 - Aud legend option sheet
+
+**Task:** create a printable comparison of Aud's current legend marks against the two proposed
+replacement families, so the user can choose item by item.
+
+**Built:** `NorseBackpack/TravelMap/build_aud_legend_options_pdf.py` and
+`output/pdf/Aud_Map_Legend_Options.pdf`. The two-page letter PDF covers all 25 items currently
+shown in the legend. Each row has Current, Option A (Survey) and Option B (Saga), using vector
+marks in the existing palette. This is a selection sheet only; the production map is unchanged.
+
+**Checks:** Python compile passed; PDF reports 2 letter-size pages; both pages were rendered at
+160 dpi and visually inspected. All rows, headings and marks are present and unclipped.
+
+**Next action:** user chooses Current, A or B for each row; then apply the selected symbols to
+both `aud_layer.py` and `Aud_Map_Designer.html` and rebuild the print/answer maps.
 
 ## Session Close — 2026-09-18 — Aud map styling pass
 

@@ -334,12 +334,25 @@ class Labeller:
     def reserve_centred(self, x, y, w, h, pad=2.0):
         self.reserve(x - w / 2 - pad, y - h / 2 - pad, x + w / 2 + pad, y + h / 2 + pad)
 
+    def reserve_polyline(self, pts, radius=2.2, step=4.0):
+        """Reserve small boxes along linework without blocking its whole bounding rectangle."""
+        for a, b in zip(pts, pts[1:]):
+            dx, dy = b[0] - a[0], b[1] - a[1]
+            length = math.hypot(dx, dy)
+            count = max(1, int(math.ceil(length / step)))
+            for i in range(count + 1):
+                t = i / count
+                x, y = a[0] + dx * t, a[1] + dy * t
+                self.reserve(x - radius, y - radius, x + radius, y + radius)
+
     def place(self, name, x, y, font, size, pad=1.4):
         w = pdfmetrics.stringWidth(name, font, size)
         h = size * 0.86
-        for dx, dy in ((4.4, -h / 2), (-w - 4.4, -h / 2), (-w / 2, 4.6), (-w / 2, -h - 4.6),
-                       (4.0, 3.2), (4.0, -h - 3.2), (-w - 4.0, 3.2), (-w - 4.0, -h - 3.2),
-                       (7.5, -h / 2), (-w - 7.5, -h / 2)):
+        for dx, dy in ((4.4, -h / 2), (-w - 4.4, -h / 2),
+                       (-w / 2, 5.4), (-w / 2, -h - 5.4),
+                       (4.0, 3.8), (4.0, -h - 3.8), (-w - 4.0, 3.8), (-w - 4.0, -h - 3.8),
+                       (8.0, -h / 2), (-w - 8.0, -h / 2),
+                       (-w / 2, 9.0), (-w / 2, -h - 9.0)):
             box = (x + dx - pad, y + dy - pad, x + dx + w + pad, y + dy + h + pad)
             if any(self._hit(box, b) for b in self.boxes):
                 continue
@@ -550,6 +563,12 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
     c.restoreState()
 
     lab = Labeller()
+    # Keep every candidate label wholly inside the map frame; obstacle avoidance can otherwise
+    # push a coastal name through the neat line while escaping a nearby road or symbol.
+    lab.reserve(-1000, -1000, MX0 + 1, 2000)
+    lab.reserve(MX1 - 1, -1000, 2000, 2000)
+    lab.reserve(MX0, -1000, MX1, MY0 + 1)
+    lab.reserve(MX0, MY1 - 1, MX1, 2000)
     # Legend for Aud's sheet, in the clear water bottom-left. Reserved so the label placer
     # routes town names around it rather than printing them across the key.
     if key == "aud" and aud_layer.LAYER.exists():
@@ -558,6 +577,16 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
                               ink="#"+INK.hexval()[2:], rule="#"+TAN.hexval()[2:],
                               paper="#F4EEDD")
         lab.reserve(_lx - 2, _ly - 2, _lx + _lw + 2, _ly + _lh + 2)
+        # Labels are drawn after the feature layer, so explicitly reserve the visible linework
+        # and landmark symbols. This lets the normal right/left/above/below candidate search move
+        # names such as Budardalur away from a road instead of printing straight through it.
+        for f in _feats:
+            if f["kind"] in aud_layer.LINE and len(f["pts"]) > 1:
+                radius = 3.0 if f["kind"] in ("road", "river") else 2.2
+                lab.reserve_polyline(f["pts"], radius=radius)
+            elif len(f["pts"]) == 1 and f["kind"] != "text":
+                x, y = f["pts"][0]
+                lab.reserve_centred(x, y, 16, 16, pad=1.5)
     if key == "leif":
         for filename, box, alpha in LEIF_ART:
             draw_vignette(c, ART_DIR / filename, box, alpha)

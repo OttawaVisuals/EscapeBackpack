@@ -4,13 +4,15 @@ Unlike the L'Anse ticket this one has no ImageGen front art, so both faces are d
 Same 2 x 5.5 in stock and the same palette, header band and outer rule, so the two read as
 tickets from the same world.
 
-The back carries the hunt: seven legs, one per row, with three tally columns -- bridges, fords
+The back carries the hunt: six legs, one per row, with three tally columns -- bridges, fords
 and gates. It gives DIRECTIONS ONLY. Listing the crossings would leave nothing to solve; counting
 them as you trace is the puzzle. Row 1 is pre-filled as the worked example.
 
-Legs 5 and 6 are deliberately terse. Two roads leave the standing stone southward through the
-same gate and both are walkable to the end, so the sheet alone cannot settle which is meant --
-card A2 carries the detail that does. The wrong branch scores 432 instead of 531.
+Legs 5 and 6 were merged, 19 Sept 2026 -- the standing stone at H7 is no longer a named stop.
+Leg 5 now runs all the way to "the village at the crossing" (H9), crossing both the H5 gate and
+the H7-H9 bridge in one row. A second, identical-looking village-at-a-crossing sits near H3/G3,
+well off the real route (back near the start) -- that lookalike, not a fork in the road, is the
+trap now. Card A2 carries the detail that resolves it; the sheet alone cannot.
 """
 from pathlib import Path
 
@@ -47,15 +49,14 @@ HEADER_H = 78
 # Directions only -- never what they cross. Leg 1's answer is printed as the worked example.
 LEGS = [
     "From the chapel, follow the road east to the next chapel.",
-    "Take the road south-west and keep to it as far as the well.",
+    "Take the road south-west and keep to it as far as the well at the fork.",
     "From the well the road runs south to the landing.",
-    "Follow the long road east to the standing stone.",
-    "Through the gate, keep to the road.",
-    "On to the next landmark.",
+    "Follow the long road east to the standing stone by the church.",
+    "Follow the road to the village at the crossing.",
     "Where the road ends at the ruin, search the wood beyond.",
 ]
 WORKED = (1, 0, 0)          # leg 1: one bridge, no ford, no gate
-ANSWER = (5, 3, 1)          # the full tally, for the answer copy only
+ANSWER = (5, 2, 1)          # the full tally, for the answer copy only
 
 
 def wrap(c, text, font, size, width):
@@ -266,7 +267,7 @@ def draw_back_card(c, x=0, y=0, answer=False):
 
 
 # per-leg answers, used only on the designer copy
-PER_LEG = [(1, 0, 0), (1, 2, 0), (1, 0, 0), (1, 1, 0), (0, 0, 1), (1, 0, 0), (0, 0, 0)]
+PER_LEG = [(1, 0, 0), (1, 2, 0), (1, 0, 0), (1, 0, 0), (1, 0, 1), (0, 0, 0)]
 assert tuple(sum(p[i] for p in PER_LEG) for i in range(3)) == ANSWER
 
 

@@ -32,7 +32,7 @@ LINE = {
 }
 AREA = {
     "wood":  dict(color="#4A6B3A", fill="#CBD9BE"),
-    "marsh": dict(color="#2F7775", fill="#D5E2DC"),
+    "marsh": dict(color="#6F8070", fill="#D9DDD0"),
     "lake":  dict(color="#2F7775", fill="#DCE7E4"),
     "field": dict(color="#B08A5A", fill="#F0E7CE"),
     "moor":  dict(color="#8A7A5E", fill="#E8DFC6"),
@@ -130,28 +130,58 @@ def _sample(f, closed, smooth, step=1.0):
     return out
 
 
-def _ornament(c, f):
-    """Hedge blobs, wall and ditch ticks -- the detail an isolated icon could not carry."""
+def _offset_feature(f, delta):
+    """Return a shallow feature copy offset locally from its centre line."""
+    pts = f["pts"]
+    shifted = []
+    for i, p in enumerate(pts):
+        a = pts[max(0, i - 1)]
+        b = pts[min(len(pts) - 1, i + 1)]
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        mag = math.hypot(dx, dy) or 1.0
+        shifted.append([p[0] - dy / mag * delta, p[1] + dx / mag * delta])
+    out = dict(f)
+    out["pts"] = shifted
+    return out
+
+
+def _ornament(c, f, gate_gaps=None):
+    """Draw line ornaments, leaving a true opening in walls wherever a gate sits."""
     kind = f["kind"]
     s = LINE[kind]
-    step = 4.2 if kind == "hedge" else 5.0 if kind == "wall" else 7.0
+    step = 4.8 if kind == "hedge" else 6.0 if kind == "wall" else 6.5
     c.setFillColor(HexColor(s["color"]))
     c.setStrokeColor(HexColor(s["color"]))
     c.setLineWidth(0.55)
     for x, y, ang in _sample(f, False, f.get("smooth", s.get("smooth", False)), step):
+        if kind == "wall" and any(math.hypot(x-gx, y-gy) < 8.5
+                                  for gx, gy in (gate_gaps or ())):
+            continue
         if kind == "hedge":
-            c.circle(x, y, 1.5, stroke=0, fill=1)
+            c.circle(x, y, 1.7, stroke=0, fill=1)
+        elif kind == "wall":
+            # Option B: irregular linked stone blocks rather than survey divisions.
+            ca, sa = math.cos(ang), math.sin(ang)
+            na, nb = -sa, ca
+            hw = 2.5
+            hh = 1.35 if int((x + y) / step) % 2 else 1.7
+            pts = [(x - ca*hw - na*hh, y - sa*hw - nb*hh),
+                   (x + ca*hw - na*hh*.8, y + sa*hw - nb*hh*.8),
+                   (x + ca*hw + na*hh, y + sa*hw + nb*hh),
+                   (x - ca*hw + na*hh*.75, y - sa*hw + nb*hh*.75)]
+            p = c.beginPath(); p.moveTo(*pts[0])
+            for q in pts[1:]: p.lineTo(*q)
+            p.close(); c.drawPath(p, stroke=1, fill=0)
         else:
             a = ang + math.pi / 2
-            r = 1.6 if kind == "wall" else 2.0
-            c.line(x - math.cos(a) * r, y - math.sin(a) * r,
-                   x + math.cos(a) * r, y + math.sin(a) * r)
+            # Ditch: hachures stay on one side of the centre line.
+            c.line(x, y, x + math.cos(a + .45) * 4.0, y + math.sin(a + .45) * 4.0)
 
 
 def _area_texture(c, f):
-    """Give broad terrain a quiet, repeatable map texture without competing with the route."""
+    """Survey texture family: sparse, regular terrain marks."""
     kind = f["kind"]
-    if kind not in ("wood", "marsh", "moor"):
+    if kind not in ("wood", "marsh", "moor", "field", "lake"):
         return
     pts = f["pts"]
     x0, x1 = min(p[0] for p in pts), max(p[0] for p in pts)
@@ -159,27 +189,80 @@ def _area_texture(c, f):
     c.saveState()
     c.clipPath(_path(c, f, True, f.get("smooth", False)), stroke=0, fill=0)
     c.setLineCap(1)
-    c.setStrokeColor(HexColor({"wood": "#6B8A57", "marsh": "#4F8985", "moor": "#B1A17F"}[kind]))
+    texture = {"wood": "#547444", "marsh": "#758676", "moor": "#A39270",
+               "field": "#B08A5A", "lake": "#4F8985"}[kind]
+    c.setStrokeColor(HexColor(texture))
+    c.setFillColor(HexColor(texture))
     c.setLineWidth(0.38)
     if hasattr(c, "setStrokeAlpha"):
         c.setStrokeAlpha(0.42)
     if kind == "wood":
-        # Small simplified tree marks: texture, not extra countable landmarks.
+        for col, x in enumerate(range(int(x0) - 8, int(x1) + 9, 20)):
+            for y in range(int(y0) - 8, int(y1) + 9, 18):
+                yy = y + (col % 2) * 5
+                for dx, scale in ((-3.5, .8), (2.5, 1.0)):
+                    c.line(x + dx, yy - 3, x + dx, yy + 1.5)
+                    p = c.beginPath(); p.moveTo(x + dx - 2.7*scale, yy)
+                    p.lineTo(x + dx, yy + 5*scale); p.lineTo(x + dx + 2.7*scale, yy)
+                    c.drawPath(p, stroke=1, fill=0)
+    elif kind == "marsh":
+        for col, x in enumerate(range(int(x0) - 8, int(x1) + 9, 18)):
+            for y in range(int(y0) - 6, int(y1) + 7, 15):
+                yy = y + (col % 2) * 4
+                c.line(x, yy - 2, x, yy + 3)
+                c.line(x, yy + 1, x - 2, yy + 3)
+                c.line(x, yy + 1, x + 2, yy + 3)
+                c.line(x - 3.5, yy - 3.5, x + 3.5, yy - 3.5)
+    elif kind == "moor":
         for x in range(int(x0) - 8, int(x1) + 9, 16):
             for y in range(int(y0) - 8, int(y1) + 9, 15):
-                c.line(x, y - 3, x, y + 3)
-                c.line(x - 2, y, x, y + 3)
-                c.line(x + 2, y, x, y + 3)
-    elif kind == "marsh":
-        for x in range(int(x0) - 8, int(x1) + 9, 15):
-            for y in range(int(y0) - 6, int(y1) + 7, 13):
-                c.line(x - 3, y, x + 3, y)
-                c.line(x, y, x + 1.4, y + 2.2)
-    else:  # moor
-        for x in range(int(x0) - 8, int(x1) + 9, 12):
-            for y in range(int(y0) - 8, int(y1) + 9, 12):
-                c.line(x - 1.5, y - 2, x + 1.5, y + 2)
+                c.line(x, y - 2, x, y + 2)
+                c.line(x, y, x - 2, y + 2)
+                c.line(x, y, x + 2, y + 2)
+    elif kind == "field":
+        for x in range(int(x0) - 12, int(x1) + 12, 10):
+            c.line(x - 8, y0 - 3, x + 8, y1 + 3)
+    # Lake deliberately stays a flat wash with its stronger shoreline.
     c.restoreState()
+
+
+def _draw_line_feature(c, f, road_pass=None, gate_gaps=None):
+    """Draw one line feature in the selected survey family."""
+    k = f["kind"]
+    s = LINE[k]
+    smooth = f.get("smooth", s.get("smooth", False))
+    w = f.get("w") or s["w"]
+    c.setLineCap(1); c.setLineJoin(1); c.setDash()
+    c.setStrokeColor(HexColor(s["color"]))
+    if k == "road":
+        # All road casings are drawn before all road fills. At forks and crossings this makes
+        # separate road features merge into one continuous carriageway instead of stacking.
+        if road_pass in (None, "casing"):
+            c.setLineWidth(w + 1.1)
+            c.drawPath(_path(c, f, False, smooth), stroke=1, fill=0)
+        if road_pass in (None, "fill"):
+            c.setStrokeColor(HexColor("#F6EFDC")); c.setLineWidth(max(.2, w - .6))
+            c.drawPath(_path(c, f, False, smooth), stroke=1, fill=0)
+    elif k == "river":
+        c.setStrokeColor(HexColor("#BFD7D2")); c.setLineWidth(w + 2.2)
+        c.drawPath(_path(c, f, False, smooth), stroke=1, fill=0)
+        c.setStrokeColor(HexColor(s["color"])); c.setLineWidth(w)
+        c.drawPath(_path(c, f, False, smooth), stroke=1, fill=0)
+    elif k == "stream":
+        c.setLineWidth(.8); c.drawPath(_path(c, f, False, smooth), stroke=1, fill=0)
+    elif k == "path":
+        c.setLineWidth(1.0); c.setDash(3.0, 2.4)
+        c.drawPath(_path(c, f, False, smooth), stroke=1, fill=0); c.setDash()
+    elif k == "ditch":
+        c.setLineWidth(.8); c.drawPath(_path(c, f, False, smooth), stroke=1, fill=0)
+        _ornament(c, f)
+    elif k in ("hedge", "wall"):
+        _ornament(c, f, gate_gaps)
+    else:
+        c.setLineWidth(w)
+        c.setDash(*s["dash"]) if s.get("dash") else c.setDash()
+        c.drawPath(_path(c, f, False, smooth), stroke=1, fill=0)
+        c.setDash()
 
 
 TRACKS = {"path", "road", "track"}
@@ -258,71 +341,77 @@ def _point(c, f, angle=0.0):
             p.close()
         c.drawPath(p, stroke=1, fill=fill)
 
-    if k in ("farm", "church", "ruin"):
-        pts = [(x - 5, y - 4), (x - 5, y + 1), (x, y + 5), (x + 5, y + 1), (x + 5, y - 4)]
-        poly(pts, close=(k != "ruin"))
-        if k == "church":
-            line(x, y + 5, x, y + 9, 0.9)
-            line(x - 2, y + 7.5, x + 2, y + 7.5, 0.9)
-        if k == "ruin":
-            line(x - 5, y - 4, x + 1, y - 4, 0.9)
+    if k == "farm":
+        poly([(x - 8, y - 4), (x - 8, y + 1), (x - 3, y + 5),
+              (x + 2, y + 1), (x + 2, y - 4)])
+        c.rect(x + 4, y - 4, 6, 7, fill=0, stroke=1)
+        line(x + 7, y - 4, x + 7, y + 3, .4)
+    elif k == "church":
+        poly([(x - 6, y - 5), (x - 6, y + 1), (x, y + 6),
+              (x + 6, y + 1), (x + 6, y - 5)])
+        line(x, y + 6, x, y + 11, 1.0)
+        line(x - 2, y + 9, x + 2, y + 9, 1.0)
+    elif k == "ruin":
+        poly([(x - 7, y - 5), (x - 7, y + 2), (x, y + 7),
+              (x + 7, y + 2), (x + 7, y - 1)], close=False)
+        line(x - 7, y - 5, x - 1, y - 5, 1.0)
     elif k == "mill":
-        poly([(x - 6, y - 4), (x - 6, y + 2), (x - 1, y + 6), (x + 1, y + 2), (x + 1, y - 4)])
-        c.setLineWidth(0.8)
-        c.circle(x + 4.5, y - 1, 4, stroke=1, fill=0)
+        poly([(x - 8, y - 5), (x - 8, y + 2), (x - 3, y + 6),
+              (x + 2, y + 2), (x + 2, y - 5)], .8)
+        c.setLineWidth(.9); c.circle(x + 3, y - 1, 5, stroke=1, fill=0)
         for i in range(4):
             a = i * math.pi / 4
-            line(x + 4.5 - math.cos(a) * 4, y - 1 - math.sin(a) * 4,
-                 x + 4.5 + math.cos(a) * 4, y - 1 + math.sin(a) * 4, 0.6)
+            line(x + 3 - math.cos(a) * 5, y - 1 - math.sin(a) * 5,
+                 x + 3 + math.cos(a) * 5, y - 1 + math.sin(a) * 5, .55)
     elif k == "cairn":
-        poly([(x - 5, y - 4), (x, y + 6), (x + 5, y - 4)])
-        line(x - 3, y - 0.5, x + 3, y - 0.5, 0.6)
-        line(x - 4.2, y - 2.4, x + 4.2, y - 2.4, 0.6)
+        for w, yy in ((14, -5), (10, -1), (6, 3)):
+            c.rect(x - w/2, y + yy, w, 3.5, fill=0, stroke=1)
     elif k == "stone":
-        poly([(x - 2.6, y - 5), (x - 2, y + 3), (x, y + 6), (x + 2, y + 2.5), (x + 2.6, y - 5)])
-        line(x - 4, y - 5, x + 4, y - 5, 0.6)
+        poly([(x - 4, y - 6), (x - 3, y + 5), (x, y + 8),
+              (x + 4, y + 4), (x + 5, y - 6)], fill=1)
+        line(x - 6, y - 6, x + 7, y - 6, 0.8)
     elif k == "bridge":
-        # Two heavy abutments read correctly at any route angle; the former arch became an
-        # unconvincing sideways rainbow when rotated with a road.
-        line(x - 3.6, y - 4.2, x - 3.6, y + 4.2, 1.25)
-        line(x + 3.6, y - 4.2, x + 3.6, y + 4.2, 1.25)
+        # A short, gently bowed deck follows the road direction. Three light cross-planks make
+        # it read as a bridge without the rigid end bars used by the earlier options.
+        for yy, bow in ((-3.4, -1.0), (3.4, 1.0)):
+            p = c.beginPath(); p.moveTo(x - 8, y + yy)
+            p.curveTo(x - 3, y + yy + bow, x + 3, y + yy + bow, x + 8, y + yy)
+            c.setLineWidth(1.15); c.drawPath(p, stroke=1, fill=0)
+        for xx in (-4, 0, 4):
+            line(x + xx, y - 3.5, x + xx, y + 3.5, .55)
     elif k == "ford":
-        line(x - 5.5, y + 3, x - 5.5, y - 3)
-        line(x + 5.5, y + 3, x + 5.5, y - 3)
-        for i in (-1, 0, 1):
-            c.circle(x + i * 3, y, 1.05, stroke=0, fill=1)
+        # Original/current convention: three bed stones between two bank ticks.
+        line(x - 5.5, y + 3, x - 5.5, y - 3, .8)
+        line(x + 5.5, y + 3, x + 5.5, y - 3, .8)
+        for xx in (-3, 0, 3):
+            c.circle(x + xx, y, 1.05, stroke=0, fill=1)
     elif k == "gate":
-        line(x - 4.5, y + 4, x - 4.5, y - 4, 0.9)
-        line(x + 4.5, y + 4, x + 4.5, y - 4, 0.9)
-        line(x - 4.5, y + 1.6, x + 4.5, y + 1.6, 0.7)
-        line(x - 4.5, y - 1.6, x + 4.5, y - 1.6, 0.7)
+        line(x - 7, y - 6, x - 7, y + 6, 1.3)
+        line(x + 7, y - 6, x + 7, y + 6, 1.3)
+        # Option B: one visibly open gate.
+        line(x - 7, y - 3, x + 2, y + 5, 1.0)
+        line(x - 7, y + 1, x + 1, y + 5, .8)
     elif k == "village":
-        for hx, hy, w in ((x - 4.2, y + 1.2, 3), (x + 3.4, y + 2.2, 2.6), (x - 0.4, y - 4.2, 3)):
-            poly([(hx - w, hy - w), (hx - w, hy), (hx, hy + w * 0.9), (hx + w, hy), (hx + w, hy - w)], 0.8)
+        for hx, hy in ((x - 6, y + 1), (x + 2, y + 2), (x - 1, y - 4)):
+            poly([(hx - 3, hy - 3), (hx - 3, hy), (hx, hy + 3),
+                  (hx + 3, hy), (hx + 3, hy - 3)], .7, fill=1)
     elif k == "port":
-        c.setLineWidth(0.8)
+        # Existing column: anchor.
         c.circle(x, y + 5.4, 1.5, stroke=1, fill=0)
         line(x, y + 3.9, x, y - 5.4, 1.0)
-        line(x - 3.6, y + 2.2, x + 3.6, y + 2.2, 0.8)
-        c.setLineWidth(1.0)
-        p = c.beginPath()
-        p.moveTo(x - 4.6, y - 1.6)
+        line(x - 3.6, y + 2.2, x + 3.6, y + 2.2, .8)
+        p = c.beginPath(); p.moveTo(x - 4.6, y - 1.6)
         p.curveTo(x - 4.2, y - 5.6, x + 4.2, y - 5.6, x + 4.6, y - 1.6)
         c.drawPath(p, stroke=1, fill=0)
     elif k == "cave":
-        c.setLineWidth(0.9)
-        p = c.beginPath()
-        p.moveTo(x - 5, y - 4)
-        p.lineTo(x - 5, y - 1)
-        p.curveTo(x - 5, y + 5.6, x + 5, y + 5.6, x + 5, y - 1)
-        p.lineTo(x + 5, y - 4)
-        p.close()
-        c.drawPath(p, stroke=1, fill=1)
-        line(x - 7.5, y - 4, x + 7.5, y - 4, 0.9)
+        poly([(x - 9, y - 5), (x - 6, y + 2), (x, y + 7),
+              (x + 7, y + 2), (x + 9, y - 5)], .9)
+        p = c.beginPath(); p.moveTo(x - 4, y - 5)
+        p.curveTo(x - 4, y + 3, x + 4, y + 3, x + 4, y - 5); p.close()
+        c.drawPath(p, stroke=0, fill=1)
     elif k == "well":
-        c.setLineWidth(0.9)
-        c.circle(x, y, 3.4, stroke=1, fill=0)
-        c.circle(x, y, 1.2, stroke=0, fill=1)
+        c.circle(x, y, 5, stroke=1, fill=0)
+        c.circle(x, y, 1.5, stroke=0, fill=1)
     elif k == "marker":
         c.circle(x, y, 4.5, stroke=0, fill=1)
     if rotated:
@@ -348,46 +437,29 @@ def draw(c, features, clip_rect=None):
             c.drawPath(_path(c, f, True, f.get("smooth", False)), stroke=1, fill=1)
             _area_texture(c, f)
 
-    # Non-road linework first, so roads sit over it and a bridge reads as carrying the road
-    # across the water.
+    # Non-road linework first, so roads remain clear over rivers and other terrain lines. Wall
+    # blocks stop at gate posts rather than continuing visibly through the opening.
+    gate_gaps = [f["pts"][0] for f in features if f["kind"] == "gate" and len(f["pts"]) == 1]
     for f in features:
         k = f["kind"]
         if k not in LINE or k == "road" or len(f["pts"]) < 2:
             continue
-        s = LINE[k]
-        smooth = f.get("smooth", s.get("smooth", False))
-        w = f.get("w") or s["w"]
-        c.setStrokeColor(HexColor(s["color"]))
-        c.setLineWidth(w)
-        c.setLineCap(1)
-        c.setLineJoin(1)
-        c.setDash(*s["dash"]) if s.get("dash") else c.setDash()
-        c.drawPath(_path(c, f, False, smooth), stroke=1, fill=0)
-        c.setDash()
-        if k in ("hedge", "wall", "ditch"):
-            _ornament(c, f)
+        _draw_line_feature(c, f, gate_gaps=gate_gaps)
 
-    # Roads in TWO passes: every casing, then every fill. Drawing each road casing-then-fill on
-    # its own makes the next road's dark casing slice across the previous one's pale carriageway,
-    # so converging roads print as a braid of parallel dark lines instead of merging into one
-    # junction. Casing-pass-then-fill-pass is what makes a road network read as a network.
+    # Draw every casing first, then every fill, so forks and crossings merge naturally.
     roads = [f for f in features if f["kind"] == "road" and len(f["pts"]) > 1]
-    rs = LINE["road"]
-    c.setLineCap(1)
-    c.setLineJoin(1)
-    c.setDash()
-    c.setStrokeColor(HexColor(rs["color"]))
     for f in roads:
-        c.setLineWidth((f.get("w") or rs["w"]) + 1.1)
-        c.drawPath(_path(c, f, False, f.get("smooth", True)), stroke=1, fill=0)
-    c.setStrokeColor(HexColor("#F6EFDC"))
+        _draw_line_feature(c, f, "casing")
     for f in roads:
-        c.setLineWidth(max(0.2, (f.get("w") or rs["w"]) - 0.6))
-        c.drawPath(_path(c, f, False, f.get("smooth", True)), stroke=1, fill=0)
+        _draw_line_feature(c, f, "fill")
 
     angles = crossing_angles(features)
-    for i, f in enumerate(features):                     # point symbols on top of the linework
-        if len(f["pts"]) == 1:
+    # Ordinary landmarks first; countable crossings always sit in the foreground.
+    for i, f in enumerate(features):
+        if len(f["pts"]) == 1 and f["kind"] not in ("bridge", "ford", "gate"):
+            _point(c, f, angles.get(i, 0.0))
+    for i, f in enumerate(features):
+        if len(f["pts"]) == 1 and f["kind"] in ("bridge", "ford", "gate"):
             _point(c, f, angles.get(i, 0.0))
 
     c.restoreState()
@@ -439,30 +511,17 @@ def draw_legend(c, features, box, ink="#283B34", rule="#A99A7B", paper="#F4EEDD"
         cy = top - row * row_h - row_h / 2
         sw = cx + 9                                   # swatch centre
         if kind in LINE:
-            s = LINE[kind]
-            if kind == "road":
-                c.setStrokeColor(HexColor(s["color"]))
-                c.setLineWidth(s["w"] + 1.1)
-                c.setDash()
-                c.line(cx, cy, cx + 18, cy)
-                c.setStrokeColor(HexColor("#F6EFDC"))
-                c.setLineWidth(s["w"] - 0.6)
-                c.line(cx, cy, cx + 18, cy)
-            else:
-                c.setStrokeColor(HexColor(s["color"]))
-                c.setLineWidth(s["w"])
-                c.setDash(*s["dash"]) if s.get("dash") else c.setDash()
-                c.line(cx, cy, cx + 18, cy)
-                c.setDash()
-                if kind in ("hedge", "wall", "ditch"):
-                    _ornament(c, {"kind": kind, "smooth": False,
-                                  "pts": [[cx, cy], [cx + 18, cy]]})
+            _draw_line_feature(c, {"kind": kind, "smooth": False,
+                                   "pts": [[cx, cy], [cx + 18, cy]]})
         elif kind in AREA:
             s = AREA[kind]
             c.setFillColor(HexColor(s["fill"]))
             c.setStrokeColor(HexColor(s["color"]))
             c.setLineWidth(0.6)
             c.rect(cx, cy - 4, 18, 8, fill=1, stroke=1)
+            _area_texture(c, {"kind": kind, "smooth": False,
+                              "pts": [[cx, cy - 4], [cx + 18, cy - 4],
+                                      [cx + 18, cy + 4], [cx, cy + 4]]})
         else:
             c.saveState()
             c.translate(sw, cy)
