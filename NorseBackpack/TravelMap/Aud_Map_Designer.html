@@ -212,7 +212,7 @@ const SYMBOLS = {
 
   /* area symbols */
   wood:    {geom:'area', name:'Wood',   color:'#4A6B3A', fill:'#CBD9BE'},
-  marsh:   {geom:'area', name:'Marsh',  color:'#2F7775', fill:'#D5E2DC'},
+  marsh:   {geom:'area', name:'Marsh',  color:'#6F8070', fill:'#D9DDD0'},
   lake:    {geom:'area', name:'Lake',   color:'#2F7775', fill:'#DCE7E4'},
   field:   {geom:'area', name:'Field',  color:'#B08A5A', fill:'#F0E7CE'},
   moor:    {geom:'area', name:'Moor',   color:'#8A7A5E', fill:'#E8DFC6'},
@@ -295,9 +295,34 @@ function pathFor(f){
   const useSmooth = f.smooth !== undefined ? f.smooth : !!s.smooth;
   return (useSmooth && f.pts.length > 2 ? catmull(f.pts, closed) : null) || poly(f.pts, closed);
 }
+function offsetFeature(f, delta){
+  const pts = f.pts.map((p,i) => {
+    const a=f.pts[Math.max(0,i-1)], b=f.pts[Math.min(f.pts.length-1,i+1)];
+    const dx=b[0]-a[0], dy=b[1]-a[1], mag=Math.hypot(dx,dy)||1;
+    return [p[0]-dy/mag*delta, p[1]+dx/mag*delta];
+  });
+  return {...f, pts};
+}
 function len(pts){
   let t = 0; for (let i=1;i<pts.length;i++) t += Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]);
   return t;
+}
+function pointAngle(f){
+  if (!['bridge','ford','gate'].includes(f.kind)) return 0;
+  const kinds = f.kind === 'gate' ? new Set(['hedge','wall','ditch']) : new Set(['road','track','path']);
+  let best = Infinity, angle = 0, p = f.pts[0];
+  for (const line of state.features){
+    if (!kinds.has(line.kind) || line.pts.length < 2) continue;
+    for (let i=1;i<line.pts.length;i++){
+      const a=line.pts[i-1], b=line.pts[i], dx=b[0]-a[0], dy=b[1]-a[1], l2=dx*dx+dy*dy;
+      const t=l2 ? Math.max(0,Math.min(1,((p[0]-a[0])*dx+(p[1]-a[1])*dy)/l2)) : 0;
+      const dist=Math.hypot(p[0]-(a[0]+t*dx),p[1]-(a[1]+t*dy));
+      if (dist < best){ best=dist; angle=Math.atan2(dy,dx)*180/Math.PI; }
+    }
+  }
+  while (angle > 90) angle -= 180;
+  while (angle < -90) angle += 180;
+  return angle;
 }
 
 /* ------------------------------------------------------------------ rendering */
@@ -329,10 +354,12 @@ function reserve(x0, y0, x1, y1){ labelBoxes.push({x0, y0, x1, y1}); }
 /* Page coords, y UP. 0.6em advance is the IBM Plex Mono figure; close enough for a hit test. */
 function findSpot(text, x, y, size, gap){
   const w = text.length * size * 0.6, h = size * 1.02, g = gap || 4;
-  const cands = [[x+g, y-2.4, 'start'], [x-g, y-2.4, 'end'],
-                 [x, y+g+3, 'middle'],  [x, y-g-8, 'middle'],
-                 [x+g, y+g+2, 'start'], [x-g, y+g+2, 'end'],
-                 [x+g, y-g-7, 'start'], [x-g, y-g-7, 'end']];
+  const cands = [[x+g, y-h/2, 'start'], [x-g, y-h/2, 'end'],
+                 [x, y+g+4, 'middle'],  [x, y-g-h-4, 'middle'],
+                 [x+g, y+g+3, 'start'], [x-g, y+g+3, 'end'],
+                 [x+g, y-g-h-3, 'start'], [x-g, y-g-h-3, 'end'],
+                 [x+g+4, y-h/2, 'start'], [x-g-4, y-h/2, 'end'],
+                 [x, y+g+8, 'middle'], [x, y-g-h-8, 'middle']];
   for (const [lx, ly, anchor] of cands){
     const x0 = anchor === 'start' ? lx : anchor === 'end' ? lx - w : lx - w/2;
     const box = {x0: x0-1.5, y0: ly-1.5, x1: x0+w+1.5, y1: ly+h+1.5};
@@ -349,6 +376,26 @@ let stopPlan = [];
 /* Stops are planned before towns so the more important label always wins the good position. */
 function planBaseLabels(){
   labelBoxes.length = 0; droppedLabels.length = 0;
+  reserve(-1000,-1000,B.mapArea.x0+1,2000);
+  reserve(B.mapArea.x1-1,-1000,2000,2000);
+  reserve(B.mapArea.x0,-1000,B.mapArea.x1,B.mapArea.y0+1);
+  reserve(B.mapArea.x0,B.mapArea.y1-1,B.mapArea.x1,2000);
+  /* The feature layer is already drawn when labels are placed. Reserve sampled linework and
+     point symbols so names can move to the other side, above or below their marker. */
+  for (const f of state.features){
+    const s=SYMBOLS[f.kind];
+    if (s.geom==='line' && f.pts.length>1){
+      const r=(f.kind==='road'||f.kind==='river')?3:2.2;
+      for (let i=1;i<f.pts.length;i++){
+        const a=f.pts[i-1],b=f.pts[i],length=Math.hypot(b[0]-a[0],b[1]-a[1]);
+        const n=Math.max(1,Math.ceil(length/4));
+        for (let j=0;j<=n;j++){ const t=j/n,x=a[0]+(b[0]-a[0])*t,y=a[1]+(b[1]-a[1])*t;
+          reserve(x-r,y-r,x+r,y+r); }
+      }
+    } else if (s.geom==='point' && f.kind!=='text' && f.kind!=='bridge'){
+      const [x,y]=f.pts[0]; reserve(x-9.5,y-9.5,x+9.5,y+9.5);
+    }
+  }
   for (const s of B.stops) reserve(s.x-6, s.y-6, s.x+6, s.y+6);
   for (const t of B.towns) reserve(t.x-2.4, t.y-2.4, t.x+2.4, t.y+2.4);
   stopPlan = B.stops.map(s => {
@@ -366,55 +413,59 @@ function drawPoint(f, g){
       stroke:c, 'stroke-width': w||.8, 'stroke-linecap':'round'}, g);
   const path = (d,w,fill) => el('path', {d, stroke:c, 'stroke-width':w||.8, fill: fill||'none',
       'stroke-linejoin':'round'}, g);
-  if (k === 'farm' || k === 'church' || k === 'ruin'){
-    path(`M ${S(x-5)} ${S(toY(y-4))} L ${S(x-5)} ${S(toY(y+1))} L ${S(x)} ${S(toY(y+5))} `
-       + `L ${S(x+5)} ${S(toY(y+1))} L ${S(x+5)} ${S(toY(y-4))} ${k==='ruin'?'':'Z'}`, .9);
-    if (k === 'church'){ line(x, y+5, x, y+9, .9); line(x-2, y+7.5, x+2, y+7.5, .9); }
-    if (k === 'ruin'){ line(x-5, y-4, x+1, y-4, .9); }
+  if (k === 'farm'){
+    path(`M ${S(x-8)} ${S(toY(y-4))} L ${S(x-8)} ${S(toY(y+1))} L ${S(x-3)} ${S(toY(y+5))} `
+       + `L ${S(x+2)} ${S(toY(y+1))} L ${S(x+2)} ${S(toY(y-4))} Z`, .9);
+    el('rect',{x:S(x+4),y:S(toY(y+3)),width:6,height:7,fill:'none',stroke:c,'stroke-width':.7},g);
+    line(x+7,y-4,x+7,y+3,.4);
+  } else if (k === 'church'){
+    path(`M ${S(x-6)} ${S(toY(y-5))} L ${S(x-6)} ${S(toY(y+1))} L ${S(x)} ${S(toY(y+6))} `
+       + `L ${S(x+6)} ${S(toY(y+1))} L ${S(x+6)} ${S(toY(y-5))} Z`, 1);
+    line(x,y+6,x,y+11,1); line(x-2,y+9,x+2,y+9,1);
+  } else if (k === 'ruin'){
+    path(`M ${S(x-7)} ${S(toY(y-5))} L ${S(x-7)} ${S(toY(y+2))} L ${S(x)} ${S(toY(y+7))} `
+       + `L ${S(x+7)} ${S(toY(y+2))} L ${S(x+7)} ${S(toY(y-1))}`,1);
+    line(x-7,y-5,x-1,y-5,1);
   } else if (k === 'mill'){
-    path(`M ${S(x-6)} ${S(toY(y-4))} L ${S(x-6)} ${S(toY(y+2))} L ${S(x-1)} ${S(toY(y+6))} `
-       + `L ${S(x+1)} ${S(toY(y+2))} L ${S(x+1)} ${S(toY(y-4))} Z`, .9);
-    el('circle', {cx:S(x+4.5), cy:S(toY(y-1)), r:4, stroke:c, 'stroke-width':.8, fill:'none'}, g);
+    path(`M ${S(x-8)} ${S(toY(y-5))} L ${S(x-8)} ${S(toY(y+2))} L ${S(x-3)} ${S(toY(y+6))} `
+       + `L ${S(x+2)} ${S(toY(y+2))} L ${S(x+2)} ${S(toY(y-5))} Z`,.8);
+    el('circle', {cx:S(x+3), cy:S(toY(y-1)), r:5, stroke:c, 'stroke-width':.9, fill:'none'}, g);
     for (let i=0;i<4;i++){ const a=i*Math.PI/4;
-      line(x+4.5-Math.cos(a)*4, y-1-Math.sin(a)*4, x+4.5+Math.cos(a)*4, y-1+Math.sin(a)*4, .6); }
+      line(x+3-Math.cos(a)*5, y-1-Math.sin(a)*5, x+3+Math.cos(a)*5, y-1+Math.sin(a)*5, .55); }
   } else if (k === 'cairn'){
-    path(`M ${S(x-5)} ${S(toY(y-4))} L ${S(x)} ${S(toY(y+6))} L ${S(x+5)} ${S(toY(y-4))} Z`, .9);
-    line(x-3, y-.5, x+3, y-.5, .6); line(x-4.2, y-2.4, x+4.2, y-2.4, .6);
+    for (const [w,yy] of [[14,-5],[10,-1],[6,3]])
+      el('rect',{x:S(x-w/2),y:S(toY(y+yy+3.5)),width:w,height:3.5,fill:'none',stroke:c,'stroke-width':.8},g);
   } else if (k === 'stone'){
-    path(`M ${S(x-2.6)} ${S(toY(y-5))} L ${S(x-2)} ${S(toY(y+3))} L ${S(x)} ${S(toY(y+6))} `
-       + `L ${S(x+2)} ${S(toY(y+2.5))} L ${S(x+2.6)} ${S(toY(y-5))} Z`, .9);
-    line(x-4, y-5, x+4, y-5, .6);
+    path(`M ${S(x-4)} ${S(toY(y-6))} L ${S(x-3)} ${S(toY(y+5))} L ${S(x)} ${S(toY(y+8))} `
+       + `L ${S(x+4)} ${S(toY(y+4))} L ${S(x+5)} ${S(toY(y-6))} Z`, 1, c);
+    line(x-6, y-6, x+7, y-6, .8);
   } else if (k === 'bridge'){
-    /* Two abutments stay recognisable when the crossing is rotated with its route. */
-    line(x-3.6, y-4.2, x-3.6, y+4.2, 1.25); line(x+3.6, y-4.2, x+3.6, y+4.2, 1.25);
+    path(`M ${S(x-8)} ${S(toY(y-3.4))} C ${S(x-3)} ${S(toY(y-4.4))} ${S(x+3)} ${S(toY(y-4.4))} ${S(x+8)} ${S(toY(y-3.4))}`,1.15);
+    path(`M ${S(x-8)} ${S(toY(y+3.4))} C ${S(x-3)} ${S(toY(y+4.4))} ${S(x+3)} ${S(toY(y+4.4))} ${S(x+8)} ${S(toY(y+3.4))}`,1.15);
+    for (const xx of [-4,0,4]) line(x+xx,y-3.5,x+xx,y+3.5,.55);
   } else if (k === 'ford'){
-    /* The map convention: the bed shown as stones between two bank ticks, so it reads as a
-       place you wade rather than a place you cross dry. */
-    line(x-5.5, y+3, x-5.5, y-3, .8); line(x+5.5, y+3, x+5.5, y-3, .8);
-    for (let i=-1;i<=1;i++) el('circle', {cx:S(x+i*3), cy:S(toY(y)), r:1.05, fill:c, stroke:'none'}, g);
+    line(x-5.5,y+3,x-5.5,y-3,.8); line(x+5.5,y+3,x+5.5,y-3,.8);
+    for (const xx of [-3,0,3]) el('circle',{cx:S(x+xx),cy:S(toY(y)),r:1.05,fill:c,stroke:'none'},g);
   } else if (k === 'gate'){
-    line(x-4.5, y+4, x-4.5, y-4, .9); line(x+4.5, y+4, x+4.5, y-4, .9);
-    line(x-4.5, y+1.6, x+4.5, y+1.6, .7); line(x-4.5, y-1.6, x+4.5, y-1.6, .7);
+    line(x-7, y-6, x-7, y+6, 1.3); line(x+7, y-6, x+7, y+6, 1.3);
+    line(x-7,y-3,x+2,y+5,1); line(x-7,y+1,x+1,y+5,.8);
   } else if (k === 'village'){
-    /* Three gables, not one: a village has to read as distinct from the single-house farm. */
-    const hut = (hx, hy, w) => path(`M ${S(hx-w)} ${S(toY(hy-w))} L ${S(hx-w)} ${S(toY(hy))} `
-      + `L ${S(hx)} ${S(toY(hy+w*0.9))} L ${S(hx+w)} ${S(toY(hy))} L ${S(hx+w)} ${S(toY(hy-w))} Z`, .8);
-    hut(x-4.2, y+1.2, 3); hut(x+3.4, y+2.2, 2.6); hut(x-0.4, y-4.2, 3);
+    for (const [hx,hy] of [[x-6,y+1],[x+2,y+2],[x-1,y-4]])
+      path(`M ${S(hx-3)} ${S(toY(hy-3))} L ${S(hx-3)} ${S(toY(hy))} L ${S(hx)} ${S(toY(hy+3))} `
+         + `L ${S(hx+3)} ${S(toY(hy))} L ${S(hx+3)} ${S(toY(hy-3))} Z`,.7,c);
   } else if (k === 'port'){
-    /* An anchor, drawn to sit on the shoreline rather than inland. */
-    el('circle', {cx:S(x), cy:S(toY(y+5.4)), r:1.5, stroke:c, 'stroke-width':.8, fill:'none'}, g);
-    line(x, y+3.9, x, y-5.4, 1);
-    line(x-3.6, y+2.2, x+3.6, y+2.2, .8);
+    el('circle',{cx:S(x),cy:S(toY(y+5.4)),r:1.5,stroke:c,'stroke-width':.8,fill:'none'},g);
+    line(x,y+3.9,x,y-5.4,1); line(x-3.6,y+2.2,x+3.6,y+2.2,.8);
     path(`M ${S(x-4.6)} ${S(toY(y-1.6))} Q ${S(x-4.2)} ${S(toY(y-5.6))} ${S(x)} ${S(toY(y-5.6))} `
-       + `Q ${S(x+4.2)} ${S(toY(y-5.6))} ${S(x+4.6)} ${S(toY(y-1.6))}`, 1);
+       + `Q ${S(x+4.2)} ${S(toY(y-5.6))} ${S(x+4.6)} ${S(toY(y-1.6))}`,1);
   } else if (k === 'cave'){
-    /* A mouth in a slope: solid arch so it reads as an opening, with the hillside above it. */
-    path(`M ${S(x-5)} ${S(toY(y-4))} L ${S(x-5)} ${S(toY(y-1))} Q ${S(x)} ${S(toY(y+5.6))} `
-       + `${S(x+5)} ${S(toY(y-1))} L ${S(x+5)} ${S(toY(y-4))} Z`, .9, c);
-    line(x-7.5, y-4, x+7.5, y-4, .9);
+    path(`M ${S(x-9)} ${S(toY(y-5))} L ${S(x-6)} ${S(toY(y+2))} L ${S(x)} ${S(toY(y+7))} `
+       + `L ${S(x+7)} ${S(toY(y+2))} L ${S(x+9)} ${S(toY(y-5))} Z`,.9);
+    path(`M ${S(x-4)} ${S(toY(y-5))} Q ${S(x-4)} ${S(toY(y+3))} ${S(x)} ${S(toY(y+3))} `
+       + `Q ${S(x+4)} ${S(toY(y+3))} ${S(x+4)} ${S(toY(y-5))} Z`,.7,c);
   } else if (k === 'well'){
-    el('circle', {cx:S(x), cy:S(toY(y)), r:3.4, stroke:c, 'stroke-width':.9, fill:'none'}, g);
-    el('circle', {cx:S(x), cy:S(toY(y)), r:1.2, stroke:'none', fill:c}, g);
+    el('circle',{cx:S(x),cy:S(toY(y)),r:5,stroke:c,'stroke-width':1,fill:'none'},g);
+    el('circle',{cx:S(x),cy:S(toY(y)),r:1.5,stroke:'none',fill:c},g);
   } else if (k === 'marker'){
     el('circle', {cx:S(x), cy:S(toY(y)), r:4.5, fill:c}, g);
   } else if (k === 'text'){
@@ -424,25 +475,60 @@ function drawPoint(f, g){
   if (f.label) label(f.label, x, y - 9, 6.4, '#283B34', g);
 }
 
-/* Line symbols carry their own ornament -- a hedge is blobs on a line, a wall is cross ticks.
-   This is the part an isolated icon could never do. */
+/* Hybrid ornaments: even shrubs, Saga wall blocks and one-sided ditch hachures. */
 function drawOrnament(f, g, d){
   const s = SYMBOLS[f.kind];
   const probe = el('path', {d, fill:'none', stroke:'none'}, g);
   const total = probe.getTotalLength ? probe.getTotalLength() : 0;
   if (!total) return;
-  const step = f.kind === 'hedge' ? 4.2 : f.kind === 'wall' ? 5.0 : 7.0;
+  const step = f.kind === 'hedge' ? 4.8 : f.kind === 'wall' ? 6 : 6.5;
   for (let l = step/2; l < total; l += step){
     const p = probe.getPointAtLength(l);
+    if (f.kind==='wall' && state.features.some(q=>q.kind==='gate' && q.pts.length===1 &&
+        Math.hypot(p.x-q.pts[0][0],p.y-toY(q.pts[0][1]))<8.5)) continue;
     if (f.kind === 'hedge'){
-      el('circle', {cx:p.x.toFixed(2), cy:p.y.toFixed(2), r:1.5, fill:s.color, opacity:.85}, g);
-    } else if (f.kind === 'wall' || f.kind === 'ditch'){
+      el('circle',{cx:p.x.toFixed(2),cy:p.y.toFixed(2),r:1.7,fill:s.color},g);
+    } else if (f.kind==='wall'){
+      const q=probe.getPointAtLength(Math.min(l+.6,total));
+      const a=Math.atan2(q.y-p.y,q.x-p.x),ca=Math.cos(a),sa=Math.sin(a),na=-sa,nb=ca;
+      const hw=2.5,hh=Math.round(l/step)%2?1.35:1.7;
+      el('path',{d:`M ${(p.x-ca*hw-na*hh).toFixed(2)} ${(p.y-sa*hw-nb*hh).toFixed(2)} `
+        + `L ${(p.x+ca*hw-na*hh*.8).toFixed(2)} ${(p.y+sa*hw-nb*hh*.8).toFixed(2)} `
+        + `L ${(p.x+ca*hw+na*hh).toFixed(2)} ${(p.y+sa*hw+nb*hh).toFixed(2)} `
+        + `L ${(p.x-ca*hw+na*hh*.75).toFixed(2)} ${(p.y-sa*hw+nb*hh*.75).toFixed(2)} Z`,
+        fill:'none',stroke:s.color,'stroke-width':.55},g);
+    } else {
       const q = probe.getPointAtLength(Math.min(l+.6, total));
-      const a = Math.atan2(q.y-p.y, q.x-p.x) + Math.PI/2, r = f.kind==='wall' ? 1.6 : 2.0;
-      el('line', {x1:(p.x-Math.cos(a)*r).toFixed(2), y1:(p.y-Math.sin(a)*r).toFixed(2),
-                  x2:(p.x+Math.cos(a)*r).toFixed(2), y2:(p.y+Math.sin(a)*r).toFixed(2),
-                  stroke:s.color, 'stroke-width':.55}, g);
+      let a=Math.atan2(q.y-p.y,q.x-p.x)+Math.PI/2;
+      if (f.kind==='ditch') a+=.45;
+      const r=f.kind==='wall'?2:4;
+      el('line',{x1:p.x.toFixed(2),y1:p.y.toFixed(2),
+        x2:(p.x+Math.cos(a)*r).toFixed(2),y2:(p.y+Math.sin(a)*r).toFixed(2),
+        stroke:s.color,'stroke-width':.55},g);
     }
+  }
+}
+
+function drawStyledLine(f, g, d, roadPass){
+  const s=SYMBOLS[f.kind], common={'fill':'none',stroke:s.color,'stroke-linecap':'round','stroke-linejoin':'round'};
+  if (f.kind==='road'){
+    if (!roadPass || roadPass==='casing') el('path',{d,...common,'stroke-width':(f.w||s.w)+1.1},g);
+    if (!roadPass || roadPass==='fill') el('path',{d,fill:'none',stroke:'#F6EFDC','stroke-width':(f.w||s.w)-.6,
+      'stroke-linecap':'round','stroke-linejoin':'round'},g);
+  } else if (f.kind==='river'){
+    el('path',{d,fill:'none',stroke:'#BFD7D2','stroke-width':(f.w||s.w)+2.2,
+      'stroke-linecap':'round','stroke-linejoin':'round'},g);
+    el('path',{d,...common,'stroke-width':f.w||s.w},g);
+  } else if (f.kind==='stream'){
+    el('path',{d,...common,'stroke-width':.8},g);
+  } else if (f.kind==='path'){
+    el('path',{d,...common,'stroke-width':1,'stroke-dasharray':'3 2.4'},g);
+  } else if (f.kind==='ditch'){
+    el('path',{d,...common,'stroke-width':.8},g); drawOrnament(f,g,d);
+  } else if (f.kind==='hedge' || f.kind==='wall'){
+    drawOrnament(f,g,d);
+  } else {
+    el('path',{d,...common,'stroke-width':f.w||s.w,'stroke-dasharray':s.dash||null},g);
   }
 }
 
@@ -450,21 +536,22 @@ function render(){
   svg.textContent = '';
   planBaseLabels();
   const defs = el('defs', {}, svg);
-  const hatch = el('pattern', {id:'hatch', width:4, height:4, patternUnits:'userSpaceOnUse',
-                               patternTransform:'rotate(45)'}, defs);
-  el('line', {x1:0, y1:0, x2:0, y2:4, stroke:'#C0B291', 'stroke-width':.6}, hatch);
-  const woodTexture = el('pattern', {id:'woodTexture', width:16, height:15, patternUnits:'userSpaceOnUse'}, defs);
-  el('rect', {x:0, y:0, width:16, height:15, fill:'#CBD9BE'}, woodTexture);
-  el('path', {d:'M 8 12 L 8 6 M 6 9 L 8 6 L 10 9', fill:'none', stroke:'#6B8A57',
-              'stroke-width':.38, opacity:.42, 'stroke-linecap':'round'}, woodTexture);
-  const marshTexture = el('pattern', {id:'marshTexture', width:15, height:13, patternUnits:'userSpaceOnUse'}, defs);
-  el('rect', {x:0, y:0, width:15, height:13, fill:'#D5E2DC'}, marshTexture);
-  el('path', {d:'M 4 8 H 10 M 7 8 L 8.4 5.8', fill:'none', stroke:'#4F8985',
-              'stroke-width':.38, opacity:.42, 'stroke-linecap':'round'}, marshTexture);
-  const moorTexture = el('pattern', {id:'moorTexture', width:12, height:12, patternUnits:'userSpaceOnUse'}, defs);
-  el('rect', {x:0, y:0, width:12, height:12, fill:'#E8DFC6'}, moorTexture);
-  el('line', {x1:4.5, y1:8, x2:7.5, y2:4, stroke:'#B1A17F', 'stroke-width':.38,
-              opacity:.42, 'stroke-linecap':'round'}, moorTexture);
+  const hatch = el('pattern', {id:'hatch', width:10, height:10, patternUnits:'userSpaceOnUse',
+                               patternTransform:'rotate(32)'}, defs);
+  el('rect', {x:0, y:0, width:10, height:10, fill:'#F0E7CE'}, hatch);
+  el('line', {x1:0,y1:0,x2:0,y2:10,stroke:'#B08A5A','stroke-width':.45,opacity:.5}, hatch);
+  const woodTexture = el('pattern', {id:'woodTexture', width:20, height:18, patternUnits:'userSpaceOnUse'}, defs);
+  el('rect', {x:0, y:0, width:20, height:18, fill:'#CBD9BE'}, woodTexture);
+  el('path', {d:'M 6 14 V 10 M 3.5 11 L 6 6 L 8.5 11 M 14 14 V 9 M 11 10 L 14 4 L 17 10',
+              fill:'none', stroke:'#547444', 'stroke-width':.45, opacity:.48, 'stroke-linecap':'round'}, woodTexture);
+  const marshTexture = el('pattern', {id:'marshTexture', width:18, height:15, patternUnits:'userSpaceOnUse'}, defs);
+  el('rect', {x:0, y:0, width:18, height:15, fill:'#D9DDD0'}, marshTexture);
+  el('path', {d:'M 5 12 H 12 M 8.5 11 V 6 M 8.5 8 L 6.5 6 M 8.5 8 L 10.5 6',
+              fill:'none', stroke:'#758676', 'stroke-width':.45, opacity:.52, 'stroke-linecap':'round'}, marshTexture);
+  const moorTexture = el('pattern', {id:'moorTexture', width:16, height:15, patternUnits:'userSpaceOnUse'}, defs);
+  el('rect', {x:0, y:0, width:16, height:15, fill:'#E8DFC6'}, moorTexture);
+  el('path', {d:'M 8 11 V 7 M 8 8 L 6 6 M 8 8 L 10 6', fill:'none', stroke:'#A39270',
+              'stroke-width':.45, opacity:.48, 'stroke-linecap':'round'}, moorTexture);
 
   /* base */
   el('rect', {x:0, y:0, width:PW, height:PH, fill:'#FFFFFF'}, svg);
@@ -516,10 +603,14 @@ function render(){
      that runs off the edge is normal, a wood drawn over the grid band is not. */
   const gf = el('g', {}, svg);
   gf.setAttribute('clip-path', 'url(#clipMap)');
-  for (const f of state.features){
+  const drawFeature = (f, roadPass) => {
     const s = SYMBOLS[f.kind];
     const g = el('g', {'data-id': f.id, style:'cursor:pointer'}, gf);
-    if (s.geom === 'point'){ drawPoint(f, g); }
+    if (s.geom === 'point'){
+      const a=pointAngle(f), [x,y]=f.pts[0];
+      if (Math.abs(a)>.01) g.setAttribute('transform',`rotate(${(-a).toFixed(2)} ${x.toFixed(2)} ${toY(y).toFixed(2)})`);
+      drawPoint(f, g);
+    }
     else {
       const d = pathFor(f);
       if (s.geom === 'area')
@@ -527,36 +618,42 @@ function render(){
                     f.kind==='marsh' ? 'url(#marshTexture)' : f.kind==='moor' ? 'url(#moorTexture)' : s.fill,
                     'fill-opacity':.85,
                     stroke:s.color, 'stroke-width':.7}, g);
-      if (f.kind === 'road'){
-        el('path', {d, fill:'none', stroke:s.color, 'stroke-width':(f.w||s.w)+1.1,
-                    'stroke-linecap':'round', 'stroke-linejoin':'round'}, g);
-        el('path', {d, fill:'none', stroke:'#F6EFDC', 'stroke-width':(f.w||s.w)-0.6,
-                    'stroke-linecap':'round', 'stroke-linejoin':'round'}, g);
-      } else if (s.geom === 'line'){
-        el('path', {d, fill:'none', stroke:s.color, 'stroke-width':f.w||s.w,
-                    'stroke-dasharray':s.dash||null, 'stroke-linecap':'round',
-                    'stroke-linejoin':'round'}, g);
-      }
-      if (f.kind==='hedge'||f.kind==='wall'||f.kind==='ditch') drawOrnament(f, g, d);
-      if (f.label){
+      if (s.geom === 'line') drawStyledLine(f, g, d, roadPass);
+      if (f.label && roadPass !== 'casing'){
         const mid = f.pts[Math.floor(f.pts.length/2)];
         label(f.label, mid[0], mid[1]+3, 6.2, s.color, g);
       }
     }
+  };
+  const areas=state.features.filter(f=>SYMBOLS[f.kind].geom==='area');
+  const lines=state.features.filter(f=>SYMBOLS[f.kind].geom==='line' && f.kind!=='road');
+  const roads=state.features.filter(f=>f.kind==='road');
+  const points=state.features.filter(f=>SYMBOLS[f.kind].geom==='point');
+  for (const f of areas) drawFeature(f);
+  for (const f of lines) drawFeature(f);
+  for (const f of roads) drawFeature(f,'casing');
+  for (const f of roads) drawFeature(f,'fill');
+  for (const f of points.filter(f=>!['bridge','ford','gate'].includes(f.kind))) drawFeature(f);
+  for (const f of points.filter(f=>['bridge','ford','gate'].includes(f.kind))) drawFeature(f);
+
+  /* Editing aids are a separate top layer so they never disturb the print-order preview. */
+  const ge = el('g', {}, gf);
+  for (const f of state.features){
     if (f.id === selected){
-      const bb = g.getBBox();
-      el('rect', {x:bb.x-3, y:bb.y-3, width:bb.width+6, height:bb.height+6, fill:'none',
-                  stroke:'#B56A2A', 'stroke-width':.8, 'stroke-dasharray':'3 2'}, g);
+      const xs=f.pts.map(p=>p[0]), ys=f.pts.map(p=>toY(p[1]));
+      const x0=Math.min(...xs)-10,x1=Math.max(...xs)+10,y0=Math.min(...ys)-10,y1=Math.max(...ys)+10;
+      el('rect',{x:x0,y:y0,width:x1-x0,height:y1-y0,fill:'none',stroke:'#B56A2A',
+                 'stroke-width':.8,'stroke-dasharray':'3 2','data-id':f.id},ge);
     }
     if ($('showVerts').checked || f.id === selected)
       for (let i=0;i<f.pts.length;i++){
         /* An invisible disc behind each handle: 2.2pt is a fine mouse target and a hopeless
            finger one, and growing the visible dot would clutter the sheet. */
         el('circle', {cx:f.pts[i][0], cy:toY(f.pts[i][1]), r:9, fill:'transparent',
-                      stroke:'none', 'data-vi':i, style:'cursor:move'}, g);
+                      stroke:'none', 'data-id':f.id, 'data-vi':i, style:'cursor:move'}, ge);
         el('circle', {cx:f.pts[i][0], cy:toY(f.pts[i][1]), r:2.2, fill:'#fff',
-                      stroke:'#B56A2A', 'stroke-width':.8, 'data-vi':i,
-                      style:'cursor:move'}, g);
+                      stroke:'#B56A2A', 'stroke-width':.8, 'data-id':f.id, 'data-vi':i,
+                      style:'cursor:move'}, ge);
       }
   }
 
@@ -1074,6 +1171,7 @@ function deleteSelected(){
   let group = null;
   for (const k in SYMBOLS){
     const s = SYMBOLS[k];
+    if (s.hidden) continue;
     if (s.geom !== group){
       group = s.geom;
       const h = document.createElement('div');
