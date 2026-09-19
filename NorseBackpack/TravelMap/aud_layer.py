@@ -37,8 +37,13 @@ AREA = {
     "field": dict(color="#B08A5A", fill="#F0E7CE"),
     "moor":  dict(color="#8A7A5E", fill="#E8DFC6"),
 }
-POINT_COLOR = {"marker": "#B56A2A", "ford": "#2F7775", "text": "#283B34"}
-PURPLE = "#6D528B"
+# Ordinary landmarks stay visible but intentionally recede. Crossings are the puzzle's
+# countable events, so they get the strongest ink weight on the sheet.
+LANDMARK = "#806F96"
+CROSSING = "#523A70"
+POINT_COLOR = {"marker": "#B56A2A", "bridge": CROSSING, "gate": CROSSING,
+               "ford": "#216866", "text": "#283B34"}
+PURPLE = LANDMARK
 
 
 def load(path=None):
@@ -143,6 +148,40 @@ def _ornament(c, f):
                    x + math.cos(a) * r, y + math.sin(a) * r)
 
 
+def _area_texture(c, f):
+    """Give broad terrain a quiet, repeatable map texture without competing with the route."""
+    kind = f["kind"]
+    if kind not in ("wood", "marsh", "moor"):
+        return
+    pts = f["pts"]
+    x0, x1 = min(p[0] for p in pts), max(p[0] for p in pts)
+    y0, y1 = min(p[1] for p in pts), max(p[1] for p in pts)
+    c.saveState()
+    c.clipPath(_path(c, f, True, f.get("smooth", False)), stroke=0, fill=0)
+    c.setLineCap(1)
+    c.setStrokeColor(HexColor({"wood": "#6B8A57", "marsh": "#4F8985", "moor": "#B1A17F"}[kind]))
+    c.setLineWidth(0.38)
+    if hasattr(c, "setStrokeAlpha"):
+        c.setStrokeAlpha(0.42)
+    if kind == "wood":
+        # Small simplified tree marks: texture, not extra countable landmarks.
+        for x in range(int(x0) - 8, int(x1) + 9, 16):
+            for y in range(int(y0) - 8, int(y1) + 9, 15):
+                c.line(x, y - 3, x, y + 3)
+                c.line(x - 2, y, x, y + 3)
+                c.line(x + 2, y, x, y + 3)
+    elif kind == "marsh":
+        for x in range(int(x0) - 8, int(x1) + 9, 15):
+            for y in range(int(y0) - 6, int(y1) + 7, 13):
+                c.line(x - 3, y, x + 3, y)
+                c.line(x, y, x + 1.4, y + 2.2)
+    else:  # moor
+        for x in range(int(x0) - 8, int(x1) + 9, 12):
+            for y in range(int(y0) - 8, int(y1) + 9, 12):
+                c.line(x - 1.5, y - 2, x + 1.5, y + 2)
+    c.restoreState()
+
+
 TRACKS = {"path", "road", "track"}
 BARRIERS = {"hedge", "wall", "ditch"}
 WATERS = {"river", "stream"}
@@ -243,13 +282,10 @@ def _point(c, f, angle=0.0):
         poly([(x - 2.6, y - 5), (x - 2, y + 3), (x, y + 6), (x + 2, y + 2.5), (x + 2.6, y - 5)])
         line(x - 4, y - 5, x + 4, y - 5, 0.6)
     elif k == "bridge":
-        c.setLineWidth(1.1)
-        p = c.beginPath()
-        p.moveTo(x - 6, y - 2)
-        p.curveTo(x - 2, y + 3.3, x + 2, y + 3.3, x + 6, y - 2)
-        c.drawPath(p, stroke=1, fill=0)
-        line(x - 6, y - 4, x - 6, y - 1)
-        line(x + 6, y - 4, x + 6, y - 1)
+        # Two heavy abutments read correctly at any route angle; the former arch became an
+        # unconvincing sideways rainbow when rotated with a road.
+        line(x - 3.6, y - 4.2, x - 3.6, y + 4.2, 1.25)
+        line(x + 3.6, y - 4.2, x + 3.6, y + 4.2, 1.25)
     elif k == "ford":
         line(x - 5.5, y + 3, x - 5.5, y - 3)
         line(x + 5.5, y + 3, x + 5.5, y - 3)
@@ -310,6 +346,7 @@ def draw(c, features, clip_rect=None):
             c.setStrokeColor(HexColor(s["color"]))
             c.setLineWidth(0.7)
             c.drawPath(_path(c, f, True, f.get("smooth", False)), stroke=1, fill=1)
+            _area_texture(c, f)
 
     # Non-road linework first, so roads sit over it and a bridge reads as carrying the road
     # across the water.
