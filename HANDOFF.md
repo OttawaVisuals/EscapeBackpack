@@ -2,6 +2,38 @@
 
 Last updated: 2026-09-21 by Claude Code
 
+## Session close — 2026-09-21 — Regenerated all 22 postcard back images from the current print PDFs
+
+**Task:** user noticed the postcard gallery's back-of-card images (`Postcards/Postcard_*_Back.png`,
+shown in the Postcards tab) didn't reflect the latest message/Fun Fact text — asked to update them.
+
+**Root cause: the gallery `_Back.png` files were never generated from the same data as the PDFs.**
+Checked `build_postcard_A1_pdf.py` (representative of all 22 build scripts): `draw_front_card()`
+only places `Postcard_*_Front.png` full-bleed with no text, so the Front gallery images are already
+byte-identical to the PDF's own source art — those did not need touching. `draw_back_card()` draws
+the message, Fun Fact, stamp, postmark and element mark entirely from hardcoded strings in the
+script — there is no code path that ever wrote those pixels out to `_Back.png`. That file was a
+separate, one-off render that drifted out of sync every time a card's text was revised afterward
+(confirmed: re-rendering all 22 changed all 22 — none matched their current PDF).
+
+**Fix:** rendered page 2 (the back) of each `output/pdf/Postcard_*_Print.pdf` to PNG with PyMuPDF at
+300dpi (matching the existing 1500×1050 convention exactly) and overwrote the corresponding
+`NorseBackpack/Postcards/Postcard_*_Back.png` in place — same filenames, so no HTML changes needed.
+This makes the print PDF the one source of truth for both artifacts going forward; any future text
+edit only needs a PDF rebuild + this same re-render step to stay in sync.
+
+**Files changed:** 22 PNGs under `NorseBackpack/Postcards/` (`*_Back.png` only — Fronts untouched,
+confirmed unnecessary). No PDF, script or HTML changes.
+
+**Checks run:** confirmed all 22 outputs are exactly 1500×1050 RGB, matching the pre-existing
+convention. Visually inspected two renders directly (A1 Dögurðarnes, R6 Roumare Forest) — text,
+stamp, postmark and Fun Fact box all render cleanly and match the current build-script content.
+`git status` confirmed exactly the 22 `_Back.png` files changed, nothing else touched.
+
+**Next action:** none outstanding from this task. If postcard text changes again in a future
+session, re-run the same PDF-page-to-PNG render for the affected card(s) rather than hand-editing
+the PNG.
+
 ## Session close — 2026-09-21 — Fixed broken map images on GitHub Pages; added a consolidated tickets/props gallery
 
 **Task:** two follow-ups in the same day's thread. (1) User reported the trail-map images showing
