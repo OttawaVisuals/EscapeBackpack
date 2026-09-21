@@ -7,6 +7,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
+from postcard_marks import draw_mark
+
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "pdf" / "Postcard_R6_Roumare_Forest_Print.pdf"
@@ -82,10 +84,12 @@ def draw_back_card(c, x=0, y=0):
     # ("for every one I actually saw, I'd bet good money there was a second one just out of
     # sight") is the in-voice hint that this count is doubled -- three boars drawn in the front
     # art, but the actual lock digit is six.
+    # 20 Sept 2026 (PZ-18) -- rule 1: deleted "The last of Rollo's places on my list" and "to finish". The Rollo->Aud
+    # ticket proves this card closes the leg. The Rouen proximity stays -- it is map-verifiable flavour.
     paragraphs = [
         "Rollo’s own Normandy, and this little forest just outside Rouen has a local legend all its own, though nobody can really pin the story down.",
         "What I can tell you is the wild boar are real: I counted a few slipping through the beech and oak, and for every one I actually saw, I’d bet good money there was a second one just out of sight.",
-        "The last of Rollo’s places on my list, and I’ve ended up right back beside Rouen to finish.",
+        "I’ve ended up right back beside Rouen.",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 7.7, 8.6
@@ -100,6 +104,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("NothingYouCouldDo", 8)
     c.drawString(left, y, "With love,")
     c.drawString(left, y - 9, "Aunt Liv")
+
+    # PZ-18 element mark. Fixed position on every card -- the pocket between the
+    # divider and the postmark, above the address box. See postcard_marks.py.
+    draw_mark(c, "R6")
 
     # Rollo's trail stamp (comet) -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72

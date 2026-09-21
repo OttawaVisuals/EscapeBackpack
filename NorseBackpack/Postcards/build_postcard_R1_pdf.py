@@ -7,6 +7,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
+from postcard_marks import draw_mark
+
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "pdf" / "Postcard_R1_Chalus_Print.pdf"
@@ -81,10 +83,12 @@ def draw_back_card(c, x=0, y=0):
     # is "supported" so it states the history plainly, unlike Walcheren/Roumare's "story goes"
     # hedge. Mentions a crossbow bolt in passing (flavour) without stating the hidden count of
     # two -- that stays in the front art for players to find themselves.
+    # 20 Sept 2026 (PZ-18) -- rule 1: deleted "but this is where I began". The Walcheren-Chalus journal entry places
+    # this card now. The Richard-dying-there line stays -- it is about the family story, not her trip.
     paragraphs = [
         "The one with the real paper trail, for once: Châlus, where Richard the Lionheart’s whole story ends. He was besieging a tiny castle here over a supposed treasure hoard, of all things, when a crossbow bolt caught him in the shoulder.",
         "The wound turned to gangrene and he was gone within the fortnight. Grim, but it’s the kind of ending Rollo’s whole line seems to build toward — the fighting, always the fighting. Found an old carving near the gate of a bolt just like the one that got him.",
-        "Odd place to start his family’s story, at the very end of it, but this is where I began.",
+        "Odd place to start his family’s story, at the very end of it.",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 7.7, 8.6
@@ -99,6 +103,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("NothingYouCouldDo", 8)
     c.drawString(left, y, "With love,")
     c.drawString(left, y - 9, "Aunt Liv")
+
+    # PZ-18 element mark. Fixed position on every card -- the pocket between the
+    # divider and the postmark, above the address box. See postcard_marks.py.
+    draw_mark(c, "R1")
 
     # Rollo's trail stamp (comet) -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72

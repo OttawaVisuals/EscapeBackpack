@@ -7,6 +7,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
+from postcard_marks import draw_mark
+
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "pdf" / "Postcard_L3_Baffin_Island_Print.pdf"
@@ -80,8 +82,12 @@ def draw_back_card(c, x=0, y=0):
     # Message text decided in chat (PZ-05): enthusiastic/warm/fun/friendly voice, matching
     # cards 01 and 02. Sky/scenery beat as agreed -- no puzzle mechanism required of this card
     # (PZ-13); the real beasts-chain pointer is on card 02.
+    # 19 Sept 2026 (PZ-18): the opener was "Third stop"; changed to "New stop" so this card
+    # no longer numbers itself. L3's rank is still forced -- L1 and L2 pin positions 1 and 2
+    # and L3 is Leif's only other real stop -- but LD Brattahlid is no longer the sole
+    # unnumbered Leif card, so the crest filter is needed to tell the two apart.
     paragraphs = [
-        "Third stop: Helluland, “Flat Stone Land” to the sagas — and they weren’t kidding about the stone either, not a tree in sight!",
+        "New stop: Helluland, “Flat Stone Land” to the sagas — and they weren’t kidding about the stone either, not a tree in sight!",
         "But last night the sky put on a show I’ll never forget: green and purple curtains rippling right overhead. I stood out in the cold far too long just watching. Almost missed my supper!",
     ]
     c.setFillColor(INK)
@@ -97,6 +103,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("NothingYouCouldDo", 8)
     c.drawString(left, y, "Love,")
     c.drawString(left, y - 9, "Aunt Liv")
+
+    # PZ-18 element mark. Fixed position on every card -- the pocket between the
+    # divider and the postmark, above the address box. See postcard_marks.py.
+    draw_mark(c, "L3")
 
     # Same trail stamp as cards 01 and 02 -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72

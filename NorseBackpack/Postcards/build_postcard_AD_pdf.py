@@ -7,12 +7,14 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
+from postcard_marks import draw_mark
+
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "pdf" / "Postcard_AD_Bjarnarhofn_Print.pdf"
 OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_AD_Bjarnarhofn_Letter_Print.pdf"
 FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_AD_Bjarnarhofn_Front.png"
-STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Aud_Pillars_v2_flat.png"
+STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Aud_Comb_v1.png"
 FONT_DIR = ROOT / "Fonts"
 
 PAGE = landscape((3.5 * 72, 5 * 72))
@@ -79,8 +81,11 @@ def draw_back_card(c, x=0, y=0):
     # Message decided in chat, 18 Sept 2026 (PZ-17): laid across by the comb grille once printed.
     # Her reading/kinship line sets up the BOOK code without naming it; the comb she describes is
     # Aud's own, not a family heirloom (superseded prop-comb note, same date).
+    # 20 Sept 2026: was "Wintered like Aud did, at her brother's harbor." Aud's leg now runs in
+    # May-July, so Liv cannot have wintered here. Reworded to echo Aud's winter instead of
+    # claiming Liv's. Meaning and voice preserved; no ordering content either way.
     paragraphs = [
-        "Wintered like Aud did, at her brother’s harbor.",
+        "At her brother’s harbor — the one Aud wintered in.",
         "I’ve read everything I could find about her this trip, to the point that she feels like family (and she actually maybe was).",
         "It was so awesome to find that comb alongside the coins, and the museum let me keep it!",
         "This is actually the real treasure, a piece of history that we can use!",
@@ -98,6 +103,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("NothingYouCouldDo", 8)
     c.drawString(left, y, "With love,")
     c.drawString(left, y - 9, "Aunt Liv")
+
+    # PZ-18 element mark. Fixed position on every card -- the pocket between the
+    # divider and the postmark, above the address box. See postcard_marks.py.
+    draw_mark(c, "AD")
 
     # Aud's trail stamp (pillars motif) -- one stamp per traveller, not per card. HI-02 flags this
     # motif for redraw to a comb (her documented saga story); swap STAMP once that art exists.

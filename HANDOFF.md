@@ -1,6 +1,1391 @@
 # Project Handoff
 
-Last updated: 2026-09-19 by Claude Code
+Last updated: 2026-09-21 by Claude Code
+
+## Session Close — 2026-09-20 — Trail map printer margins: fixed, then maximised
+
+**Task:** the user's home printer was leaving more blank space on the left of the printed trail
+maps than the right. Asked to make the padding even, "knowing the margins of my printer" — then,
+once that was done, asked instead to use the print area right up to the margin on every side to
+maximise the map, accepting an uneven-looking border as the tradeoff.
+
+**Root cause was not a left/right asymmetry.** Found the printer's real non-printable-area spec
+in `Hiking_Trip/Support.xlsx` ("Info" sheet: Canon, https://support.usa.canon.com/kb/s/article/ART163725) —
+top 3mm, side 3.4mm (same both sides), bottom 16.7mm. The maps' original margin was a uniform
+0.30in (7.6mm) on all four sides, which cleared top and sides but not the 16.7mm bottom. The
+print driver's own "fit to printable area" step was almost certainly rescaling/repositioning the
+whole page to avoid clipping that edge, which is what read as uneven padding.
+
+**Three passes, same mechanism, different target margins:**
+1. First pass: `MARGIN` set to a uniform `16.7mm` on all four sides (the largest of the printer's
+   four minimums) — guarantees nothing prints in a non-printable zone anywhere, and keeps the
+   border visually even.
+2. Second pass, per the user's follow-up: each side now uses its **own** true minimum plus a
+   0.5mm safety pad instead of sharing the largest one — `MARGIN_TOP = 3.5mm`, `MARGIN_SIDE =
+   3.9mm` (from the Support.xlsx spec's "side 3.4mm"), `MARGIN_BOTTOM = 17.2mm`. Maximises the
+   map area but the printed border is no longer even: thin on three sides, thick at the bottom.
+3. Printed a diagnostic (see below) that showed the actual margins didn't match pass 2's numbers.
+   The user then supplied a corrected, per-edge reading: top 3.0mm, bottom 16.7mm, left 6.4mm,
+   right 6.3mm — first treated as rounding noise on one shared 6.35mm value (both were logged as
+   "0.25 inch"), so pass 3 set `MARGIN_SIDE = 6.85mm` (6.35 + 0.5 safety) uniformly; top and
+   bottom were already correct from pass 2. **This fixed it** — the user confirmed the Canon
+   preview now looks right, so the print driver's own "fit to printable area" rescale (see the
+   diagnostic finding below) was never a separate bug; it was entirely explained by pass 2's
+   `MARGIN_SIDE` (3.9mm) being too small.
+4. Fourth pass, cosmetic-only: the user re-supplied the same left 6.4mm / right 6.3mm as two
+   distinct values rather than accepting the averaged reading, so `MARGIN_SIDE` was split into
+   `MARGIN_LEFT = 6.9mm` and `MARGIN_RIGHT = 6.8mm`. The actual geometry change this causes is
+   negligible — the page centre moves 0.14pt (~0.05mm) because the left+right total is unchanged
+   (13.7mm either way, just split differently), and the per-trail scale ratio computed out to
+   exactly 1.0 for all four maps. Rebuilt anyway for correctness; output was pixel-identical in
+   every check (same collision/skip list per trail) to pass 3's, confirming the split really is
+   cosmetic at this margin size.
+
+**Both margin changes shrink or reshape the map area**, which is a genuine rescale, not just
+cosmetic, and had to be propagated everywhere a page position is hand-placed rather than
+computed live. Because pass 2's margins are no longer symmetric top/bottom, the page centre
+itself moved vertically (asymmetric top/bottom means the centre is no longer the paper's
+geometric centre) — pass 1 got away with a pure scale-about-a-fixed-point; pass 2 needed a
+scale-and-shift, computed per trail (the ratio differs per trail now since Aud's own scale
+binding flipped from width- to height-bound between the two passes). Every fixed page-point was
+put through this exact transform, not re-placed by eye:
+- `LEIF_ART`, `ROLLO_ART`, `ROLLO_WORDLOCK_ART` — the hand-placed decorative vignette boxes
+  (originally tuned by search to avoid the coastline, route and labels).
+- Aud's legend box position.
+- Every page point in `aud_features.json` (Aud's 140-feature hand-drawn road/symbol layer,
+  exported from the designer at the original geometry) and `aud_base.js` (regenerated fresh via
+  `export_aud_base.py` both times, since it derives from the build script directly rather than
+  storing points).
+
+**One real regression caught and fixed (pass 1, still holds after pass 2):** the smaller map area
+cost Aud's stop label "Dögurðarnes / Dagverðarnes" its last open slot — a genuine trail stop
+going unlabelled, not just a decorative town name. Added two more (last-resort, centred,
+further-out) candidate positions to `Labeller.place()`'s search list; confirmed against a
+baseline rebuild of the unmodified script that no real stop, on any of the four maps, lost its
+label in either pass. Decorative corpus-town collisions shift slightly between passes (different
+non-stop names get dropped) but never got worse than the original baseline.
+
+**Checked other prop builders** (journal page, tickets, postcards) for the same failure mode:
+none of them are exposed to it. They're all a smaller item centred with generous margin on a
+Letter sheet and meant to be trimmed, so the printer's non-printable edge falls inside their own
+blank border regardless. Only the trail maps print full-bleed to the actual sheet edge as the
+final laminated object, so they were the only documents that needed this fix.
+
+**Files changed:** `NorseBackpack/TravelMap/build_trail_maps_pdf.py` (per-side margins, rescaled
+art boxes, Aud legend position, extra label-placement fallback tier), `NorseBackpack/TravelMap/
+aud_features.json` (814 page points, rescaled twice), `NorseBackpack/TravelMap/aud_base.js`
+(regenerated), all eight `output/pdf/Trail_Map_*.pdf`.
+
+**Diagnostic finding (between passes 2 and 3), worth keeping:** the user sent a screenshot of the
+Canon IJ print preview after pass 2. Measured it pixel-by-pixel (locating the paper edge via its
+hatched non-printable-area pattern vs. the actual map content edges) and found the previewed map
+was reproduced at roughly 93% of true size with the left margin visibly bigger than the right —
+neither of which matches anything this file asks for. That pointed at the print driver's own
+"fit to printable area" pass rescaling/recentring the whole page on top of whatever margins the
+PDF already has, which no amount of in-file margin tuning can fully control. Built a `.docx` with
+the identical image and identical margins as a cross-check (below), specifically so the user could
+tell whether a size/position mismatch is Word-and-Canon-driver behaviour rather than something
+wrong in the PDF. The user's pass-3 correction (real numbers from wherever they read the spec)
+turned out to explain the visible left/right gap on its own — pass 2's `MARGIN_SIDE` (3.9mm) was
+just too small — so the driver's own behaviour is still an open question, not confirmed as a
+separate problem.
+
+**Checks run:** all four trails rebuilt clean after each pass, no assertion failures. Compared
+collision/skip output against a rebuild of the unmodified script (via `git show HEAD:...`) trail
+by trail — no real stop lost its label on any sheet, only decorative corpus-town labels varied.
+Rendered all four Print PDFs to PNG at 150dpi after each pass and inspected them: Leif's and
+Rollo's vignettes still sit in clear water/land at their intended spots, Aud's hand-drawn
+road/symbol layer still lines up exactly with the coastline (proof the point-rescale was exact
+every time), the legend box is fully inside the map frame, Harald's board-setup back page is
+unaffected (its layout is independent of the margin constants). Pass 3: checked every stored
+`aud_features.json` point against the new, slightly tighter `MX0`/`MX1` — a handful of polygon
+edge points (woods, lakes near the map's own right edge) now clip about 2mm earlier than before,
+same "runs off the edge, stops at the neat line" behaviour the design already relies on elsewhere,
+confirmed harmless by rendering. Final margins verified in mm: left 6.900, right 6.800, top
+3.500, bottom 17.200 — matching the user's corrected spec plus 0.5mm exactly.
+
+**Printer issue confirmed resolved by the user** via the Canon print preview after pass 3/4's
+margins landed. The docx cross-check was then extended into its own small deliverable: the user
+asked for a docx of all four maps for printing, then asked to keep it permanently. Saved at
+`output/docx/Norse_Trail_Maps_Print.docx` — one page per trail (Leif, Rollo, Aud, Harald, in that
+order), each page cropped from the corresponding `Trail_Map_*_Print.pdf` at 300dpi and placed
+with the identical page size and margins as the PDFs. Harald's hnefatafl board-setup back page
+(page 2 of his PDF) is deliberately not included — it's a separate design not tied to the map
+margins. Built with `docx` (npm) via a one-off Node script in this session's scratch directory,
+not committed as a reusable build script (the project's other builders are all Python/reportlab;
+if this docx needs regenerating after a future map change, redo the crop-and-place from scratch
+or ask for a proper Python build script). Still not visually rendered — LibreOffice isn't
+installed in this environment; only structural checks (page count, margins, 4 distinct embedded
+images) were run.
+
+**Also built, per the user's request:** `Trail_Map_1_Leif_Print.docx` (in this session's scratch
+directory, not committed to the repo — it's a diagnostic aid, not a project deliverable) — Leif's
+map cropped exactly to the printable area at 300dpi, placed in a Letter-size Word document with
+the identical margins as the PDF. Rebuilt three times to track the PDF's margin corrections;
+current XML: `pgMar top=198 right=386 bottom=975 left=391` dxa. Not visually rendered before
+sending any version — LibreOffice isn't installed in this environment, so only structural checks
+(page size, margins, image extent) were possible.
+
+**First attempt at the L1/L2 print docx was wrong, corrected.** Initially read "the L1 and L2
+print" as the existing per-card `Postcard_L1/L2_..._Letter_Print.pdf` (each card's own sheet,
+same card twice, art then text) and built docx twins of those. The user then pointed at two
+reference PDFs from a *different* prior session's scratch directory
+(`.../f687f566-af14-4509-a9cb-da929a1e44f2/scratchpad/scratch_art_letter.pdf` and
+`scratch_back_4x6.pdf`) to clarify the actual intended layout, which is a different, more
+paper-efficient two-pass workflow:
+1. **One Letter sheet with BOTH cards' front art together** (L'Anse aux Meadows on top, Battle
+   Harbour below, each with its own crop marks) — print this first.
+2. **Cut the sheet to separate the two cards**, each still oversized/uncut at this point.
+3. **Re-feed each cut piece and print its text side at true trimmed size** — a 2-page document,
+   each page exactly 6×4in landscape (one per card, same order as the art sheet), not another
+   Letter sheet.
+4. **Final trim to exact card size.**
+
+Rebuilt accordingly and replaced the wrong pair: `output/docx/Postcard_L1_L2_Art_Letter_Print.docx`
+(1 Letter page, both cards' art, rasterized from the reference `scratch_art_letter.pdf` at 300dpi)
+and `output/docx/Postcard_L1_L2_Back_4x6_Print.docx` (2 pages, each a true 6×4in landscape page —
+verified in the XML: `pgSz w=8640 h=5760 orient="landscape"` — rasterized from
+`scratch_back_4x6.pdf`). The superseded `Postcard_L1_LAnse_Letter_Print.docx` and
+`..._L2_Battle_Harbour_Letter_Print.docx` were deleted from `output/docx/` (never committed —
+untracked — so no history was lost).
+
+**Not verified:** the two reference PDFs live in another session's scratch directory outside this
+repo and outside this session's context, so their own origin/build process is unknown here — I
+only rasterized their existing content, I did not check it against the project's postcard data
+(voices, Fun Facts, addresses) for correctness. If that reference layout becomes the standard for
+all 22 cards, it likely wants a proper build script (probably pairing cards two-at-a-time per
+trail) rather than more one-off docx exports.
+
+Same caveats as the other docx files: one-off Node script, not a reusable build script; not
+visually rendered before delivery — LibreOffice isn't installed in this environment.
+
+**HTML updated to record all of this**, per the user's explicit ask (`AGENTS.md`'s rule that
+durable production decisions belong in the project page, not just chat/HANDOFF): added
+`NorseBackpack/Norse_Brainstorm.html`'s `PR-23`, in the "Props and production" section, marked
+**Decided**. It records the corrected margin numbers, why the old `Support.xlsx`-sourced side
+margin was wrong, the exact rescale mechanics (same scale-and-shift transform used throughout this
+session), the Dögurðarnes label-fallback fix, and the new "build a docx twin to isolate PDF-vs-
+driver behaviour" practice with pointers to all three files now in `output/docx/`.
+
+**Check not fully run:** tried to open the page in the in-app browser per the usual HTML
+validation step, but the `static-preview` server (`python -m http.server`) got stuck at
+"starting" with no output and every navigation to it was refused — an infrastructure issue in
+this session, not something in the file. Fell back to a text-based tag-balance check instead:
+`<div>`/`</div>` count is off by one (1253 open / 1252 close), but that exact same off-by-one
+already existed in the last committed `HEAD` version (1096/1095) before this session's edits, so
+it predates PR-23 and isn't a regression from this change. Every other paired tag (`section`,
+`figure`, `table`, `details`) balances. Worth a real browser check next session regardless, both
+to confirm PR-23 renders correctly and to track down the pre-existing div imbalance.
+
+**Not done / out of scope:** the "Aud Map Designer" published artifact
+(`https://claude.ai/artifact/26d6YkdDjuSkN2WS5Uc2fL`) still serves an OLD (pre-fix) `aud_base.js`/
+`aud_features.json` — if that tool gets reopened to add more hand-drawn features before it's
+resynced, new points would be drawn at the wrong scale. Needs its data files re-uploaded, or the
+resync deferred until the designer is next used.
+
+**Next action:** open `Norse_Brainstorm.html` in a real browser (once the static-preview
+infrastructure issue is sorted) and confirm PR-23 renders and the Open Questions tab still
+functions. The printer issue itself is resolved and confirmed by the user; nothing further needed
+there unless a physical print still looks off.
+
+## Session close — 2026-09-21 — `Postcard_L1_L2_Back_4x6_Print.docx` clipping fixed
+
+**Task:** the user physically printed the art sheet (fine, alignment good) and the 4x6 back/text
+sheet. The back sheet clipped about 5mm off the right edge, into the Fun Fact box's border — this
+media (thicker card stock, likely fed via the rear tray) has a bigger non-printable zone than the
+Letter paper the trail-map margins were measured against, so the previous zero-margin full-bleed
+placement wasn't safe here.
+
+**Fix:** added a real page margin instead of zero — 5.5mm (5mm measured + 0.5mm safety) on the
+binding dimension. The card's image is 1.5:1 (6x4in), so an equal-mm margin on all sides would
+either distort the image or waste space; instead the image is scaled down uniformly (aspect
+preserved exactly) so height gets exactly 5.5mm top/bottom (`312` dxa) and width gets whatever
+that same scale factor leaves on left/right (8.25mm, `468` dxa — more than the checked minimum,
+which is fine since only the right edge was actually confirmed clipped). Verified in the docx XML:
+`pgMar top=312 right=468 bottom=312 left=468`, image extent 5.350in × 3.567in (exact 1.5:1).
+Rebuilt, overwrote `output/docx/Postcard_L1_L2_Back_4x6_Print.docx`, resent.
+
+**Not done:** the art-side `Postcard_L1_L2_Art_Letter_Print.docx` was left untouched — no clipping
+was reported on that pass, only the back. If it turns out fine on Letter paper via the front tray,
+that's consistent with the Letter-specific margins already established for the trail maps.
+`Norse_Brainstorm.html` was not updated for this fix — it's a small correction to an already-
+recorded deliverable, not a new decision.
+
+**Next action:** print the corrected back sheet and confirm nothing is clipped now. If it still
+clips, the true non-printable margin on this media/tray is bigger than 5.5mm and needs a fresh
+measurement to tighten the fix.
+
+## Session Close — 2026-09-20 — H5 resolved to Aci Castello everywhere
+
+**Task:** fix the H5 Aci Castello / Syracuse inconsistency.
+
+**It was a three-way disagreement, not a two-way one.** `TravelMap/stops.js` and the route plan said
+**Syracuse** at 37.069, 15.288 with a sourced Harald link; `build_final_riddle_visuals.py` said "Aci
+Castello" *at Syracuse's coordinates*, which was incoherent and was my own error from the re-dating
+pass; and the card carries Aci Castello front art, an ACI CASTELLO postmark and a message about its
+Norman castle.
+
+**A bigger problem sat underneath it**, surfaced before deciding: this is the one Harald stop with
+**no Harald connection at all**. His Sicilian service is attested at Syracuse and Messina under George
+Maniakes in 1038–1040, not here, and the castle on the lava rock is **Norman, built around 1076 — a
+decade after Harald died**.
+
+**Decided by the user: keep Aci Castello everywhere, fix only the data.** Chosen over moving the stop
+to Syracuse (which would have cost new front art, a new postmark and a rewritten card) and over
+re-anchoring the card's text. Coordinates are now 37.5545, 15.1462 in all three files.
+
+**The geometry does not care** — the sites are 55 km apart, which moves H5 about 4 px on a 224 px
+panel. Harald's `2` is unchanged. Measured before deciding, so the choice was made on content
+grounds rather than on shape.
+
+**The cost is recorded rather than hidden.** The stop's evidence tier in `stops.js` drops from
+*supported* to **illustrative**, with a note saying Sicily is on the trail because of the Maniakes
+campaign while this particular town is simply where Liv stayed. The Syracuse citation is kept in place
+to explain why Sicily is there at all.
+
+**MISTAKE I MADE AND FIXED:** while diagnosing a write failure on the trail-map build I wrote a probe
+that opened three PDFs with mode `'wb'` — which truncates. It zeroed `Trail_Map_1_Leif_Print.pdf`,
+`Trail_Map_3_Aud_Print.pdf` and `Trail_Map_4_Harald_Print.pdf`. They regenerate from source and all
+eight trail maps were rebuilt immediately, verified non-zero and visually checked. No source file was
+touched and nothing was lost, but the probe was careless: use `'r+b'` or `os.access` to test
+writability, never `'wb'`.
+
+**Files changed:** `TravelMap/stops.js`, `TravelMap/Norse_Aunt_Route_Plan.json`,
+`Tools/build_final_riddle_visuals.py`, the regenerated `Tools/final_riddle_visuals.json`, all eight
+`Trail_Map_*.pdf`, and `Norse_Brainstorm.html` (the resolution recorded, the old "check before print"
+note replaced).
+
+**Checks run:** no `37.069` or "Syracuse · Sicily" coordinate remains in any data file. Visuals
+regenerated and the six SVGs re-swapped; the timeline now labels "20 Aci Castello". Solver re-run,
+TEST 1 and 2 still pass. Harald's answer map rendered and read — stop 5 is labelled Aci Castello on
+Sicily's east coast and the route is unchanged. The map build's own coastline check reports Aci
+Castello 0.2 km offshore (0.0 pt at print scale) and Patara 1.8 km (0.4 pt); neither is visible. All
+eleven tabs open, console clean.
+
+**Next action:** the full read-through playtest with the real props. Still open: validation TEST 3
+(geometric decoy check), whether Liv's surname stands as Ericson, and whether a team notices the
+element marks in their new top-right position.
+
+## Session Close — 2026-09-20 — Element marks moved to the top right of every card
+
+**Task:** the user reviewed the printed postcards and rejected the mark placement — beside the
+signature interfered with the rebuses. Asked for a consistent top-right position.
+
+**They were right, and the reason is worth keeping.** The signature spot was free space, but it was
+free space *in the message half*, among Liv's own margin drawings. On `R3` the round shield read as a
+fourth piece of the Bayeux rebus; on `H4` it crowded the branch-rune key. The fix is not a better gap
+— it is separating the two by **zone**: her drawings live in the message half, the element marks live
+with the card's printed furniture.
+
+**New position, identical on all 22:** the pocket between the divider and the postmark, above the
+address box — roughly x 186–253 by y 190–220, mark centred at (232, 205).
+
+**It is free by construction rather than by luck.** I checked every build script: the divider
+(x=184), the address box (top y=188) and the postmark circle (centred 278,204 r=23) are at identical
+coordinates on all 22 cards, so the pocket exists everywhere regardless of message length. That is
+why this placement cannot break the way the old one did.
+
+**Defined once.** `MARK_X, MARK_Y, MARK_SIZE` now live in `postcard_marks.py` and every card calls
+`draw_mark(c, "XX")` with no coordinates — moving them all again is a one-line change.
+
+**The proofing risk logged earlier is mostly answered.** The marks and rebuses do share a visual
+language, and while the marks sat beside the signature that was a genuine misreading risk. Separated
+by zone it largely goes away. **What still wants a playtest** is the opposite question: whether a team
+notices the marks at all up there, now that they compete with the stamp and postmark rather than
+sitting where the eye already is.
+
+**Files changed:** `postcard_marks.py` (position constants plus the reasoning), all 22
+`build_postcard_*_pdf.py` (call sites simplified), all 44 card PDFs and
+`Norse_Postcards_Full_Print.pdf` rebuilt, and `Norse_Brainstorm.html` (placement note rewritten, the
+proofing warning downgraded to a note).
+
+**Checks run:** `postcard_marks.check()` passes. All 23 build scripts run clean. `R3`, `H4`, `L1` and
+`RD` rendered at full size — R3's rebus is now alone in the message half and H4's rune table is
+untouched. Contact sheet of the mark area on all 22 confirms identical placement with no collision
+against postmark, stamp or address box. Page served over HTTP, all eleven tabs open, board renders,
+console clean.
+
+**Next action:** unchanged — a full read-through playtest with the real props, now that the cards,
+the four maps, the journal page and the three tickets all exist. Also still open: reconciling `H5`
+(Aci Castello vs Syracuse in `TravelMap/stops.js`), validation TEST 3, and whether Liv's surname
+stands as Ericson.
+
+## Session Close — 2026-09-20 — The three transition tickets built; every endgame prop now exists
+
+**Task:** build the last props the endgame needs — the three tickets that chain the four legs.
+
+**Built:** `NorseBackpack/Props/Tickets/build_transition_tickets_pdf.py` →
+`output/pdf/Transition_Tickets_Print.pdf` (one per page, 5.4 × 2.5 in) and `..._Letter_Print.pdf`
+(all three centred on one sheet with trim guides). Machine-set in Helvetica on near-white stock —
+these are agency paperwork and should look nothing like the postcards or the journal page.
+
+| Ticket | Closes | Opens | Segments |
+|---|---|---|---|
+| Leif → Rollo | L3 Qikiqtarjuaq | RD Walcheren | 4, via Iqaluit, Ottawa, Amsterdam |
+| Rollo → Aud | R6 Roumare Forest | A1 Dögurðarnes | 4, via Rouen, Paris, Reykjavík |
+| Aud → Harald | A3 Esjuberg | H1 Oslo | 2, via Reykjavík |
+
+**Why multi-segment itineraries rather than boarding passes.** None of the endpoints is an airport —
+Roumare is a forest, Dögurðarnes and Esjuberg are farmsteads, and there is no direct
+Qikiqtarjuaq–Netherlands service. A boarding pass could only name airports, and "which airport serves
+which town" is exactly the outside knowledge rule 3 forbids — the same trap that made us reject
+naming Ouistreham for the Channel crossing. A booking confirmation lists every waypoint, so the two
+place names that carry the clue are printed in full. The first origin and last destination are set
+bold so the eye lands on them.
+
+**Load-bearing vs dressing, recorded in the script header and the page:** only the first origin and
+last destination of each ticket matter. Carriers, service numbers, booking refs, e-ticket numbers and
+intermediate hops are invented for the look and can change freely. The routings are plausible rather
+than verified — real services exist on these city pairs, but no timetable was checked and none needs
+to be. Place names are printed without diacritics ("Dogurdarnes", "Reykjavik"), which is how airline
+systems really do it and reads as authentic.
+
+**One invention that needs a decision: Liv's surname.** The tickets need a passenger name and **none
+is recorded anywhere in the project**. She is printed as **ERICSON / LIV**, taking the surname of her
+nephew *John Ericson* from the postcard addresses, which also quietly supports the shared-family-crest
+premise. It is a single constant at the top of the build script. Nothing else depends on it.
+
+**Also closed:** the "blocking the legs opens work that did not exist before" warning from 19 Sept
+listed three gaps — the journal page, the transition tickets, and dating all four museum tickets. All
+three are resolved. The third went away on its own: leg order moved to the transition chain, so the
+museum tickets need no dates at all.
+
+**Files changed:** the new `Props/Tickets/build_transition_tickets_pdf.py`, its two output PDFs, and
+`Norse_Brainstorm.html` (tickets recorded in 2c, the old prop-gap warning replaced).
+
+**Checks run:** all three tickets rendered at full size and read twice — first version, then after
+tightening the height and adding the e-ticket column. Letter sheet rendered and confirmed as one page
+with the block centred. Page served over HTTP, all eleven tabs open, board and all six SVGs render,
+console clean.
+
+**Every prop the endgame model calls for now exists.** Remaining work is verification and reconciling,
+not making:
+- reconcile `H5` between the visuals (Aci Castello) and `TravelMap/stops.js` (Syracuse, ~60 km away)
+- validation TEST 3, the geometric decoy check, still not run
+- the rebus/element-mark confusion risk on `R3` wants a real playtest
+- decide whether Liv's surname stands
+
+**Next action:** a full read-through playtest of the endgame with the real props — the deck, the four
+maps, the journal page and the three tickets — since every piece now exists for the first time.
+
+## Session Close — 2026-09-20 — The "Family iconography" journal page built
+
+**Task:** build the endgame's keystone prop — the page carrying both the decoy filter and four of the
+ordering clues.
+
+**Built:** `NorseBackpack/Props/Journal/build_journal_page_pdf.py` → `output/pdf/
+Journal_Family_Iconography_Print.pdf` (A5, prints two-up on Letter) and `..._Letter_Print.pdf` (with a
+trim guide). Her handwriting throughout on the deck's paper colour — it is her notebook, not a printed
+form. Top half: `PR-22`'s two reference drawings as they stand, the crest's blank banner left blank.
+Bottom half: "Travel highlights", the four agreed entries grouped by transport.
+
+**The drawings are deliberately large.** The team's actual task is comparing a 23 pt mark on a
+postcard against these, so size is usability, not decoration. The first layout left about a third of
+the page empty below the entries; art enlarged and sections spread until it filled.
+
+**A fairness bug caught at render and fixed.** The element names are listed under each drawing — they
+matter because the card marks are loose doodles while the references are detailed engravings, and a
+name bridges that gap. But the first version read **"axe"**, and Rollo's and Harald's decoy mark is a
+**double-bladed** axe against the crest's single-bladed one. The drawings show the difference plainly,
+but a name list saying "axe" lets a team match the decoy by name and never look — unfair rather than
+difficult. Now **"bearded axe"**, and for the same reason **"round shield"** and **"drinking horn"**
+rather than "shield" and "horn". The horned helmet has no near-match among the nine.
+
+**The rule line is stated outright**, under the title: "Every place I actually stopped carries one of
+these nine." It has to be — without it the drawings are decoration and nothing prompts a comparison.
+It says which cards are hers; it does not say which decoys exist, how many, or which element sits
+where.
+
+**Two rules recorded in the script header and in the page**, for anyone editing the entries: a journey
+entry means the two stops are *consecutive*, not merely in that order, so vet any new or texture entry
+against `Tools/final_riddle_clues.py` first; and entries are grouped by transport and deliberately not
+in date order — as printed the by-train group runs Harald's leg first and Rollo's second, reversing
+the real chronology.
+
+**Files changed:** the new `Props/Journal/build_journal_page_pdf.py`, its two output PDFs, and
+`Norse_Brainstorm.html` (the build recorded in section 2c's journal block, and the open-items panel
+moved from "partly drafted" to "built").
+
+**Checks run:** page rendered at full size and read three times — first layout, after the rebalance,
+and after the name fix. Letter version rendered and confirmed centred with its trim guide. Page served
+over HTTP, all eleven tabs open, board and all six SVGs still render, console clean.
+
+**Next action: the three transition tickets** — Leif→Rollo (Qikiqtarjuaq → Walcheren), Rollo→Aud
+(Roumare → Dögurðarnes), Aud→Harald (Esjuberg → Oslo). These are the last props the endgame needs.
+Note Leif's wants a multi-segment e-ticket itinerary rather than a single boarding pass, since there
+is no direct Qikiqtarjuaq–Netherlands service. Still also open: reconciling `H5` between the visuals
+(Aci Castello) and `TravelMap/stops.js` (Syracuse, ~60 km away).
+
+## Session Close — 2026-09-20 — Card text rebuilt and element marks applied to all 22
+
+**Task:** apply the six outstanding text edits, then put Codex's hand-drawn element marks on the cards.
+
+**Six text edits applied, every card rebuilt, every back read at full size.** Each script carries a
+comment naming the rule it answers.
+- `R1` Châlus — deleted "but this is where I began" (rule 1). The Richard-dying-there line stays: it
+  is about the family story, not her itinerary.
+- `R2` Rouen — deleted "The tapestry towns are still ahead of me" (rule 3; added 17 Sept, rejected).
+- `R4` Winchester — "Winchester next" → "Winchester today" (rule 2), matching `L2`'s "Markland today"
+  and `H4`'s "Today: Hedeby".
+- `R6` Roumare — deleted "The last of Rollo's places on my list" and "to finish" (rule 1); kept the
+  Rouen proximity, which is map-verifiable flavour.
+- `RD` Walcheren — deleted "Made a detour … before really starting Rollo's own trail" (rule 4).
+- `H3` Kyiv — "Kyiv next…" → "Kyiv, and it might be the most beautiful city on this whole trip…"
+  (rule 2). Nothing replaces it mechanically; H4's Mediterranean line made the planned Dnieper
+  mention unnecessary.
+
+**Element marks assigned and printed on all 22 cards — the last open column of the retired
+worksheet.** New shared module `NorseBackpack/Postcards/postcard_marks.py` holds the assignment as a
+single dict plus a `draw_mark()` helper, so reshuffling is one edit rather than 22. It also has a
+`check()` that asserts the filter's rule still holds (each three-stop leg uses the symbol set once
+each, each six-stop leg the crest set, every decoy a mark from neither) and that every image exists.
+Any bijection works identically as a puzzle, so the pairings are flavour only — recorded with reasons
+in section 3b.
+
+**Placement: beside the signature, not below it.** Below was the obvious choice and does not work —
+`H4`'s branch-rune key table fills nearly the whole width of that area, and `R3`/`R4`/`R5` already
+carry their Bayeux rebuses there. All 22 backs rendered at full size to confirm; the tightest is `H4`,
+where the mark clears the table box by a few points.
+
+**Proofing risk recorded, not solved:** the marks and the rebuses share a visual language — small
+hand-drawn icons, same palette — and on `R3` the round shield sits directly above the cross/bow/bolt
+rebus. A team could read the shield as a fourth rebus element. The defence is positional consistency
+(a mark is always beside the signature; rebuses are scattered below), which only works if a team
+compares cards — which the filter asks of them anyway. Worth testing on a real player; a light ring or
+fixed tint would separate them without moving anything.
+
+**Files changed:** all 22 `build_postcard_*_pdf.py` (marks, and six of them text too), the new
+`postcard_marks.py`, all 44 card PDFs plus `Norse_Postcards_Full_Print.pdf` rebuilt, and
+`Norse_Brainstorm.html` — new section 3b with the assignment table, the summary table's element-mark
+column closed, and the "still to apply" notes in 2e and 2g replaced with what was done.
+
+**Checks run:** `postcard_marks.check()` passes (22 cards, valid assignment, all art present). All 23
+build scripts run clean. Contact sheet of all 22 backs rendered and inspected — every mark present, no
+collisions. Close-ups of the two tightest layouts (`H4`, `R3`) inspected separately. Page served over
+HTTP, section labels in sequence, all eleven tabs open, board still renders, console clean.
+
+**Next action: the props that do not exist.** The three transition tickets and the "Family
+iconography" journal page — the page's top half needs `PR-22`'s two reference drawings, and its bottom
+half now has four agreed entries waiting (three for Rollo in 2e, one for Harald in 2g). Also still
+open: reconciling `H5` between the visuals (Aci Castello) and `TravelMap/stops.js` (Syracuse, ~60 km
+away).
+
+## Session Close — 2026-09-20 — Last two stale blocks retired; Final riddle tab is now internally consistent
+
+**Task:** retire the two blocks that still predated the evidence model, rather than patch them.
+
+**Retired, with a note saying what they claimed and why it is wrong** (AGENTS.md: say so where the old
+text was, do not delete silently). Both are replaced by section 3, now titled "Retired":
+
+- **"Clue types and their jobs"** (four panels) said museum tickets were calendar anchors dated
+  2 Feb / 17 Mar / 13 Apr / 28 Apr, that postcard statements "carry the whole deduction", and that the
+  bundle held two or three cross-trail resolvers. All three are now wrong: leg order moved to the
+  three transition tickets, the museum tickets carry no ordering at all and one or two will be
+  deliberately undated, and postcard statements are down to two natural cross-references.
+- **The per-trail constraint worksheet** listed decoy positions from the interleaved year ("pos. 11,
+  June", "pos. 20, Nov") that no longer exist, ticket dates that have all changed, and an order column
+  built on `"Winchester next"` and `"Kyiv next"` — the two clues this model removes outright.
+
+**One column of the worksheet was still live and is carried forward.** The element-mark assignment has
+not moved: it remains open and still gates the whole endgame, because without the marks a team cannot
+tell a real stop from a decoy. It now sits in a new summary table, "The four legs at a glance", which
+keeps only the columns that are still true — real stops, decoy and its block position, element mark,
+journal entries, and what fixes each leg's order with a link to its section.
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html` only.
+
+**Checks run:** page served over HTTP; section labels read 1, 2, 2b–2i, 3 Retired, Summary, 4, 5, 6;
+the retired panels are gone from the rendered text and the only surviving "pos. 11, June" is the
+retirement note quoting it deliberately; six SVGs and the four-block board still render; all eleven
+tabs open; console clean.
+
+**The Final riddle tab now has no stale blocks.** Everything in it either describes the current model
+or is explicitly marked as superseded history.
+
+**Next action: production.** Nothing in the endgame is open as design. What does not exist yet:
+- the three transition tickets and the "Family iconography" journal page (its top half depends on
+  `PR-22`'s two reference drawings)
+- five sentence deletions on Rollo's built cards and the `H3` Kyiv rewrite, none applied
+- the element-mark assignment for all 22 cards, and the reprint pass that goes with it
+- reconciling `H5`: the visuals now say Aci Castello, `TravelMap/stops.js` and the printed Harald
+  sheet still plot Syracuse ~60 km away
+
+## Session Close — 2026-09-20 — 2i visuals regenerated; Aud and Harald dated
+
+**Task:** regenerate the generated visuals against the new dates, which first required setting Aud's
+and Harald's, still open inside the May–July window.
+
+**Dates set (first pass, and freely movable — no clue depends on them):**
+- Aud, May 2025: A1 Dögurðarnes 9 May, AD Bjarnarhöfn 14 May, A2 Hvammur 20 May, A3 Esjuberg 27 May
+- Harald, Jun–Jul 2025: H1 Oslo 6 Jun (7 nights, as the card says), H2 Staraya Ladoga 17 Jun,
+  H3 Kyiv 23 Jun, H4 Hedeby 1 Jul, H5 Aci Castello 8 Jul, HD Constantinople 15 Jul, H6 Patara 21 Jul
+
+Whole journey: **79 nights away, 24 Aug 2024 to 26 Jul 2025.**
+
+**`Tools/build_final_riddle_visuals.py` redated and fixed.** `Y = 2026` became `Y1, Y2 = 2024, 2025`;
+both month grids now walk real month boundaries across two years instead of `range(2, 13)`, and mark
+January in rust as the year boundary. **Its output path was a dead reference to a previous session's
+temp directory** — now written next to the script as `final_riddle_visuals.json`, so the run is
+reproducible.
+
+**Label staggering widened.** Blocked legs bunch the stops into four tight clusters, which the old
+three stagger rows could not hold — labels overlapped badly on first render. Now five rows, and a
+dense cluster always takes the row whose last label sits furthest left rather than the first that
+happens to clear. Verified by eye, not by arithmetic.
+
+**Two captions were saying the opposite of the truth** and are corrected. Panel B's read "This is the
+interleaving the endgame asks players to unpick: no trail runs as a clean block" — under this model
+every lane *is* a clean block. The figure now reads as the clearest single illustration of the
+blocked-leg model in the page.
+
+**Two decoy complaints from 17 Sept turn out to be resolved by the re-dating, not by design work.**
+The old note recorded that two decoys barely perturbed their shape, so a team ignoring the crest
+filter still traced usable digits. **Brattahlíð** moved from last in Leif's run to third of four, so
+an unfiltered trace now runs east to Greenland and back west to Baffin — a V, not a 1. **Walcheren**
+now opens Rollo's block instead of sitting late in it, so an unfiltered trace starts far to the
+north-east and the loop never closes. **Constantinople is unchanged and remains the weak one** — it
+still sits almost on the line between Sicily and Patara, so Harald's is the only decoy a team can
+ignore and still get a plausible figure.
+
+**Also noticed:** `H5` is recorded as *Aci Castello* in the visuals data, matching the card's front
+art and postmark, but `TravelMap/stops.js` and the printed Harald sheet previously plotted Syracuse,
+~60 km away. The drawn shape is unaffected at this scale; flagged in the page to reconcile before
+print.
+
+**Files changed:** `Tools/build_final_riddle_visuals.py` (dates, two-year month grids, staggering,
+output path), the new `Tools/final_riddle_visuals.json`, and `Norse_Brainstorm.html` — six SVGs
+swapped, the 22-row itinerary table regenerated with a credibility-check column, section 2's heading
+and intro rewritten, both timeline captions corrected, the shape-analysis note rewritten, and the
+staleness warning narrowed again.
+
+**Checks run:** solver re-run (TEST 1 and 2 still pass). Both timelines and all four leg maps
+inspected visually in the browser at full size. Decoy positions confirmed in the rendered captions —
+Brattahlíð 3 of 4, Walcheren 1 of 7, Bjarnarhöfn 2 of 4, Constantinople 6 of 7. All eleven tabs open,
+board still renders with four blocks and fourteen clues, console clean.
+
+**Still stale, and now down to two items:** the constraint worksheet further down the tab, and
+section 3's "clue types" panels. Both predate the evidence model in 2c and describe ticket dates and
+postcard statements doing jobs they no longer do — they want rewriting or retiring rather than
+patching.
+
+**Next action:** retire or rewrite those two blocks, then move to props — the three transition
+tickets and the "Family iconography" journal page, neither of which exists.
+
+## Session Close — 2026-09-20 — Solver and solving board rebuilt for the blocked-leg model
+
+**Task:** the solver and the in-page solving board both still encoded the superseded 17 Sept
+interleaved model, including the two "next" clues the new spec removes. Both rebuilt against
+sections 2c–2g.
+
+**`Tools/final_riddle_clues.py` rewritten, and it got simpler.** The old model wove four trails
+across one year, so it placed 22 cards into 22 global positions — a space large enough that the run
+capped at 400,000 calendars and **could report a false pass, which it did at least once** (on a
+variant dropping two of Leif's position clues). Blocked legs are independent, so each is now
+enumerated exhaustively over its own block, at most 7! = 5,040 arrangements. No cap, so no false
+pass. The file is self-contained and no longer imports the old solver.
+
+**Current run:**
+```
+leg       block      cards   +tickets   +journal
+leif          4          2          1          1
+rollo         7        360         60          1
+aud           4          6          1          1
+harald        7          6          2          1
+```
+TEST 1 pass (every leg unique). TEST 2 pass — without the journal, Rollo admits 60 and Harald 2.
+TEST 3 still not run (geometric). TEST 4 no longer searched: the three tickets chain leg order
+directly. **All fourteen clues are load-bearing** — the script drops each in turn and none is
+redundant. Note the two four-card legs close on the tickets alone; the journal is what closes the two
+seven-card legs.
+
+**`final_riddle_solver.py` kept but marked superseded** with a header explaining what it modelled and
+why the cap mattered. Nothing imports it.
+
+**The solving board rebuilt** (section 6). It was a single row of 22 positions; it is now **four
+independent leg blocks** of 4, 7, 4 and 7, each with its own verdict chip, since a leg is judged on
+its own. Clue list is the current fourteen, grouped by where each lives (cards / transition tickets /
+journal highlights). Shaded end slots mark the two a ticket or permitted card statement pins. The
+bundle toggle now withholds ten of the fourteen clues rather than three. `localStorage` key bumped to
+`norse-riddle-board-v2` so an old saved board cannot load into the new shape.
+
+**Checks run:** solver executed and read. Board driven through the DOM: empty state correct (4 blocks,
+22 slots, 8 shaded ends, 14 clues, 10 withheld); filling the answer turns all fourteen green, all four
+leg chips green, and reads `1 9 7 2`. Three violations induced and each caught correctly and in
+isolation — swapping H2/H3 breaks only the Staraya Ladoga–Kyiv entry, moving H5 before Hedeby breaks
+only H4's Mediterranean clue, moving R4 breaks only the ferry entry. All eleven tabs open, console
+clean.
+
+**Page updated to match:** the top banner now says all four legs are settled; section 5 Validation
+carries the new run as a table; the staleness warning narrowed to what is still actually stale.
+
+**Still stale, and now explicitly scoped:** the itinerary table in 2i and the "Where she was, and
+when" timeline, both generated by `Tools/build_final_riddle_visuals.py` from the old interleaved year;
+the constraint worksheet; and section 3's "clue types" panels, which still describe ticket dates and
+postcard statements doing jobs they no longer do. The four leg shapes in 2i are unaffected — they come
+from stop coordinates, which have not changed.
+
+**Next action:** either regenerate the 2i visuals from the new leg dates (Leif 24 Aug – 16 Sept,
+Rollo 28 Sept – 6 Nov, Aud and Harald in May–July of year two, exact dates still open), or start
+producing props — the three transition tickets and the "Family iconography" journal page, neither of
+which exists yet.
+
+## Session Close — 2026-09-20 — Harald down to one journal entry; endgame design closed
+
+**Task:** continuing the same session. The user spotted a simplification and accepted the remaining
+open problem, which closes the endgame design.
+
+**Corrected — only the *real* cards need ordering.** I had been enumerating each leg's full block
+including its decoy. **A decoy's position inside its block is never needed by anything**: it is
+filtered out before a line is drawn, no ticket lands on it, and the decoy-never-first invariant is
+retired. Re-enumerating Harald over its six real cards drops it from two journal entries to **one** —
+*Sicily – Constantinople* was only ever placing HD inside the block. The ticket, H6's line and H4's
+Mediterranean line leave exactly two orders, differing only in whether Staraya Ladoga or Kyiv came
+first.
+
+**The same simplification does not help Rollo, and the contrast is worth keeping.** Rollo's decoy is
+genuinely load-bearing, because the Leif→Rollo ticket lands on `RD` Walcheren rather than on a real
+card — so *Walcheren–Châlus* is what converts "the block starts at Walcheren" into "Châlus is the
+first real stop." Re-enumerated over Rollo's six real cards: all three entries survive, and dropping
+any one gives three orders.
+
+**Harald's entry, drafted and written in:**
+> *By train — Staraya Ladoga – Kyiv.* "Two days on a train, most of it running alongside the rivers
+> they would have rowed. Felt like cheating. Slept through the best of it, naturally."
+
+Deliberately carries **no direction word**. An early draft had her following the water "south", which
+would have muddied H4's "from here I'm turning south" — a team could reasonably wonder whether the
+turn had already happened.
+
+**Decided — Harald's `2` stands as drawn.** Flagged as broken since 17 Sept: the H3 → H4 leg doubles
+back, so the figure reads closer to a zigzag with a spike than a clean 2. **Accepted rather than
+fixed.** By that point a team knows it is looking for a digit, and a rough 2 is still the only digit
+the figure resembles — recognition is far easier than reading a shape cold. Fixing it would have meant
+moving or replacing a stop, invalidating whichever clues named it. This was the last open design
+problem in the endgame.
+
+**The journal page is four entries total** — Rollo three, Harald one, Leif and Aud none. Noted in the
+page that this is lopsided for a travel document, and that any texture entries added to even it out
+must be vetted against the enumerator first, since naming two stops constrains them whether or not
+that was intended.
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html` only — Harald's section retitled and reduced
+to one entry, the correction recorded, the entry drafted in, the broken-`2` warning replaced with the
+decision, the journal-page tally added, and the open-items grid's Harald panel replaced with "All four
+legs closed".
+
+**Checks run:** both six-stop legs re-enumerated over their real cards only. Page served over HTTP,
+section labels in sequence (1, 2, 2b–2i, 3–6), all new blocks render, no stale "shape still broken"
+text remains, console clean.
+
+**The endgame design is now closed. What remains is production, not design:**
+- `H3` Kyiv still has to lose "Kyiv next" (rule 2). Nothing need replace it mechanically.
+- Five sentences still to come off Rollo's built cards (listed in 2e); none applied yet.
+- None of the props exist: three transition tickets, the "Family iconography" journal page, and the
+  four museum tickets still have no printed dates.
+- `Tools/final_riddle_clues.py`, the constraint worksheet, the Validation run and the solving board in
+  section 6 all still encode the superseded 17 Sept model and must be rebuilt against sections 2c–2g.
+
+**Next action:** rebuild `final_riddle_clues.py` against the new model, then the solving board's data
+block, so the two tools stop contradicting the spec. The clue set is now small enough that this is
+mostly deletion.
+
+## Session Close — 2026-09-20 — Harald's leg settled; all four legs now done
+
+**Task:** continuing the same session. Worked leg 4 (Harald), and reverted the bundle design after the
+user corrected it.
+
+**Reverted — back to three transition tickets.** Last turn I replaced them with four return
+itineraries, arguing a single ticket could not span the winter between Rollo and Aud. The user
+resolved it differently: **Liv simply winters abroad rather than flying home**, so the gap is a long
+stay, not a break in the chain. Three tickets — Leif→Rollo (L3→RD), Rollo→Aud (R6→A1), Aud→Harald
+(A3→H1).
+
+**The chain's two loose ends are covered by cards, and this is now a stated principle.** No ticket
+precedes Leif and none follows Harald, so `L1` "the first stop on my journey" and `H6` "Patara is the
+last stop of my travels for now" are **the only two cards permitted to state their own position** —
+and they are exactly the two ends of the whole journey. A principled exception to rule 1 rather than a
+leak. H6's line is therefore *kept*, reversing my earlier plan to delete it.
+
+**Leg 4 Harald — clue set settled. Two journal entries, not three.**
+`H1 → H2 → H3 → H4 → H5 → HD → H6`, closed by the Aud→Harald ticket, H6's own line, H4's new
+Mediterranean line, and two journal entries: *Staraya Ladoga – Kyiv* and *Sicily – Constantinople*.
+*Hedeby – Sicily* was dropped as redundant. Enumerated over all 5,040 arrangements.
+
+**The H4 rewrite is the interesting part.** The old clue, "saltwater again, after all that river
+country", was dropped — "river country" only reliably points at Staraya Ladoga, whose card mentions a
+river bend, so placing Kyiv before Hedeby needed outside knowledge of the Dnieper. **A plain "heading
+south" would not have worked either**: Hedeby is 54.5°N and Kyiv 50.5°N, so Kyiv *is* south and a
+latitude reading cannot exclude it. Naming the sea does — Kyiv is the one remaining stop not on a
+coast. The difference is **60 possible orders versus 4**, plus a journal entry saved. Final wording,
+the user's: "Today: Hedeby — barely a Hedeby left to stand in, just a green ring of earthworks where
+the ramparts ran. From here I'm turning south: nothing but Mediterranean weather for the rest of this
+trip."
+
+**Two card edits applied, PDFs rebuilt, both backs rendered and checked:**
+- `H4` Hedeby — opener replaced. **Its branch-rune key table was the real risk** (the box clamps at
+  y=30 and a previous edit to this card pushed its caption out of frame). The new message runs one
+  line longer and the table still clears with its caption intact — confirmed by rendering, not by
+  arithmetic.
+- `H1` Oslo — deleted "and the obvious place to begin with him" (rule 1). Now reads "It's Harald's
+  city — so much Viking history."
+
+**Still to do on Harald: `H3` Kyiv must lose "Kyiv next"** (rule 2). Nothing needs to replace it
+mechanically — an earlier plan had H3 gaining a Dnieper mention, which H4's Mediterranean line makes
+unnecessary. Any new opener just has to carry no ordering content. Recorded as a warning block in 2g.
+
+**Minor:** `build_postcard_H1_pdf.py` uses straight apostrophes where the rest of the deck uses curly
+ones. Noted in the page, not fixed.
+
+**Files changed:** `build_postcard_{H1,H4}_pdf.py` (each with a comment recording why), their four
+rebuilt PDFs, and `Norse_Brainstorm.html` — bundle section reverted to three tickets, new section 2g
+for Harald, sections renumbered (2h "what this model owes", 2i "At a glance"), the open-items grid's
+Harald panel replaced with the broken-`2` problem, and every stale itinerary reference reworded except
+the two kept as history.
+
+**Checks run:** both rebuilt card backs rendered at full size and read — H4's rune table verified
+intact. Page served over HTTP, section labels in sequence (1, 2, 2b–2i, 3–6), all new blocks render,
+console clean.
+
+**Next action — the last open problem in the endgame: Harald's `2` does not draw.** The H3 → H4 leg
+doubles back up and to the left, giving a zigzag with a spike. The clue work cannot touch this; it is
+solved by moving or replacing a stop, which then invalidates whichever clues named it. Do it before
+any journal entry is drafted in final form, and before the solver and solving board are rebuilt.
+
+## Session Close — 2026-09-20 — Two-year split; return itineraries; Aud's leg settled
+
+**Task:** continuing the same session. The user split the journey across two calendar years, which
+forced a change to the bundle and then unblocked Aud's leg.
+
+**Decided — the journey spans two years.** Leif (24 Aug – 16 Sept) and Rollo (28 Sept – 6 Nov) in
+year one; Aud and Harald in **May–July of year two**. A continuous run would have pushed legs 3 and 4
+into an Icelandic and Baltic winter. No new justification needed: card L1 already opens "I've spent
+the last two years travelling and exploring our family history." It also puts H5's gelato in real
+Sicilian summer.
+
+**Superseded — the three transition tickets are now four return itineraries.** A transition ticket
+was a single document from the end of one leg to the start of the next, which only works while legs
+are back-to-back. They no longer are; no booking spans a six-month gap at home. One return itinerary
+per leg — outbound and inbound with dates, which is how people actually book — survives the gap,
+pins **both** ends of its leg instead of one, and still gives leg order. All four sit in the bundle,
+so rule 5 holds.
+
+**Leg 3 Aud — settled, and it needs no journal entries.** Structurally identical to Leif: the
+outbound itinerary pins A1, the inbound pins A3, AD goes to the crest filter, and A2 is the only real
+card left for the middle. **One structural condition:** AD must sit second or third in the block,
+never at either end — otherwise the itinerary pins a card the filter later removes, which is exactly
+Rollo's situation and why Rollo needs a Walcheren–Châlus entry. This is not the retired
+decoy-never-first invariant returning; it is a per-leg consequence of where that leg's itinerary
+lands.
+
+**Four text changes applied to Aud's built cards, PDFs rebuilt, backs visually checked:**
+- `A1` Dögurðarnes — deleted the whole opening paragraph ("First of Aud's places for me. I saved
+  Aud's country until after France — save the best for last, right?"). The first sentence breaks
+  rule 1. **The second was the serious one:** it revealed Rollo-before-Aud during play, when leg
+  order is supposed to live entirely in the bundle (rule 5).
+- `A3` Esjuberg — deleted "Last of Aud's places for me." (rule 1).
+- `AD` Bjarnarhöfn — "Wintered like Aud did, at her brother's harbor" → "At her brother's harbor —
+  the one Aud wintered in." A credibility fix, not a rules one: Aud's leg now runs May–July so Liv
+  cannot have wintered there. Agrees with the card's own typed Fun Fact.
+
+**Worth carrying into Harald's audit:** the A1 and A3 clauses were listed in the 17 Sept clue set as
+"new card text" still to write. They were in fact already written and shipped. `H1` and `H6` are
+listed the same way, so assume they are printed until checked.
+
+**Left open deliberately:** A1 now opens straight into the etymology, having lost its warm opener. It
+reads acceptably — R3 Bayeux opens on its subject too — but any replacement must carry no ordering
+content. Not invented.
+
+**Files changed:** `build_postcard_{A1,A3,AD}_pdf.py` (each with a comment recording why), their six
+rebuilt PDFs, and `Norse_Brainstorm.html` — the return-itinerary section replacing the transition
+chain, new section 2f for Aud, sections renumbered (2g "what this model owes", 2h "At a glance"), the
+open-items panels updated, and every stale "transition ticket" reference reworded except the three
+that are deliberately historical.
+
+**Checks run:** all three rebuilt card backs rendered and read — the deletions are clean and the
+layouts unchanged. Page served over HTTP, section labels in sequence (1, 2, 2b–2h, 3–6), no dangling
+cross-references after renumbering, all new blocks render, console clean.
+
+**Next action:** Harald's leg — the last and hardest. Six real stops plus a decoy, and its `2` is
+already recorded as broken. Audit the seven cards' text first (`H1`/`H6` for printed position
+statements, `H3` for "Kyiv next"), then work out where its itinerary lands and what the journal owes
+it.
+
+## Session Close — 2026-09-20 — Rollo's journal entries drafted and dated
+
+**Task:** continuing the same session. Drafted the three "Travel highlights" entries for Rollo's leg,
+iterated the wording with the user, and set the leg's dates.
+
+**The three entries, agreed and written into section 2e:**
+- *By train — Walcheren – Châlus.* "The long one. Three changes, one missed connection, and a man in
+  the second carriage who shared his sandwiches after I gave up waiting for the buffet car."
+- *By train — Train from Rouen.* "Heading west, a short hop, for a museum I'd been looking forward to
+  for months."
+- *By sea — English Channel ferry.* "Landed in Winchester after a rocky night, but excited to finally
+  see the battlefield itself, after all those hours in front of the tapestry."
+
+**The user pushed the last two toward vagueness, and the two cases behave differently.** Withholding
+Bayeux from the Rouen entry is free: *west* + *a short hop* off the map, plus *museum* excluding
+Roumare Forest, still resolve it, so the constraint is unchanged and the work goes up. Withholding
+the ferry's origin was not free — a fully vague ferry entry leaves 2 orders, the rival being
+Châlus → Winchester → Rouen → Bayeux. Closing that by reasoning about Châlus's distance from the sea
+would have made a soft map inference load-bearing.
+
+**The user's own fix is better than mine.** Pointing the ferry entry *forward* ("excited to finally
+see the battlefield itself, after all those hours in front of the tapestry") carries two facts in one
+clause — Bayeux behind, Battle ahead — and closes the leg on its own. It also drops the adjacency
+assumption my draft needed, and the tapestry→Battle link is card-internal (R3 names the 1066 story,
+R5 names William and Harold).
+
+**Proofing note recorded:** if that entry is misread as "excited to see *the tapestry*", Bayeux moves
+after Winchester and the leg yields 3 wrong orders. The wording guards against this twice over and
+must not be shortened at layout stage.
+
+**Rollo dated 28 Sept – 6 Nov** (RD Walcheren 28 Sept, R1 Châlus 4 Oct, R2 Rouen 11 Oct, R3 Bayeux
+18 Oct, R4 Winchester 24 Oct, R5 Battle 29 Oct, R6 Roumare 3 Nov). Dates are now a *credibility* test
+only, never a clue — each row carries its check. Winchester's "freezing here" is defensible in late
+October off an overnight crossing; Roumare's beech and oak with boar suits early November.
+
+**Correction to the earlier entry:** the deletion list for Rollo's built cards is **five** sentences,
+not four. R2 Rouen's "The tapestry towns are still ahead of me" was added on 17 Sept and is printed,
+so rejecting it under rule 3 means it has to come off too. None of the five is applied yet — all five
+cards are built and shipped, so this is a text-and-reprint pass.
+
+**Also noted:** the Rouen museum ticket may not need a date at all. Its intra-leg job went to the
+Rouen journal entry and its leg-order job went to the transition chain, so it is the leading
+candidate to be one of the deliberately undated tickets.
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html` only — the three entries with what each pins,
+Rollo's date table, the proofing warning, the corrected five-sentence deletion list, and the open-items
+panels updated (journal now "partly drafted", dates now "legs 1–2 set").
+
+**Checks run:** all three entries verified by enumeration over the 5,040 arrangements — the agreed set
+gives exactly one order, each entry is load-bearing, and the misreading case was confirmed to produce
+3 wrong orders. Page served over HTTP, section labels in sequence, all new blocks render, console
+clean.
+
+**Next action:** Aud's leg. Note it now opens after 6 Nov, so legs 3 and 4 fall in winter — check that
+against Aud's and Harald's card content early, since several of those cards were written for the old
+spring/summer dating.
+
+## Session Close — 2026-09-20 — Endgame evidence model rewritten; Leif and Rollo settled
+
+**Task:** continuing 19 Sept. The user rejected `"XXX next"` as a clue — it points at a card other
+than the one in hand, so collecting or laying out the deck differently destroys the referent — and
+noted the phrasing was simply their voice, never a mechanism. That opened a full rework of how the
+endgame carries evidence. Written up as **section 2c of the Final riddle tab**, superseding the
+17 Sept clue set in 2b.
+
+**The five rules.** (1) No card states its own position. (2) No deictic clues. (3) Every clue names
+its anchor — a place, another prop, or something the map shows; no outside knowledge, including
+weather, museum seasons, or which port serves which town. (4) Decoys read as genuine stops — this
+reverses the 19 Sept decision. (5) Ambiguity holds until the final bundle.
+
+**Two-layer structure.** During play: postcards with only natural cross-references, museum tickets
+(one or two deliberately undated), and the maps. Final bundle: the journal page and three transition
+tickets. Leg order lives entirely in the bundle.
+
+**Corrected a mistake from 19 Sept.** I had the four museum tickets carrying leg order. Players
+collect those during play, so leg order would have been readable long before the endgame — breaking
+rule 5. The three transition tickets chain instead (L3→RD, R6→A1, A?→H?), which puts leg order in
+the bundle and frees the museum tickets for intra-leg work.
+
+**The journal page, "Family iconography"** — the keystone. Top half: the crest and symbol drawings,
+unannotated (the filter). Bottom half: "Travel highlights", journey entries with a memorable detail
+and **no reference to the elements**. An earlier draft tied elements to journeys ("thought of the
+horn on the train from Rouen to Bayeux") — the user caught that it implies the horn belongs to one
+of those stops, corrupting the filter. Decoupled, it also means the highlights are unusable until
+the filter is applied, since some entries name decoy stops. Entries group by transport, not date.
+
+**Modelling point worth keeping:** a journey entry means *consecutive*, not merely *earlier*. Read
+weakly, Rollo appeared to need four entries with a Walcheren entry wasted; read correctly, three
+entries close the leg and Walcheren is one of them.
+
+**Leg 1 Leif — settled.** L1 states it opens (the one permitted exception to rule 1, since it
+launches the game); the L3→RD ticket closes the leg; L2 is second by elimination; LD goes to the
+filter. Needs no journal entries. Both self-numbering lines are already deleted and rebuilt.
+
+**Leg 2 Rollo — settled.** RD Walcheren opens the block (L3→RD ticket), R6 closes it (R6→A1 ticket),
+Battle's existing tapestry line gives Bayeux-before-Battle, and three journal entries —
+Walcheren–Châlus, Rouen–Bayeux, Bayeux–Winchester — close it to one order. Verified by enumerating
+all 5,040 arrangements; all three entries are load-bearing. The England-pair inference turns out to
+be unnecessary, so nothing rests on it.
+
+**Four deletions pending on Rollo's built cards** (no new prose invented, none applied yet): R1 drop
+"but this is where I began" (keep the Richard-dying-there line, which survives rule 1); R6 drop "The
+last of Rollo's places on my list"; R4 drop "Winchester next"; RD drop "before really starting
+Rollo's own trail". R5 Battle unchanged — it is the model.
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html` only — new sections 2c–2f, 2b banner-marked
+superseded, "At a glance" renumbered to 2g, and four 19 Sept blocks patched so the page no longer
+contradicts itself (the museum-ticket claim, the Leif ticket note, the decoy-never-first invariant,
+and LD's position note). Codex's stamp work from the same day is untouched.
+
+**Checks run:** page served over HTTP, Final riddle tab inspected, section labels confirmed in
+sequence (1, 2, 2b–2g, 3–6), no dangling cross-references to the pre-renumber labels, all new blocks
+present and rendering, console clean, solving board still renders. Rollo's clue set enumerated in
+Python — the three-entry set gives exactly one order and each entry is individually load-bearing.
+
+**Not verified visually:** the Browser pane returned blank screenshots throughout (it is hidden), so
+layout was confirmed by rendered text and DOM structure rather than by eye.
+
+**STALE and flagged in the page:** the 2g itinerary table, the timeline chart,
+`Tools/final_riddle_clues.py`, the constraint worksheet, the Validation run, and the solving board's
+clue list — all still describe the 17 Sept interleaved model, including the two "next" clues this
+model removes. Rebuild them once all four legs are settled, not before.
+
+**Next action:** work Aud's leg (leg 3) under the new model, the same way Rollo was done — list what
+its four cards already say naturally, see what the A1 and A? transition tickets pin for free, then
+find the minimum set of journal entries that closes it. Do not write the planned "first/last of
+Aud's places" clauses for A1 and A3; they break rule 1 and the tickets already do that job.
+
+## Session Close — 2026-09-20 — Aud/Harald stamps replaced; shield mark differentiated
+
+**Task:** recreate the three art gaps identified in the Norse audit: Aud's obsolete pillar stamp,
+Harald's obsolete labrys stamp, and the confusable round-shield/sun-wheel postcard mark.
+
+**Done:** generated a purple engraved Viking-Age comb stamp for Aud and a green engraved
+single-bladed Dane axe stamp for Harald. Both preserve the existing 1145 × 1374 transparent,
+perforated cream-paper stamp format. All four Aud and all seven Harald postcard builders now use
+the replacements; their individual and letter-sheet PDFs were rebuilt. The old pillar and labrys
+files remain as superseded history.
+
+The round shield was redesigned instead of the sun-wheel: no spokes or quartering, just a ringed
+disc, large domed boss, and one curved two-colour seam. The final production file is 300 × 300 with
+transparent corners; the 1254 × 1254 ImageGen source is retained under `PostcardMarks/Sources/`.
+The exact three prompts are recorded in `Norse_Brainstorm.html`.
+
+**Files changed:** new `Postcards/Stamps/Stamp_Aud_Comb_v1.png`,
+`Stamp_Harald_Dane_Axe_v1.png`, `Art/FinalPuzzle/PostcardMarks/Crest_Round_Shield_HandDrawn_v2.png`
+and its source; eleven postcard builder scripts; 22 rebuilt PDFs in `output/pdf/`;
+`Norse_Brainstorm.html`; this handoff.
+
+**Checks:** visually inspected all three generated assets. Rendered and inspected all eleven unique
+postcard backs plus all 22 pages of the eleven letter-sheet PDFs; both stamps remain clear at card
+size, sit correctly under every postmark, and no card-specific clipping appeared. All eleven
+builders completed. Served the design page over local HTTP: all four stamp gallery images and
+shield v2 load at their expected dimensions; console clean. `git diff --check` passed. Poppler
+emitted missing-display-font warnings for Symbol/ArialUnicode while rendering, but the affected
+backs showed no missing glyphs or layout damage.
+
+**Next action:** assign the nine real marks and two shared decoy marks to the 22 postcards, then
+place and print-proof one representative mark at roughly 0.4–0.5 inches wide.
+
+Previous update: 2026-09-19 by Claude Code
+
+## Session Close — 2026-09-19 — Final puzzle restructured: legs blocked in time; Leif's leg settled
+
+**Task:** the user rejected the `"XXX next"` clue pattern as too fragile — it points at a card that
+isn't the one you're holding, so collecting or laying out the deck differently destroys the
+referent. They also noted the phrasing was simply how they write, never intended as a mechanism, so
+the solver had been promoting incidental voice into load-bearing evidence. They then proposed a new
+model and asked to work it leg by leg.
+
+**Decided, 19 Sept 2026 — each leg runs contiguously in time.** Liv finishes Leif's leg, then
+Rollo's, then Aud's, then Harald's; no interleaving. Three consequences:
+
+1. **The four museum tickets carry the leg order outright.** Legs no longer overlap, so sorting the
+   four dated tickets *is* the digit order. This closes a real delivery gap found earlier in the
+   session: `PZ-08` decided the digits read in first-appearance order, but nothing in the game ever
+   told a team that — four digits and four maps arrived with no stated reason to order them.
+2. **The final bundle becomes transition tickets** — one travel document from the end of each leg to
+   the start of the next. Each proves two facts at once (that card closes its leg, that card opens
+   the next). Three cover all four legs. Supersedes the old assorted boarding passes and receipts.
+3. **Within a leg, month references in her handwriting do the ordering** — a November day against an
+   October museum ticket places the card after the museum stop. The month names its own anchor.
+
+**Rule adopted:** an ordering clue must name its own anchor. Dated prop strongest; card text naming
+the other place or event is fine; a bare "next"/"then" with no referent is not a clue. Her voice
+keeps the phrasing, the clue set stops depending on it.
+
+**Leg 1 settled — Leif moves to 24 Aug – 11 Sept** (L1 L'Anse 24 Aug with the museum ticket, L2
+Battle Harbour 30 Aug, LD Brattahlíð 5 Sept, L3 Qikiqtarjuaq 11 Sept). February was chosen to make
+L3's aurora work and broke the rest of the leg. The page had already conceded L'Anse's visitor
+centre is shut in February and that Battle Harbour is not credible in winter — that compromise is no
+longer survivable, because a closed visitor centre cannot issue the dated ticket the leg order now
+depends on. A third problem was unrecorded: **LD's "green against the ice" is false in February**;
+the Eastern Settlement greens up June–September. The new window satisfies all four cards.
+
+**Leif now needs no ordering text beyond L1's opening line** — L1 states it is first, the transition
+ticket out of Qikiqtarjuaq proves L3 closes the leg, L2 is second by elimination, LD is filtered by
+the crest. So **L2's "Second stop: Markland" was rewritten to "Markland today"** and rebuilt,
+matching L3's earlier change this session.
+
+**Files changed:** `NorseBackpack/Postcards/build_postcard_L2_pdf.py` (opener plus a comment),
+`output/pdf/Postcard_L2_Battle_Harbour_Print.pdf` and `..._Letter_Print.pdf` (rebuilt),
+`NorseBackpack/Norse_Brainstorm.html` (the decision, the rule, Leif's new leg table, the stale
+warning and the new-work warning).
+
+**Checks run:** L2 rebuilt and its back rendered and read — the new opener is correct and the layout
+is unchanged. Page served over HTTP, Final riddle tab inspected, all new blocks present, console
+clean, solving board still renders.
+
+**STALE — do not trust until the remaining legs are re-dated:** the 22-row itinerary table, the
+"Where she was, and when" timeline chart, `Tools/final_riddle_clues.py`'s `ITIN` and clue set, and
+the solving board's dates and clue list. All still describe the interleaved February–December year.
+The deck, crest filter and four digits are unaffected. This is flagged at the top of the Final
+riddle tab.
+
+**New work this model creates:** none of the four museum tickets currently carries a printed date
+(checked `Props/MuseumTicket`, `Props/AudTicket`, `Props/Hnefatafl`) — under this model those four
+dates *are* the leg order, so all four must be dated and reprinted. The three transition tickets do
+not exist yet. Leif's transition wants a multi-segment e-ticket itinerary, since there is no direct
+Qikiqtarjuaq–France service.
+
+**Next action:** settle Rollo's leg the same way — pick its window (it must follow 16 Sept, when
+Leif's leg ends), check each of the seven cards' text against that season, place the Rouen museum
+ticket inside the leg rather than at its start so the month-reference device has something to work
+against, and decide which stop the Leif→Rollo transition ticket lands on.
+
+## Session Close — 2026-09-19 — Interactive solving board added to the Final riddle tab
+
+**Task:** the user asked for an interactive part in the Final riddle tab: a calendar timeline, the
+clue list with prop names, the postcard names, clickable clue ticks, and postcards that can be moved
+onto the timeline.
+
+**Two decisions taken with the user before building:** the board gives **live feedback** (each clue
+shows satisfied / broken / not-yet as you place cards) rather than being a silent manipulation
+surface; and the timeline is **22 ordered slots**, not a Feb–Dec month strip, because a team deduces
+an order rather than a date per card. Month bands would have leaked roughly where each card belongs.
+The seven dated props print their dates on their slots as visible anchors.
+
+**Built:** a self-contained block at the end of `#final-riddle` in `Norse_Brainstorm.html` — its own
+`<style>`, markup and `<script>`, so it can be found and edited in one place. Deck of 22 cards
+coloured by trail with decoys tinted; 22-slot timeline; 19 clue rows grouped by where the clue lives
+(built cards / cards still to write / added clauses / dated props / final bundle / structural rule).
+Cards move by drag-and-drop or by click-then-click-a-slot; dropping onto an occupied slot swaps.
+Controls: Clear board, Clear ticks, a **final-bundle toggle** that withholds or grants the three
+bundle items, and Fill recorded answer. A readout shows each trail's order, its digit when the trail
+matches the recorded answer, and the first-appearance order. Board state persists in `localStorage`
+(wrapped in try/catch, and unknown card ids are discarded on load).
+
+**Deliberate limitation, written into the page and into the script's header comment:** the board
+checks one arrangement, it does not enumerate, so it cannot prove uniqueness — that stays
+`Tools/final_riddle_clues.py`'s job. The two now hold the same clue data in two places and must be
+changed together.
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html` (board plus a scope note), and
+`.claude/launch.json` — `autoPort: true` and the hardcoded `8734` dropped from `runtimeArgs`, because
+port 8734 was held by another session's server.
+
+**Checks run:** served over HTTP and driven through the DOM. Empty state correct (22 cards, 22 slots,
+7 dated anchors, 19 clues, bundle rows withheld). Filling the recorded answer with the bundle in hand
+turns all 19 rows green, reads `1 9 7 2`, and gives first appearances Leif → Rollo → Aud → Harald,
+matching the solver. Violations were induced and caught correctly: moving R4 away from R3 broke
+"Winchester next" while correctly leaving "Kyiv next" grey (its other card was unplaced); swapping R1
+and R6 broke `R1 opens Rollo`, `R6 closes Rollo` and `Rollo first-appears before Aud` together. Tick
+toggling sets and clears `aria-pressed` and the glyph. All eleven tabs still open and the console is
+clean.
+
+**Not verified visually in full:** the Browser pane returned blank screenshots for the lower part of
+the board while it was hidden, so layout below the clue list was confirmed by geometry and text
+rather than by eye. The deck, timeline and clue list were seen rendered and are correct.
+
+**Next action:** open the Final riddle tab and try to solve it from a cleared board with the bundle
+withheld — that is the first real use, and it will show whether the clue wording reads as intended
+before any of the four unwritten cards are drafted.
+
+## Session Close — 2026-09-19 — L3 no longer numbers itself ("Third stop" → "New stop")
+
+**Task:** the user asked what would change if card L3 stopped saying "third stop", then asked for
+the change to be made as "New stop".
+
+**Answer to the question, before the edit:** nothing in the logic. L1 and L2 pin positions 1 and 2
+by their own printed text, and L3 is Leif's only other real card, so L3 third is forced by
+elimination. Verified by re-running the solver (same 1 answer with the bundle, same 3 without) and
+by a direct probe that found **zero** calendars placing L3 before L2 — so this is a real result,
+not an artefact of the 400,000 enumeration cap.
+
+**What it does change** is in the room: previously three of the four Leif-stamped cards numbered
+themselves, which exposed decoy LD Brattahlíð as "the one with no number" from card text alone.
+Two Leif cards now carry no position statement, so the crest filter is needed to tell L3 from LD.
+It also partly answers the decoy complaint already recorded in the Final riddle tab — the
+unfiltered trace is no longer a single option (L1→L2→LD→L3 reads as a V, not a 1).
+
+**One cost, recorded rather than solved:** the digit itself gains nothing — a 1 has no internal
+shape, so either endpoint still draws a plausible stroke. This buys "the crest is needed", not "the
+shape self-checks". Open under `PZ-18`.
+
+**L3 keeps both of its jobs.** An earlier draft of this entry claimed the position statement was
+L3's only contribution and that the card now failed the 15 Sept "every card's job 3 gates a lock"
+rule. That was wrong. L3 is still one of the three map points drawing Leif's 1, still placed third
+(by elimination rather than by its own text), and still gates a physical lock — under `PZ-13` the
+L2/L3 hold-to-light join opens lock 3, which is independent of the opening sentence. An ordering
+statement was never what satisfied job 3 anyway; that rule explicitly excludes "a calendar
+statement" on its own. What was removed is a *clue*, not a job.
+
+**Warning recorded in the page:** do **not** also remove L2's "Second stop". Tested this session —
+with both anchors gone, L3-before-L2 becomes reachable and Leif's order is no longer forced. The
+solver still reports one answer in that configuration, but that is a **false pass**; the reversed
+calendars sit beyond the enumeration cap and a direct probe finds them immediately. Future clue cuts
+on this leg must be checked with a probe, not with the answer count alone.
+
+**Files changed:**
+- `NorseBackpack/Postcards/build_postcard_L3_pdf.py` — message opener, plus a comment recording why
+- `NorseBackpack/Tools/final_riddle_clues.py` — removed `C('pos', ('L3', 3))`, left a comment in its place
+- `NorseBackpack/Norse_Brainstorm.html` — dropped the L3 row from the clue-set table; reworded the
+  Leif row in the constraint worksheet; corrected the "positions 1–3 are locked" note to 1–2; added
+  the decision note and the L2 warning to the Final riddle tab; updated the quoted message in `PZ-05`
+- `output/pdf/Postcard_L3_Baffin_Island_Print.pdf` and `..._Letter_Print.pdf` — rebuilt
+
+**Checks run:** solver re-run (TEST 1 PASS, TEST 2 PASS 3 answers without bundle, TEST 4 PASS;
+TEST 3 still NOT RUN, geometric as before). Reversed-order probe run on both the drop-L3 and
+drop-L2+L3 configurations. L3 PDF rendered to PNG and visually inspected — the new opener reads
+correctly and the layout is unchanged. Design page served over `localhost:8734`, Final riddle tab
+inspected in the browser: the new note and warning render in the right place and the console is
+clean.
+
+**Not done:** `NorseBackpack/Postcards/Postcard_L3_Baffin_Island_Back.png` (13 Sept) is a stale
+leftover from the old `build_postcard_collection.py` back design and does not contain the message,
+so it was left alone — it was already stale before this change.
+
+**Next action:** nothing outstanding on L3 itself. The open items on this leg are the ones that
+predate this session: validation TEST 3 (geometric, per-decoy), and the element-mark assignment and
+reprint pass that all 22 cards still need.
+
+## Session Close — 2026-09-19 — Two hand-drawn decoy postcard marks added
+
+**Task:** create two simple hand-drawn marks for the decoy postcards: a horned Viking helmet
+and a double-sided axe.
+
+**Result:** added two transparent 300 × 300 PNGs in
+`NorseBackpack/Art/FinalPuzzle/PostcardMarks/`: `Decoy_Horned_Helmet_HandDrawn_v1.png` and
+`Decoy_Double_Axe_HandDrawn_v1.png`. They use the same loose dark outline, muted flat colour and
+slight handmade wobble as the nine real marks. The helmet has exactly two horns. The double axe
+has two opposing blades and remains visibly distinct from the real single-bladed battle axe.
+
+**Decoy assignment revised, 19 Sept 2026:** Leif/Aud share the horned helmet; Rollo/Harald share
+the double-sided axe. This supersedes the earlier Mjölnir/crown choice. Both are intentionally
+wrong stereotypical Norse signals, which suits their role as fake elements.
+
+**Production:** the helmet was generated with ImageGen. The double-axe ImageGen request hit the
+account usage limit, so the final asset was derived from the approved single-axe mark by reflecting
+its existing blade across the haft axis. The exact helmet prompt, attempted axe prompt and actual
+construction are recorded under `PR-22` in `NorseBackpack/Norse_Brainstorm.html`.
+
+**Files changed:** the two PNGs above, `NorseBackpack/Norse_Brainstorm.html`, and `HANDOFF.md`.
+
+**Checks:** both PNGs were visually inspected at full size; both are 300 × 300 `Format32bppArgb`
+with transparent corners. The updated design page was served over `localhost:8734`; both new marks
+render in the `PR-22` gallery and the browser reports no warnings or errors.
+
+**Still open:** redesign one of the confusable round-shield/sun-wheel marks; assign the nine real
+marks to individual cards; choose final printed size and treatment; print-proof representative
+marks at card size.
+
+**Next action:** redesign either the round shield or sun-wheel silhouette, then make a small
+actual-size print proof including one real mark and both decoys.
+
+## Session Close — 2026-09-19 — Hand-drawn postcard crest marks generated
+
+**Task:** correct the six separate crest-element drawings for postcard use. The first pass was too
+polished; the user wanted small hand-drawn marks rather than full 1254 px heraldic assets.
+
+**Current reference drawings:** `NorseBackpack/Art/FinalPuzzle/Family_Symbol_Three_Field_v2.png`
+is the revised family symbol: one circular knotwork emblem split into three equal compartments,
+with the raven, longship and eight-spoked sun-wheel at comparable size and visual weight.
+`Family_Crest_Six_Field_v2.png` is the current six-element family crest: a dimensional, elaborate
+Norse heraldic achievement with a central two-column by three-row shield carrying axe, round
+shield, wolf, anchor, drinking horn and valknut in reading order. Both are 1254 × 1254 transparent
+PNGs.
+
+**Current eleven postcard marks:** `NorseBackpack/Art/FinalPuzzle/PostcardMarks/` contains one simple
+transparent 300 × 300 PNG for every real element plus two decoys. Crest: battle axe, round shield,
+wolf, anchor, drinking horn and valknut. Symbol: raven, longship and eight-spoked sun-wheel.
+Decoys: horned helmet and double-sided axe. They match Aunt
+Liv's existing Bayeux-inspired margin-drawing language: loose dark pen outline, flat muted
+coloured-pencil fills, slight handmade wobble and sparse detail. The existing cross and bow
+drawings were used as style references only. No postcard carries one yet. The longship generation
+needed a background-extraction pass plus a low-alpha threshold to remove a faint surrounding haze.
+
+**Superseded but retained:** the ornate 1254 × 1254 individual studies in
+`NorseBackpack/Art/FinalPuzzle/CrestElements/` were the wrong interpretation for postcard marks.
+They remain as a record only. `Family_Crest_Six_Field_v1.png` also remains the superseded simpler
+shield-only crest direction. `Family_Symbol_Raven_Crest_v1.png` is also superseded: its raven was
+far larger than the longship and sun-wheel, so it did not work as an equal three-item key.
+
+**Design page:** `NorseBackpack/Norse_Brainstorm.html` now shows both current drawings under
+`PR-22`, records the equal-three-field symbol revision and its exact ImageGen prompt, shows all nine
+current hand-drawn postcard marks, records the three new prompts and longship cleanup, and labels
+both earlier directions as superseded where relevant.
+
+**Checks:** confirmed all nine current files are 300 × 300 `Format32bppArgb` PNGs with transparent
+corners. Visually inspected the downsized production files; all nine remain clear and distinct.
+Served `Norse_Brainstorm.html` over `localhost:8734`; the mark gallery renders cleanly, every image
+loads, and the browser console reports no warnings or errors. Also
+confirmed the revised 1254 × 1254 family symbol has transparent corners and renders cleanly beside
+the crest; its three subjects occupy separate, comparably sized compartments.
+
+**Still open:** user approval of the corrected drawings; the 22 per-card element assignments,
+final printed size and physical treatment remain separate `PZ-18` design tasks. A proof at roughly
+0.4–0.5 inches wide is suggested, not decided.
+
+**Next action:** after visual approval, assign the nine real elements and two shared fake elements
+to the 22 postcards, then place and print-proof one representative mark at actual card size.
+
+## Session Close — 2026-09-19 — Final riddle: visual form of the two reference drawings decided,
+generation briefs written for Codex
+
+**Task:** continuing the same session (see the two entries below for Leif/Rollo and Aud/Harald).
+Moved to the final route/endgame puzzle (`PZ-18`). The mechanism, itinerary and element *lists*
+were already decided (17 Sept); what was still open was what the final bundle's two reference
+drawings actually look like, and who builds them.
+
+**Decided with the user, 19 Sept 2026:** the 3-element family logo (raven, longship, sun-wheel) is
+drawn as a **raven crest** — an edit of `PR-15`'s existing raven-in-knotwork artwork
+(`Art/Raven/Raven_Profile_Knotwork_Frame_v1.png`), with the longship and sun-wheel worked into the
+same knotwork ring as two more charges, rather than a new drawing from scratch. The 6-element family
+crest (battle-axe, shield, wolf, anchor, drinking horn, valknut) is drawn as a **family coat of
+arms** — a new Norse-styled heraldic shield with six fields, one charge each. Confirmed with the
+user that a shield-icon charge sitting on a shield-shaped crest is fine (heraldry does this
+routinely), not a redundancy to design around.
+
+**This is Codex's job, not Claude Code's**, per the project's existing agent split (image/asset
+generation is Codex's lane). Recorded as `PR-22` in `Norse_Brainstorm.html`, with full
+Codex-ready generation briefs for both drawings in the project's established prompt format (Use
+case / Asset type / Primary request / Style / Composition / Color palette / Constraints) and the
+shared two-tone palette (`#283B34` forest green, `#B56A2A` muted rust). The raven crest brief is a
+precise-object-edit against the existing PNG; the coat of arms brief is a fresh illustration-story
+generation. Both link back to `PZ-18`'s final-riddle mechanism and forward to `PR-15`'s existing
+raven asset.
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html` only — no image files were generated this
+session (that's the point of handing this to Codex). Updated: the final-riddle tab's "Which
+drawing covers which trail" panel (visual-form decision + link to `PR-22`); new `PR-22` entry with
+both generation briefs.
+
+**Checks run:** served the page over `localhost:8734`, confirmed no console errors after each edit.
+
+**Not done / explicitly out of scope:** no artwork was generated — this session only wrote the
+design decision and the handoff brief for whoever runs Codex next. Two things remain genuinely open
+and are *not* resolved by these two reference drawings: (1) the per-card element-mark assignment —
+which of the 22 postcards carries which of the 9 elements (3 symbol + 6 crest, or one of the 2
+shared fakes) — is still undecided; (2) the mark's own physical form (wax seal? picture-border
+mark? — deliberately not UV) and its legibility test at card size are still open. Also still
+unresolved from earlier passes: validation test 3 (no decoy should draw a plausible rival digit,
+which is in tension with decoys needing to draw a *plausible wrong* digit — one of the two has to
+give), and AD/HD's decoy card text is written but the two reference-drawing decisions here don't
+touch that.
+
+**Next action:** hand `PR-22`'s two briefs to Codex to generate the raven crest edit and the coat
+of arms. Once both exist, the natural follow-on is the per-card element-mark assignment — deciding
+which element sits on which of the 22 cards, and what the mark itself physically looks like at card
+size — which is a Claude Code design-reasoning task, not Codex's.
+
+## Session Close — 2026-09-19 — Aud/Harald recap; synced stale treasure entry; 3 new build-task
+notes; composited the hnefatafl board setup onto Harald's map back
+
+**Task:** continuing the same recap-and-tidy session (see the entry below for Leif/Rollo). Recapped
+Aud's leg and Harald's leg with the user, synced a stale puzzle-card table entry, logged three
+props that are designed but not yet physically built, and implemented the one piece of mechanical
+follow-through the user asked for: compositing the hnefatafl board-setup panel onto the real back
+of Harald's map sheet.
+
+**Aud's leg recap — no design changes, one sync fix:** the `treasure` entry in
+`Norse_Brainstorm.html`'s puzzle-card reference table still described the shelved 18 Sept
+split-panel design (code `467`) and had never been updated after `PZ-17`'s two rewrites since.
+Rewritten to match `PZ-17`'s actual current state: single portrait map, six legs walked on the real
+drawn network, code `521` (5 bridges, 2 fords, 1 gate), and the real outstanding risk (the tally is
+confirmed in the routing graph only — never walked by hand on a printed sheet).
+
+**Three build-task entries added, `PR-19`/`PR-20`/`PR-21`:** none of these props have been modelled
+or printed yet, all were previously only implied inside design prose rather than tracked as
+discrete to-dos.
+- `PR-19` — the comb (`PZ-03` grille lock, candidate answer `BOOK`). Needs: pick which letters of
+  AD's built message the teeth must expose, derive tooth-gap spacing from the card's actual printed
+  text layout, model, print, test-fit against the real card.
+- `PR-20` — the hoard's coins (`PZ-03` balance lock, `SOLE`). Blocked on `PR-02`'s scale purchase.
+  Needs: three distinguishable coin faces, a count/weight that hits `370.56 g` exactly, print,
+  confirm on the real replacement scale.
+- `PR-21` — the five-ring cryptex (`PZ-02` rune lock, `HRAFN`). Open design question folded in:
+  plain Latin letters on the rings (simple) vs. the branch-rune glyphs themselves (stronger
+  in-fiction match, but needs an extra translation step the game doesn't currently teach).
+
+**Harald's leg recap** — all three locks (branch-rune cryptex `HRAFN`, hnefatafl `253`, mead riddle
+`MEAD`) already decided and mostly built; nothing changed by the recap itself beyond surfacing the
+compositing gap below.
+
+**Hnefatafl board-back compositing, implemented this session:** the board-setup panel
+(`build_board_setup_pdf.py`) previously only existed as a standalone insert PDF, sized to its own
+small page, never drawn onto Harald's actual map sheet — so the "recover the setup from the back of
+the map she gave you" fiction was backed by two loose, unrelated pieces of paper. Fixed in
+`NorseBackpack/TravelMap/build_trail_maps_pdf.py`: imports `draw_grid`/`W`/`H` from
+`build_board_setup_pdf.py` (`sys.path` extended to `NorseBackpack/Props/Hnefatafl`), and a new
+`draw_harald_board_back(c)` fills a full letter page in the shared paper tone and draws the
+board-setup content centred on it. Hooked in right after the front page's `c.showPage()`, only for
+`key == "harald"`. Both `Trail_Map_4_Harald_Print.pdf` and `_ANSWER.pdf` are now 2-page PDFs, ready
+to print duplex and laminate as one object.
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html` (`treasure` puzzle-card entry rewritten;
+`PR-19`, `PR-20`, `PR-21` added; `hnefatafl` puzzle-card entry and `PZ-09`'s own text updated for
+the compositing fix); `NorseBackpack/TravelMap/build_trail_maps_pdf.py` (new import block, new
+`draw_harald_board_back` function, one hook in the per-trail save sequence);
+`output/pdf/Trail_Map_4_Harald_{Print,ANSWER}.pdf` (rebuilt, now 2 pages each).
+
+**Checks run:** rebuilt Harald's two PDFs in isolation, then reran the full `build_trail_maps_pdf.py`
+with no argument to confirm all four trails (Leif, Rollo, Aud, Harald) still build cleanly with no
+regressions — same label counts, same digit callouts (1/9/7/2), only Harald gained a page. Read
+back both pages of `Trail_Map_4_Harald_Print.pdf`: front renders as before; back shows the title,
+grid, stain, pieces, throne and Liv's margin note correctly, on the same paper colour as the front.
+Served `Norse_Brainstorm.html` over `localhost:8734` after each edit, no console errors.
+
+**Not done / explicitly out of scope this session:** none of `PR-19`/`PR-20`/`PR-21`'s actual
+3D models were built — only the fact that they're unstarted was recorded. `PR-09`'s own open
+question (whether the ticket's ink offset reads through real stock while the stain still hides the
+original, and whether the front grid or the new back-page ink ghosts through real laminate) remains
+untested — the compositing fix makes that test possible but doesn't substitute for it.
+
+**Next action:** print a physical test of Harald's composited sheet (both pages, real stock, real
+lamination) and check `PR-09`'s ghosting/registration questions now that there's a real two-sided
+object to check them against, rather than a separate insert. Otherwise continue leg-by-leg — Leif,
+Rollo, Aud and Harald have all now had a first recap pass this session.
+
+## Session Close — 2026-09-19 — Leif recap closed two risks; Rollo's word-lock redesigned to a 4-digit lock
+
+**Task:** recap Leif's leg with the user (puzzles/props/postcards), close two open risk items on
+it, then recap Rollo's leg and redesign its word-lock chain per the user's call that a directional
+(arrow) lock is expensive and finicky.
+
+**Leif's leg — two open risks closed, no mechanism change:**
+- Bear vs. wolf icon legibility (`PZ-13` risk note) — user confirmed legible and distinct at print
+  size. No longer an open risk.
+- Leif's trail drawing an almost-shapeless "1" (`PZ-06` shape-check note) — user confirmed fine, a
+  1 doesn't need internal shape. No longer a concern to solve.
+
+**Rollo's word-lock chain (`PZ-15`) redesigned, code decided:** the six-word directional lock
+(`R D D U L L`) is replaced with a four-word, 4-digit numeric combo lock. Two of the six word-pairs
+(beef/cow, forest/woodland) are dropped from the solve by cutting their sentence from postcard R2's
+message; the remaining four (combat/fight, poultry/hen, tavern/inn, people/folk) are read the same
+way as before (postcard → order, ticket → grid coordinate, map icon → the coordinate), except the
+readout changes from "direction from icon to coordinate" to "count the squares between them" — all
+four pairs already share a row or column, so no remeasuring was needed. **Code: `1486`**
+(fight=1, folk=4, hen=8, inn=6, in message order). The user chose to leave the now-unused cow and
+forest map icons in place as inert decoration rather than removing them or repurposing them into
+the ticket's filler pairs. R2's message gained a rule-line in the same family as LD's "every little
+detail counts" (`PZ-10`) to plant counting as Liv's habit: "Can't walk anywhere without counting my
+steps — always have."
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html` (`PZ-13` risk note, the shape-check note
+under the map-mechanic section, `PZ-15`'s full entry rewritten, the `wordlock` puzzle-card data
+object, the Rollo lockflow diagram, and R2's quoted message under `PZ-05`);
+`NorseBackpack/Postcards/build_postcard_R2_pdf.py` (forest/cow sentence replaced with the new
+rule-line, comment updated); `output/pdf/Postcard_R2_Rouen_{Print,Letter_Print}.pdf` (rebuilt).
+
+**Checks run:** rebuilt R2's PDFs and read them back — text fits the card, no overflow, message
+reads correctly in Liv's voice with the new line, solve order (fight, people, poultry, inn) intact.
+Served `Norse_Brainstorm.html` over `localhost:8734` and confirmed no console errors and the new
+`1486` code renders in the lockflow diagram, `PZ-15`, and the puzzle-card reference table.
+
+**Not done / explicitly out of scope this session:** the Rouen museum ticket
+(`build_rouen_ticket_pdf.py`) was not touched — it still lists all fifteen word pairs including
+the now-unused beef/cow and forest/woodland, which is correct as-is (they're meant to stay as
+valid-but-unused entries, not camouflage). Rollo's trail map was not touched — the cow/forest icons
+stay exactly where they are. No physical 4-digit lock has been bought yet (`ST-01` still open on
+which container this chain feeds).
+
+**Next action:** recap Aud's leg with the user (puzzles/props/postcards) — in progress as this
+entry is written; see the `PZ-17` entry in `Norse_Brainstorm.html` for its current state (treasure
+hunt redesigned 17–19 Sept, code `521`, one outstanding verification: print a test sheet and walk
+the six legs by hand against the ticket, never yet checked on paper).
 
 ## Addendum — same session — Aud's map styling marked final
 

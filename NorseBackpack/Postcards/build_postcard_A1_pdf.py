@@ -7,12 +7,14 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
+from postcard_marks import draw_mark
+
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "pdf" / "Postcard_A1_Dogurdarnes_Print.pdf"
 OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_A1_Dogurdarnes_Letter_Print.pdf"
 FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_A1_Dogurdarnes_Front.png"
-STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Aud_Pillars_v2_flat.png"
+STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Aud_Comb_v1.png"
 FONT_DIR = ROOT / "Fonts"
 
 PAGE = landscape((3.5 * 72, 5 * 72))
@@ -83,8 +85,12 @@ def draw_back_card(c, x=0, y=0):
     # being redesigned (the Dalir split-panel approach was shelved, Drafts/2026-09-17_Aud_split_panel).
     # Spelled "Dogurdarnes" (no eth) in her own hand -- NothingYouCouldDo's ð glyph reads as a
     # stray "s" at this size; the accented form stays correct in the typed Fun Fact and postmark.
+    # 20 Sept 2026 (PZ-18): the opening paragraph was "First of Aud's places for me. I saved
+    # Aud's country until after France -- save the best for last, right?" Both sentences are
+    # removed. The first states the card's own position; the second reveals Rollo-before-Aud
+    # during play, when leg order is supposed to stay in the final bundle. The leg's outbound
+    # return-itinerary now proves this card opens Aud's leg.
     paragraphs = [
-        "First of Aud’s places for me. I saved Aud’s country until after France — save the best for last, right?",
         "Dogurdarnes means something like “meal headland” — her own people are said to have stopped here to eat on the way to Hvammur. I did the same, and thought the whole time about how far she still had to go.",
         "Whatever pile the map marks for you, weigh it before anything else. Don’t guess the number — read it.",
     ]
@@ -101,6 +107,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("NothingYouCouldDo", 8)
     c.drawString(left, y, "With love,")
     c.drawString(left, y - 9, "Aunt Liv")
+
+    # PZ-18 element mark. Fixed position on every card -- the pocket between the
+    # divider and the postmark, above the address box. See postcard_marks.py.
+    draw_mark(c, "A1")
 
     # Aud's trail stamp (pillars motif) -- one stamp per traveller, not per card. HI-02 flags this
     # motif for redraw to a comb (her documented saga story); swap STAMP once that art exists.

@@ -43,6 +43,13 @@ OUT_DIR = ROOT / "output" / "pdf"
 SOURCE_ART_DIR = HERE / "Art"
 ART_DIR = SOURCE_ART_DIR / "processed"  # Leif's alpha-hole-filled derivatives
 
+# PZ-09: Harald's map gets a second page, the hnefatafl board-setup panel composited
+# onto its back, so the two print as one physical laminated sheet rather than two loose
+# pieces of paper. Reuses the insert's own drawing code and palette (shared with the
+# tickets, per board_layout.py) rather than duplicating it.
+sys.path.insert(0, str(ROOT / "NorseBackpack" / "Props" / "Hnefatafl"))
+from build_board_setup_pdf import draw_grid as _draw_hnefatafl_board_setup, W as _BOARD_W, H as _BOARD_H
+
 SEA      = HexColor("#DCE7E4")
 LAND_C   = HexColor("#EFE3C4")
 COAST    = HexColor("#59635D")
@@ -63,8 +70,22 @@ for alias, rel in (
     pdfmetrics.registerFont(TTFont(alias, str(FONT_DIR / rel)))
 
 PAGE_W, PAGE_H = letter
-MARGIN = 0.30 * 72
-NEAT = (MARGIN, MARGIN, PAGE_W - MARGIN, PAGE_H - MARGIN)
+# Margin sized to the printer's own non-printable area, each plus a 0.5mm safety pad. First read
+# from Hiking_Trip/Support.xlsx's Canon citation (top 3mm, side 3.4mm, bottom 16.7mm), which
+# undersized the sides and caused the print driver to visibly rescale/recentre the page. The
+# user's corrected, per-edge reading: top 3.0mm, bottom 16.7mm, left 6.4mm, right 6.3mm -- kept
+# as two distinct side values rather than averaged, since the user re-supplied them separately a
+# second time.
+# 20 Sept 2026: first pass used the largest of the four on every side for an even-looking border;
+# the user then asked to use the print area right up to each side's own real minimum instead, to
+# maximise the map -- accepting that the printed border is no longer even (thin on three sides,
+# thick at the bottom, which is the printer's own non-printable zone there, not this file's
+# choice).
+MARGIN_TOP = 3.5 / 25.4 * 72
+MARGIN_LEFT = 6.9 / 25.4 * 72
+MARGIN_RIGHT = 6.8 / 25.4 * 72
+MARGIN_BOTTOM = 17.2 / 25.4 * 72
+NEAT = (MARGIN_LEFT, MARGIN_BOTTOM, PAGE_W - MARGIN_RIGHT, PAGE_H - MARGIN_TOP)
 TITLE_H = 0.62 * 72
 BAND = 12.0                   # border band carrying the grid letters and numbers
 GRID_COLS, GRID_ROWS = 9, 11  # exact division of the map area; cells 0.84 x 0.86 in
@@ -182,18 +203,24 @@ BLOCKED = {}
 # (every stop, town, region and water label -- not just a distance-from-point heuristic, which
 # first missed a real collision between the wolf and "MARKLAND"). The longship was also shrunk
 # from its first pass (2.36 x 1.61 in) to 1.70 x 0.85 in: it was crowding the Labrador Sea.
+# Rescaled 20 Sept 2026, twice: once for the printer-margin fix (even-padding pass), then again
+# when the user chose to maximise the map area with each side at its own true minimum margin
+# instead. Both rescales are the same exact transform -- every box is its previous position/size
+# scaled about the map's own centre (which now also moved vertically, since the asymmetric
+# top/bottom margins no longer share a common page centre with left/right) -- not a re-placement.
+# Grid-cell slot comments below refer to the ORIGINAL grid and are kept for provenance only.
 LEIF_ART = (
-    ("Leif_Longship_v1.png",   (417.6, 182.9, 122.4, 61.2), 0.72),  # slot A
-    ("Leif_Whale_v1.png",      (267.8, 298.8, 108.0, 72.0), 0.68),  # slot B
-    ("Leif_Iceberg_v1.png",    (477.4, 484.9,  93.6, 68.4), 0.64),  # slot D
-    ("Leif_Polar_Bear_v1.png", (342.53, 705.48, 48.0, 44.0), 0.62), # F1
-    ("Leif_Seal_v1.png",       (221.47, 705.48, 48.0, 44.0), 0.62), # D1
-    ("Leif_Hare_v1.png",       ( 39.87, 581.82, 48.0, 44.0), 0.62), # A3
-    ("Leif_Deer_v1.png",       (403.07, 643.65, 48.0, 44.0), 0.62), # G2
-    ("Leif_Loon_v1.png",       (100.40, 458.15, 48.0, 44.0), 0.62), # B5
-    ("Leif_Wolf_v1.png",       ( 39.87, 396.32, 48.0, 44.0), 0.62), # A6
-    ("Leif_Orca_v1.png",       (403.07, 334.48, 48.0, 44.0), 0.62), # G7
-    ("Leif_Settlement_v1.png", (326.0, 589.8,  58.0, 36.0), 0.62),  # W. Greenland, 4.1deg clear
+    ("Leif_Longship_v1.png",   (415.06, 207.68, 119.62, 59.81), 0.72),  # slot A
+    ("Leif_Whale_v1.png",      (268.67, 320.94, 105.55, 70.36), 0.68),  # slot B
+    ("Leif_Iceberg_v1.png",    (473.50, 502.80,  91.47, 66.84), 0.64),  # slot D
+    ("Leif_Polar_Bear_v1.png", (341.70, 718.37,  46.91, 43.00), 0.62),  # F1
+    ("Leif_Seal_v1.png",       (223.40, 718.37,  46.91, 43.00), 0.62),  # D1
+    ("Leif_Hare_v1.png",       ( 45.92, 597.52,  46.91, 43.00), 0.62),  # A3
+    ("Leif_Deer_v1.png",       (400.86, 657.94,  46.91, 43.00), 0.62),  # G2
+    ("Leif_Loon_v1.png",       (105.08, 476.67,  46.91, 43.00), 0.62),  # B5
+    ("Leif_Wolf_v1.png",       ( 45.92, 416.24,  46.91, 43.00), 0.62),  # A6
+    ("Leif_Orca_v1.png",       (400.86, 355.81,  46.91, 43.00), 0.62),  # G7
+    ("Leif_Settlement_v1.png", (325.55, 605.31,  56.68, 35.19), 0.62),  # W. Greenland, 4.1deg clear
 )
 
 # Rollo's seven rust-brown story vignettes. Each 38pt square gives the normalized artwork an
@@ -201,14 +228,15 @@ LEIF_ART = (
 # use compact boxes so each vignette can sit beside its associated stop while
 # remaining clear of town dots, the answer-route stroke and fixed labels.
 # Battle and Hastings share one longship.
+# Rescaled 20 Sept 2026, twice (see LEIF_ART above) -- same exact transform.
 ROLLO_ART = (
-    ("Rollo_Crossbow_Bolt_v1.png", (373.0, 174.0, 38.0, 38.0), 0.62),  # Chalus
-    ("Rollo_Treaty_Scroll_v1.png", (372.0, 440.0, 38.0, 38.0), 0.62),  # Saint-Clair-sur-Epte
-    ("Rollo_Ducal_Coronet_v1.png", (393.0, 481.0, 38.0, 38.0), 0.62),  # Rouen
-    ("Rollo_Needle_Thread_v1.png", (258.0, 427.0, 38.0, 38.0), 0.62),  # Bayeux
-    ("Rollo_Crown_v1.png", (281.0, 596.0, 38.0, 38.0), 0.62),          # Winchester
-    ("Rollo_Longship_v1.png", (304.0, 529.0, 38.0, 38.0), 0.62),       # Battle / Hastings
-    ("Rollo_Boar_v1.png", (324.0, 491.0, 38.0, 38.0), 0.62),           # Roumare forest
+    ("Rollo_Crossbow_Bolt_v1.png", (371.48, 198.98, 37.13, 37.13), 0.62),  # Chalus
+    ("Rollo_Treaty_Scroll_v1.png", (370.49, 458.92, 37.13, 37.13), 0.62),  # Saint-Clair-sur-Epte
+    ("Rollo_Ducal_Coronet_v1.png", (391.03, 499.00, 37.13, 37.13), 0.62),  # Rouen
+    ("Rollo_Needle_Thread_v1.png", (259.09, 446.22, 37.13, 37.13), 0.62),  # Bayeux
+    ("Rollo_Crown_v1.png", (281.57, 611.37, 37.13, 37.13), 0.62),          # Winchester
+    ("Rollo_Longship_v1.png", (304.04, 545.90, 37.13, 37.13), 0.62),       # Battle / Hastings
+    ("Rollo_Boar_v1.png", (323.59, 508.76, 37.13, 37.13), 0.62),           # Roumare forest
 )
 
 # Word-lock puzzle vignettes (PZ-15, concept stage): six icons, each somewhere inside its named
@@ -218,13 +246,14 @@ ROLLO_ART = (
 # staying fully inside the cell bounds.
 # Word order fixed by the order the words were chosen in chat: beef, poultry, combat, forest,
 # tavern, people -- matched 1:1 against the given grid refs D1, I3, H6, E7, H9, F11.
+# Rescaled 20 Sept 2026, twice (see LEIF_ART above) -- same exact transform.
 ROLLO_WORDLOCK_ART = (
-    ("Rollo_Cow_v1.png",    (218.58, 714.44, 38.0, 38.0), 0.62),  # beef    -> D1
-    ("Rollo_Hen_v1.png",    (533.64, 577.67, 38.0, 38.0), 0.62),  # poultry -> I3
-    ("Rollo_Combat_v1.png", (465.22, 400.51, 38.0, 38.0), 0.62),  # combat  -> H6
-    ("Rollo_Forest_v1.png", (294.88, 335.10, 38.0, 38.0), 0.62),  # forest  -> E7
-    ("Rollo_Inn_v1.png",    (459.58, 223.36, 38.0, 38.0), 0.62),  # tavern  -> H9
-    ("Rollo_Folk_v1.png",   (349.79,  80.62, 38.0, 38.0), 0.62),  # people  -> F11
+    ("Rollo_Cow_v1.png",    (220.57, 727.12, 37.13, 37.13), 0.62),  # beef    -> D1
+    ("Rollo_Hen_v1.png",    (528.46, 593.46, 37.13, 37.13), 0.62),  # poultry -> I3
+    ("Rollo_Combat_v1.png", (461.60, 420.33, 37.13, 37.13), 0.62),  # combat  -> H6
+    ("Rollo_Forest_v1.png", (295.13, 356.41, 37.13, 37.13), 0.62),  # forest  -> E7
+    ("Rollo_Inn_v1.png",    (456.09, 247.22, 37.13, 37.13), 0.62),  # tavern  -> H9
+    ("Rollo_Folk_v1.png",   (348.80, 107.72, 37.13, 37.13), 0.62),  # people  -> F11
 )
 
 # Harald's branch-rune reference grid (PZ-02 x PZ-09): five real stems, each a group/position
@@ -257,6 +286,18 @@ def cell_center(col_idx, row):
     """Page-space centre of grid cell (col_idx 0-based, row 1-based from the top)."""
     cw, ch = (MX1 - MX0) / GRID_COLS, (MY1 - MY0) / GRID_ROWS
     return MX0 + (col_idx + 0.5) * cw, MY1 - (row - 0.5) * ch
+
+
+def draw_harald_board_back(c):
+    """PZ-09: page 2 of Harald's sheet -- the hnefatafl board-setup insert, centred on
+    the same letter page and background tone as the front, so lamination produces one
+    physical object with the rune cipher on one face and the game setup on the other."""
+    c.setFillColor(LAND_C)
+    c.rect(0, 0, PAGE_W, PAGE_H, fill=1, stroke=0)
+    c.saveState()
+    c.translate((PAGE_W - _BOARD_W) / 2, (PAGE_H - _BOARD_H) / 2)
+    _draw_hnefatafl_board_setup(c)
+    c.restoreState()
 
 
 def draw_rune_stem(c, x, y, group, position):
@@ -352,7 +393,12 @@ class Labeller:
                        (-w / 2, 5.4), (-w / 2, -h - 5.4),
                        (4.0, 3.8), (4.0, -h - 3.8), (-w - 4.0, 3.8), (-w - 4.0, -h - 3.8),
                        (8.0, -h / 2), (-w - 8.0, -h / 2),
-                       (-w / 2, 9.0), (-w / 2, -h - 9.0)):
+                       (-w / 2, 9.0), (-w / 2, -h - 9.0),
+                       # Last-resort tier, added for the printer-margin fix: Aud's sheet is
+                       # zoomed tight enough (PZ-17) that a long compound name (e.g. "Dögurðarnes
+                       # / Dagverðarnes") could run out of the 12 close-in candidates once the
+                       # map area shrank. Same centred-above/below shape, just further out.
+                       (-w / 2, 19.4), (-w / 2, -h - 19.4)):
             box = (x + dx - pad, y + dy - pad, x + dx + w + pad, y + dy + h + pad)
             if any(self._hit(box, b) for b in self.boxes):
                 continue
@@ -572,7 +618,8 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
     # Legend for Aud's sheet, in the clear water bottom-left. Reserved so the label placer
     # routes town names around it rather than printing them across the key.
     if key == "aud" and aud_layer.LAYER.exists():
-        _lx, _ly, _lw, _lh = 40, 95, 160, 200
+        # Rescaled 20 Sept 2026, twice (see LEIF_ART above) -- same exact transform.
+        _lx, _ly, _lw, _lh = 39.89, 114.29, 160.06, 200.08
         aud_layer.draw_legend(c, _feats, (_lx, _ly, _lx + _lw, _ly + _lh),
                               ink="#"+INK.hexval()[2:], rule="#"+TAN.hexval()[2:],
                               paper="#F4EEDD")
@@ -816,6 +863,9 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
 
 
     c.showPage()
+    if key == "harald":
+        draw_harald_board_back(c)
+        c.showPage()
     c.save()
     if _return_geometry:
         return pt, rings, lab, lo0, lo1, la0, la1

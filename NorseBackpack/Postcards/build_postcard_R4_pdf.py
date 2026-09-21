@@ -7,6 +7,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
+from postcard_marks import draw_mark
+
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "pdf" / "Postcard_R4_Winchester_Print.pdf"
@@ -82,8 +84,11 @@ def draw_back_card(c, x=0, y=0):
     # cards 01-03 and 06. Names Richard the Lionheart's 1194 recoronation and ties him back to
     # Rollo's line, per the "more history" direction -- and loops toward the treaty rebus below
     # without naming Saint-Clair-sur-Epte outright, so the rebus still does its own job (PZ-14).
+    # 20 Sept 2026 (PZ-18) -- rule 2: "Winchester next" was deictic -- it pointed at a card that is
+    # not the one in hand, so any change to how the deck is collected or laid out destroyed the
+    # referent. The Channel-ferry journal entry places this card now.
     paragraphs = [
-        "Winchester next — freezing here, but worth every minute. This cathedral is where Richard the Lionheart was crowned a second time, in 1194, after finally being released from years held captive abroad.",
+        "Winchester today — freezing here, but worth every minute. This cathedral is where Richard the Lionheart was crowned a second time, in 1194, after finally being released from years held captive abroad.",
         "Another one of Rollo’s own line! Funny to think it all traces back to one deal, centuries earlier.",
     ]
     c.setFillColor(INK)
@@ -99,6 +104,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("NothingYouCouldDo", 8)
     c.drawString(left, y, "Love,")
     c.drawString(left, y - 9, "Aunt Liv")
+
+    # PZ-18 element mark. Fixed position on every card -- the pocket between the
+    # divider and the postmark, above the address box. See postcard_marks.py.
+    draw_mark(c, "R4")
 
     # Rebus icons (PZ-14): tree + teacup spells TREATY, pointing to Saint-Clair-sur-Epte on
     # Rollo's map -- the second piece of the same rebus chain Bayeux started. Anchored below the

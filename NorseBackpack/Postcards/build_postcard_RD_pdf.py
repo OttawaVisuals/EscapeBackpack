@@ -7,6 +7,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
+from postcard_marks import draw_mark
+
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "pdf" / "Postcard_RD_Walcheren_Print.pdf"
@@ -82,8 +84,12 @@ def draw_back_card(c, x=0, y=0):
     # chronicles are to be believed" hedging rather than stated fact. Rollo's own decoy, chosen
     # for the Rollo trail per PZ-16 -- placed as a detour before her real Rollo-trail stops,
     # matching the geography of flying into the Netherlands before continuing south to France.
+    # 20 Sept 2026 (PZ-18) -- rule 4: deleted "Made a detour to the Netherlands before really
+    # starting Rollo's own trail". A decoy that flags itself as a detour is not a decoy. This card
+    # now opens Rollo's block and reads as an ordinary stop.
     paragraphs = [
-        "Made a detour to the Netherlands before really starting Rollo’s own trail — Walcheren, where Vikings had already carved out their own toeholds on this coast, maybe even Rollo himself if the old chronicles are to be believed.",
+        "Walcheren, in the Netherlands, where Vikings had already carved out their own toeholds "
+        "on this coast — maybe even Rollo himself, if the old chronicles are to be believed.",
         "Spent the evening watching the fishing boats come in with the tide and thought about him doing the exact same, centuries back.",
     ]
     c.setFillColor(INK)
@@ -99,6 +105,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("NothingYouCouldDo", 8)
     c.drawString(left, y, "With love,")
     c.drawString(left, y - 9, "Aunt Liv")
+
+    # PZ-18 element mark. Fixed position on every card -- the pocket between the
+    # divider and the postmark, above the address box. See postcard_marks.py.
+    draw_mark(c, "RD")
 
     # Rollo's trail stamp (comet) -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72

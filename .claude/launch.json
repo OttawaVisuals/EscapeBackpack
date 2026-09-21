@@ -4,8 +4,12 @@
     {
       "name": "static-preview",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8734"],
-      "port": 8734
+      "runtimeArgs": [
+        "-m",
+        "http.server"
+      ],
+      "port": 8734,
+      "autoPort": true
     }
   ]
 }
