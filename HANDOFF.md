@@ -2,6 +2,48 @@
 
 Last updated: 2026-09-21 by Claude Code
 
+## Session close — 2026-09-21 — Fixed broken map images on GitHub Pages; added a consolidated tickets/props gallery
+
+**Task:** two follow-ups in the same day's thread. (1) User reported the trail-map images showing
+as broken on the live site. (2) User asked to group all the scattered ticket/prop images (Rouen,
+Aud's museum, L'Anse museum, hnefatafl, transition tickets, luggage tags, journal page — previously
+spread across four different tabs) into one place.
+
+**(1) Root cause: GitHub Pages runs Jekyll by default, which silently excludes any folder starting
+with `_`.** `NorseBackpack/Props/_Renders/` (all 16 rendered map/prop preview PNGs from earlier
+sessions) was committed correctly and worked fine locally, but Jekyll's build never published it to
+`ottawavisuals.github.io` — every image in that folder 404'd on the live site while working
+everywhere else. Fixed by adding `.nojekyll` at the repo root, the standard fix for a plain static
+HTML site with no Jekyll templating needs. Also hardened `.gitattributes` with explicit `binary`
+markers for `png/jpg/jpeg/docx/pptx/xlsx` as a safety net — `core.autocrlf=true` is set on this
+machine and PNGs weren't previously covered, so a checkout on a different machine could in theory
+have silently corrupted them even though nothing here showed that actually happening.
+
+**(2) New "All tickets & printed props at a glance" gallery**, added near the top of the Props &
+specs tab (`#all-tickets`, right after the historical-claims warning box). Eight cards, reusing the
+existing `.postcard-gallery`/`.postcard-item` pattern: Rouen ticket, Aud's Treasure Museum ticket,
+L'Anse museum ticket, hnefatafl ticket, hnefatafl board-setup insert, the three transition tickets,
+luggage tag inserts, and the journal page. Each card links back to its tab of origin for the full
+design write-up — **this gallery is a visual index, not a new source of truth**; none of the
+original write-ups in Open questions / Final riddle / Puzzles & locks / Travel routes were moved or
+duplicated in substance.
+
+**Files changed:** `.nojekyll` (new), `.gitattributes` (binary markers added),
+`NorseBackpack/Norse_Brainstorm.html` (new gallery section, ~80 lines).
+
+**Checks run:** tag-balance parser — same 2 pre-existing mismatches, nothing new. Manual
+`python -m http.server` (still the working fallback — `preview_start` remains unreliable across
+sessions). No console errors. Confirmed via `document.getElementById('all-tickets')` in the live
+page that all 8 cards and 14 images are present, and checked `img.complete`/`naturalWidth` on every
+one of the 14 — all loaded successfully, none broken.
+
+**Not done:** did not verify the fix against the actual live `ottawavisuals.github.io` URL — GitHub
+Pages needs a minute or two to rebuild after the push, and this session's checks were all against a
+local server. Worth a real look at the live site to confirm the map images now load there too.
+
+**Next action:** open the live site and confirm the Travel routes tab's four map images now load
+(the original bug report), and glance at the new Props & specs gallery.
+
 ## Session close — 2026-09-21 — All 4 trail maps as images; fixed a mis-scoped CSS bug making stamps/icons huge
 
 **Task:** follow-up to the same-day prop-image session. User asked for (1) all four trail maps
