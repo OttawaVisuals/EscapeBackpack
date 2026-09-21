@@ -17,35 +17,53 @@ DIGIT = {'leif': '1', 'rollo': '9', 'aud': '7', 'harald': '2'}
 INK, RULE, MUTED = '#283B34', '#c9c2ad', '#657065'
 DECOY = '#8a2f2f'
 
-Y = 2026
+# REDATED 20 Sept 2026 for the blocked-leg model. Liv no longer interleaves the
+# four trails: she finishes each leg before starting the next, and the journey
+# spans two calendar years -- Leif and Rollo in autumn of year one, Aud and
+# Harald in May-July of year two, wintering abroad in between.
+Y1, Y2 = 2024, 2025
 # card, trail, date, nights, place, lat, lng, real?
 STOPS = [
-    ('L1', 'leif',   date(Y, 2, 2),  4, "L'Anse aux Meadows", 51.595, -55.533, True),
-    ('L2', 'leif',   date(Y, 2, 10), 3, 'Battle Harbour',     52.270, -55.580, True),
-    ('L3', 'leif',   date(Y, 2, 18), 6, 'Qikiqtarjuaq',       67.560, -64.030, True),
-    ('R1', 'rollo',  date(Y, 3, 8),  3, 'Châlus',             45.655,   0.981, True),
-    ('R2', 'rollo',  date(Y, 3, 17), 5, 'Rouen',              49.443,   1.099, True),
-    ('A1', 'aud',    date(Y, 4, 5),  4, 'Dögurðarnes',        65.170, -22.520, True),
-    ('A2', 'aud',    date(Y, 4, 13), 5, 'Hvammur',            65.219, -21.829, True),
-    ('H1', 'harald', date(Y, 4, 28), 7, 'Oslo',               59.908,  10.767, True),
-    ('AD', 'aud',    date(Y, 5, 13), 3, 'Bjarnarhöfn',        64.998, -22.967, False),
-    ('A3', 'aud',    date(Y, 5, 20), 4, 'Esjuberg',           64.230, -21.800, True),
-    ('LD', 'leif',   date(Y, 6, 12), 5, 'Brattahlíð',         61.160, -45.510, False),
-    ('H2', 'harald', date(Y, 7, 3),  4, 'Staraya Ladoga',     59.998,  32.295, True),
-    ('H3', 'harald', date(Y, 7, 10), 4, 'Kyiv',               50.450,  30.523, True),
-    ('H4', 'harald', date(Y, 8, 1),  4, 'Hedeby',             54.491,   9.566, True),
-    ('H5', 'harald', date(Y, 8, 20), 5, 'Sicily',             37.069,  15.288, True),
-    ('HD', 'harald', date(Y, 9, 20), 4, 'Constantinople',     41.008,  28.978, False),
-    ('R3', 'rollo',  date(Y, 10, 12), 5, 'Bayeux',            49.277,  -0.703, True),
-    ('R4', 'rollo',  date(Y, 10, 21), 3, 'Winchester',        51.060,  -1.313, True),
-    ('R5', 'rollo',  date(Y, 10, 28), 2, 'Battle',            50.914,   0.487, True),
-    ('RD', 'rollo',  date(Y, 11, 8),  3, 'Walcheren',         51.530,   3.550, False),
-    ('R6', 'rollo',  date(Y, 11, 20), 4, 'Roumare Forest',    49.413,   0.965, True),
-    ('H6', 'harald', date(Y, 12, 8),  7, 'Patara',            36.270,  29.290, True),
+    # -- Leif, 24 Aug - 16 Sept Y1 ------------------------------------------
+    ('L1', 'leif',   date(Y1, 8, 24), 4, "L'Anse aux Meadows", 51.595, -55.533, True),
+    ('L2', 'leif',   date(Y1, 8, 30), 3, 'Battle Harbour',     52.270, -55.580, True),
+    ('LD', 'leif',   date(Y1, 9, 5),  3, 'Brattahlíð',         61.160, -45.510, False),
+    ('L3', 'leif',   date(Y1, 9, 11), 5, 'Qikiqtarjuaq',       67.560, -64.030, True),
+    # -- Rollo, 28 Sept - 6 Nov Y1 ------------------------------------------
+    ('RD', 'rollo',  date(Y1, 9, 28), 3, 'Walcheren',          51.530,   3.550, False),
+    ('R1', 'rollo',  date(Y1, 10, 4), 3, 'Châlus',             45.655,   0.981, True),
+    ('R2', 'rollo',  date(Y1, 10, 11), 4, 'Rouen',             49.443,   1.099, True),
+    ('R3', 'rollo',  date(Y1, 10, 18), 3, 'Bayeux',            49.277,  -0.703, True),
+    ('R4', 'rollo',  date(Y1, 10, 24), 3, 'Winchester',        51.060,  -1.313, True),
+    ('R5', 'rollo',  date(Y1, 10, 29), 2, 'Battle',            50.914,   0.487, True),
+    ('R6', 'rollo',  date(Y1, 11, 3),  3, 'Roumare Forest',    49.413,   0.965, True),
+    # -- Aud, 9 - 30 May Y2 -------------------------------------------------
+    ('A1', 'aud',    date(Y2, 5, 9),  3, 'Dögurðarnes',        65.170, -22.520, True),
+    ('AD', 'aud',    date(Y2, 5, 14), 3, 'Bjarnarhöfn',        64.998, -22.967, False),
+    ('A2', 'aud',    date(Y2, 5, 20), 4, 'Hvammur',            65.219, -21.829, True),
+    ('A3', 'aud',    date(Y2, 5, 27), 3, 'Esjuberg',           64.230, -21.800, True),
+    # -- Harald, 6 June - 26 July Y2 ----------------------------------------
+    ('H1', 'harald', date(Y2, 6, 6),  7, 'Oslo',               59.908,  10.767, True),
+    ('H2', 'harald', date(Y2, 6, 17), 4, 'Staraya Ladoga',     59.998,  32.295, True),
+    ('H3', 'harald', date(Y2, 6, 23), 4, 'Kyiv',               50.450,  30.523, True),
+    ('H4', 'harald', date(Y2, 7, 1),  3, 'Hedeby',             54.491,   9.566, True),
+    ('H5', 'harald', date(Y2, 7, 8),  4, 'Aci Castello',       37.5545,  15.1462, True),
+    ('HD', 'harald', date(Y2, 7, 15), 3, 'Constantinople',     41.008,  28.978, False),
+    ('H6', 'harald', date(Y2, 7, 21), 5, 'Patara',             36.270,  29.290, True),
 ]
 
-T0, T1 = date(Y, 1, 28), date(Y, 12, 22)
+T0, T1 = date(Y1, 8, 12), date(Y2, 8, 8)
 SPAN = (T1 - T0).days
+
+
+def months():
+    """Every month boundary the axis crosses, across the two years."""
+    out, d = [], date(T0.year, T0.month, 1)
+    while d <= T1:
+        if d >= T0:
+            out.append(d)
+        d = date(d.year + 1, 1, 1) if d.month == 12 else date(d.year, d.month + 1, 1)
+    return out
 
 
 def esc(s):
@@ -54,46 +72,51 @@ def esc(s):
 
 # ----------------------------------------------------------------- A: events
 def timeline_events():
-    W, H = 1120, 250
+    W, H = 1120, 268
     L, R = 48, 24
     inner = W - L - R
-    axis_y = 150
+    axis_y = 168
 
     def x(d):
         return L + inner * (d - T0).days / SPAN
 
     p = [f'<svg viewBox="0 0 {W} {H}" width="100%" role="img" '
-         f'aria-label="Timeline of Liv\'s 22 stops from 2 February to 15 December, '
+         f'aria-label="Timeline of Liv\'s 22 stops across two years, one leg at a time, '
          f'coloured by trail" xmlns="http://www.w3.org/2000/svg" '
          f'style="display:block;max-width:100%;height:auto">']
     p.append(f'<rect x="0" y="0" width="{W}" height="{H}" fill="none"/>')
 
     # month grid
-    for m in range(2, 13):
-        mx = x(date(Y, m, 1))
-        p.append(f'<line x1="{mx:.1f}" y1="{axis_y - 92}" x2="{mx:.1f}" y2="{axis_y + 14}" '
-                 f'stroke="{RULE}" stroke-width="1" stroke-dasharray="2 4"/>')
-        p.append(f'<text x="{mx:.1f}" y="{axis_y + 30}" font-size="12" fill="{MUTED}" '
-                 f'text-anchor="middle" font-family="Helvetica,Arial,sans-serif">'
-                 f'{date(Y, m, 1).strftime("%b")}</text>')
+    for d0 in months():
+        mx = x(d0)
+        jan = d0.month == 1
+        p.append(f'<line x1="{mx:.1f}" y1="{axis_y - 118}" x2="{mx:.1f}" y2="{axis_y + 14}" '
+                 f'stroke="{"#a2562d" if jan else RULE}" stroke-width="{1.4 if jan else 1}" '
+                 f'stroke-dasharray="{"4 3" if jan else "2 4"}"/>')
+        p.append(f'<text x="{mx:.1f}" y="{axis_y + 30}" font-size="12" '
+                 f'fill="{"#a2562d" if jan else MUTED}" text-anchor="middle" '
+                 f'font-family="Helvetica,Arial,sans-serif">'
+                 f'{d0.strftime("%b") + " " + str(d0.year) if jan else d0.strftime("%b")}</text>')
 
     p.append(f'<line x1="{L}" y1="{axis_y}" x2="{W - R}" y2="{axis_y}" '
              f'stroke="{INK}" stroke-width="1.6"/>')
 
-    # stagger labels over three rows so close dates stay legible
-    rows, last_x = [-1e9] * 3, None
+    # Stagger labels so close dates stay legible. Blocked legs bunch the stops
+    # into four tight clusters, which three rows could not hold -- five rows, and
+    # always take the row whose last label sits furthest left, so a dense cluster
+    # spreads evenly instead of piling onto the first row that happens to clear.
+    NROWS, MINGAP = 5, 74
+    rows = [-1e9] * NROWS
     for i, (code, trail, d, nights, place, *_rest) in enumerate(STOPS):
         real = _rest[2]
         px = x(d)
-        row = 0
-        for r in range(3):
-            if px - rows[r] > 78:
+        row = min(range(NROWS), key=lambda r: rows[r])
+        for r in range(NROWS):
+            if px - rows[r] > MINGAP:
                 row = r
                 break
-        else:
-            row = 2
         rows[row] = px
-        ly = axis_y - 22 - row * 26
+        ly = axis_y - 22 - row * 21
         c = COL[trail]
         p.append(f'<line x1="{px:.1f}" y1="{axis_y}" x2="{px:.1f}" y2="{ly + 6:.1f}" '
                  f'stroke="{c}" stroke-width="1"/>')
@@ -146,13 +169,16 @@ def timeline_cards():
          f'trail is active when" xmlns="http://www.w3.org/2000/svg" '
          f'style="display:block;max-width:100%;height:auto">']
 
-    for m in range(2, 13):
-        mx = x(date(Y, m, 1))
-        p.append(f'<line x1="{mx:.1f}" y1="22" x2="{mx:.1f}" y2="{H - 30}" stroke="{RULE}" '
-                 f'stroke-width="1" stroke-dasharray="2 4"/>')
-        p.append(f'<text x="{mx:.1f}" y="16" font-size="12" fill="{MUTED}" '
-                 f'text-anchor="middle" font-family="Helvetica,Arial,sans-serif">'
-                 f'{date(Y, m, 1).strftime("%b")}</text>')
+    for d0 in months():
+        mx = x(d0)
+        jan = d0.month == 1
+        p.append(f'<line x1="{mx:.1f}" y1="22" x2="{mx:.1f}" y2="{H - 30}" '
+                 f'stroke="{"#a2562d" if jan else RULE}" stroke-width="{1.4 if jan else 1}" '
+                 f'stroke-dasharray="{"4 3" if jan else "2 4"}"/>')
+        p.append(f'<text x="{mx:.1f}" y="16" font-size="12" '
+                 f'fill="{"#a2562d" if jan else MUTED}" text-anchor="middle" '
+                 f'font-family="Helvetica,Arial,sans-serif">'
+                 f'{d0.strftime("%b") + " " + str(d0.year) if jan else d0.strftime("%b")}</text>')
 
     for li, t in enumerate(trails):
         ly = 42 + li * lane_h
@@ -299,11 +325,14 @@ def leg_map(trail):
 
 if __name__ == '__main__':
     import json
+    import pathlib
     out = {
         'events': timeline_events(),
         'cards': timeline_cards(),
         'maps': {t: leg_map(t) for t in ['leif', 'rollo', 'aud', 'harald']},
     }
-    p = r'C:\Users\simon\AppData\Local\Temp\claude\C--EscapeBackpack-EscapeBackpack\0bb797c7-5513-4bca-bff8-33877fd3518f\scratchpad\visuals.json'
+    # Written next to this script so the run is reproducible on any machine;
+    # the previous version pointed at one session's temp directory.
+    p = str(pathlib.Path(__file__).resolve().parent / 'final_riddle_visuals.json')
     open(p, 'w', encoding='utf-8').write(json.dumps(out))
     print('generated', {k: len(v) if isinstance(v, str) else len(str(v)) for k, v in out.items()})

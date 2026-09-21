@@ -7,12 +7,14 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
+from postcard_marks import draw_mark
+
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "pdf" / "Postcard_H4_Hedeby_Print.pdf"
 OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_H4_Hedeby_Letter_Print.pdf"
 FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_H4_Hedeby_Front.png"
-STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Harald_Labrys_v2_flat.png"
+STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Harald_Dane_Axe_v1.png"
 FONT_DIR = ROOT / "Fonts"
 
 PAGE = landscape((3.5 * 72, 5 * 72))
@@ -80,9 +82,16 @@ def draw_back_card(c, x=0, y=0):
     # Message text approved in chat (PZ-02/PZ-09, 17 Sept 2026): sets up the branch-rune key
     # she copied at Hedeby. The hand-drawn table below carries the actual group letters -- the
     # message only needs to establish that it exists and what the two branch counts mean.
+    # 20 Sept 2026 (PZ-18): the opener was "New stop: Hedeby -- saltwater again, after all that
+    # river country." That clue was dropped: "river country" only reliably points at Staraya
+    # Ladoga, whose card mentions a river bend, so placing Kyiv before Hedeby needed outside
+    # knowledge of the Dnieper. The replacement names the Mediterranean instead, which the map
+    # resolves: it puts Sicily, Constantinople and Patara after Hedeby and leaves Kyiv before it,
+    # taking the leg from 60 possible orders to 4 and saving a journal entry.
     paragraphs = [
-        "New stop: Hedeby — saltwater again, after all that river country. Barely a Hedeby "
-        "left to stand in: a green ring of earthworks where the ramparts ran.",
+        "Today: Hedeby — barely a Hedeby left to stand in, just a green ring of earthworks "
+        "where the ramparts ran. From here I’m turning south: nothing but Mediterranean "
+        "weather for the rest of this trip.",
         "A woodcarver at the reconstruction huts showed me how the old branch-runes worked "
         "— count the branches one way for the family, the other way for the letter. I "
         "copied his key out for you before I forgot it.",
@@ -100,6 +109,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("NothingYouCouldDo", 8)
     c.drawString(left, y, "Love,")
     c.drawString(left, y - 9, "Aunt Liv")
+
+    # PZ-18 element mark. Fixed position on every card -- the pocket between the
+    # divider and the postmark, above the address box. See postcard_marks.py.
+    draw_mark(c, "H4")
     y -= 9
 
     # Her copied rune key (PZ-02): a hand-drawn table, not typed -- this is Liv's own copy, not

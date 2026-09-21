@@ -7,6 +7,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
+from postcard_marks import draw_mark
+
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "pdf" / "Postcard_R2_Rouen_Print.pdf"
@@ -77,18 +79,21 @@ def draw_back_card(c, x=0, y=0):
     c.setStrokeColor(RULE)
     c.line(divider, 24, divider, H - 30)
 
-    # Message decided in chat (PZ-05): Liv's own text, kept verbatim including "fighting" and
-    # "cows" rather than the ticket's exact "fight"/"cow" -- accepted as deliberate extra
-    # friction (PZ-15), not a typo to fix. Carries the word-lock order clue: fight, forest,
-    # cow, people, poultry, inn, in that order (PZ-15) -- resolves to the directional-lock
-    # combination RIGHT, DOWN, DOWN, UP, LEFT, LEFT. No rebus on this card.
+    # Message decided in chat (PZ-05), revised 19 Sept 2026: Liv's own text, kept verbatim
+    # including "fighting" rather than the ticket's exact "fight" -- accepted as deliberate
+    # extra friction (PZ-15), not a typo to fix. The forest/cow sentence is cut, dropping
+    # those two word-pairs from the chain; it's replaced by a rule-line planting counting as
+    # Liv's habit (same device as LD's "every little detail counts", PZ-10). Carries the
+    # word-lock order clue: fight, people, poultry, inn, in that order (PZ-15) -- resolves to
+    # the numeric-lock combination 1486. No rebus on this card.
+    # 20 Sept 2026 (PZ-18) -- rule 3: deleted "The tapestry towns are still ahead of me -- saving
+    # those for later." Added 17 Sept, rejected 20 Sept: a solver has to work out that "tapestry
+    # towns" means Bayeux, and whether Battle counts. The Rouen journal entry places R2 now.
     paragraphs = [
         "Today I got to visit Rouen, and it might be my favourite so far!",
         "This was Rollo’s own capital! The King gave Rollo all of Normandy so the fighting would stop.",
-        "This morning I hiked in the forest outside of town and got to see some of those famous Normande cows!",
-        "This afternoon was the city proper, the cathedral and the famous half-timbered houses. The city was vibrant today with lots of people milling about.",
+        "Can’t walk anywhere without counting my steps — always have. This afternoon was the city proper, the cathedral and the famous half-timbered houses. The city was vibrant today with lots of people milling about.",
         "All that walking around made me crave fast-food: the battered poultry from Kentucky. Tonight’s dinner was a bit fancier, the Inn I’m staying at is famous for their snails!",
-        "The tapestry towns are still ahead of me — saving those for later.",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 7.7, 8.6
@@ -103,6 +108,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("NothingYouCouldDo", 8)
     c.drawString(left, y, "With love,")
     c.drawString(left, y - 9, "Aunt Liv")
+
+    # PZ-18 element mark. Fixed position on every card -- the pocket between the
+    # divider and the postmark, above the address box. See postcard_marks.py.
+    draw_mark(c, "R2")
 
     # Rollo's trail stamp (comet) -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72

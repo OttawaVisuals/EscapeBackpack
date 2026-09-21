@@ -7,12 +7,14 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
+from postcard_marks import draw_mark
+
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "pdf" / "Postcard_H1_Oslo_Print.pdf"
 OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_H1_Oslo_Letter_Print.pdf"
 FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_H1_Oslo_Front.png"
-STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Harald_Labrys_v2_flat.png"
+STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Harald_Dane_Axe_v1.png"
 FONT_DIR = ROOT / "Fonts"
 
 PAGE = landscape((3.5 * 72, 5 * 72))
@@ -80,9 +82,11 @@ def draw_back_card(c, x=0, y=0):
     # Message text approved in chat (PZ-01/PZ-05, 17 Sept 2026): sets up the hnefatafl task and
     # carries the counting instruction the 3-digit code actually depends on -- not just "escape
     # in 3 moves" (which does not by itself produce a code).
+    # 20 Sept 2026 (PZ-18): dropped "and the obvious place to begin with him" -- a card may not
+    # state its own position (rule 1). The Aud->Harald transition ticket proves H1 opens the leg.
     paragraphs = [
         "I'm spending a whole week in Oslo, so much to do!",
-        "It's Harald's city and the obvious place to begin with him — so much Viking history.",
+        "It's Harald's city — so much Viking history.",
         "Found the quirkiest little museum near the harbour, all about hnefatafl, the "
         "chess-like old board game the Vikings loved and that we used to play with our own "
         "rules when you were younger. Grabbed you a little souvenir from the gift shop so "
@@ -102,6 +106,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("NothingYouCouldDo", 8)
     c.drawString(left, y, "Love,")
     c.drawString(left, y - 9, "Aunt Liv")
+
+    # PZ-18 element mark. Fixed position on every card -- the pocket between the
+    # divider and the postmark, above the address box. See postcard_marks.py.
+    draw_mark(c, "H1")
 
     # Same trail stamp as the other Harald cards -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72

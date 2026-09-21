@@ -7,6 +7,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
+from postcard_marks import draw_mark
+
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "pdf" / "Postcard_L2_Battle_Harbour_Print.pdf"
@@ -80,8 +82,12 @@ def draw_back_card(c, x=0, y=0):
     # Message text decided in chat (PZ-05): enthusiastic/warm/fun/friendly voice, matching
     # card 01. The animal mention here is flavour only -- it is not the beasts-chain nudge,
     # which stays hidden in the imprint below (PZ-10/PZ-13).
+    # 19 Sept 2026 (PZ-18): the opener was "Second stop: Markland"; rewritten so the card no
+    # longer numbers itself, matching L3's earlier change. Under the blocked-leg model L2 is
+    # second by elimination -- L1 states it is first and the transition ticket out of
+    # Qikiqtarjuaq proves L3 is last -- so no ordering text is needed on this card at all.
     paragraphs = [
-        "Second stop: Markland, ‘Forest Land’ in the old sagas, and they weren’t exaggerating, it is gorgeous! Trees for miles, beautiful light and no one around!",
+        "Markland today — ‘Forest Land’ in the old sagas, and they weren’t exaggerating, it is gorgeous! Trees for miles, beautiful light and no one around!",
         "It sounded like something with claws walked past the cabin last night — I didn’t sleep a wink!",
         "Still, you’d love it here.",
     ]
@@ -98,6 +104,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("NothingYouCouldDo", 8)
     c.drawString(left, y, "Love,")
     c.drawString(left, y - 9, "Aunt Liv")
+
+    # PZ-18 element mark. Fixed position on every card -- the pocket between the
+    # divider and the postmark, above the address box. See postcard_marks.py.
+    draw_mark(c, "L2")
 
     # Same trail stamp as card 01 -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72

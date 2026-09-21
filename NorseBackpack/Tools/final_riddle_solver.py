@@ -1,4 +1,18 @@
-"""Constraint solver for the Norse final riddle (PZ-18).
+"""SUPERSEDED 20 Sept 2026 -- kept as history, not used by anything.
+
+This solved the INTERLEAVED calendar: all four trails woven across one year, so
+22 cards had to be placed into 22 global positions. That model is gone. Liv now
+completes each leg before starting the next, which makes the legs independent
+and the search small enough to run exhaustively -- see final_riddle_clues.py,
+which no longer imports this file.
+
+Worth remembering why: the space here was large enough that the run capped at
+400,000 calendars, and a capped run can report a pass that is not real. It did
+exactly that once, on a variant that dropped two of Leif's position clues.
+
+Original docstring follows.
+
+Constraint solver for the Norse final riddle (PZ-18).
 
 Checks the tests named in the Final riddle tab's Validation section:
   1. unique answer (per-trail order of real cards + first-appearance order)

@@ -1,134 +1,203 @@
-"""The Norse final riddle (PZ-18): itinerary, clue set, and the validation run.
+"""The Norse final riddle (PZ-18): the evidence model, and the validation run.
 
 Run this file to re-check the endgame:
 
     python NorseBackpack/Tools/final_riddle_clues.py
 
-It prints the four tests from the Final riddle tab's Validation section. Edit
-ITIN or CLUES here whenever a card's text, a ticket date or the itinerary
-changes, then re-run. Do NOT prune clues on drop-one results alone -- clues that
-are individually redundant are not jointly redundant (removing six such clues
-together took this set from 1 answer to 8).
+REWRITTEN 20 Sept 2026 for the blocked-leg model. The spec it encodes is
+sections 2c-2g of NorseBackpack/Norse_Brainstorm.html. Change a clue there and
+change it here, then re-run.
 
-Model note, 17 Sept 2026. Stay lengths vary, so a date is no longer a position
-and the old slot arithmetic is gone. Every ordering clue here is ordinal
-(first / last / next / after); the dates only order the dated props among
-themselves. That is what lets the stay lengths vary freely.
+What changed, and why the solver got simpler
+--------------------------------------------
+The old model interleaved the four trails across one year, so it had to place 22
+cards into 22 global positions -- a space large enough that the run was capped at
+400,000 calendars and could report a *false* pass, which it did at least once.
+
+Liv now completes each leg before starting the next. That makes the legs
+independent: each is enumerated exhaustively on its own (at most 7! = 5040
+arrangements), so there is no cap and no false pass. Leg order is not searched at
+all -- the three transition tickets chain it directly.
+
+Two rules from the spec drive everything below:
+
+  * A card may not state its own position, and no clue may point at a card other
+    than the one in hand. The only two exceptions are L1 and H6, the first and
+    last stops of the whole journey, because no ticket precedes Leif and none
+    follows Harald.
+  * Only the REAL cards need ordering. A decoy's position inside its block is
+    never needed: it is filtered out before a line is drawn, and no clue depends
+    on where it sat. Enumerating real cards only is what dropped Harald from two
+    journal entries to one.
 """
+from itertools import permutations
 import sys
-from datetime import date, timedelta
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from final_riddle_solver import TRAIL_ORDER, PLACES, C, solve, answer_of  # noqa: E402
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-Y = 2026
+# --------------------------------------------------------------- the deck ----
+# leg -> (real cards in the drawn order, decoy, digit)
+LEGS = {
+    'leif':   (['L1', 'L2', 'L3'], 'LD', '1'),
+    'rollo':  (['R1', 'R2', 'R3', 'R4', 'R5', 'R6'], 'RD', '9'),
+    'aud':    (['A1', 'A2', 'A3'], 'AD', '7'),
+    'harald': (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'], 'HD', '2'),
+}
+LEG_ORDER = ['leif', 'rollo', 'aud', 'harald']   # fixed by the ticket chain
 
-# position -> (card, arrival date, nights)
-ITIN = [
-    ('L1', date(Y, 2, 2), 4), ('L2', date(Y, 2, 10), 3), ('L3', date(Y, 2, 18), 6),
-    ('R1', date(Y, 3, 8), 3), ('R2', date(Y, 3, 17), 5),
-    ('A1', date(Y, 4, 5), 4), ('A2', date(Y, 4, 13), 5),
-    ('H1', date(Y, 4, 28), 7), ('AD', date(Y, 5, 13), 3), ('A3', date(Y, 5, 20), 4),
-    ('LD', date(Y, 6, 12), 5),
-    ('H2', date(Y, 7, 3), 4), ('H3', date(Y, 7, 10), 4),
-    ('H4', date(Y, 8, 1), 4), ('H5', date(Y, 8, 20), 5),
-    ('HD', date(Y, 9, 20), 4),
-    ('R3', date(Y, 10, 12), 5), ('R4', date(Y, 10, 21), 3), ('R5', date(Y, 10, 28), 2),
-    ('RD', date(Y, 11, 8), 3), ('R6', date(Y, 11, 20), 4),
-    ('H6', date(Y, 12, 8), 7),
-]
-TARGET = {c: i + 1 for i, (c, _, _) in enumerate(ITIN)}
-WHEN = {c: d for c, d, _ in ITIN}
-NIGHTS = {c: n for c, _, n in ITIN}
+PLACES = {
+    'L1': "L'Anse aux Meadows", 'L2': 'Battle Harbour', 'L3': 'Qikiqtarjuaq',
+    'LD': 'Brattahlid  [decoy]',
+    'R1': 'Chalus', 'R2': 'Rouen', 'R3': 'Bayeux', 'R4': 'Winchester',
+    'R5': 'Battle', 'R6': 'Roumare Forest', 'RD': 'Walcheren  [decoy]',
+    'A1': 'Dogurdarnes', 'A2': 'Hvammur', 'A3': 'Esjuberg',
+    'AD': 'Bjarnarhofn  [decoy]',
+    'H1': 'Oslo', 'H2': 'Staraya Ladoga', 'H3': 'Kyiv', 'H4': 'Hedeby',
+    'H5': 'Aci Castello', 'H6': 'Patara', 'HD': 'Constantinople  [decoy]',
+}
 
-# Props that carry a printed date. With variable stays these only establish the
-# order of the dated props among themselves -- not a position.
-DATED = ['L1', 'R2', 'A2', 'H1', 'AD', 'H5', 'RD']
+# Harald's H4 names the sea, not a latitude. That matters: Kyiv is south of
+# Hedeby (50.5N vs 54.5N), so "heading south" could not have excluded it, while
+# "the Mediterranean" does -- Kyiv is the one remaining stop not on a coast.
+MEDITERRANEAN = {'H5', 'HD', 'H6'}
 
+# --------------------------------------------------------------- the clues ---
+# kind, args, where it lives, what it says. 'src' is one of:
+#   CARD    printed on a postcard, readable during play
+#   TICKET  one of the three transition tickets, in the final bundle
+#   JOURNAL an entry on the "Family iconography" page, in the final bundle
 CLUES = [
-    # --- already printed on built cards, no change needed ---------------
-    C('pos', ('L1', 1), 'BUILT   L1  "the first stop on my journey"'),
-    C('pos', ('L2', 2), 'BUILT   L2  "Second stop"'),
-    C('pos', ('L3', 3), 'BUILT   L3  "Third stop"'),
-    C('next', ('R3', 'R4'), 'BUILT   R4  "Winchester next"'),
-    C('before', ('R3', 'R5'), 'BUILT   R5  "after ... the tapestry"'),
-    C('next', ('H2', 'H3'), 'BUILT   H3  "Kyiv next"'),
-    # --- new text on the four cards not yet written ---------------------
-    C('trail_first', ('A1',), 'NEW     A1  first of Aud’s places'),
-    C('before', ('R1', 'A1'), 'NEW     A1  "saved Aud’s country for after France"'),
-    C('trail_last', ('A3',), 'NEW     A3  last of Aud’s places'),
-    C('pos', ('H6', 22), 'NEW     H6  "last stop of my travel for now"'),
-    # --- one added clause per already-built card (script edit + reprint) -
-    C('trail_first', ('R1',), 'EDIT    R1  "first of Rollo’s places for me"'),
-    C('before', ('R2', 'R3'), 'EDIT    R2  "the tapestry towns are still ahead of me"'),
-    C('trail_last', ('R6',), 'EDIT    R6  "last of Rollo’s places"'),
-    C('trail_first', ('H1',), 'EDIT    H1  "first of Harald’s places"'),
-    C('before', ('H3', 'H4'), 'EDIT    H4  "after all those weeks of river country"'),
-    # --- structural invariant -------------------------------------------
-    C('no_decoy_first', (), 'RULE    a decoy is never its trail’s earliest card'),
+    # -- Leif ---------------------------------------------------------------
+    ('block_first', ('L1',),  'CARD',    'L1  "the first stop on my journey" (permitted exception)'),
+    ('block_last',  ('L3',),  'TICKET',  'Leif->Rollo departs Qikiqtarjuaq'),
+    # -- Rollo --------------------------------------------------------------
+    ('block_first', ('RD',),  'TICKET',  'Leif->Rollo arrives Walcheren'),
+    ('block_last',  ('R6',),  'TICKET',  'Rollo->Aud departs Roumare Forest'),
+    ('before',      ('R3', 'R5'), 'CARD', 'R5  "after spending hours looking at the tapestry"'),
+    ('adjacent',    ('RD', 'R1'), 'JOURNAL', 'Walcheren - Chalus'),
+    ('adjacent',    ('R2', 'R3'), 'JOURNAL', 'Train from Rouen (west, short, a museum)'),
+    ('adjacent',    ('R3', 'R4'), 'JOURNAL', 'English Channel ferry (tapestry behind, battlefield ahead)'),
+    # -- Aud ----------------------------------------------------------------
+    ('block_first', ('A1',),  'TICKET',  'Rollo->Aud arrives Dogurdarnes'),
+    ('block_last',  ('A3',),  'TICKET',  'Aud->Harald departs Esjuberg'),
+    # -- Harald -------------------------------------------------------------
+    ('block_first', ('H1',),  'TICKET',  'Aud->Harald arrives Oslo'),
+    ('block_last',  ('H6',),  'CARD',    'H6  "the last stop of my travels for now" (permitted exception)'),
+    ('med_split',   ('H4',),  'CARD',    'H4  "from here I\'m turning south: nothing but Mediterranean"'),
+    ('adjacent',    ('H2', 'H3'), 'JOURNAL', 'Staraya Ladoga - Kyiv'),
 ]
 
-BUNDLE = [
-    C('next', ('H4', 'H5'), 'BUNDLE  boarding pass Hamburg → Catania, 20 Aug', True),
-]
-
-# dated props, in date order -- a confirming chain, plus the one real relation
-# (Aud's ticket predates Oslo's, proving Aud first-appears before Harald)
-_by_date = sorted(DATED, key=lambda c: WHEN[c])
-DATES = [C('before', (x, y), f'DATES   {x} ({WHEN[x]:%d %b}) before {y} ({WHEN[y]:%d %b})')
-         for x, y in zip(_by_date, _by_date[1:])]
-
-LIMIT = 400000
+LEG_OF = {}
+for _leg, (_reals, _decoy, _digit) in LEGS.items():
+    for _c in _reals + [_decoy]:
+        LEG_OF[_c] = _leg
 
 
-def _run(label, cons):
-    sols = solve(cons, limit=LIMIT)
-    answers = {answer_of(p) for p in sols}
-    capped = len(sols) >= LIMIT
-    print(f'{label:<14} {len(answers):>3} answer(s)  |  {len(sols):>6} calendars'
-          f'{" (capped)" if capped else " (complete)"}')
-    return answers, sols
+def block(leg):
+    reals, decoy, _ = LEGS[leg]
+    return reals + [decoy]
 
 
+def holds(order, kind, args):
+    """Does one candidate block ordering satisfy one clue?"""
+    pos = {c: i for i, c in enumerate(order)}
+    if kind == 'block_first':
+        return pos[args[0]] == 0
+    if kind == 'block_last':
+        return pos[args[0]] == len(order) - 1
+    if kind == 'before':
+        return pos[args[0]] < pos[args[1]]
+    if kind == 'adjacent':
+        return pos[args[1]] == pos[args[0]] + 1
+    if kind == 'med_split':
+        pivot = pos[args[0]]
+        return all((pos[c] > pivot) == (c in MEDITERRANEAN)
+                   for c in order if c != args[0])
+    raise ValueError(kind)
+
+
+def solve_leg(leg, clues=None, sources=('CARD', 'TICKET', 'JOURNAL')):
+    """Every real-card order this leg admits, given the clues in `sources`."""
+    clues = CLUES if clues is None else clues
+    mine = [c for c in clues if c[1][0] in LEG_OF and LEG_OF[c[1][0]] == leg
+            and c[2] in sources]
+    reals = set(LEGS[leg][0])
+    out = set()
+    for order in permutations(block(leg)):
+        if all(holds(order, k, a) for k, a, _s, _d in mine):
+            out.add(tuple(c for c in order if c in reals))
+    return out
+
+
+def code(per_leg):
+    return ' '.join(LEGS[l][2] for l in LEG_ORDER) if per_leg else ''
+
+
+# ------------------------------------------------------------ validation -----
 def main():
-    print('NORSE FINAL RIDDLE  -  validation run')
-    print('=' * 68)
-    pre, _ = _run('pre-bundle', CLUES + DATES)
-    full, sols = _run('with bundle', CLUES + BUNDLE + DATES)
+    print('NORSE FINAL RIDDLE  -  validation run  (blocked-leg model)')
+    print('=' * 72)
+    print('Each leg enumerated exhaustively over its own block. No cap, so a')
+    print('pass here cannot be an artefact of an enumeration limit.\n')
 
-    print('-' * 68)
-    ok1 = len(full) == 1
-    print(f'TEST 1  unique answer .......... {"PASS" if ok1 else "FAIL"}')
-    print(f'TEST 2  bundle gates ........... {"PASS" if len(pre) > 1 else "FAIL"}'
-          f'   ({len(pre)} answers without it)')
-    print('TEST 3  no decoy reads as shape . NOT RUN  (geometric; needs the map projections)')
+    levels = [
+        ('cards', ('CARD',)),
+        ('+tickets', ('CARD', 'TICKET')),
+        ('+journal', ('CARD', 'TICKET', 'JOURNAL')),
+    ]
+    print('orders each leg still admits, as evidence is added')
+    print(f'{"leg":<9}{"block":>6}' + ''.join(f'{n:>11}' for n, _ in levels))
+    print('-' * 72)
+    counts = {}
+    for leg in LEG_ORDER:
+        row = [len(solve_leg(leg, sources=src)) for _n, src in levels]
+        counts[leg] = row
+        print(f'{leg:<9}{len(block(leg)):>6}' + ''.join(f'{n:>11}' for n in row))
 
-    if ok1:
-        answer = next(iter(full))
-        order_ok = list(answer[1]) == TRAIL_ORDER
-        print(f'TEST 4  rules hold ............. {"PASS" if order_ok else "FAIL"}'
-              f'   (first appearances: {", ".join(answer[1])})')
-        print()
-        print('ANSWER')
-        for trail, seq in zip(TRAIL_ORDER, answer[0]):
-            print(f'   {trail:<7} {" -> ".join(seq)}')
+    full = {leg: solve_leg(leg) for leg in LEG_ORDER}
+    unique = all(len(v) == 1 for v in full.values())
+    gated = any(counts[leg][1] > 1 for leg in LEG_ORDER)
 
-    if TARGET not in sols:
-        print('\nNOTE: the recorded itinerary was not reached within the enumeration '
-              'cap. That is expected when the calendar space is large; it is not a '
-              'failure unless TEST 1 also fails.')
+    print('-' * 72)
+    print(f'TEST 1  every leg has one answer ..... {"PASS" if unique else "FAIL"}')
+    print(f'TEST 2  the journal actually gates ... {"PASS" if gated else "FAIL"}'
+          f'   (without it, Rollo admits {counts["rollo"][1]} and Harald {counts["harald"][1]})')
+    print('TEST 3  no decoy reads as a shape .... NOT RUN  (geometric; needs the map projections)')
+    print('TEST 4  leg order ..................... not searched -- the three '
+          'transition tickets chain it directly')
 
-    print('\nITINERARY')
-    total = 0
-    for i, (card, d, nights) in enumerate(ITIN, 1):
-        total += nights
-        print(f'   {i:>2}  {d:%d %b}  {nights:>2}n  {card:<3} {PLACES[card]}')
-    span = (ITIN[-1][1] - ITIN[0][1]).days
-    home = ITIN[-1][1] + timedelta(days=ITIN[-1][2])
-    print(f'   home {home:%d %b}  |  {total} nights away across {span} days')
+    if unique:
+        print('\nANSWER')
+        for leg in LEG_ORDER:
+            seq = next(iter(full[leg]))
+            print(f'   {leg:<7} {" -> ".join(seq):<34} digit {LEGS[leg][2]}')
+        print(f'\n   route code  {code(True)}')
+
+    # Every clue must earn its place: drop it and the leg should get worse.
+    print('\nDROP-ONE  (a clue that changes nothing is dead weight)')
+    print('-' * 72)
+    for idx, (kind, args, src, desc) in enumerate(CLUES):
+        leg = LEG_OF[args[0]]
+        kept = CLUES[:idx] + CLUES[idx + 1:]
+        n = len(solve_leg(leg, clues=kept))
+        flag = 'load-bearing' if n > 1 else 'REDUNDANT'
+        print(f'   {flag:<13} {src:<8} {desc}')
+        if flag == 'REDUNDANT':
+            print(f'   {"":13} ^ {leg} still resolves without it -- check the spec')
+
+    print('\nBLOCK ORDERS (real cards plus the decoy, for the record)')
+    print('-' * 72)
+    for leg in LEG_ORDER:
+        reals = set(LEGS[leg][0])
+        orders = [o for o in permutations(block(leg))
+                  if all(holds(o, k, a) for k, a, _s, _d in CLUES
+                         if a[0] in LEG_OF and LEG_OF[a[0]] == leg)]
+        real_orders = {tuple(c for c in o if c in reals) for o in orders}
+        print(f'   {leg:<7} {len(orders):>3} block arrangement(s) -> '
+              f'{len(real_orders)} real order(s)')
+        if len(orders) > 1:
+            print(f'   {"":7} the decoy floats, which costs nothing: '
+                  f'its position is never used')
 
 
 if __name__ == '__main__':

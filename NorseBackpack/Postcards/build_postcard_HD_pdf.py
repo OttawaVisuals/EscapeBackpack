@@ -7,12 +7,14 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
+from postcard_marks import draw_mark
+
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "pdf" / "Postcard_HD_Constantinople_Print.pdf"
 OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_HD_Constantinople_Letter_Print.pdf"
 FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_HD_Constantinople_Front.png"
-STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Harald_Labrys_v2_flat.png"
+STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Harald_Dane_Axe_v1.png"
 FONT_DIR = ROOT / "Fonts"
 
 PAGE = landscape((3.5 * 72, 5 * 72))
@@ -193,6 +195,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("NothingYouCouldDo", 8)
     c.drawString(left, rebus_bottom - 11, "Love,")
     c.drawString(left, rebus_bottom - 20, "Aunt Liv")
+
+    # PZ-18 element mark. Fixed position on every card -- the pocket between the
+    # divider and the postmark, above the address box. See postcard_marks.py.
+    draw_mark(c, "HD")
 
     # Same trail stamp as the other Harald cards -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72
