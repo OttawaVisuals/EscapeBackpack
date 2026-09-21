@@ -2,6 +2,70 @@
 
 Last updated: 2026-09-21 by Claude Code
 
+## Session close — 2026-09-21 — All 4 trail maps as images; fixed a mis-scoped CSS bug making stamps/icons huge
+
+**Task:** follow-up to the same-day prop-image session. User asked for (1) all four trail maps
+shown as images in the Travel routes tab, since PDFs force a download on their work computer, (2)
+stamps and other icon sets in the Design guide tab made smaller and laid out side by side instead
+of each filling the full width, (3) any remaining "final props" (museum tickets etc.) shown as
+images in Props & specs, and (4) a light pass to remove stale entries.
+
+**(1) Maps.** Aud and Harald already had full-sheet renders from the earlier session. Rendered
+Leif's and Rollo's sheets the same way (`Props/_Renders/Trail_Map_1_Leif_Print.png` /
+`_2_Rollo_Print.png`, PyMuPDF, 2× zoom) and added them as a lead image above their existing vignette
+pairs, so all four map gallery entries now show the full sheet without needing the PDF link.
+
+**(2) Stamps/icons — this was a real pre-existing bug, not just a sizing preference.** The four
+route stamps and both icon sets (Bayeux rebus icons, Rollo icon set) were rendering at full native
+resolution (1145×1374 px stamps, 1024×1024 px icons) stacked one-per-row, because:
+- `.stamp-gallery`, `.stamp-card`, `.stamp-card img` and two children rules were all scoped
+  `#design .stamp-*`, but the actual stamp gallery markup lives in `<section id="guide">` (Design
+  guide tab), not `#design` (Props & specs). The selector never matched anything, so no grid layout
+  and no `width:100%` ever applied. Rescoped all five rules to `#guide`.
+- Once the grid rule matched, the stamp images still rendered at full native size — a classic CSS
+  Grid gotcha: a grid item's default `min-width` is `auto`, which for an image child resists
+  shrinking below the image's intrinsic size. Added `min-width:0` to `.stamp-card`.
+- Added a new `.icon-grid` modifier class (`minmax(90px,120px)`, small tiles) and applied it to the
+  rebus-icon and Rollo-icon `<div class="grid">` containers, which were using the shared `.grid`
+  class's `minmax(280px,1fr)` — appropriate for text cards elsewhere but too large for a small icon
+  set. Had to scope this rule `#guide .grid.icon-grid` specifically, because an existing
+  `#guide .grid{...}` rule (1 ID + 1 class) otherwise outranks a bare `.grid.icon-grid` (2 classes)
+  in specificity and silently wins.
+- Verified via `getComputedStyle`/`getBoundingClientRect` in the live page (screenshots were
+  unreliable again this session — see Checks below): stamps now render at 34×41px inside 60px
+  cards, rebus/Rollo icons at 40×40px, all `display:block` as intended.
+
+**(3) Remaining props.** Everything else was already covered by the earlier session's edits.
+Found one gap: Luggage Tag Inserts only had a link to the rendered PNG, not an inline `<img>` (it
+lives inside a JS string literal for the puzzle-family data, which was a lighter touch at the time).
+Converted it to a proper `<div class="prop-preview">` image, consistent with the others.
+
+**(4) Stale-entry pass.** Searched for "Not built yet" / "not yet built" and stray `pill open`
+markers across the file. Found only one other "not built yet" claim (a specific in-card sketch
+detail, not a separate file — can't verify true/false from the filesystem, left alone) and one
+already self-flagged `<span class="pill open">Stale</span>` list item inside the Aud treasure-route
+"Decided player flow" — it already explains itself ("This describes the shelved Dalir panel design,
+not the current map — see the note above"), which is exactly the AGENTS.md convention (mark
+superseded text in place rather than delete it silently), so left it as-is rather than deleting.
+**Did not do a deeper cleanup pass** — everything else found was either a legitimately open item
+(PR-19/20/21 physical props not yet 3D-printed, PZ-18's "not run" test) or existing superseded-note
+history worth keeping. If there's a specific stale section the user has in mind, worth naming it
+directly next time rather than me guessing broadly.
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html` (CSS scope/specificity fixes, 2 new map
+gallery images, 1 prop-preview conversion), 2 new PNGs under `NorseBackpack/Props/_Renders/`.
+
+**Checks run:** tag-balance parser — 2 mismatches, both pre-existing before this session, none new.
+Manual `python -m http.server` (same workaround as the previous session — `preview_start` got stuck
+in `"starting"` status a third time in a row now, worth investigating outside a single session). No
+console errors. `read_network_requests` confirmed all new/existing `_Renders/*.png` and
+`Postcards/Stamps/*.png` requests return 200/304. Stamp and icon sizing confirmed via
+`getComputedStyle`/`getBoundingClientRect`, not a visual screenshot — the in-app browser's
+screenshot tool timed out repeatedly this session regardless of scroll position.
+
+**Next action:** open the page yourself and eyeball the Design guide tab's stamp/icon rows and the
+Travel routes tab's four map images — this session's verification was DOM measurements, not a look.
+
 ## Session close — 2026-09-21 — Committed the pending Norse batch; added rendered-image previews for printed props
 
 **Task:** user asked (1) whether every postcard/printed document was committed and pushed, and (2)
