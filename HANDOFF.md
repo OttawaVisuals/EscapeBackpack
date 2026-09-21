@@ -2,6 +2,119 @@
 
 Last updated: 2026-09-21 by Claude Code
 
+## Session close — 2026-09-21 — Committed the pending Norse batch; added rendered-image previews for printed props
+
+**Task:** user asked (1) whether every postcard/printed document was committed and pushed, and (2)
+to update `Norse_Brainstorm.html` so printable props show as images inline, since they're reviewing
+the puzzle sequence today from another computer and PDFs are harder to check at a glance than images.
+
+**Part 1 — commit/push.** ~107 modified/new files were sitting uncommitted (all 22 postcard build
+scripts, `TravelMap/`, `Tools/`, every `output/pdf/*` and the new `output/docx/*`). One blocker:
+`NorseBackpack/TravelMap/NUL` — a 0-byte Windows-reserved filename, almost certainly created by a
+stray `> NUL` redirect run under cmd.exe instead of PowerShell — was blocking `git add -A`. Deleted
+it (untracked, empty, not real content) and committed everything else in one batch
+(`5607a6c`), then pushed. `git status` now shows two more files touched by something outside this
+session between the commit and the next status check (`Norse_Brainstorm.html` +1 line, one straight
+`'` → curly `’` apostrophe in `stops.js`) — folded into this session's commit since they're trivial
+and unrelated to investigate further.
+
+**Part 2 — image previews.** Postcards already had front/back PNGs embedded (83 files, pre-existing).
+The actual gaps, found by diffing every `output/pdf/*` against the HTML for a nearby `<img>`:
+- Aud's and Harald's trail-map gallery entries had no images (Harald's entry still read "Not built
+  yet" even though `Trail_Map_4_Harald_Print.pdf` exists and is tracked — confirmed via
+  `build_trail_maps_pdf.py` that page 2 really is the hnefatafl board-setup insert composited onto
+  Harald's map back, so that stale-status text is now corrected, not just illustrated).
+- Six more built props were mentioned in prose but never linked or shown: `Aud_Ticket`,
+  `Museum_Ticket`, `Luggage_Tag_Inserts`, `Hnefatafl_Board_Setup_Insert`, `Hnefatafl_Ticket`,
+  `Journal_Family_Iconography`, `Transition_Tickets` (the last two had no `Open PDF` link at all).
+
+Rendered each relevant PDF page to PNG with PyMuPDF (`NorseBackpack/Props/_Renders/`, 15 files,
+2–3× zoom) rather than hand-building new art, since these are print-ready layouts, not concept art —
+a faithful render is what "easier to see than the PDF" calls for. Added a small `.prop-preview` CSS
+class for the inline (non-gallery) insertions and reused the existing `.postcard-pair` gallery
+pattern for the two trail-map entries. No puzzle content, wording, or design decisions changed —
+this was image display only.
+
+**Checks run:** a lenient HTML tag-balance parser confirms no new mismatches (2 pre-existing
+mismatches, both present before this session's edits, unrelated to the touched regions). All 15
+new image files confirmed on disk. `preview_start` came up stuck in `"starting"` status again
+(same failure mode as the 2026-09-21 session before this one) — worked around with a manual
+`python -m http.server 8741` from Bash, same fix that session already found. Loaded
+`Norse_Brainstorm.html` over real HTTP, no console errors, and `read_network_requests` confirmed
+all 14 embedded `_Renders/*.png` requests returned `200 OK`. Did not get a visual screenshot
+confirmation (the in-app browser's `scroll_to` was not moving the viewport this session, screenshots
+kept landing at the page top) — network-200 plus DOM presence via `find` is the verification that
+exists for this session, not a pixel-level look.
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html` (CSS + 9 edit sites), 15 new PNGs under
+`NorseBackpack/Props/_Renders/`, plus the full batch from Part 1.
+
+**Not done:** did not touch the `output/pdf/Postcard_Sheet_*` print-layout sheets, the `*_ANSWER.pdf`
+trail-map keys, `Postcard_L2_L3_TopEdge_Test.pdf`, or `Trail_Map_1_Leif_ART_GUIDE.pdf` — judged as
+production/test/internal-reference files rather than props a player-facing review needs to see, but
+this was a judgment call and worth confirming if wrong.
+
+**Next action:** if `preview_start` getting stuck in `"starting"` keeps recurring across sessions,
+worth investigating outside a single working session — it's now failed twice in a row.
+
+## Session close — 2026-09-21 — Two broken-markup bugs found by the browser check that was blocked last session
+
+**Task:** remote session, no specific brief. Picked up the previous session's stated next action —
+open `Norse_Brainstorm.html` in a real browser and confirm PR-23 renders and the Open questions tab
+still works — which the last session could not run because `static-preview` never came up.
+
+**The preview infrastructure works again, but not via `preview_start`.** `preview_start` reported a
+server on an auto-assigned port and then nothing listened there (`curl` → connection refused, no
+server logs). Starting `python -m http.server 8741 --bind 127.0.0.1` directly from Bash worked
+first time and the in-app browser loaded `http://localhost:8741/...` normally. So the blocker last
+session was `preview_start`'s spawned process, not the browser, not `file://`, and not the page.
+Worth trying the manual server first next time rather than treating HTML checks as unrunnable.
+
+**Bug 1 — `NorseBackpack/TravelMap/stops.js` had a JavaScript syntax error and did not load at all.**
+Line 96, the Aci Castello (`h-sicily`) note added by the 2026-09-20 "H5 resolved to Aci Castello
+everywhere" session, contained a raw ASCII apostrophe inside a single-quoted string: `'... Harald's
+own Sicilian service ...'`. That terminated the string early and threw `SyntaxError: Unexpected
+identifier 's'`, which killed the whole file — `window.NORSE_SOURCES`, `window.NORSE_PEOPLE` and all
+72 entries of `window.NORSE_STOPS` were undefined on every page that loads it. **This was committed
+at `HEAD`**, so it had been shipped and broken for a day. Fixed by changing that one apostrophe to a
+typographic `’`, which is the file's own convention everywhere else (28 other instances).
+
+**Bug 2 — one unclosed `<div>` in `Norse_Brainstorm.html`.** The pre-existing 1253-open / 1252-close
+imbalance the last session flagged as "worth tracking down" is real markup, not a false positive from
+a script template: `<div class="splitdemo">` in `<section id="lab">` (Prototype & tests) was never
+closed, so the browser auto-closed it at `</section>`. It rendered correctly by luck. Added the
+missing `</div>` before line 2484's `</section>`; the file now balances at 1253/1253, and every other
+paired tag (`section`, `details`, `table`, `figure`, `ul`, `ol`) was already balanced.
+
+**Files changed:** `NorseBackpack/TravelMap/stops.js` (one character), `NorseBackpack/Norse_Brainstorm.html`
+(one added `</div>`). No design content was touched and no PDFs or assets were rebuilt.
+
+**Checks run, all over real HTTP in the in-app browser:**
+- `node --check` on `stops.js` — fails before the fix at line 96, passes after. Also ran it across
+  every tracked `.js` outside `vendor/`: no other syntax errors in the Norse files.
+- Reloaded the page after the fix: `window.NORSE_STOPS.length` → 72, `NORSE_PEOPLE` → 4, and the
+  `h-sicily` record is present and reads "Aci Castello · Sicily". No new console errors across four
+  further reloads (the two `SyntaxError` entries in the console log are the stale pre-fix ones).
+- Deep links work: `#view-lab`, `#view-routes`, `#view-design`, `#view-questions` each show exactly
+  one section.
+- Prototype & tests tab after the `</div>` fix: both `.splitdemo > .panel` children present, the
+  hnefatafl board renders its 121 cells, the 3 rune buttons are there.
+- **PR-23 confirmed rendering** — it lives in the **Open questions** tab (as `#q-PR-23`, correct for a
+  `PR-` id), not in Props & specs as the last handoff's wording implied. Pill reads "Decided", body
+  text is complete, 697px tall, screenshotted. Open questions tab is healthy: 72 rows
+  (ST 5 · PC 19 · PZ 20 · PR 23 · HI 5).
+
+**Also worth knowing:** `git status` on this machine opened the session showing ~106 files as
+modified. They were not. A stale index (mtimes touched, contents identical) — the first real
+`git status` refreshed it and the tree is clean, one commit ahead of `origin/main` (`8fc1e0f`,
+unpushed). Nothing was reset or discarded to get there.
+
+**Not done:** the `Aud_Map_Designer.html` artifact resync noted in the trail-map session is still
+outstanding. `Norse_Brainstorm.html` was not given a new question/decision entry for either bug —
+both are code defects, not design decisions.
+
+**Next action:** commit these two fixes (nothing is committed yet — the user has not been asked).
+The `stops.js` one in particular is a shipped regression worth landing before any further map work.
 ## Session Close — 2026-09-20 — Trail map printer margins: fixed, then maximised
 
 **Task:** the user's home printer was leaving more blank space on the left of the printed trail
