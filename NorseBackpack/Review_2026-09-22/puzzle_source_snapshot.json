@@ -1,0 +1,551 @@
+[
+  {
+    "key": "opening",
+    "refs": [
+      "PZ-13",
+      "PC-01"
+    ],
+    "trail": "leif",
+    "state": "decided",
+    "status": "Decided",
+    "title": "The opening puzzle",
+    "verb": "Read &amp; order",
+    "code": "1021",
+    "lock": "Four-digit padlock on the bag itself",
+    "props": [
+      [
+        "Luggage tags A &amp; B",
+        "questions",
+        "q-PR-01"
+      ]
+    ],
+    "cards": [
+      "L1"
+    ],
+    "releases": "Postcard LD, Leif’s trail map and the L’Anse aux Meadows museum ticket, together",
+    "brief": "Two luggage tags on the bag carry four digits between them. The first postcard says which pair comes first.",
+    "input": "The first postcard, which is from L’Anse aux Meadows, and the two luggage tags attached to the backpack. Each tag has a printed “If found, please return to” line that Liv never filled in properly — instead she hand-wrote the address of a hotel she stayed at, and the street number is the only number on the tag.",
+    "action": "Match the place named on the postcard to the tag whose hotel address is in that place. That tag’s street number is the first half of the code; the other tag’s street number is the second half.",
+    "clue": "Postcard L1 names L’Anse aux Meadows as the place it comes from. Exact wording is not written yet — see <code>PZ-05</code>.",
+    "solve": "Tag A: Vinland Trail Lodge, 10 Skipper’s Wharf, L’Anse aux Meadows, NL — matches the postcard, so it reads first: 10. Tag B: Hôtel Rollon, 21 avenue Rollo, Rouen, France — reads second: 21. Code <b>1021</b>, the year tree-ring dating placed the Norse at L’Anse aux Meadows.",
+    "why": "The data is in plain sight on both tags; the only hidden thing is which tag goes first, and the postcard hands that over. It teaches the game’s core habit — the card carries the rule, the props carry the data — at its lightest.",
+    "hints": [
+      "Everything you need is already outside the bag.",
+      "Both tags carry a hand-written address. Only one of them is in a place you have seen before.",
+      "The postcard names L’Anse aux Meadows. That tag goes first."
+    ],
+    "risk": "Supersedes the earlier <code>0734</code> mechanism. The underlined <code>07</code> already printed on card L1 now has no job — see <code>PC-02</code>. A print-ready PDF exists (<code>output/pdf/Luggage_Tag_Inserts_Print.pdf</code>); purchase and physical assembly onto real luggage tags is not confirmed done.<div class=\"prop-preview\"><figure><img src=\"Props/_Renders/Luggage_Tag_Inserts_Sheet.png\" alt=\"Luggage tag inserts, print sheet\"><figcaption>Print sheet</figcaption></figure></div>"
+  },
+  {
+    "key": "beasts",
+    "refs": [
+      "PZ-10",
+      "PZ-12",
+      "PZ-13",
+      "PZ-18"
+    ],
+    "trail": "leif",
+    "state": "decided",
+    "status": "Decided · art finished",
+    "title": "The beasts on the chart",
+    "verb": "Identify &amp; look up",
+    "code": "BEAR → 3212",
+    "lock": "Four-digit padlock",
+    "props": [
+      [
+        "Leif’s trail map (sea chart)",
+        "questions",
+        "q-PR-13"
+      ],
+      [
+        "Viking Museum of L’Anse aux Meadows ticket",
+        "questions",
+        "q-PZ-12"
+      ]
+    ],
+    "cards": [
+      "LD"
+    ],
+    "releases": "Postcards L2 and L3, together",
+    "brief": "A hidden imprint on the decoy card points to one square of Leif’s sea chart. The unlabelled animal drawn there names the key to a lookup on the museum ticket.",
+    "input": "Leif’s trail map — a North Atlantic sea chart with seven animal vignettes drawn into the empty water and land — decoy postcard LD, which points into it, and the L’Anse aux Meadows museum ticket. All three arrive together from the first lock.",
+    "action": "Follow the decoy card’s imprint to one beast on the chart, identify it from how and where it is drawn, then read its four letters off the A–Z visitor index printed on the back of the ticket. Each letter gives one digit.",
+    "clue": "The generic rule line is decided (<code>PZ-10</code>): “You know me — every little detail counts.” Card LD carries the specific pointer as a printed imprint, <code>Vinland Editions · Series F, No. 1</code> → square F1.",
+    "solve": "Seven beasts, each a four-letter word: <b>BEAR, WOLF, SEAL, ORCA, LOON, HARE, DEER</b>. None is labelled; each is drawn in a setting or pose that makes it identifiable. Square F1 holds the bear, so the key is BEAR, and B/E/A/R read off the ticket index as <b>3212</b>. The other six beast codes are recorded in <code>PZ-12</code> in case the live pointer ever changes. The chart artwork is finished — see <code>TravelMap/build_trail_maps_pdf.py</code>.",
+    "why": "It gives Leif’s map a job on the <em>front</em>, using the geography rather than just the paper. It is a transformation chain rather than a pointer: the map’s answer becomes the key that operates the next prop, so neither object is any use alone.",
+    "hints": [
+      "The chart is not empty. Something is drawn where the card is pointing.",
+      "Are you certain which animal that is? Look at its pose and silhouette, not only its location.",
+      "It is a bear. Read B, E, A, R off the index on the back of the museum ticket."
+    ],
+    "risk": "<b>No validator, by choice</b> — the lock is the check. <b>Bear vs. wolf confirmed legible and distinct at print size, 19 Sept 2026</b> — no longer an open risk. Artwork is print-ready (<code>output/pdf/Trail_Map_1_Leif_Print.pdf</code>)."
+  },
+  {
+    "key": "topedge",
+    "refs": [
+      "PC-06",
+      "PC-13",
+      "PZ-13"
+    ],
+    "trail": "leif",
+    "state": "decided",
+    "status": "Decided · destination undesigned",
+    "title": "The joined top edge",
+    "verb": "Hold &amp; read",
+    "code": "1576",
+    "lock": "Four-digit padlock",
+    "props": [
+      [
+        "A light source only",
+        "",
+        null
+      ]
+    ],
+    "cards": [
+      "L2",
+      "L3"
+    ],
+    "releases": "The fourth container — contents still undesigned (<code>ST-01</code>)",
+    "brief": "Held together and up to the light, postcards L2 and L3’s top edges join into a four-digit code.",
+    "input": "Postcards L2 and L3, both in hand once lock 2 has opened.",
+    "action": "Hold card L2 face to card L3, rotated 180° against it, up to a light source. The cloud fragments printed across their top edges align into four digits.",
+    "clue": "Not yet written — the nudge to try holding the cards together at all belongs with the rest of <code>PZ-05</code>.",
+    "solve": "The aligned cloud flecks read <b>1576</b>, re-proofed at true 5 × 3.5 in card size and 300 dpi. Nothing is printed to say what the code opens; it opens the fourth container by fiat until that container is designed.",
+    "why": "Gives Leif’s trail a third lock from its own cards without adding a fourth card. Establishes early that cards can be combined physically, not just read individually, ahead of harder cross-trail combines later.",
+    "hints": [
+      "Not written yet."
+    ],
+    "risk": "<b>No destination yet</b> — the fourth container’s contents are undesigned. <b>No in-fiction nudge yet</b> to try holding two cards together at all. Also the third “line two papers up” gesture in the bag, alongside the hnefatafl offset — worth not adding a fourth."
+  },
+  {
+    "key": "wordlock",
+    "refs": [
+      "PZ-15",
+      "PR-11"
+    ],
+    "trail": "rollo",
+    "state": "partial",
+    "status": "Code decided · lock hardware open",
+    "title": "The word-lock chain",
+    "verb": "Match &amp; count",
+    "code": "1486",
+    "lock": "4-digit numeric combo lock — hardware not owned yet",
+    "props": [
+      [
+        "Musée Ducal de Rouen ticket",
+        "questions",
+        "q-PZ-15"
+      ],
+      [
+        "Rollo’s trail map (6 word icons, 2 now decorative)",
+        "questions",
+        "q-PR-11"
+      ]
+    ],
+    "cards": [
+      "R2"
+    ],
+    "releases": "<span class=\"pill open\">Open</span> — which physical lock this feeds (<code>ST-01</code>)",
+    "brief": "Four English word pairs split along the Norman Conquest’s class line. The Rouen card fixes the order, the ticket turns pairs into coordinates, the map turns coordinates into a square-count.",
+    "input": "Postcard R2 (Rouen), the Musée Ducal de Rouen ticket, and Rollo’s trail map with its word icons.",
+    "action": "Read the four Saxon-register words out of the Rouen message in the order they appear. For each, find its Norman partner on the ticket — the Norman column gives a letter, the Saxon column a number, together a grid coordinate. Find that word’s icon already drawn on Rollo’s map, and count the squares between the icon and the coordinate. Four counts, one per dial of the lock.",
+    "clue": "Postcard R2 uses the four Saxon words in passing, plus a rule-line planting counting as Liv’s habit (\"Can’t walk anywhere without counting my steps — always have.\"). The order they appear in is the solve order. The card text is built.",
+    "solve": "Pairs in use: combat/fight, poultry/hen, tavern/inn, people/folk (beef/cow and forest/woodland dropped from the solve, icons left in place, inert). Icon positions and targets: fight H6&nbsp;→&nbsp;I6 (<b>1</b> square), hen I3&nbsp;→&nbsp;A3 (<b>8</b> squares), inn H9&nbsp;→&nbsp;B9 (<b>6</b> squares), folk F11&nbsp;→&nbsp;F7 (<b>4</b> squares) — all four pairs already share a row or column, so the count needed no remeasuring. In the card’s reading order (fight, people, poultry, inn) the code is <b>1486</b>.",
+    "why": "Gives Rollo’s map a second job besides the final route, and makes the Conquest’s language history the puzzle rather than the flavour. Swapping the directional lock for a numeric one keeps the same props, ticket and map work, just cheaper, more common hardware.",
+    "hints": [
+      "Not written yet."
+    ],
+    "risk": "<b>No numeric lock is owned yet.</b> Until one is bought or built, this chain has no destination. Six map icons are placed by <code>ROLLO_WORDLOCK_ART</code> in <code>TravelMap/build_trail_maps_pdf.py</code>; adding them cost six secondary scenery labels to the sheet’s collision-avoidance. Hastings was already dropped for collision before this puzzle existed. The ticket and print PDF still reflect the old six-word chain and need rebuilding."
+  },
+  {
+    "key": "counting",
+    "refs": [
+      "PZ-19",
+      "PZ-18"
+    ],
+    "trail": "rollo",
+    "state": "decided",
+    "status": "Decided",
+    "title": "Counting in the illustration",
+    "verb": "Count &amp; order",
+    "code": "562",
+    "lock": "Three-digit lock",
+    "props": [
+      [
+        "None — counted directly on the three fronts",
+        "",
+        null
+      ]
+    ],
+    "cards": [
+      "R1",
+      "R6",
+      "RD"
+    ],
+    "releases": "<span class=\"pill open\">Open</span> — which physical lock this feeds (<code>ST-01</code>)",
+    "brief": "Three Rollo-trail fronts each hide a count of one repeated object. Their Fun Facts fix the order.",
+    "input": "Postcards R1 (Châlus), R6 (Roumare Forest) and the decoy RD (Walcheren). Nothing else.",
+    "action": "Count the repeated object on each front. Read each card’s typed Fun Fact for its date, put the three in chronological order, and read the counts in that order.",
+    "clue": "Each handwritten message names the counted object in passing without stating a number. Roumare’s message alone adds an in-voice hint that its count is doubled. All three messages are built.",
+    "solve": "Walcheren <b>5</b> boats (before 911) → Roumare <b>3</b> boars drawn, doubled to <b>6</b> per the card’s hint (911) → Châlus <b>2</b> crossbow bolts (1199). Code <b>562</b>. The order mirrors the Rollo → William → Richard family line already carried by the Bayeux/Winchester/Battle cards.",
+    "why": "Gives the only three Rollo-trail cards without a lock job one, satisfying <code>PZ-18</code>’s rule that every card gates a lock. The doubling step keeps it from being plain counting.",
+    "hints": [
+      "Not written yet."
+    ],
+    "risk": "Walcheren and Roumare rest on weak history — <code>stops.js</code> rates them <i>uncertain</i> and <i>context</i>. Both cards hedge in message and Fun Fact rather than stating the association as fact. Châlus is solidly documented."
+  },
+  {
+    "key": "rebus",
+    "refs": [
+      "PZ-14",
+      "PC-15"
+    ],
+    "trail": "rollo",
+    "state": "partial",
+    "status": "Candidate · cards built, code not measured",
+    "title": "The rebus distance",
+    "verb": "Decode &amp; measure",
+    "code": "<span class=\"pill open\">Open</span> — not yet measured",
+    "lock": "Numeric lock, digit count unknown",
+    "props": [
+      [
+        "Architect’s scale ruler",
+        "questions",
+        "q-PC-15"
+      ],
+      [
+        "Rollo’s trail map (crossbow bolt + treaty scroll icons)",
+        "questions",
+        "q-PR-11"
+      ]
+    ],
+    "cards": [
+      "R3",
+      "R4",
+      "R5"
+    ],
+    "releases": "<span class=\"pill open\">Open</span> (<code>ST-01</code>)",
+    "brief": "The Bayeux card explains why Liv’s postcards start carrying tapestry-style drawings — and carries the first rebus itself. Winchester carries the second. Battle names which ruler scale to use.",
+    "input": "Rollo’s Bayeux, Winchester and Battle postcards (all built), his trail map with its story icons, and the architect’s scale ruler already in the kit.",
+    "action": "Read each card’s rebus as a word or phrase, find the map icons the first two name, set the ruler to the scale the third names, and measure the distance between the two points.",
+    "clue": "None of the three cards states its rebus outright; all three just carry the drawings.",
+    "solve": "Bayeux: cross + bow + lightning bolt = CROSSBOW BOLT → Châlus, where Richard I was fatally wounded by one. Winchester: tree + teacup = TREATY → Saint-Clair-sur-Epte, site of the 911 grant of Normandy. Battle: fish (“scale”) + Roman numeral I + arrow (“to”) + die showing 5 = SCALE 1 TO 5. Both target places already carry a matching icon on Rollo’s map. The measured distance between them at 1:5 is the code — <b>not yet calculated</b>.",
+    "why": "Gives two props that currently have no job a job together, and gives the margin drawings an in-fiction reason to exist rather than reading as unexplained publisher art.",
+    "hints": [
+      "Not written yet."
+    ],
+    "risk": "<b>Code value open.</b> The distance has not been measured at 1:5 against the ruler’s real markings, so no number is confirmed sensible — a wrong scale choice could produce an unworkable code. Nine of ten rebus icons are assigned (<code>PC-15</code>); only the arrow/2 hybrid has no card or puzzle."
+  },
+  {
+    "key": "treasure",
+    "refs": [
+      "PZ-17"
+    ],
+    "trail": "aud",
+    "state": "partial",
+    "status": "Map, route and code decided · paper walkthrough still outstanding",
+    "title": "The treasure route",
+    "verb": "Walk &amp; count",
+    "code": "521",
+    "lock": "Three-digit padlock on the coin cache",
+    "props": [
+      [
+        "Aud’s laminated journey map (single portrait sheet, 140 features)",
+        "questions",
+        "q-PZ-17"
+      ],
+      [
+        "Aud’s Treasure Museum ticket (built)",
+        "questions",
+        "q-PZ-17"
+      ]
+    ],
+    "cards": [
+      "A2"
+    ],
+    "releases": "The mixed coin hoard in the cave at I9, plus postcards A1 (Dögurðarnes) and A3 (Esjuberg)",
+    "brief": "One portrait map, symbols not to scale, carrying line/area/point symbols instead of isolated icons — the split-panel design below was shelved 17 Sept 2026 in favour of this. Players walk the drawn path network and count what the route crosses.",
+    "input": "Postcard A2 (Hvammur), Aud’s laminated journey map, and the Aud’s Treasure Museum ticket (six rows, one per leg, three tally columns: bridges, fords, gates).",
+    "action": "Walk the six legs on the real drawn network, from the northern chapel to the cave beyond the ruin at I9. At the merged leg 5, follow the road to the correct “village at a crossing” (H9, not the lookalike near H3/G3) — A2’s message gives the direction (south) and the forest detail needed to tell them apart. Tally bridges, fords and gates crossed across all six legs.",
+    "clue": "A2’s message (rewritten 19 Sept 2026) plants both checks needed for the leg-5 ambiguity without naming either outright: the direction, and “the road that followed the forest.”",
+    "solve": "Six legs: chapel→chapel (1 bridge), →well (2 fords, 1 bridge), →landing (1 bridge), →standing stone (1 bridge), →village at the crossing H9 (1 gate, 1 bridge), →ruin/cave (nothing). Totals: <b>5 bridges, 2 fords, 1 gate → code 521</b>. Corrected 19 Sept 2026 from an earlier miscount (<code>531</code>) after the user spotted a leg with no ford on the printed sheet.",
+    "why": "Turns Aud’s own map from a final-route prop into a working treasure map without printing a second sheet, and makes the tally self-checking — a blue line or a gate is unmistakable, so counting is hard to get subtly wrong.",
+    "hints": [
+      "Not written yet."
+    ],
+    "risk": "<b>The 521 tally is confirmed in the routing graph, not yet checked on paper.</b> Print a test sheet and walk all six legs by hand against the ticket before building anything further on top of this code. <code>Props/AudTicket/build_aud_ticket_pdf.py</code> already prints the corrected <code>ANSWER 5 2 1</code>. <b>Superseded design, kept for reference:</b> the earlier Dalir split-panel sheet and its plot-number-sum mechanism (code <code>467</code>) — see <code>NorseBackpack/Drafts/2026-09-17_Aud_split_panel/README.md</code>."
+  },
+  {
+    "key": "hoard",
+    "refs": [
+      "PZ-03",
+      "PZ-17",
+      "PR-02"
+    ],
+    "trail": "aud",
+    "state": "partial",
+    "status": "Answer decided · weights need testing",
+    "title": "The hoard and the balance",
+    "verb": "Sort &amp; weigh",
+    "code": "SOLE",
+    "lock": "Master four-letter combination lock (owned)",
+    "props": [
+      [
+        "Mixed coin hoard and digital scale",
+        "design",
+        "prop-hoard"
+      ]
+    ],
+    "cards": [
+      "A1",
+      "A3"
+    ],
+    "releases": "Decoy postcard AD (Bjarnarhöfn) and the comb",
+    "brief": "Sort the released hoard into its three coin types, weigh the one the map marked, and read the result the way Liv displays it.",
+    "input": "The mixed coin hoard, a digital scale reading past 370.56 g at 0.01 g resolution, postcards A1 (Dögurðarnes) and A3 (Esjuberg), and the cache mark from the treasure map.",
+    "action": "Sort all released coins into their three types. The treasure square’s cache mark identifies the one pile to weigh. Dögurðarnes gives the weighing task; Esjuberg’s upside-down display sketch says how to read the number off the scale.",
+    "clue": "Dögurðarnes carries the weighing task; Esjuberg carries the upside-down display sketch.",
+    "solve": "The owned lock is four letters, so the answer is <b>SOLE</b>. <code>KAMBR</code> (five letters) is dropped from this slot, and <code>MEAD</code> is superseded here — it is now a pinned idea for Harald’s trail instead (<code>PZ-20</code>).",
+    "why": "Makes the balance and the coins into one prop chain rather than two loose objects, and gives two otherwise clue-light Aud cards a lock job.",
+    "hints": [
+      "Not written yet."
+    ],
+    "risk": "<b>Physical weights are untested.</b> The 370.56 g target depends on coin specification (<code>PR-02</code>) and on a scale that actually resolves 0.01 g at that range. Neither is confirmed bought."
+  },
+  {
+    "key": "comb",
+    "refs": [
+      "PC-06",
+      "PZ-03"
+    ],
+    "trail": "aud",
+    "state": "partial",
+    "status": "Candidate word set · exposed-word mechanism still open",
+    "title": "The comb grille",
+    "verb": "Overlay &amp; read",
+    "code": "<span class=\"pill cand\">Candidate</span> BOOK",
+    "lock": "Master four-letter combination lock (owned) — reused after PZ-03’s SOLE, reset to a new combination for this job",
+    "props": [
+      [
+        "The comb",
+        "design",
+        "prop-comb"
+      ]
+    ],
+    "cards": [
+      "AD"
+    ],
+    "releases": "Entry to Harald’s leg",
+    "brief": "The comb, laid across the decoy card’s message, exposes certain words through its broken teeth.",
+    "input": "The comb and decoy postcard AD (Bjarnarhöfn).",
+    "action": "Lay the comb across AD’s handwritten message. Only the words falling in the gaps between broken teeth stay visible.",
+    "clue": "AD’s message (decided 18 Sept 2026): \"Wintered like Aud did, at her brother’s harbor. I’ve read everything I could find about her this trip, to the point that she feels like family (and she actually maybe was). It was so awesome to find that comb alongside the coins, and the museum let me keep it! This is actually the real treasure, a piece of history that we can use! With love, Aunt Liv\" — the reading/kinship line sets up BOOK without naming it.",
+    "solve": "<b>Candidate, 18 Sept 2026: BOOK.</b> The mechanism is fixed — comb over AD — and the comb is now planned as 3D-printed, so tooth spacing can be engineered to expose chosen letters cleanly rather than relying on a found comb lining up by luck. BOOK is proposed for its link to <b>Landnámabók</b> (\"Book of Settlements\"), the saga source <code>HI-02</code> already cites for Aud’s comb story at Kambsnes, and it now pays off the \"read everything I could find\" line in AD’s message. Not yet decided: which specific letters in AD’s text the teeth expose to spell BOOK.",
+    "why": "Gives the comb a job as an instrument rather than a keepsake, and gives the Aud decoy a reason to be kept rather than discarded.",
+    "hints": [
+      "Not written yet."
+    ],
+    "risk": "AD’s message text does not exist yet, so the grille cannot be cut to fit it until that’s written. Rotating or flipping the comb lets one comb decode several cards; whether that is used here or held back is undecided."
+  },
+  {
+    "key": "hnefatafl",
+    "refs": [
+      "PZ-01",
+      "PZ-07",
+      "PR-08"
+    ],
+    "trail": "harald",
+    "state": "partial",
+    "status": "Code decided · second lock of Harald’s leg, after the rune cryptex",
+    "title": "The king’s unfinished escape",
+    "verb": "Plan &amp; move",
+    "code": "253",
+    "lock": "Three-digit lock, or the throne compartment if the board is built rather than bought",
+    "props": [
+      [
+        "Hnefatafl board and pieces",
+        "design",
+        "prop-hnefatafl"
+      ],
+      [
+        "Hnefatafl Museum ticket, Oslo",
+        "build",
+        null
+      ],
+      [
+        "Harald’s Oslo trail map (back)",
+        "questions",
+        "q-PZ-09"
+      ]
+    ],
+    "cards": [
+      "H1"
+    ],
+    "releases": "<span class=\"pill open\">Open</span> — which physical lock this feeds (<code>ST-01</code>)",
+    "brief": "Rebuild the board your aunt sketched on the back of a map, then finish the game she left set up.",
+    "input": "The 11 × 11 board and pieces, the Hnefatafl Museum ticket with the rules, Harald’s Oslo map whose back carries the setup, and postcard H1 which sets the task.",
+    "action": "Recover the setup from two papers, place the fixed pieces, then take the king from the throne to any corner in exactly three straight-line moves. Count how far he travels on each leg.",
+    "clue": "“I’m spending a whole week in Oslo, so much to do! It’s Harald’s city and has so much Viking history. Found the quirkiest little museum near the harbour, all about hnefatafl, the chess-like old board game the Vikings loved and that we used to play with our own rules when you were younger. Grabbed you a little souvenir from the gift shop so you can try — can you get the king to escape in exactly 3 moves? Count how far he travels each time. Love, Aunt Liv.”",
+    "solve": "11 × 11, 16 attackers, 6 defenders, king on the true centre throne at F6. Exhaustive search over that exact layout gives exactly one three-move solution: <b>F6 → H6 → H11 → K11</b>. Its legs measure <b>2, 5 and 3</b> squares → <b>253</b>. Nothing is printed on the board. Columns A–H stay visible on the map back; I–K are lost to the stain and recovered from the ticket’s mirrored offset — assuming those three columns empty still leaves 31 candidate routes, so a guess fails to resolve rather than resolving wrongly.",
+    "why": "The strongest physical centrepiece in the set, the only puzzle that can release something mechanically rather than through a dial, and the only one that gives a trail map a job before the endgame.",
+    "hints": [
+      "The board is eleven columns wide. Count what you can actually see.",
+      "Something was lying on the ink. It is still in the bag, and it is the right shape.",
+      "Work backward from a corner that is still reachable.",
+      "F6 → H6 → H11 → K11 — then measure each leg."
+    ],
+    "risk": "<b>Composited, 19 Sept 2026.</b> Harald’s map sheet (<code>Trail_Map_4_Harald_{Print,ANSWER}.pdf</code>) is now two pages, one physical object: page 1 the rune-cipher front, page 2 the board-setup panel (stain, pieces, Liv’s margin note) reusing <code>build_board_setup_pdf.py</code>’s own drawing code and the shared paper/ink palette, centred on the same letter page and background tone as the front. Print both sides and laminate — no separate insert to align by hand. The old 7 × 7 solution (<code>231</code>) is fully superseded — not a fallback. A bought board in another size means rebuilding both the layout and its uniqueness proof (<code>PR-08</code>). <b>Still untested:</b> whether the offset reads through the ticket stock while the smear still hides the original (<code>PR-09</code>), and whether the front’s printed reference grid or this back page’s own ink ghosts through the laminate at real stock weight. This is also the third “line two papers up” gesture in the bag."
+  },
+  {
+    "key": "runes",
+    "refs": [
+      "PZ-02",
+      "PZ-09"
+    ],
+    "trail": "harald",
+    "state": "decided",
+    "status": "Decided and built, 17 Sept 2026",
+    "title": "The branch runes on the map",
+    "verb": "Decode &amp; order",
+    "code": "HRAFN",
+    "lock": "Five-ring cryptex",
+    "props": [
+      [
+        "Harald’s trail map (relettered grid)",
+        "design",
+        "prop-runes"
+      ],
+      [
+        "3D-printed cryptex",
+        "design",
+        "prop-runes"
+      ]
+    ],
+    "cards": [
+      "H4",
+      "H5"
+    ],
+    "releases": "<span class=\"pill open\">Open</span> — which container this feeds (<code>ST-01</code>)",
+    "brief": "Five carved rune-stems hide among decoys on Harald’s own map; two postcards give the decode key and the reading order.",
+    "input": "Harald’s trail map, whose grid band is relettered on this sheet only — <code>A, C, E, I, K, N, R, T, V</code> in place of the shared <code>A–I</code> — postcard H4 and postcard H5.",
+    "action": "Use H4 to read each rune stem’s branch counts as a letter: left branches count the group, right branches count its position within that group. Use H5’s underlined word <code>raven</code> to know which five of the map’s many stems are real and in what order — the columns literally spelling R, A, V, E, N.",
+    "clue": "H4: “A woodcarver at the reconstruction huts showed me how the old branch-runes worked — count the branches one way for the family, the other way for the letter. I copied his key out for you before I forgot it,” followed by her hand-copied 3-group table. H5: “…that is a great way to attract wildlife. A <u>raven</u> followed me the whole time!”",
+    "solve": "The five real stems sit at <code>G6, A10, I9, C3, F2</code> — under the relettered columns, <code>R6, A10, V9, E3, N2</code>. Read in the literal order R, A, V, E, N: G6 → H, A10 → R, I9 → A, C3 → F, F2 → N, spelling <code>HRAFN</code>. Seven decoy stems elsewhere on the sheet carry plausible but meaningless branch counts.",
+    "why": "Gives Harald’s map a front-of-sheet job instead of only the hnefatafl board-back (<code>PZ-09</code>), and moves the branch-rune cipher off a stick-and-museum-label pair that never got built onto two postcards that already exist.",
+    "hints": [
+      "Not written yet."
+    ],
+    "risk": "The tally-stroke stems render close to a small pine tree at print size; worth a look in person before committing. The group-numbering convention is the aunt’s own, not a historical standard, same caveat the cryptex prop note already carries. Her rune-key table substitutes <code>ö</code> for <code>ą</code> and <code>r&#39;</code> for <code>ʀ</code> — the handwriting font has no glyph for either — which does not affect the answer since <code>HRAFN</code> never uses those two runes."
+  },
+  {
+    "key": "mead",
+    "refs": [
+      "PZ-20"
+    ],
+    "trail": "harald",
+    "state": "decided",
+    "status": "Decided and built, 17 Sept 2026",
+    "title": "What’s in the horn",
+    "verb": "Riddle &amp; combine",
+    "code": "MEAD",
+    "lock": "Owned four-letter word lock",
+    "props": [
+      [
+        "Owned four-letter word lock",
+        "design",
+        null
+      ]
+    ],
+    "cards": [
+      "H2",
+      "H3",
+      "HD"
+    ],
+    "releases": "<span class=\"pill open\">Open</span> — which container this feeds (<code>ST-01</code>)",
+    "brief": "Three postcards each hide one attribute word behind a different riddle technique; only one drink fits all three.",
+    "input": "Postcard H3 (Kyiv), postcard H2 (Staraya Ladoga) and postcard HD (Constantinople) — HD stops being a pure decoy and takes on this leg’s third lock, closing the “Constantinople still needs one assigned” gap in the <a href=\"#\" data-view=\"final-riddle\">Final riddle tab</a>.",
+    "action": "Solve each card’s riddle for its one word — HONEY, DRINK, FERMENTED — using a different technique per card so no two feel the same, then combine the three attributes: the only drink that is honey, fermented and a drink is <code>MEAD</code>.",
+    "clue": "<b>H3 (Kyiv), definition riddle:</b> “Kyiv next, and it might be the most beautiful city on this whole trip — golden domes catching the light on every hill. Stopped by St. Michael’s this morning and lit a candle for you. Cheesy, I know. Here’s a little riddle for you, the kind we used to trade back and forth: <i>I’m sweet, but no fruit tree grew me. I’m gold, but no smith ever cast me. Thousands of tiny workers made me and set six-sided walls to guard me.</i> Love, Aunt Liv.” <b>H2 (Staraya Ladoga), acrostic:</b> “Days here move slower than I expected, and I love it. Rurik supposedly ruled from right here, if the old chronicles are true. I climbed up on the fortress wall for a look at the whole river bend. Nobody warned me how far this feels from anywhere else. Keeping my postcards dry has become a full-time job in this weather.” <b>HD (Constantinople), rebus:</b> “Constantinople — well, Istanbul now, but I like the old name for this trip. Impossible not to think about Harald everywhere here; this is where he made his fortune, long before Norway ever heard of him. Found this in a little shop near the Hippodrome, couldn’t resist:” followed by a drawn rebus — sugar cubes + a bubbling jar + an hourglass.",
+    "solve": "H3 → <b>HONEY</b> (the riddle: sweet but not fruit, gold but not metal, made by thousands, six-sided walls = honeycomb). H2 → <b>DRINK</b>, spelled by the first letter of each of its five sentences (D, R, I, N, K). HD → <b>FERMENTED</b>, read from the rebus (sugar = raw sugar, bubbling jar = visible fermentation, hourglass = time acting on it). Honey, fermented, and a drink — only <code>MEAD</code> fits all three.",
+    "why": "Closes the last open lock of Harald’s leg (<code>PZ-20</code>) without touching the map, which the rune cryptex already uses. Gives HD the real puzzle job every decoy is required to carry (<a href=\"#\" data-view=\"final-riddle\">Final riddle tab</a>) instead of leaving Constantinople unassigned. H3 and HD are linked by real Rus’-Byzantine history, not only by this puzzle: Oleg of Novgorod made Kyiv the Rus’ capital and, per the Primary Chronicle, sailed on Constantinople in 907 — the treaty that followed gave Rus’ merchants trading rights there. That fact carries H3’s Fun Fact, deliberately not honey/bees, since the riddle itself already is the honey content and a Fun Fact repeating its own answer would break <code>PC-12</code>’s one-fact-per-voice rule. HD’s Fun Fact (Harald’s own Varangian Guard service, 1034–1043, funding his later claim to Norway) is gestured at in its message (“this is where he made his fortune”) but not stated there, so the two never repeat the same content either.",
+    "hints": [
+      "Three cards, three words, one drink.",
+      "What do you get when honey ferments?",
+      "Each card hides its word a different way — read one, count one, look at one."
+    ],
+    "risk": "All three cards built, front and back, 17 Sept 2026 — see the Postcard system tab gallery for PDFs. H3’s Fun Fact was swapped from an early bees/honey draft to the Oleg-of-Novgorod/Constantinople fact, since a Fun Fact repeating the riddle’s own answer would break <code>PC-12</code>. Card order/placement within Harald’s own travel story (per <code>PC-16</code>) is still not chosen for H2, H3 or HD."
+  },
+  {
+    "key": "finalroute",
+    "refs": [
+      "PZ-06",
+      "PZ-08",
+      "PZ-18"
+    ],
+    "trail": "final",
+    "state": "partial",
+    "status": "Decided in principle · 4 of 4 maps built",
+    "title": "The route hidden in plain sight",
+    "verb": "Connect &amp; recognize",
+    "code": "1972",
+    "lock": "Four-digit padlock on the last container",
+    "props": [
+      [
+        "Four laminated trail maps and a wet-erase marker",
+        "questions",
+        "q-PZ-06"
+      ]
+    ],
+    "cards": [
+      "all 22"
+    ],
+    "releases": "The last container — plane ticket and closing line",
+    "brief": "Twenty-two cards, four of them decoys. Filter, sort, trace, and read the four shapes as four digits.",
+    "input": "All 22 postcards (18 real stops plus one decoy per trail), four laminated letter maps, a wet-erase marker, and the note in the final bundle carrying the family logo and crest.",
+    "action": "Use the crest/logo filter to drop the four decoys. Sort the rest by stamp series to find which trail each belongs to, lay each trail’s cards beside its map in reconstructed order, then draw the legs straight onto the laminated map. Each completed trail traces one digit.",
+    "clue": "“I crossed an ocean to find where we began. Every stop mattered. Now you have the whole journey.”",
+    "solve": "Leif draws <b>1</b>, Rollo’s family line <b>9</b>, Aud <b>7</b> and Harald <b>2</b> — candidate code <b>1972</b>, in trail-first-appearance order. Order is reconstructed from ticket dates, postcard statements and the final bundle — never from anything printed on a card, since postmarks carry no date at all.",
+    "why": "The cards work first as story and individual clues, then return as the final meta-puzzle. Every place name gains a second meaning.",
+    "hints": [
+      "The stamps are not decoration — they say which journey a card belongs to.",
+      "Four of these cards do not belong to any journey. Something in the last bundle says which.",
+      "Work one map at a time, with that trail’s cards laid out beside it."
+    ],
+    "risk": "<b>Shapes not proofed at true print size</b> — the family <b>9</b> is the riskiest. A traced shape reads the same forwards and backwards, and 3-stop trails barely constrain the drawing. <code>1972</code> reads as a year, which self-checks but invites year-guessing. Harald’s <b>2</b> currently reads as a zigzag, which weakens the self-check."
+  },
+  {
+    "key": "reveal",
+    "refs": [
+      "ST-05"
+    ],
+    "trail": "final",
+    "state": "decided",
+    "status": "Decided",
+    "title": "See you in Norway",
+    "verb": "Personal reveal",
+    "code": "—",
+    "lock": "None — this is what the last lock released",
+    "props": [
+      [
+        "Fictional plane ticket and letter",
+        "build",
+        null
+      ],
+      [
+        "Liv’s gridded excavation site plan",
+        "questions",
+        "q-ST-05"
+      ]
+    ],
+    "cards": [],
+    "releases": "Nothing — this is the ending",
+    "brief": "The mystery was an invitation.",
+    "input": "The now-open final container.",
+    "action": "Read the personal letter. Optionally scan the invitation to see the aunt’s last message and an illustration of the dig.",
+    "clue": "“You followed every stop I made and found the story that brought me here. I have a spare place on the dig. Pack your bag. I’ll meet you in Norway.”",
+    "solve": "No additional puzzle. Let the reward land. The ticket is a game souvenir, not a real booking.",
+    "why": "Closes the frame the first postcard opened: she was not testing you, she was recruiting you.",
+    "hints": [],
+    "risk": "The dig is in Norway, but the site itself and what it is for are still open (<code>ST-05</code>)."
+  }
+]

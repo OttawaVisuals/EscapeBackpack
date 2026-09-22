@@ -1,0 +1,124 @@
+{
+  "date": "2026-09-22",
+  "baseline_commit": "688ed06",
+  "physical_playtest": "NOT RUN",
+  "runtime_timing": "NOT MEASURED",
+  "historical_claims": "Not independently re-researched",
+  "card_releases": {
+    "count": 22,
+    "all_22_exactly_once": true
+  },
+  "element_frequencies": {
+    "longship": 2,
+    "raven": 2,
+    "sun_wheel": 2,
+    "horned_helmet": 2,
+    "valknut": 2,
+    "anchor": 2,
+    "round_shield": 2,
+    "drinking_horn": 2,
+    "battle_axe": 2,
+    "wolf": 2,
+    "double_axe": 2
+  },
+  "original_order_model": {
+    "leif": 1,
+    "rollo": 1,
+    "aud": 1,
+    "harald": 1
+  },
+  "weaker_printed_ferry_rollo_orders": 1,
+  "proposed_journal_real_orders": {
+    "leif": [
+      [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    ],
+    "rollo": [
+      [
+        "R1",
+        "R2",
+        "R3",
+        "R4",
+        "R5",
+        "R6"
+      ]
+    ],
+    "aud": [
+      [
+        "A1",
+        "A2",
+        "A3"
+      ]
+    ],
+    "harald": [
+      [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H6"
+      ]
+    ]
+  },
+  "fixed_board": {
+    "solutions": 1,
+    "path": [
+      "F6",
+      "H6",
+      "H11",
+      "K11"
+    ],
+    "code": "253",
+    "rule_assumption": "Only king moves; all other pieces fixed; no jumps or captures."
+  },
+  "original_raven_readings": [
+    "HRAFN",
+    "HRALN"
+  ],
+  "review_raven_readings": [
+    "HRAFN"
+  ],
+  "original_print_bundles": {
+    "Norse_Postcards_Full_Print.pdf": {
+      "pages": 6,
+      "postcard_backs": 3
+    },
+    "Postcard_Sheet_01_LongEdge_Print.pdf": {
+      "pages": 2,
+      "postcard_backs": 4
+    },
+    "Postcard_Sheet_02_LongEdge_Print.pdf": {
+      "pages": 2,
+      "postcard_backs": 4
+    },
+    "Postcard_Sheet_03_LongEdge_Print.pdf": {
+      "pages": 2,
+      "postcard_backs": 4
+    },
+    "Postcard_Sheet_04_LongEdge_Print.pdf": {
+      "pages": 2,
+      "postcard_backs": 2
+    }
+  },
+  "html": {
+    "local_references_checked": 171,
+    "broken": [],
+    "duplicate_ids": [],
+    "pdf_link_policy_errors": [],
+    "javascript_syntax": "PASS"
+  },
+  "review_pdfs": {
+    "Aud_Ticket_PLAYER_ONLY.pdf": 2,
+    "Journal_Family_Iconography_Review.pdf": 1,
+    "Playtest_Clue_Inserts_Review.pdf": 3,
+    "Trail_Map_4_Harald_Rune_Review.pdf": 2
+  },
+  "harald_board_back_unchanged": true,
+  "aud_player_pages_unchanged": true,
+  "required_gates": 11,
+  "findings": 19
+}
