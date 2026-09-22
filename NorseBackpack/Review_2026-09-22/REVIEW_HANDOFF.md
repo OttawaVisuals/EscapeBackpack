@@ -1,5 +1,17 @@
 # Norse review — separate session handoff
 
+## Latest follow-up — hint companion design, 2026-09-22
+
+User requested a nicer hint website. Redesigned the new 11-puzzle review companion with a forest/paper/brass field-journal theme, decorative compass, grouped desktop index, mobile puzzle selector, one visible puzzle, native folded hints and a separate two-step answer reveal. All 44 original hint/answer texts and both optional discoveries are retained. Leaving a puzzle closes its hints and answers; reloading starts with all disclosures closed. No external fonts, scripts or images are required.
+
+Changed `Norse_Hints_Review.html`, added `build_review_hints.py` and `hint_companion.template.html`, and updated `build_review_html.py` to call the dedicated hint builder so regeneration preserves the design. `validate_review.py` now explicitly uses UTF-8 and a timeout for JavaScript syntax checking on Windows. The original `../norse-hints.html`, brainstorms, printable props and root handoff remain untouched.
+
+Checks: full existing review validation passes; exact text comparison passes for all 44 hints/answers; unique IDs and local anchors pass; JavaScript syntax and `git diff --check` pass. Visually inspected in the in-app browser over HTTP at desktop, 390px and 320px widths with no horizontal overflow. All 12 index destinations select exactly one panel. Checked keyboard disclosure, mobile selection, deep-link reload, browser Back, closing hints, and the separate solution reveal. No browser console errors or warnings. Viewport override reset; finished page left open. No physical game testing was performed. Without JavaScript the hint disclosures remain usable but solutions require JavaScript, as explained on the page.
+
+The user confirmed the Norse hint page and requested committing and pushing this redesign to `main`. The earlier review batch was committed and pushed as `8caee7b`. Next action: check the refreshed companion on the hosted site after deployment.
+
+## Initial review record
+
 Task: in-depth review for 2–4 players aged 16+, 60–90 minutes, self-guided with optional hints. Create new review documents only; preserve all existing documents.
 
 Status: review and separate draft props created. No production readiness or user approval of the proposals is implied.

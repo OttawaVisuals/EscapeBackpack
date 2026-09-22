@@ -174,14 +174,8 @@ document.getElementById('trail-filter').addEventListener('change',e=>document.qu
 html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Raven Inheritance · Review edition</title><style>'+CSS+'</style></head><body><header><div class="eyebrow">Escape Backpack / Norse / independent review · 22 Sep 2026</div><h1>The Raven Inheritance</h1><p>A clearer plan from first postcard to final invitation.</p><span class="badge">Designer copy · spoilers</span><span class="badge">Proposals, not approved changes</span><span class="badge">Originals preserved</span></header><nav aria-label="Review sections">'+''.join(f'<a href="#{id}">{title}</a>' for id,title,_,_ in sections)+'</nav><main>'+''.join(section(*s) for s in sections)+'</main><footer>Review prepared from the local source files. No measured completion times or physical playtest results are implied. Existing documents were left unchanged.</footer><script>'+JS+'</script></body></html>'
 OUT.write_text(html,encoding='utf-8')
 
-# Separate player-facing prototype; no link back to the spoiler review.
-hintbody='<div class="callout">Optional hints for the proposed review version. Open one hint at a time. Solutions remain hidden until selected.</div>'
-for title,*steps in HINTS:
-    hintbody+='<article class="card"><h2 style="font-size:23px">'+title+'</h2>'
-    for i,t in enumerate(steps):
-        hintbody+=f'<details><summary>{"Show solution" if i==3 else "Hint "+str(i+1)}</summary><div><p>{t}</p></div></details>'
-    hintbody+='</article>'
-hintbody+='<article class="card"><h2>Optional discoveries</h2><details><summary>Rollo’s rebus cards</summary><div><p>Bayeux: CROSS + BOW + BOLT. Winchester: TREE + TEA → TREATY. Battle: SCALE + I + TO + FIVE. These identify two map icons and a scale. The review version assigns no distance code; this is an optional discovery.</p></div></details><details><summary>The comb</summary><div><p>The intended idea is an overlay on the Bjarnarhofn card. Its extraction is not finished in this prototype. It is not required to enter Harald’s stage.</p></div></details></article>'
-(HERE/'Norse_Hints_Review.html').write_text('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Norse Backpack · Optional review hints</title><style>'+CSS+'</style></head><body><header><div class="eyebrow">The Raven Inheritance</div><h1>A little help from Liv</h1><p>Review playtest edition · optional hints</p></header><main style="max-width:860px">'+hintbody+'</main></body></html>',encoding='utf-8')
+# Separate player-facing companion; no link back to the spoiler review.
+from build_review_hints import build as build_hints
+build_hints()
 print(OUT)
 print('22 card releases,',len(PROPS),'checklist rows,',len(FINDINGS),'findings,',len(HINTS),'hint topics')
