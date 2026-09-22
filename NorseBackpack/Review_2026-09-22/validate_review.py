@@ -82,7 +82,7 @@ for path in [ROOT/'NorseBackpack/Norse_Brainstorm_Review.html',HERE/'Norse_Hints
             if e.get('target')!='_blank' or 'noopener' not in e.get('rel',[]) or e.has_attr('download'):bad_pdf_links.append(u)
     for i,script in enumerate(s.find_all('script')):
         if script.string:
-            proc=subprocess.run(['node','--check'],input=script.string,text=True,capture_output=True)
+            proc=subprocess.run(['node','--check'],input=script.string,text=True,encoding='utf-8',capture_output=True,timeout=15)
             assert proc.returncode==0,proc.stderr
 assert not duplicate_ids,duplicate_ids
 assert not bad_pdf_links,bad_pdf_links
