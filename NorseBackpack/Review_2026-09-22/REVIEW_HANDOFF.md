@@ -1,5 +1,33 @@
 # Norse review — separate session handoff
 
+## Latest follow-up — base-page integration and commit authorization, 2026-09-22
+
+User explicitly requested updating the base HTML and committing/pushing. `../Norse_Brainstorm.html` now contains the same full approved specification and visual, with active puzzle records, prop specifications, sequence and open questions updated. Retired mechanisms are labelled as superseded. Added `sync_base_updates.py`; rebuilding the review synchronizes the shared approved section into the base. Root `../../HANDOFF.md` now records this session. This follow-up supersedes the earlier original-preservation restriction for those files; production PDFs and postcard builders remain unchanged.
+
+Checks passed: full review rebuild and validator, base unique IDs and all inline JavaScript syntax. Browser checks over local HTTP confirmed the base Approved changes tab and rune puzzle render correctly, all 14 puzzle cards exist, and no console warnings/errors or desktop horizontal overflow occur. Earlier review/mobile/hint checks below also passed. No physical test or print proof was performed. User authorized committing and pushing this completed batch to `main`.
+
+Next action: choose calculator versus wheels and define the coin inventory/value key before producing revised A1/A3 and player-only perch/cue print files.
+
+## Current session — approved tally and five-perch designs, 2026-09-22
+
+User accepted the five-perch visual and requested adding it and the coin-tally mechanism to the brainstorming HTML, including what postcards need changing. Updated `../Norse_Brainstorm_Review.html` with an Approved changes tab containing both complete mechanisms, the accepted visual, exact perch-edge table, replacement A1/A3 paragraph drafts, production status and superseded mechanism history. Adventure flow, puzzle audit, decisions, prop checklist, physical checks and reset instructions now agree. RV-20/RV-21 mark the approved mechanisms; other review proposals keep their status. PR-24 (tally device), PR-25 (coins/values/marks), PR-26 (perch print proof) are new open IDs; existing PR-21–23 were not reused.
+
+G7: select coins by cache mark, sum fictional values to 3705, show on calculator or four-wheel counter, turn whole display upside down for SOLE. No weighing, decimals, truncation or calibration. Exact inventory, values, marks and calculator-versus-wheels remain open. G8: corrected map and unchanged H4/H5 yield HRAFN; H–R–A–F–N flight labels give 2648; one four-digit lock directly secures the board pouch. Perch card is released inside G7. No cryptex or extra keyed closure. Updated hardware count: six four-digit, three three-digit and two separate four-letter locks. 3D-printed hnefatafl pieces remain suitable.
+
+Changed sources: `approved_changes.py` (new), `review_content.py`, `build_review_html.py`, `build_review_hints.py`, `validate_review.py`; regenerated review HTML, `Norse_Hints_Review.html` and `validation.json`. The accepted diagram is linked from `../../output/visualizations/norse-five-perches-comparison.png` (created during the preceding visual discussion; preserve the accompanying concept files). Checklist uses a new saved version to prevent a checked retired prop from marking a new prop ready; prior browser data remains intact.
+
+Postcards: A1’s second paragraph requires replacing weighing with value addition; A3’s second paragraph should refer to the tally. Drafts are in the HTML; original production builders, PDFs and gallery backs remain unchanged. H4/H5 need no change. The earlier balance/truncation slip is explicitly superseded everywhere it is offered in the review; a replacement cue is drafted, with revised print file still pending. The perch comparison contains answers and is not a player print file.
+
+Validation passed: full review validator, new HRAFN/perch-code and release-order assertions, links/images/IDs, JavaScript syntax, and whitespace checks. Browser inspection over local HTTP confirms ten tabs, the new specification and loaded visual, updated flow/checklist, RV-20/RV-21 filtering, and both G7/G8 hint solutions. Desktop and 390px layouts checked without page overflow; no console warnings/errors. Physical coin/display tests and print-size proof remain unperformed. No commits or pushes in this session. Original brainstorm and root handoff remain unchanged under the original preservation instruction.
+
+Next action: choose calculator versus wheels and define the coin inventory/value key, then produce the revised A1/A3 and player-only perch/cue print files.
+
+## Latest follow-up — five-perch visual proposal, 2026-09-22
+
+User requested a visual specification of the proposed HRAFN-to-four-digit conversion. Created an interactive conversation visual at `../../output/visualizations/norse-five-perches.html`, with a browser-check wrapper beside it. One proposed half-Letter card shows eight possible perches, twelve numbered undirected connections and four answer boxes. Players use the separately decoded HRAFN to select five stops and read four direct connecting edges: H–R = 2, R–A = 6, A–F = 4, F–N = 8. Proposed code 2648; it is not an adopted lock setting. Player view does not print HRAFN, highlight the route or show the answer. A designer-only toggle adds direction arrows and the code. No geographic map or final shape is involved.
+
+Visual/interaction checks: player/solution toggle works; network has no crossing paths or duplicate labels; desktop and phone views inspected, and overlapping optional stop labels were removed. No console warnings/errors observed. This is a conceptual layout, not a tested print-ready prop. Existing game documents, hints and lock assignments remain unchanged. Next action: user evaluates whether this extra route-reading step is satisfying enough to keep. Nothing committed or pushed in this follow-up.
+
 ## Latest follow-up — hint companion design, 2026-09-22
 
 User requested a nicer hint website. Redesigned the new 11-puzzle review companion with a forest/paper/brass field-journal theme, decorative compass, grouped desktop index, mobile puzzle selector, one visible puzzle, native folded hints and a separate two-step answer reveal. All 44 original hint/answer texts and both optional discoveries are retained. Leaving a puzzle closes its hints and answers; reloading starts with all disclosures closed. No external fonts, scripts or images are required.

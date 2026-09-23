@@ -1,6 +1,18 @@
 # Project Handoff
 
-Last updated: 2026-09-21 by Claude Code
+Last updated: 2026-09-22 by Codex
+
+## Session close — 2026-09-22 — Adopted coin tally and raven perches in both brainstorms
+
+**Task/status:** user approved replacing weighing and the cryptex, requested updating the base HTML as well as the review, and explicitly authorized committing and pushing. Implementation and verification complete. The base-page request supersedes the earlier instruction to preserve that original document.
+
+**Changes:** `NorseBackpack/Norse_Brainstorm.html` now has the full Approved changes tab and matching puzzle records, prop specifications, sequence and open-question entries. Superseded explanations remain labelled as history. The review HTML, review hint companion, checklist and builders agree. `Review_2026-09-22/approved_changes.py` holds the shared approved section; `sync_base_updates.py` keeps it in the base when rebuilding the review. The accepted visual and its concept sources are under `output/visualizations/`.
+
+**Decisions:** selected coin values total 3705; rotate the calculator or four-wheel display for SOLE. Decode HRAFN and follow four numbered flights for 2648 on the board-pouch lock. The perch card is released before that lock. Cryptex, keyed closure and weighing are retired. A1/A3 replacement paragraphs are drafted in both HTML pages; production postcard PDFs, builders and gallery backs remain unchanged. H4/H5 need no changes. Remaining coin/device/print choices are recorded in PR-24–26 in the base page.
+
+**Checks:** rebuilt review and hints; full review validator passed, including unique rune extraction, board solution, final routes, links, JavaScript and new perch-code/release assertions. Base inline JavaScript syntax and unique IDs passed. Visually checked base Approved changes and rune puzzle over local HTTP; all 14 puzzle cards render and no console warnings/errors or desktop page overflow were found. Review and hints were also checked at desktop and 390px. Physical coin/display testing and print-size proofs remain unperformed; no claim of measured play time.
+
+**Next action:** choose calculator versus wheels and define the coin inventory/value key before producing revised A1/A3 and player-only perch/cue print files.
 
 ## Session close — 2026-09-21 — Regenerated all 22 postcard back images from the current print PDFs
 

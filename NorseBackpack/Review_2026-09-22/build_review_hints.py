@@ -9,7 +9,7 @@ GROUPS = [('Before the journey', [0]), ('Leif · Across the sea', [1, 2]),
           ('Harald · Further east', [7, 8, 9]), ('The final journey', [10])]
 CUES = ['Postcard & luggage tags', 'Sea chart & museum ticket', 'Two northern postcards',
         'Rouen postcard, ticket & map', 'Chalus, Roumare & Walcheren', 'Museum ticket & Iceland map',
-        'Coins, cache & scale', 'Sicily, Hedeby & rune map', 'Kyiv, Ladoga & Constantinople',
+        'Coins, value key & treasure tally', 'Sicily, Hedeby, rune map & perch card', 'Kyiv, Ladoga & Constantinople',
         'Board, map back & museum ticket', 'All four maps, journal & travel tickets']
 OPTIONAL = [
     ('Rollo’s rebus cards', 'Bayeux: CROSS + BOW + BOLT. Winchester: TREE + TEA → TREATY. Battle: SCALE + I + TO + FIVE. These identify two map icons and a scale. The review version assigns no distance code; this is an optional discovery.'),
