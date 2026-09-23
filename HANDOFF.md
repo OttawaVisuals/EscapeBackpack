@@ -1,6 +1,18 @@
 # Project Handoff
 
-Last updated: 2026-09-22 by Codex
+Last updated: 2026-09-23 by Claude Code
+
+## Session close — 2026-09-23 — Cleared stale weighing/cryptex text after the tally and perch adoption
+
+**Task/status:** user asked for a review of the 22 Sept Codex/ChatGPT work, then to bring both Norse HTML pages in line with the approved coin-tally (3705 → SOLE) and raven's-flights (HRAFN → 2648) decisions. Done.
+
+**Changes:** `NorseBackpack/Norse_Brainstorm.html` — 14 spots still describing weighing, the balance or the cryptex as current now describe the tally/perch card, each with a "Superseded, 22 Sept 2026" note (card-system figcaption and flow table, "props re-cast" essay, PZ-05, PZ-17 downstream chain, treasure-square bullet and open list, both Options candidates, A1/A3 gallery captions, ticket gallery label, design-guide verb example, 3D-printer inventory line). Old text kept where it is history. `Review_2026-09-22/build_review_html.py` — G7/G8 puzzle cards now titled "The hoard and treasure tally" / "Branch runes and the raven's flights"; snapshots below them unchanged. Rebuilt `Norse_Brainstorm_Review.html`.
+
+**Not changed, flagged to user:** the redirect clue `WEIGH WHAT SHE TRADED` (PZ-04 continuation set, printed on cards). It still reads figuratively, but it is the only remaining "weigh" players see. Whether to keep it is the user's call.
+
+**Checks:** review builder + `validate_review.py` PASS. Base page over local HTTP (`python -m http.server 8735`; `static-preview` on 8734 did not respond this session): new PZ-17 text renders, an Options-tab "Approved changes" link switches views, no console errors, no horizontal overflow. Review page: both new titles present, no console errors. Screenshot timed out, so no visual capture.
+
+**Next action:** decide whether `WEIGH WHAT SHE TRADED` stays; then choose calculator versus wheels (PR-24).
 
 ## Session close — 2026-09-22 — Adopted coin tally and raven perches in both brainstorms
 
