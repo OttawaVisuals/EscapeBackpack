@@ -53,6 +53,8 @@ findings+='<h3 style="margin-top:32px">Puzzle by puzzle</h3><p>Original mechanis
 source=BeautifulSoup((NORSE/'Norse_Brainstorm.html').read_text(encoding='utf-8'),'html.parser')
 # Extract data using the original JSON-compatible object literal through the local Node helper output.
 puzzles=json.loads((HERE/'puzzle_source_snapshot.json').read_text(encoding='utf-8'))
+# Approved G7/G8 replacements show their current names; the snapshot below each keeps the original.
+APPROVED_TITLES={'hoard':'The hoard and treasure tally','runes':'Branch runes and the raven’s flights'}
 for p in puzzles:
     difficulty,state,assessment=PUZZLE_REVIEWS[p['key']]
     fragments=[]
@@ -60,7 +62,8 @@ for p in puzzles:
         s=BeautifulSoup(p[field],'html.parser')
         for a in s.select('a[data-view]'):a['href']='Norse_Brainstorm.html#view-'+a['data-view'];a['target']='_blank';a['rel']='noopener'
         fragments.append(f'<h4>{label}</h4><p>{s}</p>')
-    findings+=f'<details id="puzzle-{p["key"]}"><summary>{p["title"]} <span class="pill">{difficulty}</span></summary><div><p><strong>Review: {state}.</strong> {assessment}</p><p class="small">Source IDs: {", ".join(p["refs"])} · Cards: {", ".join(p["cards"]) or "none"}</p><div class="notice">Historical source snapshot below. G7 weighing and G8 cryptex are superseded by the approved tally and five-perch designs. Other corrections retain their stated review status.</div>{"".join(fragments)}<p><strong>Original lock:</strong> {p["lock"]}</p><p><strong>Original release:</strong> {p["releases"]}</p></div></details>'
+    title=APPROVED_TITLES.get(p['key'],p['title'])
+    findings+=f'<details id="puzzle-{p["key"]}"><summary>{title} <span class="pill">{difficulty}</span></summary><div><p><strong>Review: {state}.</strong> {assessment}</p><p class="small">Source IDs: {", ".join(p["refs"])} · Cards: {", ".join(p["cards"]) or "none"}</p><div class="notice">Historical source snapshot below. G7 weighing and G8 cryptex are superseded by the approved tally and five-perch designs. Other corrections retain their stated review status.</div>{"".join(fragments)}<p><strong>Original lock:</strong> {p["lock"]}</p><p><strong>Original release:</strong> {p["releases"]}</p></div></details>'
 
 # category, item, qty, existing status, action / link
 PROPS=[
