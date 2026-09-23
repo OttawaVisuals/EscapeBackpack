@@ -1,0 +1,103 @@
+<div id="norse-perches-concept">
+  <div class="viz-row">
+    <h3>Five perches, four flights</h3>
+    <button class="btn" type="button" id="perches-reveal" aria-pressed="false">Show solution</button>
+  </div>
+  <div class="perch-paper">
+    <div class="perch-kicker">LIV’S FIELD NOTES · CONCEPT</div>
+    <h2>The raven’s flights</h2>
+    <p class="perch-instruction">Follow the five letters you uncovered.<br>Read the number on each flight, in order.</p>
+    <svg class="perch-diagram" role="img" aria-labelledby="perches-title perches-desc">
+      <title id="perches-title">A network of eight lettered perches joined by numbered flight paths</title>
+      <desc id="perches-desc">All paths are two-way. H to R is 2, R to A is 6, A to F is 4, and F to N is 8. Other paths: H to O is 7, O to F is 3, F to S is 9, S to N is 5, N to T is 1, T to R is 8, O to A is 5, and A to N is 3.</desc>
+    </svg>
+    <div class="perch-code" aria-label="Four-digit code">
+      <span>—</span><span>—</span><span>—</span><span>—</span>
+    </div>
+    <div class="perch-caption" aria-live="polite">Player view · all flights look alike</div>
+  </div>
+</div>
+<style>
+#norse-perches-concept .viz-row{justify-content:space-between;margin-bottom:14px}
+#norse-perches-concept .viz-row h3{margin:0}
+#norse-perches-concept .perch-paper{--paper:#f4ecd8;--ink:#283b34;--faint:#7c8171;--route:#a24629;background:var(--paper);color:var(--ink);padding:25px 24px 18px;border:1px solid #c6b993;box-shadow:0 3px 10px #10271d12}
+#norse-perches-concept .perch-kicker{font:11px/1.4 "Segoe UI",sans-serif;letter-spacing:2px;text-align:center;color:#616950}
+#norse-perches-concept .perch-paper h2{font:400 29px/1.2 Georgia,serif;text-align:center;margin:9px 0 12px}
+#norse-perches-concept .perch-instruction{font:400 15px/1.6 Georgia,serif;text-align:center;margin:0}
+#norse-perches-concept .perch-diagram{display:block;width:100%;height:auto;margin:2px 0 8px;overflow:visible}
+#norse-perches-concept .flight{stroke:var(--faint);stroke-width:1.5;fill:none}
+#norse-perches-concept .flight.chosen{stroke:var(--route);stroke-width:3.5}
+#norse-perches-concept .flight-number{font:400 18px Georgia,serif;text-anchor:middle;dominant-baseline:middle;fill:var(--ink);paint-order:stroke;stroke:var(--paper);stroke-width:11px;stroke-linejoin:round}
+#norse-perches-concept .flight-number.chosen{fill:var(--route);font-weight:500}
+#norse-perches-concept .perch-circle{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+#norse-perches-concept .perch-circle.chosen{stroke:var(--route);stroke-width:2.5}
+#norse-perches-concept .perch-letter{font:400 20px Georgia,serif;fill:var(--ink);text-anchor:middle;dominant-baseline:middle}
+#norse-perches-concept .perch-ordinal{font:400 11px "Segoe UI",sans-serif;text-anchor:middle;fill:var(--route)}
+#norse-perches-concept .perch-code{display:flex;justify-content:center;gap:9px;margin:0 auto 13px}
+#norse-perches-concept .perch-code span{display:grid;place-items:center;width:41px;height:41px;border:1px solid #8b917e;font:400 23px Georgia,serif}
+#norse-perches-concept .perch-caption{text-align:center;font:400 12px/1.5 "Segoe UI",sans-serif;min-height:18px;color:#58624e}
+@media(max-width:420px){#norse-perches-concept .perch-paper{padding:20px 12px 15px}#norse-perches-concept .perch-paper h2{font-size:25px}#norse-perches-concept .perch-instruction{font-size:14px}}
+</style>
+<script>
+(() => {
+  const root = document.getElementById('norse-perches-concept');
+  const svg = root.querySelector('.perch-diagram');
+  const toggle = root.querySelector('#perches-reveal');
+  const caption = root.querySelector('.perch-caption');
+  const codeBoxes = [...root.querySelectorAll('.perch-code span')];
+  const NS = 'http://www.w3.org/2000/svg';
+  const perches = {H:[.08,.17],R:[.47,.08],T:[.91,.17],O:[.08,.50],A:[.47,.45],N:[.91,.50],F:[.27,.84],S:[.72,.84]};
+  const flights = [['H','R',2],['R','A',6],['A','F',4],['F','N',8],['H','O',7],['O','F',3],['F','S',9],['S','N',5],['N','T',1],['T','R',8],['O','A',5],['A','N',3]];
+  const route = ['H','R','A','F','N'];
+  let solution = window.openai?.widgetState?.privateContent?.solution === true;
+  function el(tag,attrs,text) {
+    const node = document.createElementNS(NS,tag);
+    Object.entries(attrs).forEach(([key,value])=>node.setAttribute(key,value));
+    if (text !== undefined) node.textContent = text;
+    svg.appendChild(node); return node;
+  }
+  function draw() {
+    const width = Math.max(240,svg.getBoundingClientRect().width);
+    const height = width < 420 ? 335 : 340;
+    svg.setAttribute('viewBox',`0 0 ${width} ${height}`);
+    svg.style.height = height+'px';
+    svg.querySelectorAll('line,circle,text,defs').forEach(e=>e.remove());
+    const defs=el('defs',{});
+    const marker=document.createElementNS(NS,'marker');
+    Object.entries({id:'perch-route-arrow',viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:6,markerHeight:6,orient:'auto'}).forEach(([k,v])=>marker.setAttribute(k,v));
+    const tip=document.createElementNS(NS,'path');
+    tip.setAttribute('d','M 0 0 L 10 5 L 0 10 z');tip.setAttribute('fill','#a24629');marker.appendChild(tip);defs.appendChild(marker);
+    const point = id=>[24+perches[id][0]*(width-48),16+perches[id][1]*(height-32)];
+    flights.forEach(([a,b,value],index)=>{
+      const [x1,y1]=point(a),[x2,y2]=point(b),distance=Math.hypot(x2-x1,y2-y1),r=20;
+      const chosen=solution&&index<4;
+      const line=el('line',{x1:x1+(x2-x1)*r/distance,y1:y1+(y2-y1)*r/distance,x2:x2-(x2-x1)*(r+3)/distance,y2:y2-(y2-y1)*(r+3)/distance,'class':'flight'+(chosen?' chosen':''),'data-flight':a+b});
+      if(chosen) line.setAttribute('marker-end','url(#perch-route-arrow)');
+    });
+    flights.forEach(([a,b,value],index)=>{
+      const [x1,y1]=point(a),[x2,y2]=point(b);
+      el('text',{x:(x1+x2)/2,y:(y1+y2)/2,'class':'flight-number'+(solution&&index<4?' chosen':'')},value);
+    });
+    Object.keys(perches).forEach(id=>{
+      const [cx,cy]=point(id),order=route.indexOf(id);
+      el('circle',{cx,cy,r:19,'class':'perch-circle'+(solution&&order>=0?' chosen':'')});
+      el('text',{x:cx,y:cy+1,'class':'perch-letter'},id);
+    });
+    codeBoxes.forEach((box,i)=>box.textContent=solution?String(flights[i][2]):'—');
+    toggle.setAttribute('aria-pressed',String(solution));
+    toggle.textContent=solution?'Show player view':'Show solution';
+    caption.textContent=solution?'H → R → A → F → N · four flights → 2648':'Player view · all flights look alike';
+    svg.querySelector('desc').textContent=solution?'Highlighted route: H to R, 2; R to A, 6; A to F, 4; F to N, 8. Lock code 2648.':'Eight perches joined by two-way numbered flight paths. H–R: 2; R–A: 6; A–F: 4; F–N: 8; H–O: 7; O–F: 3; F–S: 9; S–N: 5; N–T: 1; T–R: 8; O–A: 5; A–N: 3.';
+  }
+  toggle.addEventListener('click',()=>{
+    solution=!solution;draw();
+    window.openai?.setWidgetState?.({modelContent:{concept:'HRAFN five-perch route',solutionShown:solution},privateContent:{solution}})?.catch(()=>{});
+  });
+  window.addEventListener('openai:set_globals',event=>{
+    const state=event.detail?.globals?.widgetState;
+    if(state){solution=state.privateContent?.solution===true;draw();}
+  });
+  new ResizeObserver(draw).observe(svg);
+  draw();
+})();
+</script>

@@ -82,6 +82,15 @@
   "review_raven_readings": [
     "HRAFN"
   ],
+  "approved_replacements": {
+    "rune_output": "HRAFN",
+    "perches": 8,
+    "flights": 12,
+    "code": "2648",
+    "perch_card_released_before_lock": true,
+    "coin_total_target": 3705,
+    "coin_inventory_and_display": "NOT PHYSICALLY VERIFIED"
+  },
   "original_print_bundles": {
     "Norse_Postcards_Full_Print.pdf": {
       "pages": 6,
@@ -105,7 +114,7 @@
     }
   },
   "html": {
-    "local_references_checked": 171,
+    "local_references_checked": 173,
     "broken": [],
     "duplicate_ids": [],
     "pdf_link_policy_errors": [],
@@ -120,5 +129,5 @@
   "harald_board_back_unchanged": true,
   "aud_player_pages_unchanged": true,
   "required_gates": 11,
-  "findings": 19
+  "findings": 21
 }

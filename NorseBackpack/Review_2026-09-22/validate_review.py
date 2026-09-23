@@ -6,7 +6,7 @@ from urllib.parse import unquote,urlparse
 import ast,json,sys,subprocess
 import pymupdf
 from bs4 import BeautifulSoup
-from review_content import RELEASES,HINTS,FINDINGS
+from review_content import RELEASES,HINTS,FINDINGS,PERCH_FLIGHTS,PERCH_ROUTE,PERCH_CODE,FLOW
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
@@ -62,6 +62,17 @@ report['original_raven_readings']=choices(v['HARALD_RUNES_DECOY'])
 fixed=[(3,7,g,p) if (c,r)==(2,7) else (c,r,g,p) for c,r,g,p in v['HARALD_RUNES_DECOY']]
 report['review_raven_readings']=choices(fixed)
 assert report['review_raven_readings']==['HRAFN']
+assert report['review_raven_readings']==[PERCH_ROUTE]
+perch_edges={frozenset((a,b)):n for a,b,n in PERCH_FLIGHTS}
+assert len(perch_edges)==len(PERCH_FLIGHTS)==12
+assert len(set().union(*perch_edges))==8
+perch_result=''.join(str(perch_edges[frozenset(pair)]) for pair in zip(PERCH_ROUTE,PERCH_ROUTE[1:]))
+assert perch_result==PERCH_CODE=='2648'
+assert 'The raven’s flights card' in FLOW[5][5]  # Released in G7 before the G8 lock.
+assert '2648' in FLOW[6][4] and '4-digit' in FLOW[6][4]
+assert all(term not in HINTS[6][1]+' '.join(HINTS[6][2:]) for term in ['370.56','Drop the last decimal','Use grams'])
+assert '2648' in HINTS[7][-1] and '3705' in HINTS[6][-1]
+report['approved_replacements']={'rune_output':PERCH_ROUTE,'perches':8,'flights':12,'code':perch_result,'perch_card_released_before_lock':True,'coin_total_target':3705,'coin_inventory_and_display':'NOT PHYSICALLY VERIFIED'}
 report['original_print_bundles']={}
 for path in [ROOT/'output/pdf/Norse_Postcards_Full_Print.pdf',*sorted((ROOT/'output/pdf').glob('Postcard_Sheet_*LongEdge_Print.pdf'))]:
     d=pymupdf.open(path)
