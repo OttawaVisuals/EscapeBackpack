@@ -1,0 +1,72 @@
+[
+  {
+    "id": "01_dirham_common",
+    "closed_valid_components": 31,
+    "holes": 3,
+    "png_size": [
+      2000,
+      2000
+    ],
+    "art_radius_canvas_units": 460
+  },
+  {
+    "id": "02_dirham_rare",
+    "closed_valid_components": 27,
+    "holes": 4,
+    "png_size": [
+      2000,
+      2000
+    ],
+    "art_radius_canvas_units": 460
+  },
+  {
+    "id": "03_denier_common",
+    "closed_valid_components": 26,
+    "holes": 1,
+    "png_size": [
+      2000,
+      2000
+    ],
+    "art_radius_canvas_units": 460
+  },
+  {
+    "id": "04_denier_rare",
+    "closed_valid_components": 22,
+    "holes": 3,
+    "png_size": [
+      2000,
+      2000
+    ],
+    "art_radius_canvas_units": 460
+  },
+  {
+    "id": "05_hedeby_ship",
+    "closed_valid_components": 1,
+    "holes": 0,
+    "png_size": [
+      2000,
+      2000
+    ],
+    "art_radius_canvas_units": 460
+  },
+  {
+    "id": "06_york_cross",
+    "closed_valid_components": 3,
+    "holes": 2,
+    "png_size": [
+      2000,
+      2000
+    ],
+    "art_radius_canvas_units": 460
+  },
+  {
+    "id": "07_raven",
+    "closed_valid_components": 1,
+    "holes": 1,
+    "png_size": [
+      2000,
+      2000
+    ],
+    "art_radius_canvas_units": 460
+  }
+]
