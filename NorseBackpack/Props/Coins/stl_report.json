@@ -1,0 +1,65 @@
+[
+  {
+    "id": "01_dirham_common",
+    "min_stroke_mm_before_fix": 0.397,
+    "dilate_radius_canvas_px": 4,
+    "min_stroke_mm_after_fix": 0.526,
+    "svg_used": "01_dirham_common_print.svg",
+    "scad": "STL\\01_dirham_common.scad",
+    "stl_exported": true
+  },
+  {
+    "id": "02_dirham_rare",
+    "min_stroke_mm_before_fix": 0.47,
+    "dilate_radius_canvas_px": 2,
+    "min_stroke_mm_after_fix": 0.532,
+    "svg_used": "02_dirham_rare_print.svg",
+    "scad": "STL\\02_dirham_rare.scad",
+    "stl_exported": true
+  },
+  {
+    "id": "03_denier_common",
+    "min_stroke_mm_before_fix": 0.515,
+    "dilate_radius_canvas_px": 0,
+    "min_stroke_mm_after_fix": 0.515,
+    "svg_used": "03_denier_common.svg",
+    "scad": "STL\\03_denier_common.scad",
+    "stl_exported": true
+  },
+  {
+    "id": "04_denier_rare",
+    "min_stroke_mm_before_fix": 0.61,
+    "dilate_radius_canvas_px": 0,
+    "min_stroke_mm_after_fix": 0.61,
+    "svg_used": "04_denier_rare.svg",
+    "scad": "STL\\04_denier_rare.scad",
+    "stl_exported": true
+  },
+  {
+    "id": "05_hedeby_ship",
+    "min_stroke_mm_before_fix": 1.064,
+    "dilate_radius_canvas_px": 0,
+    "min_stroke_mm_after_fix": 1.064,
+    "svg_used": "05_hedeby_ship.svg",
+    "scad": "STL\\05_hedeby_ship.scad",
+    "stl_exported": true
+  },
+  {
+    "id": "06_york_cross",
+    "min_stroke_mm_before_fix": 0.582,
+    "dilate_radius_canvas_px": 0,
+    "min_stroke_mm_after_fix": 0.582,
+    "svg_used": "06_york_cross.svg",
+    "scad": "STL\\06_york_cross.scad",
+    "stl_exported": true
+  },
+  {
+    "id": "07_raven",
+    "min_stroke_mm_before_fix": 0.812,
+    "dilate_radius_canvas_px": 0,
+    "min_stroke_mm_after_fix": 0.812,
+    "svg_used": "07_raven.svg",
+    "scad": "STL\\07_raven.scad",
+    "stl_exported": true
+  }
+]

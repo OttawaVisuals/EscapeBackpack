@@ -2,6 +2,38 @@
 
 Last updated: 2026-09-23 by Claude Code
 
+## Session close — 2026-09-23 — Coin currencies designed, Codex artwork reviewed, STL pipeline built
+
+**Task/status:** brainstormed the coin-tally mechanism from scratch with the user (three real-history currency piles instead of one mixed hoard; Viking pile converts to 3705 via rate 5+100+3600), wrote it into `Norse_Brainstorm.html`, reviewed Codex's seven coin-face artwork profiles, confirmed 3D-printed on the user's **Prusa i3 MK3S+** (stock 0.4mm nozzle), and built the STL-generation script. Done except STL export itself (OpenSCAD not installed).
+
+**Files changed:**
+- `NorseBackpack/Norse_Brainstorm.html` — approved-coins card, `PZ-03`, `PR-25`, the `hoard` journey-data entry, and `prop-hoard` design section: three-currency design, printer confirmation, and the STL pipeline summary.
+- `NorseBackpack/Props/Coins/build_coin_stl.py` (new) — measures each design's thinnest stroke, auto-thickens any design under 0.5mm at the target coin size, writes one parametric `.scad` per coin (cylinder blank + extruded relief), and shells out to the `openscad` CLI for STL export.
+- `NorseBackpack/Props/Coins/README.md` — new "STL generation" section documenting the printer, defaults and pipeline.
+- `NorseBackpack/Props/Coins/STL/*.scad` (new, 7 files) and `stl_report.json` (new) — script output.
+
+**Key decisions:** dirham pile (5 coins) and denier pile (4 coins) are decoys with no target sum; the Viking pile (3 coins — Hedeby rate 5, York rate 100, Anlaf raven-penny rate 3600) is the one the cache mark selects, summing to 3705. Coins are 3D-printed, not paper/card. STL defaults: 28mm diameter, 2mm blank, 0.6mm relief height, 0.5mm minimum feature width (~1 nozzle-width) — all four are constants at the top of `build_coin_stl.py`.
+
+**Checks run:** measured actual stroke widths in Codex's PNGs via an opencv distance-transform (not guessed) before picking 28mm as the coin diameter. At that size only `01_dirham_common` (0.40mm) and `02_dirham_rare` (0.47mm) fell under the 0.5mm safe minimum; the script auto-thickened just those two by 2-4 canvas px and re-traced them to `*_print.svg`. The other five designs (both deniers, ship, York cross, raven) were already safe as generated. Script ran cleanly end-to-end except the final OpenSCAD export step. Could not open the local static-preview server in this session's Browser pane (navigation to `localhost` was declined) — HTML edits are unverified visually this session.
+
+**Update, same session:** installed OpenSCAD via winget (`OpenSCAD.OpenSCAD`, 2021.01) and re-ran `build_coin_stl.py`. All 7 STLs exported cleanly to `NorseBackpack/Props/Coins/STL/*.stl`. **Scale bug found by the user in Bambu Studio and fixed:** OpenSCAD imported the SVG at 96 DPI, so the relief came out ~3.6× too small and off-centre. The `.scad` import now uses `dpi=25.4`; all 7 were regenerated and checked from the STL vertices — every relief is centred at (0,0) with a max radius of 12.88mm on the 14mm-radius coin (the intended 92%), with the top at z=2.6mm.
+
+**Next action:** print one coin per rarity tier (e.g. common dirham, rare dirham, raven penny) as a physical test on the Prusa i3 MK3S+ before committing to the full 12-coin set — confirm the auto-thickened dirham details actually resolve at 28mm and that the relief height reads clearly by hand/eye.
+
+**Blockers/unanswered:** no physical print test yet — everything so far is geometry only. Also open: the cache/selection mark design and the merchant's printed value key (both under PR-25).
+
+## Session close — 2026-09-23 — Seven coin-face artwork profiles
+
+**Task/status:** user asked to locate the coin puzzle and generate a simple image for each coin, usable in a 3D-printing workflow. Complete as seven SVG relief profiles plus matching 2000 × 2000 binary PNGs. These are artwork for modelling, not ready-to-slice STL coins. An optional workflow question received no answer; no physical measurements were assumed.
+
+**Files changed:** added `NorseBackpack/Props/Coins/` with seven generated source images, seven SVGs, seven PNGs, a labelled overview, ZIP bundle, exact prompt manifest, reproducible tracing script, import notes and geometry report. Added a gallery and full prompt/method record to the existing `Norse_Brainstorm.html` hoard section. Preserved the pre-existing uncommitted 23 Sept coin-design changes (57 insertions / 15 deletions at start). No commit or push.
+
+**Artwork:** common/rare dirhams; common/rare deniers; Hedeby ship; York cross; raven. Ship border/stripes removed and raven beak/feet simplified through ImageGen corrections. Closed geometry distinguishes rare variants without relying on colour. Decorative pseudo-script only. Existing currency counts and Viking values are unchanged.
+
+**Checks:** inspected all seven PNGs at full size and the contact sheet. Closed valid polygons, SVG XML/closed-loop checks, pure black/white PNG dimensions, all 14 SVG/PNG HTTP links and ZIP integrity passed; `git diff --check` passed. In-app browser over `http://127.0.0.1:8734/`: all seven SVGs loaded, five-column wrapping gallery at 1280px, no horizontal page overflow, no console warnings/errors. Two screenshot attempts timed out, so HTML visual capture could not be completed; artwork itself was inspected directly. No CAD import, slicing or physical print test. `opencv-python-headless` installed for tracing. Local preview server runs on loopback port 8734.
+
+**Next action:** specify coin diameter, thickness and printer type before turning these profiles into STL coins and test-printing one. Remaining fabrication choices stay under PR-25 in the main page.
+
 ## Session close — 2026-09-23 — Cleared stale weighing/cryptex text after the tally and perch adoption
 
 **Task/status:** user asked for a review of the 22 Sept Codex/ChatGPT work, then to bring both Norse HTML pages in line with the approved coin-tally (3705 → SOLE) and raven's-flights (HRAFN → 2648) decisions. Done.
