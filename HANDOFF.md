@@ -18,7 +18,9 @@ Last updated: 2026-09-23 by Claude Code
 
 **Update, same session:** installed OpenSCAD via winget (`OpenSCAD.OpenSCAD`, 2021.01) and re-ran `build_coin_stl.py`. All 7 STLs exported cleanly to `NorseBackpack/Props/Coins/STL/*.stl`. **Scale bug found by the user in Bambu Studio and fixed:** OpenSCAD imported the SVG at 96 DPI, so the relief came out ~3.6× too small and off-centre. The `.scad` import now uses `dpi=25.4`; all 7 were regenerated and checked from the STL vertices — every relief is centred at (0,0) with a max radius of 12.88mm on the 14mm-radius coin (the intended 92%), with the top at z=2.6mm.
 
-**Next action:** print one coin per rarity tier (e.g. common dirham, rare dirham, raven penny) as a physical test on the Prusa i3 MK3S+ before committing to the full 12-coin set — confirm the auto-thickened dirham details actually resolve at 28mm and that the relief height reads clearly by hand/eye.
+**Update, 24 Sept 2026:** colours decided (option 1 of 3): gray base on every coin, black relief on the 9 commons, yellow relief on the 3 rares. Recorded in the hoard section and PR-25. New `build_coin_plates.py` writes `STL/Plate_Common_9.stl` (4 common dirham, 3 common denier, Hedeby, York) and `STL/Plate_Rare_3.stl` (rare dirham, rare denier, raven), 3×3 / 1×3 grids at a 34mm pitch, centred on the 250×210 bed — checked from the vertex bounds. Each plate needs one slicer colour change at z = 2.2mm (the first relief layer at 0.2mm layers).
+
+**Next action:** slice `Plate_Rare_3.stl` (the smaller plate) with the colour change at 2.2mm and print it as the physical test — confirm the auto-thickened dirham details resolve at 28mm and that the yellow relief reads clearly against gray.
 
 **Blockers/unanswered:** no physical print test yet — everything so far is geometry only. Also open: the cache/selection mark design and the merchant's printed value key (both under PR-25).
 

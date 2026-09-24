@@ -59,5 +59,18 @@ winget (`OpenSCAD.OpenSCAD`, 2021.01) on 23 September 2026; all 7 STLs exported 
 designs were thickened. Re-run `python build_coin_stl.py` to regenerate after any change
 to the source art or the parameters above.
 
+## Print plates and colours
+
+`build_coin_plates.py` combines the per-coin STLs into two plates, centred on the
+MK3S+ bed (run it after `build_coin_stl.py`):
+
+| Plate | Coins | Base | Relief |
+|---|---|---|---|
+| `STL/Plate_Common_9.stl` | 4 common dirham, 3 common denier, 1 Hedeby, 1 York | gray | black |
+| `STL/Plate_Rare_3.stl` | 1 rare dirham, 1 rare denier, 1 raven | gray | yellow |
+
+In the slicer, add one colour change at the first relief layer (z = 2.2mm at 0.2mm
+layers). The MK3S+ pauses at that point (the M600 command) so the filament can be swapped.
+
 No coin diameter, thickness or relief height beyond these defaults has been confirmed by
 a physical print test — print one coin of each rarity tier before committing to the full set.
