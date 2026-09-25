@@ -88,7 +88,8 @@ def draw_back_card(c, x=0, y=0):
         "They even had a treasure hunt to find artifacts from Aud’s time.",
         "I was able to solve it and had a lovely time discovering the countryside. "
         "I particularly enjoyed the road that followed the forest.",
-        "I might just have to remember how many rivers, fords and gates I crossed.",
+        # 25 Sept 2026: "rivers" -> "bridges", to match the ticket's tally columns exactly.
+        "I might just have to remember how many bridges, fords and gates I crossed.",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 7.7, 8.6

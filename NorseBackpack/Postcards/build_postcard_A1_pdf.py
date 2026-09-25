@@ -90,9 +90,14 @@ def draw_back_card(c, x=0, y=0):
     # removed. The first states the card's own position; the second reveals Rollo-before-Aud
     # during play, when leg order is supposed to stay in the final bundle. The leg's outbound
     # return-itinerary now proves this card opens Aud's leg.
+    # 25 Sept 2026 (PZ-03): rewritten by the user. The weighing paragraph is gone; "fetch a
+    # pretty penny" is the only nudge towards adding the coins' values. The cache mark is left
+    # for players to notice (map marks = ticket icons), with the hint companion as backstop.
     paragraphs = [
-        "Dogurdarnes means something like “meal headland” — her own people are said to have stopped here to eat on the way to Hvammur. I did the same, and thought the whole time about how far she still had to go.",
-        "Whatever pile the map marks for you, weigh it before anything else. Don’t guess the number — read it.",
+        "Dogurdarnes today.",
+        "What a beautiful place, I understand why Aud stopped here during her journey.",
+        "I heard you can find some treasure around here, especially historical coins that fetch "
+        "a pretty penny!",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 7.7, 8.6

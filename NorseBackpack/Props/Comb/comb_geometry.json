@@ -1,0 +1,45 @@
+{
+  "answer": "BOOK",
+  "targets": [
+    {
+      "line": 1,
+      "word": "brother",
+      "tip_x_mm": 17.07,
+      "broken_length_mm": 10.54
+    },
+    {
+      "line": 3,
+      "word": "could",
+      "tip_x_mm": 36.02,
+      "broken_length_mm": 29.49
+    },
+    {
+      "line": 8,
+      "word": "alongside",
+      "tip_x_mm": 9.65,
+      "broken_length_mm": 3.12
+    },
+    {
+      "line": 9,
+      "word": "keep",
+      "tip_x_mm": 11.68,
+      "broken_length_mm": 5.16
+    }
+  ],
+  "intact_length_mm": 52.74,
+  "tooth_width_mm": 2.19,
+  "min_tooth_gap_mm": 0.85,
+  "lobe_to_tooth_gap_mm": 0.85,
+  "alignment_holes_mm_apart": 49.0,
+  "overall_mm": [
+    64.7,
+    54.7
+  ],
+  "thickness_mm": {
+    "teeth": 1.6,
+    "handle": 3.0,
+    "carving_depth": 0.6
+  },
+  "handle_carving": "placeholder_twist",
+  "stl_written": true
+}

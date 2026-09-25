@@ -282,6 +282,58 @@ HARALD_RUNES_DECOY = (
 )
 
 
+
+# The cache mark (PZ-03, 24 Sept 2026): the fehu rune beside the treasure cave at I9, the end
+# of the ticket's route. It matches the Norse group's icon in the ticket's Coin Room key and so
+# selects that pile of the loose hoard. Placed left of the cave: the neat line is 10 pt to its
+# right and the road 21 pt above. Same shape as draw_fehu() in Props/AudTicket.
+# Decoy marks, same day: the ticket's other two group icons sit at the two caves a wrong route
+# would plausibly end at, so a misread route selects a wrong pile (980 or 1320, not a word).
+#   G1 camel -- by the H2 ruin and wood, near the lookalike "village at the crossing" (G3).
+#   C4 fleur-de-lis -- in the wood by the B5 ruin, the same ruin-and-wood pattern.
+# The E7 and I4 caves stay unmarked: no ruin near them, so no plausible route ends there.
+AUD_TREASURE_CAVE = (570.178, 248.18)
+AUD_CACHE_MARK = (553.0, 247.0, 12.0)      # x, y, height
+AUD_DECOY_MARKS = [("camel", 468.0, 724.0, 12.0), ("fleur", 140.0, 582.0, 12.0)]
+AUD_ICON_DIR = ROOT / "NorseBackpack" / "Props" / "AudTicket" / "icons"
+AUD_PAPER, AUD_PURPLE = "#F4EEDD", "#6D528B"
+
+
+def _aud_icon(name):
+    """Ticket icon recoloured to Aud purple over a paper-coloured halo, like the fehu mark."""
+    from PIL import Image, ImageFilter
+    src = Image.open(AUD_ICON_DIR / f"{name}.png").getchannel("A")
+    pad = 24
+    a = Image.new("L", (src.width + 2 * pad, src.height + 2 * pad), 0)
+    a.paste(src, (pad, pad))
+    halo = a.filter(ImageFilter.MaxFilter(25))
+    out = Image.new("RGBA", a.size, (0, 0, 0, 0))
+    out.paste(Image.new("RGBA", a.size, AUD_PAPER), mask=halo)
+    out.paste(Image.new("RGBA", a.size, AUD_PURPLE), mask=a)
+    return ImageReader(out), a.size, pad
+
+
+def draw_aud_cache_mark(c):
+    x, y, h = AUD_CACHE_MARK
+    sx = x - 0.2 * h
+    strokes = [((sx, y - h / 2), (sx, y + h / 2)),
+               ((sx, y + 0.12 * h), (sx + 0.42 * h, y + 0.46 * h)),
+               ((sx, y - 0.14 * h), (sx + 0.46 * h, y + 0.16 * h))]
+    c.saveState()
+    c.setLineCap(1)
+    for colour, width in ((AUD_PAPER, 3.2), (AUD_PURPLE, 1.5)):   # paper halo, then Aud purple
+        c.setStrokeColor(HexColor(colour))
+        c.setLineWidth(width)
+        for (x1, y1), (x2, y2) in strokes:
+            c.line(x1, y1, x2, y2)
+    for name, ix, iy, ih in AUD_DECOY_MARKS:
+        img, (w, hgt), pad = _aud_icon(name)
+        scale = ih / (hgt - 2 * pad)
+        c.drawImage(img, ix - w * scale / 2, iy - hgt * scale / 2, w * scale, hgt * scale,
+                    mask="auto")
+    c.restoreState()
+
+
 def cell_center(col_idx, row):
     """Page-space centre of grid cell (col_idx 0-based, row 1-based from the top)."""
     cw, ch = (MX1 - MX0) / GRID_COLS, (MY1 - MY0) / GRID_ROWS
@@ -588,6 +640,7 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
         aud_layer.assert_frame(_frame, cfg["frame"], key)
         aud_layer.draw(c, _feats, clip_rect=(MX0, MY0, MX1, MY1))
         print("        symbol layer: %d features from aud_features.json" % len(_feats))
+        draw_aud_cache_mark(c)
 
     # Reference grid: over the land, so a settlement can be given a square reference -- but under
     # every label drawn below, so no line printed here can ever sit on top of a clue.

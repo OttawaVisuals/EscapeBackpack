@@ -27,6 +27,13 @@ RULE = HexColor("#A99A7B")
 INK = HexColor("#283B34")
 FUNFACT = HexColor("#B56A2A")
 
+# Comb alignment marks (PR-19, 25 Sept 2026): two Viking ring-and-dot motifs in the left margin,
+# above line 1 and below the signature. The comb's two end ring-and-dots are drilled through at
+# the centre; players sit each printed dot inside its hole. Given in points from the card's
+# TOP-left corner, the convention Props/Comb/build_comb.py reads the text layout in.
+COMB_MARKS = [(22.0, 19.5), (22.0, 158.5)]
+COMB_MARK_RING, COMB_MARK_DOT = 5.2, 1.4
+
 pdfmetrics.registerFont(TTFont("CinzelExtraBold", str(FONT_DIR / "Cinzel" / "static" / "Cinzel-ExtraBold.ttf")))
 pdfmetrics.registerFont(TTFont("NothingYouCouldDo", str(FONT_DIR / "Nothing_You_Could_Do" / "NothingYouCouldDo-Regular.ttf")))
 
@@ -107,6 +114,13 @@ def draw_back_card(c, x=0, y=0):
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
     draw_mark(c, "AD")
+
+    c.setStrokeColor(TEAL)
+    c.setFillColor(TEAL)
+    c.setLineWidth(0.8)
+    for mx, my in COMB_MARKS:
+        c.circle(mx, H - my, COMB_MARK_RING, fill=0, stroke=1)
+        c.circle(mx, H - my, COMB_MARK_DOT, fill=1, stroke=0)
 
     # Aud's trail stamp (pillars motif) -- one stamp per traveller, not per card. HI-02 flags this
     # motif for redraw to a comb (her documented saga story); swap STAMP once that art exists.
