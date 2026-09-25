@@ -91,11 +91,19 @@ def combine_pdfs(inputs, output):
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    individual = [
-        OUT / "Postcard_L1_LAnse_Print.pdf",
-        OUT / "Postcard_L2_Battle_Harbour_Print.pdf",  # built by build_postcard_L2_pdf.py
-        OUT / "Postcard_L3_Baffin_Island_Print.pdf",  # built by build_postcard_L3_pdf.py
-    ]
+    # All 22 cards, each built by its own build_postcard_<ID>_pdf.py, in deck order: trail by
+    # trail (PC-17 numbering), decoy last in each trail. Updated 25 Sept 2026 -- the collection
+    # had held only L1-L3 since before the other nineteen cards were built.
+    deck = ["L1_LAnse", "L2_Battle_Harbour", "L3_Baffin_Island", "LD_Brattahlid",
+            "R1_Chalus", "R2_Rouen", "R3_Bayeux", "R4_Winchester", "R5_Battle",
+            "R6_Roumare_Forest", "RD_Walcheren",
+            "A1_Dogurdarnes", "A2_Hvammur", "A3_Esjuberg", "AD_Bjarnarhofn",
+            "H1_Oslo", "H2_Staraya_Ladoga", "H3_Kyiv", "H4_Hedeby", "H5_Sicily", "H6_Patara",
+            "HD_Constantinople"]
+    individual = [OUT / f"Postcard_{card}_Print.pdf" for card in deck]
+    missing = [path.name for path in individual if not path.exists()]
+    if missing:
+        raise SystemExit("missing card PDFs: " + ", ".join(missing))
     for card in CARDS:
         back = build_back(card)
         output = OUT / f"Postcard_{card['number']}_{card['slug']}_Print.pdf"
@@ -105,7 +113,22 @@ def main():
 
     collection = OUT / "Norse_Postcards_Full_Print.pdf"
     combine_pdfs(individual, collection)
+    shrink_for_viewing(collection)
     print(collection)
+
+
+def shrink_for_viewing(path):
+    """The 22 lossless cards merge to ~165 MB, over GitHub's 100 MB file limit. This file is the
+    page's "View full postcard PDF" preview, not a print master (print from the per-card PDFs),
+    so its images are re-encoded as JPEG at quality 88: ~18 MB, no visible change at 300 dpi."""
+    import pymupdf
+    doc = pymupdf.open(path)
+    doc.rewrite_images(dpi_threshold=None, quality=88, lossy=True, lossless=True,
+                       bitonal=True, color=True, gray=True, set_to_gray=False)
+    tmp = path.with_suffix(".tmp.pdf")
+    doc.save(tmp, garbage=4, deflate=True)
+    doc.close()
+    tmp.replace(path)
 
 
 if __name__ == "__main__":
