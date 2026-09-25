@@ -1,0 +1,21 @@
+{
+  "dimensions_mm": [
+    50.0,
+    50.0,
+    4.4
+  ],
+  "triangles": 42208,
+  "body_top_mm": 3.8,
+  "total_height_mm": 4.4,
+  "engraving_depth_mm": 0.4,
+  "text_max_radius_mm": {
+    "ADVENTURE": 20.435,
+    "COMPLETE": 18.208,
+    "ESCAPE BACKPACK": 22.184
+  },
+  "crest_max_radius_mm": 21.72,
+  "text_clearance_to_rim_mm": 1.216,
+  "minimum_distance_between_text_groups_mm": 1.555,
+  "crest_components": 51,
+  "physical_print_test": false
+}
