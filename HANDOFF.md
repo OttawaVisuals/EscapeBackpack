@@ -1,6 +1,90 @@
 # Project Handoff
 
-Last updated: 2026-09-23 by Claude Code
+Last updated: 2026-09-25 by Claude Code
+
+## Session close — 2026-09-25 — SOLE treasure tally (four-wheel counter)
+
+**Task/status:** user chose the four-wheel tally over a calculator (PR-24 now "Decided design · print test open"). Mechanism reused from the free Printables *4-digit counter* by BMdesign (user supplied the 3MF). Only the counter ring is replaced, with strict seven-segment digits because the reference 7 is slanted and does not read as L upside down. Model complete; not printed.
+
+**Files changed:** new `NorseBackpack/Props/SoleTally/` — `reference/4-digit_counter.3mf` (+ extracted `counterring_body.stl`), `sole_tally_ring.scad` (fills old digits, cuts new 0–9 at 0.55 mm; `PART` = ring / inlay / both), `build_sole_tally.py` (extract, OpenSCAD export, check render), `STL/SOLE_ring_body.stl`, `STL/SOLE_ring_inlay.stl`, `SOLE_ring_check.png`. `NorseBackpack/Norse_Brainstorm.html` — PR-24 row and the coin-puzzle notice.
+
+**Checks:** unwrapped render of the exported STLs shows digits 0–9 upright in the reference layout (face k carries digit 9−k, up = clockwise, right = +Z) and 3705 turned 180° reads SOLE. Old digit floors fully filled (no vertices left at the old 10.81/10.91 depths). Ring bounds unchanged (24 × 22.8 × 9.5 mm). First export had 93 non-manifold edges (Bambu Studio reported them): the fill shell was coplanar with the body faces under OpenSCAD 2021/CGAL. Fixed by standing the shell 0.02 mm proud (`FILL_R`); re-export has 0 non-manifold edges in body and inlay. `STL/SOLE_ring_body.3mf` is the user's Bambu-repaired copy of the first export and is now stale. Page checked over HTTP on the already-running 8734 server: PR-24 text renders, no console errors (`static-preview` fell back to a random port that did not respond). No slicing, no print test; Printables licence not checked.
+
+**Print pack (for the user's friend, who prints on the Prusa with PrusaSlicer; the user checks models in Bambu Studio):** `SOLE_Tally_Print_Pack.zip` = ring body ×4, base, end cap (both extracted unchanged from the reference; their second-colour marker parts are dropped and the groove left paintable), `PRINTING.md`, check image. All three STLs 0 non-manifold edges.
+
+**Next action:** send the print pack to the friend; after the first print, check click feel and digit legibility. Superseded next step: print one ring body on the Prusa and try it on the reference base/end caps: check click feel, and whether 5.6 × 3.4 mm digits read once filled with paint.
+
+Last updated: 2026-09-25 by Codex
+
+## Session close — 2026-09-25 — One-piece keepsake medallion v2
+
+**Task/status:** corrected the rejected two-half/glue prototype. Current file is `NorseBackpack/Props/Medallion/STL/Norse_Medallion_OnePiece_v2.stl`: one closed connected solid, 50 mm diameter × 4.4 mm total. Detailed shield raven up; fitted arced “ADVENTURE COMPLETE” / “ESCAPE BACKPACK” and outline compass engraved 0.4 mm into the underside. No assembly. Model complete; physical print pending under PR-28 in the project page.
+
+**Files changed:** `NorseBackpack/Props/Medallion/` — one-piece STL, `build_medallion_v2.py` source, current `build_medallion.py` entry point, traced SVG profiles, saved detailed ImageGen mask and selected references, exact prompt, geometry preview, print README, mesh/geometry reports and updated ZIP containing one STL. Rejected files archived in `Superseded_v1/`. `NorseBackpack/Norse_Brainstorm.html` — revised keepsake section, full prompt/method, current links and PR-28. Unrelated dirty files preserved.
+
+**Key decisions:** 3.8 mm body + 0.6 mm crest; engraved text down, crest up. 0.20 mm layers including first layer; optional single manual colour swap before layer 20 / Z = 4.00 mm. Rim stays body colour. STL has no pause or colour metadata. Fine feather channels widened by 0.16 mm and two isolated fragments too narrow for a 0.4 mm line removed. Flat relief retains feather outlines rather than metallic texture/sculpted shading.
+
+**Checks:** exported mesh has 42,208 triangles, every edge shared twice, consistent orientation, one connected component, no degenerate facets, bounds 50 × 50 × 4.4 mm. Text clears the inside border by at least 1.216 mm; text groups separated by at least 1.555 mm. Both exported STL faces inspected in OpenSCAD (underside reads correctly); geometry preview inspected. Main HTML checked visually over local HTTP in the in-app browser at `#view-design/prop-keepsake`; revised text and both-face image render. No printer-profile slicing or physical print. Browser console collection unavailable through the attempted binding; page scripts were not changed.
+
+**Next action:** slice v2 for the recorded Prusa i3 MK3S+ / 0.4 mm nozzle and chosen filament, then print one sample to assess underside counters/bridging and feather tips (PR-28).
+
+Last updated: 2026-09-24 by Claude Code
+
+## Session close — 2026-09-24 — Aud's leg review: coin key and cache mark
+
+**Task/status:** reviewed Aud's leg (release steps 6–9). Decided with the user and built: the merchant's coin key now lives on the front of Aud's Treasure Museum ticket ("The Coin Room", all 7 coins with pictures and values; decoy values dirham 20 / old-mint dirham 900 / denier 40 / crowned denier 1200). Each currency group has an icon (camel, fleur-de-lis, fehu rune). The fehu rune is drawn beside the treasure cave at I9 on Aud's map as the cache mark. Coins are released loose and mixed in the 521 pouch.
+
+**Files changed:**
+- `NorseBackpack/Props/AudTicket/build_aud_ticket_pdf.py` — coin key on the front (replaces lozenge, tagline, opening hours). New `build_group_icons.py` + `icons/camel.png`, `icons/fleur.png` (rendered from Segoe UI Symbol).
+- `NorseBackpack/TravelMap/build_trail_maps_pdf.py` — `draw_aud_cache_mark()` after the Aud symbol layer: fehu at the I9 treasure cave, plus decoy marks (camel at the G1 cave, fleur-de-lis at the C4 cave), recoloured from the ticket icons.
+- `output/pdf/Aud_Ticket_Print.pdf`, `Aud_Ticket_Letter_Print.pdf`, `Trail_Map_3_Aud_Print.pdf`, `Trail_Map_3_Aud_ANSWER.pdf` rebuilt. The other three maps were rebuilt pixel-identical and restored from git.
+- `NorseBackpack/Norse_Brainstorm.html` — hoard prop note (key, values, pile totals, cache mark, loose release); 23 Sept "three separate piles" marked superseded in part in two places; PZ-03 summary; Approved-changes coin-key row. Also fixed a pre-existing doubled `<b><b>` in PZ-05 (line ~1716) that made every later tab render bold.
+
+**Same session, 25 Sept 2026 — A1 and A3 messages rewritten by the user.** A1: "Dogurdarnes today. / What a beautiful place, I understand why Aud stopped here during her journey. / I heard you can find some treasure around here, especially historical coins that fetch a pretty penny!" A3: "Esjuberg today. / Another beautiful place that Aud the Deep-Minded visited, my head is spinning with all the amazing landscapes! / Still amazed by the treasures I found!" Fun facts unchanged. Changed `build_postcard_A1_pdf.py`, `build_postcard_A3_pdf.py`; rebuilt both print + Letter PDFs; re-rendered `Postcard_A1_Dogurdarnes_Back.png` and `Postcard_A3_Esjuberg_Back.png` from PDF page 2 at 300 dpi (1500×1050), inspected, text fits. Page: A1/A3 postcard entries, Approved-changes rows and drafts (marked superseded), PZ-03 summary. No weighing text remains on either card. The cache-mark step now has no card text: the hint companion must cover "map mark = ticket icon". Open, not logged yet: AD (14 May) says Liv found the comb "alongside the coins", but the treasure hunt is at Hvammur (A2, 20 May); the ticket subtitle "in Aud's day" is anachronistic for the ~940 raven penny.
+
+**Same session, 25 Sept 2026 — Aud ticket reworked.** `build_aud_ticket_pdf.py`: 3×4 in (was 2×5.5); one-line title band; ADMIT ONE block and "turn over" line removed; Coin Room subtitle "What each coin is worth today", values with $ and thousands separators; icons 16 pt. Back unchanged in code, reflows. `Aud_Ticket_Print.pdf` rebuilt and both faces inspected. Front coins enlarged to 21 pt (title band 44 pt). Then: back text enlarged (6.8 pt, 15 pt boxes); leg 1 now names the start ("Start at the northernmost chapel…", C2); leg 4 "by the chapel" (was "church", legend says Chapel). A2 message "rivers" → "bridges"; A2 PDFs and back PNG rebuilt. All ticket PDFs (single, Letter, answer page) rebuilt and inspected. User is checking the route against the printed map; the page route table says the second chapel is E3, a coordinate check puts it at E2 (near the row line) — unconfirmed.
+
+**Same session, 25 Sept 2026 — comb mechanism decided and modelled (PR-19).** Upright comb on AD's back, handle in the left margin, one tooth per message line; four broken teeth leave only lines 1, 3, 8, 9 visible, whose first letters read B-O-O-K ("brother", c"o"uld, al"o"ngside, "keep"). Aligned by two ring-and-dot marks added to AD (`COMB_MARKS` in `build_postcard_AD_pdf.py`, 49 mm apart) that sit inside the comb's two end through-holes. Handle carving after AD's stamp; knotwork is a placeholder twist until Codex supplies `Props/Comb/knotwork.svg` (prompt recorded in the comb prop). New `NorseBackpack/Props/Comb/build_comb.py` reads AD's print PDF for line positions and target letters, asserts BOOK, and writes `Aud_Comb.scad/.stl`, `comb_geometry.json`, `Aud_Comb_on_AD.png`. AD PDFs + back PNG rebuilt. Page: comb prop (full spec, figure, Codex prompt), PR-19 pill, PC-18 step 9, PZ-17, AD postcard entry, card-job table, and the Puzzles-tab data entries for the comb and the coin tally (both were stale). Checks: overlay render shows exactly the four lines; 3D preview rendered by OpenSCAD; STL written; page loads over HTTP, image loads, scripts parse, `<b>` balanced. Handle outer corners then rounded (2.5 mm; inside fillet 0.3 mm, the most that keeps 0.85 mm clearance to tooth 1 — the build now measures that clearance on the real shapes). Not done: the knotwork.svg import path in the generated SCAD is untested (no SVG yet). `NorseBackpack/Props/Medallion/` and `Props/SoleTally/` (other sessions) were committed at the user's request in their own commit; `result.json` (a slicer log), `NorseBackpack/output/` and `Postcards/build_print_test_docx.py` were left uncommitted for the user to decide.
+
+**Checks:** ticket front and the map around the cave rendered and inspected at 300–400 dpi; key fits (bottom above the turn-over line, guarded by a ValueError). Page checked over HTTP in the Browser pane: note renders, PDF link resolves, no console errors, inline scripts parse.
+
+**Stale-text cleanup applied, 25 Sept 2026** (Norse_Brainstorm.html): Aud→Harald lock-flow redrawn to PC-18 steps 6–11 (old version quoted in a note below it); Approved-changes coin step 5 (SOLE → AD + comb); PZ-17 player-flow step 2 (521, loose coins, no scale); comb prop's AD first line; "Where each card works" comb row (candidate BOOK); PZ-04 marked stale (clue 1 "WEIGH WHAT SHE TRADED" and clue 2 both need new wording); PZ-14 and PZ-05 "Bayeux–Winchester distance" corrected to Châlus–Saint-Clair-sur-Epte. The A1 header item was already fixed with the A1 rewrite. Route 521 marked verified by the user on the printed map. Checked over HTTP: 7-node diagram, note unstyled, inline scripts parse, `<b>` tags balanced. Screenshots of the final state failed (pane stopped drawing); DOM checked instead.
+
+**Still open on Aud's leg:** rebus-distance code (step 6); comb letters for BOOK on AD and the comb model (PR-19); A1/A3 PDFs still carry the weighing copy; tally device (PR-24, wheel chosen 25 Sept); rare-coin icons are low-contrast yellow-on-gray on the ticket (accepted, recheck in print).
+
+**Next action:** test-print `NorseBackpack/Props/Comb/Aud_Comb.stl` and lay it on a printed AD card: check the dots sit in the holes, only lines 1/3/8/9 show, and the 52 mm teeth survive. Still open for the user: Codex knotwork band; redirect clues 1 and 2 (PZ-04); weighted hnefatafl pieces — supersede or keep; AD date vs treasure-hunt date; rebus-distance code (step 6).
+
+
+## Session close — 2026-09-23 — PR-27 closed (word locks bought)
+
+**Task/status:** the user bought two more four-letter word locks, so SOLE, BOOK and MEAD each have their own lock. Done.
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html`: `PR-27` changed to "Bought" and the lock count now reads "all 3 now owned". The Options-tab word-lock row has a superseded note saying the lock is no longer reset for BOOK.
+
+**Checks:** Python check that each of the four replacements matched exactly once. Not checked in the browser.
+
+**Tidy, same session:** fixed stale rows after PC-18: `ST-01` pill now reads "Direction set · count open"; `PZ-20` marked decided, with a superseded note pointing to the built "What's in the horn" puzzle, step 11; the PC-18 "Still open" list strikes the word-lock count; the MEAD puzzle card's "releases" field now lists step 11's contents. Checks: all inline scripts pass `node --check`. The browser check failed again: the Browser pane denied navigation to localhost (port 50127).
+
+**Next action:** assign which physical word lock takes SOLE, BOOK and MEAD, and set the combinations. Or, if you'd rather do something physical, run the coin print test from the section below.
+
+## Session close — 2026-09-23 — Release order (PC-18) decided
+
+**Task/status:** the user proposed the full in-game release order. It was checked against every lock code in the page and adopted: a linear chain of 13 locks. Leif → Rollo → Aud → Harald, then the final 1972 lock releases the gift. Each of the 22 cards comes out exactly once. This ran in parallel with a separate coins chat; no coin sections were touched.
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html` only:
+- `PC-18`: now "Sequence decided", with a step-by-step table.
+- `ST-01`: direction added (lockable pouches inside pockets).
+- `ST-03`: answered (1021 opens the LD + Leif-map pouch).
+- `PZ-02`: superseded note. 2648 now opens H2/H3/HD, MEAD opens the hnefatafl pouch, and the perch card comes after BOOK.
+- New `PR-27`: three four-letter word locks are needed (SOLE, BOOK, MEAD).
+
+**Key decisions (user, in chat):** pouches inside pockets, not one pocket per lock. The architect's scale ruler is released with R3–R5. The comb becomes required again (step 9, BOOK).
+
+**Checks:** ran a Python check. IDs are unique, and all five edited rows have balanced tags. Browser check not done: the Browser pane refused navigation to both `localhost` and `127.0.0.1`, same as the previous session. The page has not been checked visually.
+
+**Next action:** decide `PR-27`: buy two more four-letter word locks, or move SOLE, BOOK or MEAD to a different lock type.
+
+**Open, recorded in PC-18:** the rebus-distance code (step 6); which AD letters the comb exposes to spell BOOK; the full lock-hardware count; where the crest/logo note travels (assumed with the journal at step 12).
 
 ## Session close — 2026-09-23 — Coin currencies designed, Codex artwork reviewed, STL pipeline built
 

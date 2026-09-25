@@ -84,12 +84,13 @@ def draw_back_card(c, x=0, y=0):
     # crossed-out-digit scale sketch is a separate drawn element, not yet built.
     # 20 Sept 2026 (PZ-18): dropped the opening "Last of Aud's places for me." -- a card may not
     # state its own position. The leg's inbound return-itinerary proves this card closes Aud's leg.
+    # 25 Sept 2026 (PZ-03): rewritten by the user. The Helgi story now lives only in the Fun
+    # Fact; "my head is spinning" is the nudge to turn the treasure tally upside down (SOLE).
     paragraphs = [
-        "Her brother Helgi met her here and offered her a place to "
-        "stay — she turned him down and pushed on to build her own. I like her better for it "
-        "every time I read it.",
-        "One more thing, if you’ve still got that reading from Dogurdarnes: flip it. Whatever "
-        "you’re holding right-side up isn’t the answer — upside-down is.",
+        "Esjuberg today.",
+        "Another beautiful place that Aud the Deep-Minded visited, my head is spinning with all "
+        "the amazing landscapes!",
+        "Still amazed by the treasures I found!",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 7.7, 8.6
