@@ -34,6 +34,8 @@ from board_layout import (
     RUST, SIZE,
 )
 
+from hand_drawn_board import HAND, draw_grid_ink, draw_tokens, draw_column_labels
+
 ROOT = Path(__file__).resolve().parents[3]
 OUT = ROOT / "output" / "pdf" / "Hnefatafl_Ticket_Print.pdf"
 OUT_LETTER = ROOT / "output" / "pdf" / "Hnefatafl_Ticket_Letter_Print.pdf"
@@ -155,6 +157,18 @@ def draw_front(c, x=0, y=0):
     c.restoreState()
 
 
+def draw_mirrored_panel(c, ox, oy):
+    """Reflect the original I-K pen strokes, tokens and letters as contact ink."""
+    c.saveState()
+    c.translate(ox + len(HIDDEN_COLS) * CELL, oy)
+    c.scale(-1, 1)
+    c.translate(-min(HIDDEN_COLS) * CELL, 0)
+    draw_grid_ink(c, HIDDEN_COLS)
+    draw_tokens(c, HIDDEN_COLS)
+    draw_column_labels(c, HIDDEN_COLS)
+    c.restoreState()
+
+
 def draw_back(c, x=0, y=0):
     c.saveState()
     c.translate(x, y)
@@ -173,52 +187,17 @@ def draw_back(c, x=0, y=0):
         c.drawCentredString(W / 2, ty, line)
         ty -= 8.4
 
-    # The mirrored offset panel: columns K, J, I (reversed from the map's own
-    # I-then-J-then-K order), same CELL pitch as build_board_setup_pdf.py so
-    # the grid lines continue exactly when the two sheets are butted
-    # together.
-    hidden = sorted(HIDDEN_COLS, reverse=True)  # [10, 9, 8] -> draws K, J, I
-    panel_w = len(hidden) * CELL
+    # Reuse the SAME original strokes, then mirror the whole contact face.
+    # This reverses tiny line irregularities and handwriting as well as positions.
+    panel_w = len(HIDDEN_COLS) * CELL
     panel_h = SIZE * CELL
     ox = (W - panel_w) / 2
     oy = ty - 14 - panel_h
-
-    c.setStrokeColor(HexColor("#59635D"))
-    c.setLineWidth(0.7)
-    for i in range(len(hidden) + 1):
-        c.line(ox + i * CELL, oy, ox + i * CELL, oy + panel_h)
-    for j in range(SIZE + 1):
-        c.line(ox, oy + j * CELL, ox + panel_w, oy + j * CELL)
-
-    pad = CELL * 0.2
-    for slot, x_real in enumerate(hidden):
-        cx0 = ox + slot * CELL
-        for y in range(SIZE):
-            cy0 = oy + y * CELL
-            if (x_real, y) in CORNERS:
-                cx, cy = cx0 + CELL / 2, cy0 + CELL / 2
-                r = CELL * 0.26
-                c.setStrokeColor(RUST)
-                c.setLineWidth(1.0)
-                p = c.beginPath()
-                p.moveTo(cx, cy + r)
-                p.lineTo(cx + r, cy)
-                p.lineTo(cx, cy - r)
-                p.lineTo(cx - r, cy)
-                p.close()
-                c.drawPath(p, fill=0, stroke=1)
-            elif (x_real, y) in ATTACKERS:
-                c.setFillColor(INK)
-                c.rect(cx0 + pad, cy0 + pad, CELL - 2 * pad, CELL - 2 * pad, fill=1, stroke=0)
-            elif (x_real, y) in DEFENDERS:
-                c.setFillColor(PAPER)
-                c.setStrokeColor(INK)
-                c.setLineWidth(1.0)
-                c.rect(cx0 + pad, cy0 + pad, CELL - 2 * pad, CELL - 2 * pad, fill=1, stroke=1)
+    draw_mirrored_panel(c, ox, oy)
 
     c.setFillColor(HexColor("#59635D"))
-    c.setFont("Helvetica", 5.6)
-    c.drawCentredString(W / 2, oy - 12, "hold to the light, align on the grid lines")
+    c.setFont(HAND, 6.4)
+    c.drawCentredString(W / 2, oy - 14, "hold to the light, align on the grid lines")
 
     c.restoreState()
 

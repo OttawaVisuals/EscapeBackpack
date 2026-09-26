@@ -168,15 +168,22 @@ def spaced_width(draw, text, font, spacing):
 
 
 def draw_spaced_text(draw, center_x, y, text, font, spacing, fill):
-    width = spaced_width(draw, text, font, spacing)
-    x = center_x - width / 2
+    # Centre the actual ink bounds; put every glyph on one baseline. The old
+    # per-character top anchor lowered accented letters and raised the J tail.
+    cursor = 0
+    bounds = []
     for char in text:
-        draw.text((x, y), char, font=font, fill=fill, anchor="lt")
+        left, top, right, bottom = font.getbbox(char, anchor="ls")
+        bounds.append((cursor + left, cursor + right))
+        cursor += draw.textlength(char, font=font) + spacing
+    x = center_x - (min(b[0] for b in bounds) + max(b[1] for b in bounds)) / 2
+    for char in text:
+        draw.text((x, y), char, font=font, fill=fill, anchor="ls")
         x += draw.textlength(char, font=font) + spacing
 
 
 def fit_title(draw, text, max_width):
-    size = 92
+    size = 84
     while size > 52:
         font = ImageFont.truetype(TITLE_FONT, size)
         spacing = round(size * 0.045)
@@ -213,12 +220,12 @@ def build_card(source, output, title, subtitle):
     subtitle_font = ImageFont.truetype(SUBTITLE_FONT, 23)
     subtitle_spacing = 4
 
-    # Text positions as a fraction of card height, carried over from the 1536x1024 layout
-    # (838/1024, 841/1024, 948/1024) so the title hierarchy looks the same at the new size.
-    h = image.height
-    draw_spaced_text(draw, center_x + 2, round(h * 0.8213), title, title_font, title_spacing, SHADOW)
-    draw_spaced_text(draw, center_x, round(h * 0.8184), title, title_font, title_spacing, PAPER)
-    draw_spaced_text(draw, center_x, round(h * 0.9258), subtitle, subtitle_font, subtitle_spacing, PAPER)
+    # Shared baselines at 300 dpi: clear the lowest existing divider (AD/RD),
+    # retain accent headroom and leave space below Cinzel's descending J.
+    # Keep the original illustrated bands and all scenery unchanged.
+    draw_spaced_text(draw, center_x + 2, 965, title, title_font, title_spacing, SHADOW)
+    draw_spaced_text(draw, center_x, 962, title, title_font, title_spacing, PAPER)
+    draw_spaced_text(draw, center_x, 1012, subtitle, subtitle_font, subtitle_spacing, PAPER)
     image.save(output, optimize=True, dpi=(300, 300))
     print(output)
 

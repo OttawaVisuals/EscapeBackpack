@@ -1,0 +1,13 @@
+Generated with the built-in ImageGen tool, 25 September 2026.
+Production asset: Hnefatafl_Glue_Smear_v1.png. Original RGBA output copied unchanged.
+Placed by build_board_setup_pdf.py at 72% PDF opacity over columns I-K.
+
+Current use, approved 25 September 2026: wet-ticket ink smudge. The glue explanation is superseded; the accepted artwork, filename and exact original generation prompt below are retained unchanged. Design and print links: ../../Norse_Brainstorm.html#view-design/hnefatafl-glue-smear.
+
+Use case: illustration-story
+Asset type: isolated transparent raster overlay for a printable escape-game board setup.
+Primary request: a believable dried glue-and-lifted-ink smear left after a long narrow paper ticket was stuck onto a cream notebook page and peeled away. Generate ONLY the residue, not the paper or board.
+Composition: tall portrait 1:3 canvas. One continuous elongated vertical swath occupying most of the height and width, nearly full width through its middle; gently uneven parallel sides, softly rounded ragged ends, tiny feathered fibres and irregular rubbed edges. The silhouette must read as a long ticket contact area, but must have no straight rectangular border, sharp polygon corners or pointed ends. Leave a narrow fully transparent margin all around.
+Materials: thin translucent warm honey-beige dried adhesive, mottled pale milky fibres, faint dragged grey-green ink in soft irregular rubbed streaks. Restrained flat scan-like material texture. A few darker soft traces toward the right edge; no distinguishable symbols. Keep the centre light and translucent enough that a printed grid underneath remains readable.
+Palette: muted warm tan, pale ochre, grey-green ink; suitable over #EFE3C4 paper with #283B34 print.
+Constraints: genuine alpha transparency outside AND varied translucency within the residue. No background sheet, paper rectangle, checkerboard, board, grid, squares, circles, tokens, letters, numerals, text, watermark, objects, hand, brush, photograph of a desk, shadow, raised 3D ridges, coffee ring, liquid puddle, splashes, blood or black mass. No overall parchment texture. Only this single organic glue residue overlay.
