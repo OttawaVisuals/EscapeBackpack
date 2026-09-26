@@ -1,9 +1,7 @@
 """Build the hnefatafl board-setup insert: the panel meant for the back of
 Harald's Oslo trail map (PZ-07), plus Liv's margin note beside the stain.
 
-Harald has no trail map sheet yet (build_trail_maps_pdf.py has no TRAILS entry
-for him), so this is a standalone insert sized to drop onto that map's back
-once it exists -- not yet composited onto a real sheet. Geometry (cell size,
+Also drawn on Harald's map back by build_trail_maps_pdf.py. Geometry (cell size,
 piece squares) is imported from board_layout.py so it can never drift out of
 registration with the ticket's mirrored offset panel (build_ticket_pdf.py).
 
@@ -18,13 +16,14 @@ from pathlib import Path
 
 from reportlab.lib.colors import HexColor
 from reportlab.lib.pagesizes import portrait
+from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
-from board_layout import (
-    ATTACKERS, CELL, CORNERS, DEFENDERS, HIDDEN_COLS, INK, PAPER, RULE,
-    RUST, SIZE, STAIN, THRONE, VISIBLE_COLS,
+from board_layout import ATTACKERS, CELL, DEFENDERS, HIDDEN_COLS, INK, PAPER, RUST, SIZE, VISIBLE_COLS
+from hand_drawn_board import (
+    HAND, draw_grid_ink, draw_tokens, draw_column_labels, draw_row_labels, hand_text,
 )
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -45,17 +44,11 @@ W = MARGIN_SIDE + GRID_W + 14
 H = MARGIN_TOP + GRID_H + MARGIN_LABEL + MARGIN_BOTTOM
 PAGE = portrait((W, H))
 
-# Irregular stain outline over the hidden columns, hand-picked offsets so the
-# blot's edge is uneven rather than a clean rectangle (PZ-07's own
-# requirement). Coordinates are fractions of the hidden strip's own bounding
-# box, in drawing order around the perimeter.
-STAIN_OUTLINE = [
-    (-0.14, 0.03), (0.18, -0.06), (0.42, -0.02), (0.64, 0.07),
-    (0.86, 0.04), (1.08, 0.10), (1.14, 0.30), (1.06, 0.50),
-    (1.12, 0.68), (1.02, 0.86), (1.10, 1.02), (0.80, 0.98),
-    (0.58, 1.08), (0.34, 0.97), (0.12, 1.06), (-0.10, 0.90),
-    (0.00, 0.70), (-0.16, 0.52), (-0.02, 0.34), (-0.18, 0.18),
-]
+# Organic wet-ticket smear; original asset filename retained for existing references.
+# Preserve the source alpha; PDF opacity lets the registration grid show through.
+# Hidden tokens are never drawn, so pale patches cannot leak their positions.
+SMEAR_ART = Path(__file__).with_name("Hnefatafl_Glue_Smear_v1.png")
+SMEAR_OPACITY = 0.72
 
 
 def grid_origin():
@@ -75,75 +68,20 @@ def draw_grid(c):
 
     # Title, in Liv's practical "note to self" voice, not a puzzle-clue voice.
     c.setFillColor(INK)
-    c.setFont("CinzelBold", 12.5)
-    c.drawCentredString(W / 2, H - 22, "HNEFATAFL — BOARD LAYOUT")
+    c.setFont(HAND, 16)
+    c.drawCentredString(W / 2, H - 22, "Hnefatafl - board layout")
     c.setFillColor(RUST)
-    c.setFont("Helvetica-Oblique", 7.5)
+    c.setFont(HAND, 8.2)
     c.drawCentredString(W / 2, H - 34, "(so I don't forget!)")
 
-    # Grid lines.
-    c.setStrokeColor(HexColor("#59635D"))
-    c.setLineWidth(0.7)
-    for i in range(SIZE + 1):
-        c.line(ox + i * CELL, oy, ox + i * CELL, oy + GRID_H)
-        c.line(ox, oy + i * CELL, ox + GRID_W, oy + i * CELL)
-
-    # Column letters (top) and row numbers (left) -- columns under the stain
-    # are added too, then painted over, so they visibly run into it rather
-    # than stopping short of it.
-    c.setFont("Helvetica-Bold", 7.5)
-    c.setFillColor(INK)
-    for x in range(SIZE):
-        cx = ox + x * CELL + CELL / 2
-        c.drawCentredString(cx, oy + GRID_H + 4, chr(65 + x))
-    for y in range(SIZE):
-        cy = oy + y * CELL + CELL / 2 - 3
-        c.drawRightString(ox - 4, cy, str(y + 1))
-
-    # Corner markers (open diamond). Only the two on the visible side are
-    # drawn here -- the two under the stain never got drawn in the first
-    # place, so the stain has nothing to hide but paper.
-    for (x, y) in CORNERS:
-        if x not in VISIBLE_COLS:
-            continue
-        px, py = cell_rect(x, y)
-        cx, cy = px + CELL / 2, py + CELL / 2
-        r = CELL * 0.26
-        c.setStrokeColor(RUST)
-        c.setLineWidth(1.1)
-        c.setFillColor(PAPER)
-        p = c.beginPath()
-        p.moveTo(cx, cy + r)
-        p.lineTo(cx + r, cy)
-        p.lineTo(cx, cy - r)
-        p.lineTo(cx - r, cy)
-        p.close()
-        c.drawPath(p, fill=0, stroke=1)
-
-    # Throne (filled circle, distinct from either piece token).
-    tx, ty = cell_rect(*THRONE)
-    c.setFillColor(RUST)
-    c.circle(tx + CELL / 2, ty + CELL / 2, CELL * 0.24, fill=1, stroke=0)
-
-    # Attackers (solid dark square) and defenders (light square, dark
-    # outline) -- distinct tokens now that this layout has both. Same rule as
-    # before: pieces on the hidden side are never drawn, so the stain covers
-    # nothing but paper.
-    pad = CELL * 0.2
-    for (x, y) in ATTACKERS:
-        if x not in VISIBLE_COLS:
-            continue
-        px, py = cell_rect(x, y)
-        c.setFillColor(INK)
-        c.rect(px + pad, py + pad, CELL - 2 * pad, CELL - 2 * pad, fill=1, stroke=0)
-    for (x, y) in DEFENDERS:
-        if x not in VISIBLE_COLS:
-            continue
-        px, py = cell_rect(x, y)
-        c.setFillColor(PAPER)
-        c.setStrokeColor(INK)
-        c.setLineWidth(1.1)
-        c.rect(px + pad, py + pad, CELL - 2 * pad, CELL - 2 * pad, fill=1, stroke=1)
+    # One canonical pen drawing, reused and truly reflected on the ticket.
+    c.saveState()
+    c.translate(ox, oy)
+    draw_grid_ink(c)
+    draw_column_labels(c)
+    draw_row_labels(c)
+    draw_tokens(c, VISIBLE_COLS)
+    c.restoreState()
 
     # The stain, over the hidden columns.
     hx0 = ox + min(HIDDEN_COLS) * CELL
@@ -151,18 +89,13 @@ def draw_grid(c):
     hw = len(list(HIDDEN_COLS)) * CELL
     hh = GRID_H
     c.saveState()
-    c.setFillColor(STAIN)
-    c.setFillAlpha(0.82)
-    path = c.beginPath()
-    for i, (fx, fy) in enumerate(STAIN_OUTLINE):
-        px = hx0 + fx * hw
-        py = hy0 + fy * hh
-        if i == 0:
-            path.moveTo(px, py)
-        else:
-            path.lineTo(px, py)
-    path.close()
-    c.drawPath(path, fill=1, stroke=0)
+    c.setFillAlpha(SMEAR_OPACITY)
+    c.drawImage(
+        ImageReader(str(SMEAR_ART)),
+        hx0 - 0.28 * CELL, hy0 - 0.18 * CELL,
+        width=hw + 0.75 * CELL, height=hh + 0.52 * CELL,
+        mask="auto",
+    )
     c.restoreState()
 
     # Caption -- counts rather than a full coordinate list, since 19 visible
@@ -170,20 +103,15 @@ def draw_grid(c):
     visible_attackers = sum(1 for p in ATTACKERS if p[0] in VISIBLE_COLS)
     visible_defenders = sum(1 for p in DEFENDERS if p[0] in VISIBLE_COLS)
     c.setFillColor(INK)
-    c.setFont("Helvetica", 7.2)
-    c.drawString(
-        ox, oy - 14,
-        f"This side: {visible_attackers} dark, {visible_defenders} light. King starts on the throne."
-    )
-    c.setFont("Helvetica", 7.0)
-    c.drawString(ox, oy - 25, "Escape = any corner.")
+    hand_text(c,
+        f"This side: {visible_attackers} dark, {visible_defenders} light. King starts on the throne.",
+        ox, oy - 14, 7.5, GRID_W)
+    hand_text(c, "Escape = any corner.", ox, oy - 26, 8)
 
-    # Liv's own margin apology, small and handwritten in tone, tucked under
-    # the caption rather than explaining the puzzle.
     c.setFillColor(HexColor("#59635D"))
-    c.setFont("Helvetica-Oblique", 6.8)
-    c.drawString(ox, oy - 42, "Oops — ticket was still wet with glue when I set it down here.")
-    c.drawString(ox, oy - 52, "Sorry, past me. — L")
+    hand_text(c, "Oops - ticket was still wet when I set it down here.",
+              ox, oy - 43, 8, GRID_W)
+    hand_text(c, "Sorry, past me. - L", ox, oy - 55, 8)
 
 
 def main():

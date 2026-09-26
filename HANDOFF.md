@@ -1,6 +1,68 @@
 # Project Handoff
 
+## Session close — 2026-09-26 — Postcard title alignment (Codex)
+
+**Task/status:** user selected visual-review item 3, standardize postcard titles. Implemented in the shared builder: 84 px Cinzel ExtraBold, common title/subtitle baselines, actual ink-bound centring and baseline-aligned accented glyphs. Bjarnarhöfn and Walcheren now clear their dividers. Existing illustration sources, title-band textures, names, card dimensions and backs are preserved. Full design record added to PC-19 in the main project page.
+
+**Files changed:** `NorseBackpack/Postcards/build_postcard_front_images.py`; all 22 `Postcard_*_Front.png` outputs; 44 individual/Letter PDFs, eight existing four-up sheets and the full-deck preview in `output/pdf/`; eleven `output/docx/PrintTest_*.docx` pairs; `NorseBackpack/Norse_Brainstorm.html`; this handoff. No ImageGen call: typography is editable native code and existing illustrations are reused. No new artwork prompt.
+
+**Checks:** all 22 front renders inspected as a set; Bjarnarhöfn inspected at full size. All upper illustration pixels (through y=834, including the L2/L3 edge puzzle) match their prior images. Word print files retain identical non-media XML, including layout and duplex offsets. Packaged `render_docx.py` could not run because LibreOffice is absent; exported all eleven files through installed Word instead, rendered and inspected all 22 pages. In-app browser loaded the postcard gallery over HTTP; screenshot capture timed out, so HTML layout could not be visually verified. No JavaScript changed. All 44 individual/Letter PDFs retain identical page sizes and pixel-identical backs. Six of eight four-up backs also match; the two Leif sheets now pick up the existing approved 2 mm back bleed from their source builders (only four background rectangles changed; text is identical). All 44 updated individual/Letter front pages, all 16 four-up pages and all 44 full-deck preview pages rendered and inspected. HTML inline scripts, builder syntax and `git diff --check` passed. The full-deck PDF is the compressed preview; individual PDFs and Word pairs remain print masters.
+
+**Next action:** print `PrintTest_RD_A1.docx` and `PrintTest_AD_H1.docx` at actual size to judge title spacing on the two previously overlapping cards. No physical print this session. Existing board work and unrelated tally STLs preserved; no commit or push.
+
+## Session close — 2026-09-25 — Approved handwritten board and mirrored ticket (Codex)
+
+**Task/status:** completed the user's requested handwritten board, retained smudge, “ticket was still wet” note and matching mirrored ticket. User approved the result and requested documentation updates. Project page now records approval, links all five current PDFs, labels older studies superseded and sets PR-09 to “Artwork approved · print test open”. Corrected old setup notes about seven columns, 0.5-inch pitch, missing map composition and the former prototype route count. This consolidates the two earlier artwork handoffs.
+
+**Files changed across the artwork and documentation work:** `NorseBackpack/Props/Hnefatafl/hand_drawn_board.py` (new); both `build_board_setup_pdf.py` and `build_ticket_pdf.py`; approved `Hnefatafl_Glue_Smear_v1.png` and `_prompt.txt` (new, original asset name retained); `NorseBackpack/Norse_Brainstorm.html`; `NorseBackpack/TravelMap/README.md` (rebuild commands and output inventory); three `_Renders` previews (insert, Harald back, ticket back); five PDFs in `output/pdf/` (insert, Harald Print/ANSWER, ticket Print/Letter_Print); this handoff. Exact ImageGen prompt remains unchanged; a provenance note records the superseded glue explanation. Durable design details stay in the project page at `#view-design/hnefatafl-glue-smear`.
+
+**Artwork checks, previous turn:** inspected all nine rebuilt PDF pages, with larger views of the insert and ticket reverse. Page sizes unchanged; both map fronts and both ticket fronts have pixel-identical rendered hashes to their prior PDFs. Checked 1,724 vector path points: reflecting the ticket back matches canonical drawing coordinates within 0.001 pt. Hidden attackers remain I6/K4/K8, with K1/K11 corners. No “wet with glue” text remains in the produced PDFs. Documentation-only follow-up did not alter the PDFs or image assets.
+
+**Documentation checks:** updated text and five output links appear in the in-app browser over HTTP on port 8734. Screenshot capture still times out, so HTML layout was not visually verified; browser console check unavailable. Source checks passed: all five current PDF links and five images in the setup section resolve, PDF viewer attributes are correct, IDs are unique and every inline script passes `node --check`. No physical print/hold-to-light test. Unrelated user changes and tally STLs preserved; no commit or push.
+
+**Next action:** print Harald's map and matching ticket at 100% / actual size, then check read-through, grid alignment and ghosting on the intended stock and laminate (PR-09).
+
+## Review — 2026-09-25 — Codex visual/asset audit
+
+**Task/status:** reviewed current Norse artwork and remaining production work at the user's request. Review only; no new design adopted and no artwork or project-page changes made. Earlier session records below are preserved, including pre-existing uncommitted work.
+
+**Files changed:** this handoff only. Temporary contact sheets were written outside the repository for inspection.
+
+**Evidence:** inspected contact sheets of all 22 fronts and 22 backs, current prop/map renders and small family marks; inspected selected originals including AD/RD fronts, journal page, board-setup stain, comb preview, tally check and raven-flight comparison. `postcard_marks.py` reports “22 cards, assignment valid, all art present”: PR-22's “mark placement open” label is stale; assignments are implemented and visible on the backs. The comb still uses placeholder carving and `Props/Comb/knotwork.svg` is absent. Raven-flight HTML/comparison exists; no dedicated print PDF was found in the reviewed output files. The proposed visual improvements were presented in chat for discussion, not applied as decisions.
+
+**Checks/limits:** read README, handoff, design guide, current sources, Git status/history. In-app browser opened the page over HTTP on port 8734 and switched tabs successfully; screenshot capture timed out, so page layout was not visually verified in-browser. Artwork was visually inspected directly from local images. No physical print, slicing or player test performed. Existing HTML changes and untracked tally STLs left untouched.
+
+**Next action:** discuss the comb's final knotwork treatment, the recommended first Codex asset task, before generating or editing artwork.
+
 Last updated: 2026-09-25 by Claude Code
+
+## Session close — 2026-09-25 — PR-22 drawings approved as they are (Claude Code)
+
+**Task/status:** reviewed the status of the whole project with the user, then `PR-22`. The user compared the round-shield charge on the family crest with the sun-wheel in the family symbol and judged them different enough. No redesign.
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html`: the PR-22 status label changes from "shield/sun-wheel marks confusable, redesign needed" to "Built · drawings approved · mark placement open", with a dated note that the old label is superseded.
+
+**Checks:** confirmed the new label is present in the file, exactly once. The browser check was not run: the in-app browser refused to navigate to the local preview.
+
+**Still open (PR-22):** which small mark goes on each real postcard.
+
+**Same session: PZ-04 retired.** All three redirect clues dropped. Clues 1 and 2 are covered by the SOLE/BOOK/MEAD word locks and the comb step (PC-18 step 9). Clue 3 (`EVERY CARD IS A PLACE`) is not added anywhere: the user wants the final puzzle subtle, so the journal page stays as built. Changed: the PZ-04 status label and decision note, plus a "Retired" note at the top of the Props & specs section "Three non-lock redirect clues". Checked with a Python exact-match replace, each target matched once. Not checked in the browser.
+
+**Same session: stale items closed.** Changes in `Norse_Brainstorm.html`:
+- PC-05: superseded by PC-18, with a matching note on the Family D row.
+- ST-02 and ST-03: answered by PC-18.
+- PC-11: done. Checked that `build_postcard_collection.py` is at 1500×1050 on a 5×3.5 in page.
+- PZ-07: the "map sheet still missing" label is out of date. Harald's map exists and has the board setup on its back.
+- PZ-09: closed. Rollo's map has a job in PZ-14.
+- PR-25: narrowed to the coin print test. The cache mark and value key are built, and A1/A3 were rebuilt.
+- PC-18: the comb-letters item is struck through as resolved.
+- "Do these next" block: continuation set and family D marked superseded; L1 postmark, Fun Facts and PC-11 marked done.
+
+Checks: every replace matched exactly once, and tag counts are unchanged apart from the new tags. Not checked in the browser: navigation to the local preview was refused again.
+
+**Dropped (user, same session):** the red filter and the UV pen/blacklight are out of the kit. Marked in: PR-03, the prototype card, the tool card, the reader-tools list, the blacklight buy link and the priority block. HI-04 is dropped too, since there is no rune-stick prop. ST-05's UV option is left as it is. Tag counts are balanced.
+
+**Next action:** print `output/docx/PrintTest_A2_A3.docx` and test-print `NorseBackpack/Props/Comb/Aud_Comb.stl` (unchanged from the Aud session below).
 
 ## Session close — 2026-09-24/25 — Aud's leg reworked end to end (Claude Code)
 
