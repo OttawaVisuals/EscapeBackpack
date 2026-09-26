@@ -3546,7 +3546,6 @@ Constraints: output must have a genuinely transparent alpha background; keep onl
 .adv-item img{display:block;width:100%;height:auto;border:1px solid #d7d1bf;border-radius:4px;background:#efe3c4}
 .adv-item figcaption{font-size:12px;color:#6b6656;margin-top:4px;text-align:center}
 .adv-item.adv-noimg{display:flex;align-items:center;justify-content:center;min-height:80px;border:1px dashed #c7c0aa;border-radius:4px;text-align:center;font-size:12px;color:#6b6656;padding:8px}
-.adv-new{display:inline-block;margin-left:6px;font-size:10px;font-weight:700;letter-spacing:.03em;color:#fff;background:#a2562d;border-radius:3px;padding:1px 5px;vertical-align:middle}
 .adv-form{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:16px}
 .adv-form input[type=text]{font:16px/1.2 inherit;padding:8px 10px;border:1px solid #b9b19a;border-radius:4px;min-width:160px;text-transform:uppercase}
 .adv-msg{font-size:13px;margin-top:8px}
@@ -3970,43 +3969,56 @@ function card(id){
 function prop(label,imgs){return {kind:'prop',label:label,imgs:imgs||[]};}
 
 const ADVENTURE=[
-{n:0,title:'Open at the start',container:'Back pocket (unlocked) + luggage tags',opened:'Nothing to solve yet',code:null,
- items:[card('L1'),prop("L'Anse aux Meadows museum ticket",['Props/_Renders/Museum_Ticket_Front.png','Props/_Renders/Museum_Ticket_Back.png']),
-  prop('Two luggage tags, on the bag handle',['Props/_Renders/Luggage_Tag_Inserts_Sheet.png'])]},
-{n:1,title:'The luggage tags',container:'Main compartment',opened:'Luggage tags (PZ-13)',code:'1021',
+{n:0,title:'The luggage tags',container:'Main compartment',opened:'Luggage tags (PZ-13)',code:'1021',
+ items:[card('L1'),prop('Two luggage tags, on the bag handle',['Props/_Renders/Luggage_Tag_Inserts_Sheet.png'])],
+ unlocks:"LD + Leif's trail map"},
+{n:1,title:'The beasts on the chart',container:'Lower front pocket',opened:'Leif’s map + LD’s imprint + the museum ticket',code:'3212',
  items:[card('LD'),prop("Leif's trail map",['Props/_Renders/Trail_Map_1_Leif_Print.png']),
-  prop("Architect's scale ruler — loose in the compartment from here, first needed at step 5",[]),
-  prop('Four-wheel tally device — loose in the compartment from here, first needed at step 7',[])]},
-{n:2,title:'The beasts on the chart',container:'Lower front pocket',opened:'Leif’s map + LD’s imprint',code:'3212',
- items:[card('L2'),card('L3')]},
-{n:3,title:'The hold-to-light join',container:'Main compartment — large pouch (Rollo)',opened:'Cards L2 + L3, held to a light',code:'1576',
+  prop("L'Anse aux Meadows museum ticket",['Props/_Renders/Museum_Ticket_Front.png','Props/_Renders/Museum_Ticket_Back.png'])],
+ unlocks:'Postcards L2 + L3'},
+{n:2,title:'The hold-to-light join',container:'Main compartment — large pouch (Rollo)',opened:'Cards L2 + L3, held to a light',code:'1576',
+ items:[card('L2'),card('L3')],
+ unlocks:"R2 + Rollo's trail map + the Rouen museum ticket"},
+{n:3,title:'The word-lock chain',container:'Lower left pocket',opened:'PZ-15, using R2, the Rouen ticket and Rollo’s map',code:'1486',
  items:[card('R2'),prop("Rollo's trail map",['Props/_Renders/Trail_Map_2_Rollo_Print.png']),
-  prop('Rouen museum ticket',['Props/RouenTicket/Rouen_Ticket_Front_300dpi.png','Props/RouenTicket/Rouen_Ticket_Back_300dpi.png'])]},
-{n:4,title:'The word-lock chain',container:'Lower left pocket',opened:'PZ-15',code:'1486',
- items:[card('R1'),card('R6'),card('RD')]},
-{n:5,title:'Counting in the illustration',container:'Lower right pocket',opened:'PZ-19, using the ruler from step 1',code:'562',
- items:[card('R3'),card('R4'),card('R5')]},
-{n:6,title:'The rebus distance',container:'Main compartment — large pouch (Aud)',opened:'PZ-14, measured on Rollo’s map',code:null,
+  prop('Rouen museum ticket',['Props/RouenTicket/Rouen_Ticket_Front_300dpi.png','Props/RouenTicket/Rouen_Ticket_Back_300dpi.png'])],
+ unlocks:'R1, R6, RD'},
+{n:4,title:'Counting in the illustration',container:'Lower right pocket',opened:'PZ-19, reading R1, R6 and RD',code:'562',
+ items:[card('R1'),card('R6'),card('RD')],
+ unlocks:'R3, R4, R5, plus the architect’s scale ruler already loose in the main compartment'},
+{n:5,title:'The rebus distance',container:'Main compartment — large pouch (Aud)',opened:'PZ-14, measuring Rollo’s map with the ruler',code:null,
  note:'Code not decided yet (PZ-14) — measure Châlus–Saint-Clair-sur-Epte at the 1:5 scale the rebus names.',
+ items:[card('R3'),card('R4'),card('R5'),prop("Rollo's trail map",['Props/_Renders/Trail_Map_2_Rollo_Print.png']),
+  prop("Architect's scale ruler (loose in the main compartment since step 0)",[])],
+ unlocks:"A2 + Aud's trail map + Aud's Treasure Museum ticket"},
+{n:6,title:'The treasure route',container:'Lower front pocket (relocked)',opened:'PZ-17, walking Aud’s map',code:'521',
  items:[card('A2'),prop("Aud's trail map",['Props/_Renders/Trail_Map_3_Aud_Print.png']),
-  prop("Aud's Treasure Museum ticket",['Props/_Renders/Aud_Ticket_Front.png','Props/_Renders/Aud_Ticket_Back.png'])]},
-{n:7,title:'The treasure route',container:'Lower front pocket (relocked)',opened:'PZ-17, walking the map',code:'521',
+  prop("Aud's Treasure Museum ticket",['Props/_Renders/Aud_Ticket_Front.png','Props/_Renders/Aud_Ticket_Back.png'])],
+ unlocks:'A1, A3, the coins, the tally device'},
+{n:7,title:'The coin tally',container:'Inside top pocket',opened:'Tally device turned 180° (PZ-03)',code:'SOLE',
  items:[card('A1'),card('A3'),
-  prop('Coins',['Props/Coins/01_dirham_common.png','Props/Coins/02_dirham_rare.png','Props/Coins/03_denier_common.png','Props/Coins/04_denier_rare.png','Props/Coins/05_hedeby_ship.png','Props/Coins/06_york_cross.png','Props/Coins/07_raven.png'])]},
-{n:8,title:'The coin tally',container:'Inside top pocket',opened:'Tally device turned 180° (PZ-03)',code:'SOLE',
- items:[card('AD'),prop('The comb',['Props/Comb/Aud_Comb_preview.png','Props/Comb/Aud_Comb_on_AD.png'])]},
-{n:9,title:'The comb grille',container:'Main compartment — large pouch (Harald)',opened:'Comb laid over card AD',code:'BOOK',
+  prop('Coins',['Props/Coins/01_dirham_common.png','Props/Coins/02_dirham_rare.png','Props/Coins/03_denier_common.png','Props/Coins/04_denier_rare.png','Props/Coins/05_hedeby_ship.png','Props/Coins/06_york_cross.png','Props/Coins/07_raven.png']),
+  prop('Four-wheel tally device (loose in the main compartment since step 0)',[])],
+ unlocks:'AD + the comb'},
+{n:8,title:'The comb grille',container:'Main compartment — large pouch (Harald)',opened:'Comb laid over card AD',code:'BOOK',
+ items:[card('AD'),prop('The comb',['Props/Comb/Aud_Comb_preview.png','Props/Comb/Aud_Comb_on_AD.png'])],
+ unlocks:"H4, H5, Harald's trail map, the raven's flights card"},
+{n:9,title:"The raven's flights",container:'Lower left pocket (relocked)',opened:'PZ-02, reading H4, H5 and Harald’s map',code:'2648',
  items:[card('H4'),card('H5'),prop("Harald's trail map",['Props/_Renders/Trail_Map_4_Harald_Front.png','Props/_Renders/Trail_Map_4_Harald_Back.png']),
-  prop("The raven's flights player card",[])]},
-{n:10,title:"The raven's flights",container:'Lower left pocket (relocked)',opened:'PZ-02',code:'2648',
- items:[card('H2'),card('H3'),card('HD')]},
-{n:11,title:"What's in the horn",container:'Main compartment — board bag',opened:'PZ-20',code:'MEAD',
- items:[card('H1'),prop('Hnefatafl board + pieces (setup insert)',['Props/_Renders/Hnefatafl_Board_Setup_Insert_Insert.png']),
-  prop('Oslo hnefatafl museum ticket',['Props/_Renders/Hnefatafl_Ticket_Front.png','Props/_Renders/Hnefatafl_Ticket_Back.png'])]},
-{n:12,title:"The king's escape",container:'Main compartment — large pouch (journal)',opened:'PZ-01, on the board',code:'253',
- items:[card('H6'),prop('The missing tickets',[]),prop("Liv's journal page",['Props/_Renders/Journal_Family_Iconography_Page.png'])]},
-{n:13,title:'The route hidden in plain sight',container:'Inside middle pocket',opened:'PZ-18, tracing all four trails',code:'1972',
- items:[prop('The final gift — plane ticket + letter',[])],final:true},
+  prop("The raven's flights player card",[])],
+ unlocks:'H2, H3, HD'},
+{n:10,title:"What's in the horn",container:'Main compartment — board bag',opened:'PZ-20, three riddles on H2, H3, HD',code:'MEAD',
+ items:[card('H2'),card('H3'),card('HD')],
+ unlocks:'H1, the hnefatafl board + pieces, the Oslo museum ticket'},
+{n:11,title:"The king's escape",container:'Main compartment — large pouch (journal)',opened:'PZ-01, on the board',code:'253',
+ items:[prop('Hnefatafl board + pieces (setup insert)',['Props/_Renders/Hnefatafl_Board_Setup_Insert_Insert.png'])],
+ unlocks:'H6, the missing tickets, the journal page'},
+{n:12,title:'The route hidden in plain sight',container:'Inside middle pocket',opened:'PZ-18, tracing all four trails',code:'1972',
+ items:[prop("Leif's trail map",['Props/_Renders/Trail_Map_1_Leif_Print.png']),
+  prop("Rollo's trail map",['Props/_Renders/Trail_Map_2_Rollo_Print.png']),
+  prop("Aud's trail map",['Props/_Renders/Trail_Map_3_Aud_Print.png']),
+  prop("Harald's trail map",['Props/_Renders/Trail_Map_4_Harald_Front.png','Props/_Renders/Trail_Map_4_Harald_Back.png'])],
+ unlocks:'The final gift'},
 ];
 
 const STORE_KEY='norse-adventure-step';
@@ -4015,17 +4027,18 @@ function saveStep(n){try{localStorage.setItem(STORE_KEY,String(n));}catch(e){}}
 let current=loadStep();
 let unlocked=current; // highest step index reached
 try{const u=parseInt(localStorage.getItem(STORE_KEY+'-max'),10);if(Number.isFinite(u)&&u>current)unlocked=u;}catch(e){}
+let completed=false;
+try{completed=localStorage.getItem(STORE_KEY+'-done')==='1';}catch(e){}
 
-function itemHtml(item,isNew){
-  const badge=isNew?'<span class="adv-new">new</span>':'';
+function itemHtml(item){
   if(item.kind==='card'){
-    return `<figure class="adv-item"><img src="${item.front}" alt="Postcard ${item.label}, front" loading="lazy"><figcaption>Card ${item.label}${badge}</figcaption></figure>`
-      +`<figure class="adv-item"><img src="${item.back}" alt="Postcard ${item.label}, back" loading="lazy"><figcaption>Card ${item.label} · back${badge}</figcaption></figure>`;
+    return `<figure class="adv-item"><img src="${item.front}" alt="Postcard ${item.label}, front" loading="lazy"><figcaption>Card ${item.label}</figcaption></figure>`
+      +`<figure class="adv-item"><img src="${item.back}" alt="Postcard ${item.label}, back" loading="lazy"><figcaption>Card ${item.label} · back</figcaption></figure>`;
   }
   if(!item.imgs.length){
-    return `<div class="adv-item adv-noimg">${item.label}${badge}<br><span class="small muted">(no image asset yet)</span></div>`;
+    return `<div class="adv-item adv-noimg">${item.label}<br><span class="small muted">(no image asset yet)</span></div>`;
   }
-  return item.imgs.map((src,i)=>`<figure class="adv-item"><img src="${src}" alt="${item.label}" loading="lazy"><figcaption>${item.label}${item.imgs.length>1?' '+(i+1):''}${badge}</figcaption></figure>`).join('');
+  return item.imgs.map((src,i)=>`<figure class="adv-item"><img src="${src}" alt="${item.label}" loading="lazy"><figcaption>${item.label}${item.imgs.length>1?' '+(i+1):''}</figcaption></figure>`).join('');
 }
 
 function normalize(s){return (s||'').trim().toUpperCase().replace(/\s+/g,'');}
@@ -4035,22 +4048,25 @@ function renderProgress(){
   if(!el)return;
   el.innerHTML=ADVENTURE.map(s=>{
     const reachable=s.n<=unlocked;
-    const cls=[s.n<current?'adv-done':'',s.n===current?'adv-current':''].filter(Boolean).join(' ');
+    const done=s.n<current||(completed&&s.n===current);
+    const cls=[done?'adv-done':'',(s.n===current&&!completed)?'adv-current':''].filter(Boolean).join(' ');
     return `<button type="button" data-goto="${s.n}" class="${cls}" ${reachable?'':'disabled'} title="Step ${s.n}: ${s.title}">${s.n}</button>`;
   }).join('');
 }
 
 function renderStage(){
-  const step=ADVENTURE[current];
   const el=document.getElementById('adv-stage');
   if(!el)return;
-  const itemsHtml=ADVENTURE.slice(0,current+1)
-    .flatMap(s=>s.items.map(it=>itemHtml(it,s.n===current)))
-    .join('');
+  if(completed){
+    el.innerHTML=`<div class="good"><strong>That's the end of the chain.</strong> Thirteen locks, all twenty-two cards. <button type="button" class="secondary" id="adv-restart" style="margin-left:10px">Start over</button></div>`;
+    const restart=document.getElementById('adv-restart');
+    if(restart)restart.addEventListener('click',restartAdventure);
+    return;
+  }
+  const step=ADVENTURE[current];
+  const itemsHtml=step.items.map(itemHtml).join('');
   let formHtml='';
-  if(step.final){
-    formHtml=`<div class="good" style="margin-top:16px"><strong>That's the end of the chain.</strong> Fourteen moments, thirteen locks, all twenty-two cards. <button type="button" class="secondary" id="adv-restart" style="margin-left:10px">Start over</button></div>`;
-  } else if(step.code===null){
+  if(step.code===null){
     formHtml=`<p class="small" style="margin-top:14px"><em>${step.note||'This lock has no code yet.'}</em></p>
       <button type="button" class="secondary" id="adv-skip">Continue anyway</button>`;
   } else {
@@ -4062,7 +4078,7 @@ function renderStage(){
     </form><div id="adv-msg" class="adv-msg" aria-live="polite"></div>`;
   }
   el.innerHTML=`<div class="sectionhead"><div><div class="eyebrow">Step ${step.n} of ${ADVENTURE.length-1} · ${step.container}</div><h2>${step.title}</h2></div></div>
-    <p class="small muted">Everything in hand so far${step.n>0?' (new this step marked)':''}:</p>
+    <p class="small muted">What you need to solve this step:</p>
     <div class="adv-grid">${itemsHtml}</div>
     ${formHtml}`;
 
@@ -4073,7 +4089,7 @@ function renderStage(){
       const input=document.getElementById('adv-code');
       const msg=document.getElementById('adv-msg');
       if(normalize(input.value)===normalize(step.code)){
-        msg.textContent='Correct — opening the next container.';
+        msg.textContent=`Correct — you now also have: ${step.unlocks}.`;
         msg.className='adv-msg adv-right';
         advance();
       } else {
@@ -4086,8 +4102,13 @@ function renderStage(){
   if(reveal)reveal.addEventListener('click',()=>{reveal.textContent='code: '+step.code;reveal.disabled=true;});
   const skip=document.getElementById('adv-skip');
   if(skip)skip.addEventListener('click',advance);
-  const restart=document.getElementById('adv-restart');
-  if(restart)restart.addEventListener('click',()=>{current=0;unlocked=0;saveStep(current);try{localStorage.setItem(STORE_KEY+'-max','0');}catch(e){}renderAll();});
+}
+
+function restartAdventure(){
+  current=0;unlocked=0;completed=false;
+  saveStep(current);
+  try{localStorage.setItem(STORE_KEY+'-max','0');localStorage.setItem(STORE_KEY+'-done','0');}catch(e){}
+  renderAll();
 }
 
 function advance(){
@@ -4096,9 +4117,12 @@ function advance(){
     if(current>unlocked)unlocked=current;
     saveStep(current);
     try{localStorage.setItem(STORE_KEY+'-max',String(unlocked));}catch(e){}
-    renderAll();
-    document.getElementById('adv-stage').scrollIntoView({block:'start',behavior:'smooth'});
+  } else {
+    completed=true;
+    try{localStorage.setItem(STORE_KEY+'-done','1');}catch(e){}
   }
+  renderAll();
+  document.getElementById('adv-stage').scrollIntoView({block:'start',behavior:'smooth'});
 }
 
 function renderAll(){renderProgress();renderStage();}
@@ -4106,6 +4130,7 @@ function renderAll(){renderProgress();renderStage();}
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-goto]');
   if(!b||b.disabled)return;
+  completed=false;
   current=parseInt(b.dataset.goto,10);
   renderAll();
 });
