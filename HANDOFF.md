@@ -30,9 +30,10 @@ Last updated: 2026-09-25 by Claude Code
 **Still open (Aud)**
 - Rebus-distance code for step 6 (`PZ-14`): 1:5 scale not yet measured on Rollo's printed map.
 - Comb test print; Codex knotwork band (`knotwork.svg` import path untested).
-- AD's date (14 May) says the comb was found "alongside the coins", but the treasure hunt is at Hvammur (A2, 20 May) — not yet logged as an open question in the page.
 - Hint companion must cover "map mark = ticket icon" and "read where the broken teeth end" — no card states either.
 - Outside Aud: new wording for redirect clues 1 and 2 (`PZ-04`); weighted hnefatafl pieces candidate — supersede or keep.
+
+**Follow-up, 25 Sept 2026 — AD moved after A2.** AD's message says Liv found the comb with the coins, which only happens in the Hvammur treasure hunt (A2, 20 May), but AD was dated 14 May. AD is now 3rd in Aud's leg, dated 24 May (A2's four nights end on the 23rd; A3 is 27 May). Changed `NorseBackpack/Tools/build_final_riddle_visuals.py` (AD row, and the cards-timeline caption brought in line with the hand-edited page wording) and regenerated `final_riddle_visuals.json`; in `Norse_Brainstorm.html` swapped in the new events timeline, cards timeline and Aud leg map, reordered the date table, marked the "where AD sits" question decided, updated the decoy table ("3rd of 4") and the inline riddle data (`FILLED.aud`). `final_riddle_clues.py` re-run: Aud's real order still unique, decoy position unused. New SVGs rendered with PyMuPDF and inspected (browser pane still refuses localhost). No printed item changes: postmarks carry no dates. Note: the script's Harald leg map no longer matches the page's (hand-edited after generation, probably the Aci Castello change) — not touched.
 
 **Uncommitted:** `NorseBackpack/Props/SoleTally/base.stl`, `endcap.stl`, `ring_body.stl` — another session's work in progress, left alone. `result.json` deleted at the user's request.
 

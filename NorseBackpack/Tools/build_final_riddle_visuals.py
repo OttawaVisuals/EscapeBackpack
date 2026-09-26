@@ -39,8 +39,11 @@ STOPS = [
     ('R6', 'rollo',  date(Y1, 11, 3),  3, 'Roumare Forest',    49.413,   0.965, True),
     # -- Aud, 9 - 30 May Y2 -------------------------------------------------
     ('A1', 'aud',    date(Y2, 5, 9),  3, 'Dögurðarnes',        65.170, -22.520, True),
-    ('AD', 'aud',    date(Y2, 5, 14), 3, 'Bjarnarhöfn',        64.998, -22.967, False),
     ('A2', 'aud',    date(Y2, 5, 20), 4, 'Hvammur',            65.219, -21.829, True),
+    # AD moved after A2, 25 Sept 2026 (was 14 May, 2nd): its message says Liv found the comb
+    # with the coins, which happens in the Hvammur treasure hunt. 3rd still satisfies the
+    # leg's one rule (the decoy never opens or closes the block).
+    ('AD', 'aud',    date(Y2, 5, 24), 3, 'Bjarnarhöfn',        64.998, -22.967, False),
     ('A3', 'aud',    date(Y2, 5, 27), 3, 'Esjuberg',           64.230, -21.800, True),
     # -- Harald, 6 June - 26 July Y2 ----------------------------------------
     ('H1', 'harald', date(Y2, 6, 6),  7, 'Oslo',               59.908,  10.767, True),
@@ -209,7 +212,7 @@ def timeline_cards():
     p.append(f'<text x="{L}" y="{H - 10}" font-size="11.5" fill="{MUTED}" '
              f'font-family="Helvetica,Arial,sans-serif">'
              f'Each card sits on the date Liv sent it. Dashed = decoy. '
-             f'Overlapping lanes are the interleaving the endgame asks players to unpick.'
+             f'The lanes no longer overlap, which is the point: the work has moved from unpicking an interleaved calendar to ordering four short legs.'
              f'</text>')
     p.append('</svg>')
     return '\n'.join(p)
