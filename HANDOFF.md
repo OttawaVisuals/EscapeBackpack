@@ -1,5 +1,25 @@
 # Project Handoff
 
+## Session close — 2026-09-26 — Reviewed Codex's work, closed six open questions, decided containers (Claude Code)
+
+**Task/status:** reviewed the morning's Codex work (postcard title alignment, comb knotwork) and committed/pushed it (it had been sitting uncommitted). Then worked through the Open questions tab with the user turn by turn: corrected several stale "still open" pills that lagged work already done, and closed six real open questions by decision. All changes committed and pushed to `origin/main`; nothing pending.
+
+**Decisions made, in order:**
+- `PZ-18`/`PR-22`: per-card element-mark assignment was already applied (section 3b, 20 Sept) but the pills still said open — pointed them at the real table instead of re-deciding anything.
+- `PC-15`: confirmed 9 of 10 Bayeux margin icons are placed (R3–R5, reading SCALE 1 TO 5); the user dropped the unplaced 10th icon (arrow/2 hybrid) rather than find it a home.
+- `PZ-16` (family-tree puzzle idea) and `PR-06` (second mechanical non-lock moment): both dropped — the 13-lock chain and the king's-escape opening already cover what they were for.
+- `ST-05` (fifth dig-site sheet): dropped, no fifth sheet added.
+- `PC-10` (postmark styling): user reviewed the built postmark and is fine with it as-is, no restyle.
+- `HI-05` (historical source-checking): dropped — it's a game, not a reference work; the eight-item claims list stays for record only, nothing blocks printing on it anymore.
+- `PZ-17`: user printed and hand-walked all six legs of Aud's route against the ticket — **521 confirmed correct.** Found the doc's "ticket PDF needs rebuild" note was itself stale; the PDF already had the right answer, only the note was wrong (fixed).
+- `ST-01`/`ST-04` (container structure): decided against the real backpack and pouches now in hand. Seven containers — back pocket (unlocked, L1), main compartment (step 1, with five nested sub-locks for the remaining three maps, the journal, and a board bag for the hnefatafl set), three lower outer pockets and two inside pockets covering the rest, two lower pockets reused mid-chain. Corrected two release-list entries in the process: the architect's ruler and the coin tally device are loose in the main compartment from step 1, not gated by steps 5/7 as the old table implied. Locks are numbered 1–13 in solve order (matches the Hiking game convention).
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html` (all decisions above, plus a new Container column on `PC-18`'s release table and a container summary table under Props & specs); `HANDOFF.md`; committed in 8 separate commits (`ca40534` through `ab33c24`), each pushed immediately. Also committed Codex's uncommitted comb-knotwork and postcard-title work from earlier in the day (`a37fe4d`, `8268e5d`).
+
+**Checks:** every edit was a targeted string replacement verified against the live file text before applying (not blind pattern-guessing); ran `git diff --check` and a tag-balance sanity check (table/div counts) after the container-structure edit, both clean. `postcard_marks.py` re-run, confirms "22 cards, assignment valid, all art present." Did **not** verify visually in the in-app browser — `navigate` was denied/blocked this session (unclear why; worth retrying next session). No physical prints this session; comb and hnefatafl-board-setup prints were sent out by the user during the session, results not yet known.
+
+**Next action:** two things the user asked to be reminded of next session — (1) measure Rollo's map at 1:5 against the ruler to confirm the rebus-distance code (`PZ-14`/`PC-18` step 6, still the only unmeasured lock code); (2) the remaining physical build/test backlog (coins, tally-wheel print test, keepsake medallion, raven's-flights card, luggage tags, hnefatafl board purchase, stamp print-proofs). Also worth doing: a visual/browser check of the new container tables in `Norse_Brainstorm.html`, since the in-app browser was unavailable this session to confirm they render cleanly.
+
 ## Session close — 2026-09-26 — Comb knotwork band (Codex)
 
 **Task/status:** user asked to complete item 1 of PR-19: replace the comb's placeholder handle twist. Generated an interlaced band based on Aud's comb stamp, retained the ImageGen source, made a 3200 × 400 black/white print asset and closed SVG, and rebuilt the comb with the SVG. The BOOK grille geometry is unchanged. Physical printing remains open.
