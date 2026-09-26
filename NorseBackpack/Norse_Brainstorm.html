@@ -3546,6 +3546,7 @@ Constraints: output must have a genuinely transparent alpha background; keep onl
 .adv-item img{display:block;width:100%;height:auto;border:1px solid #d7d1bf;border-radius:4px;background:#efe3c4}
 .adv-item figcaption{font-size:12px;color:#6b6656;margin-top:4px;text-align:center}
 .adv-item.adv-noimg{display:flex;align-items:center;justify-content:center;min-height:80px;border:1px dashed #c7c0aa;border-radius:4px;text-align:center;font-size:12px;color:#6b6656;padding:8px}
+.adv-new{display:inline-block;margin-left:6px;font-size:10px;font-weight:700;letter-spacing:.03em;color:#fff;background:#a2562d;border-radius:3px;padding:1px 5px;vertical-align:middle}
 .adv-form{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:16px}
 .adv-form input[type=text]{font:16px/1.2 inherit;padding:8px 10px;border:1px solid #b9b19a;border-radius:4px;min-width:160px;text-transform:uppercase}
 .adv-msg{font-size:13px;margin-top:8px}
@@ -3970,7 +3971,8 @@ function prop(label,imgs){return {kind:'prop',label:label,imgs:imgs||[]};}
 
 const ADVENTURE=[
 {n:0,title:'Open at the start',container:'Back pocket (unlocked) + luggage tags',opened:'Nothing to solve yet',code:null,
- items:[card('L1'),prop("L'Anse aux Meadows museum ticket",['Props/_Renders/Museum_Ticket_Front.png','Props/_Renders/Museum_Ticket_Back.png'])]},
+ items:[card('L1'),prop("L'Anse aux Meadows museum ticket",['Props/_Renders/Museum_Ticket_Front.png','Props/_Renders/Museum_Ticket_Back.png']),
+  prop('Two luggage tags, on the bag handle',['Props/_Renders/Luggage_Tag_Inserts_Sheet.png'])]},
 {n:1,title:'The luggage tags',container:'Main compartment',opened:'Luggage tags (PZ-13)',code:'1021',
  items:[card('LD'),prop("Leif's trail map",['Props/_Renders/Trail_Map_1_Leif_Print.png']),
   prop("Architect's scale ruler — loose in the compartment from here, first needed at step 5",[]),
@@ -4014,15 +4016,16 @@ let current=loadStep();
 let unlocked=current; // highest step index reached
 try{const u=parseInt(localStorage.getItem(STORE_KEY+'-max'),10);if(Number.isFinite(u)&&u>current)unlocked=u;}catch(e){}
 
-function itemHtml(item){
+function itemHtml(item,isNew){
+  const badge=isNew?'<span class="adv-new">new</span>':'';
   if(item.kind==='card'){
-    return `<figure class="adv-item"><img src="${item.front}" alt="Postcard ${item.label}, front" loading="lazy"><figcaption>Card ${item.label}</figcaption></figure>`
-      +`<figure class="adv-item"><img src="${item.back}" alt="Postcard ${item.label}, back" loading="lazy"><figcaption>Card ${item.label} · back</figcaption></figure>`;
+    return `<figure class="adv-item"><img src="${item.front}" alt="Postcard ${item.label}, front" loading="lazy"><figcaption>Card ${item.label}${badge}</figcaption></figure>`
+      +`<figure class="adv-item"><img src="${item.back}" alt="Postcard ${item.label}, back" loading="lazy"><figcaption>Card ${item.label} · back${badge}</figcaption></figure>`;
   }
   if(!item.imgs.length){
-    return `<div class="adv-item adv-noimg">${item.label}<br><span class="small muted">(no image asset yet)</span></div>`;
+    return `<div class="adv-item adv-noimg">${item.label}${badge}<br><span class="small muted">(no image asset yet)</span></div>`;
   }
-  return item.imgs.map((src,i)=>`<figure class="adv-item"><img src="${src}" alt="${item.label}" loading="lazy"><figcaption>${item.label}${item.imgs.length>1?' '+(i+1):''}</figcaption></figure>`).join('');
+  return item.imgs.map((src,i)=>`<figure class="adv-item"><img src="${src}" alt="${item.label}" loading="lazy"><figcaption>${item.label}${item.imgs.length>1?' '+(i+1):''}${badge}</figcaption></figure>`).join('');
 }
 
 function normalize(s){return (s||'').trim().toUpperCase().replace(/\s+/g,'');}
@@ -4041,7 +4044,9 @@ function renderStage(){
   const step=ADVENTURE[current];
   const el=document.getElementById('adv-stage');
   if(!el)return;
-  const itemsHtml=step.items.map(itemHtml).join('');
+  const itemsHtml=ADVENTURE.slice(0,current+1)
+    .flatMap(s=>s.items.map(it=>itemHtml(it,s.n===current)))
+    .join('');
   let formHtml='';
   if(step.final){
     formHtml=`<div class="good" style="margin-top:16px"><strong>That's the end of the chain.</strong> Fourteen moments, thirteen locks, all twenty-two cards. <button type="button" class="secondary" id="adv-restart" style="margin-left:10px">Start over</button></div>`;
@@ -4057,7 +4062,7 @@ function renderStage(){
     </form><div id="adv-msg" class="adv-msg" aria-live="polite"></div>`;
   }
   el.innerHTML=`<div class="sectionhead"><div><div class="eyebrow">Step ${step.n} of ${ADVENTURE.length-1} · ${step.container}</div><h2>${step.title}</h2></div></div>
-    <p class="small muted">In hand now:</p>
+    <p class="small muted">Everything in hand so far${step.n>0?' (new this step marked)':''}:</p>
     <div class="adv-grid">${itemsHtml}</div>
     ${formHtml}`;
 
