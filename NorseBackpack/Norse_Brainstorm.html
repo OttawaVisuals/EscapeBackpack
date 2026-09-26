@@ -221,7 +221,7 @@ ol.hints{padding-left:20px;margin:6px 0 12px}ol.hints li{font-size:14.5px;margin
 @media(max-width:700px){#locktable::after{content:"Scroll sideways to see every column 92";display:block;font-size:12px;color:#6c7a70;margin-top:6px}}
 </style>
 <header><div class="eyebrow">Escape Backpack / Norse / Brainstorm v2</div><h1>The Raven Inheritance</h1><p>Your great-aunt has sent you her field bag and the first postcard from a long journey. More cards are hidden inside. Together they lead to the invitation she wants you to earn.</p><div class="tags"><span class="tag">Working title</span><span class="tag">Playful mystery</span><span class="tag">Adults + teens</span><span class="tag">Reusable props</span><span class="tag">A notch harder than Hiking</span><span class="tag">Designer copy · spoilers</span></div></header>
-<nav aria-label="Guide sections"><button data-view="story" aria-pressed="true">Story & sequence</button><button data-view="final-riddle" aria-pressed="false">Final riddle</button><button data-view="system" aria-pressed="false">Postcard system</button><button data-view="puzzles" aria-pressed="false">Puzzles &amp; locks</button><button data-view="questions" aria-pressed="false">Open questions</button><button data-view="options" aria-pressed="false">Options</button><button data-view="postcards" aria-pressed="false">Postcards</button><button data-view="routes" aria-pressed="false">Travel routes</button><button data-view="lab" aria-pressed="false">Prototype & tests</button><button data-view="design" aria-pressed="false">Props &amp; specs</button><button data-view="guide" aria-pressed="false">Design guide</button><button aria-pressed="false" data-view="approved-updates">Approved changes</button></nav>
+<nav aria-label="Guide sections"><button data-view="story" aria-pressed="true">Story & sequence</button><button data-view="final-riddle" aria-pressed="false">Final riddle</button><button data-view="system" aria-pressed="false">Postcard system</button><button data-view="puzzles" aria-pressed="false">Puzzles &amp; locks</button><button data-view="questions" aria-pressed="false">Open questions</button><button data-view="options" aria-pressed="false">Options</button><button data-view="postcards" aria-pressed="false">Postcards</button><button data-view="routes" aria-pressed="false">Travel routes</button><button data-view="lab" aria-pressed="false">Prototype & tests</button><button data-view="design" aria-pressed="false">Props &amp; specs</button><button data-view="guide" aria-pressed="false">Design guide</button><button aria-pressed="false" data-view="approved-updates">Approved changes</button><button data-view="adventure" aria-pressed="false">The full adventure</button></nav>
 <main class="wrap">
 <section id="approved-updates" class="view"><div class="intro"><div><div class="eyebrow">Current decisions</div><h2>Approved changes · 22 September 2026</h2><p>Complete adopted mechanisms, postcard copy drafts and unfinished production work.</p></div></div>
 <div class="callout"><strong>Approved by the user · 22 September 2026.</strong> G7 uses coin values and an upside-down tally. G8 keeps HRAFN and adds the five-perch conversion to a four-digit lock. These replace weighing and the cryptex. The remaining review recommendations retain their own proposal status.</div>
@@ -3534,6 +3534,29 @@ Constraints: output must have a genuinely transparent alpha background; keep onl
 <div class="note" style="margin:10px 26px 0"><strong>Decided, 19 Sept 2026 &mdash; Survey Option A is the base style.</strong> The production source and editable designer now use A across the same 25 entries: outlined roads, regular dashed paths, pale-banked rivers, continuous streams, hachured ditches, even hedges, divided walls, survey crossings, sparse terrain marks and the cleaner outlined landmark family. The muted sage-grey marsh is retained so it stays distinct from the pale blue lake. Base labels now treat the feature layer as an obstacle and try right, left, above and below their marker; for example, B&uacute;&eth;ardalur moves left of its dot instead of printing through the road. The earlier Saga note remains above as the comparison history, not the current source state.</div>
 <div class="note" style="margin:10px 26px 0"><strong>Superseded, 19 Sept 2026 &mdash; hybrid bridge-hiding trial, kept for history.</strong> Option A remains the base, with four requested exceptions: landing uses the original anchor, while gate, ford and stone wall use Option B. Bridge symbols and the Bridge legend row are hidden because road crossings over rivers already read clearly; the bridge feature data remains in place so the corrected route count of <code>521</code> is unchanged. Marsh remains muted sage-grey, and the label-avoidance placement remains active.</div>
 <div class="note" style="margin:10px 26px 0"><strong>Refined hybrid trial &mdash; 19 Sept 2026.</strong> Roads now share a two-pass outline/fill treatment so intersecting road features merge cleanly at forks instead of one outline crossing another. Gates and all other countable crossings render above surrounding map elements; stone-wall blocks stop outside each gate&rsquo;s two posts, leaving a true opening while preserving the road beneath. Ford returns to the original bank-ticks-and-three-stones mark. Bridges return with a new route-aligned design: a short, gently bowed deck with three light cross-planks, rotated to follow the nearest road, track or footpath. This supersedes the bridge-removal choice in the note above while preserving the same crossing data and route code <code>521</code>. <b>This is Aud’s final map styling, decided 19 Sept 2026</b> — <code>output/pdf/Trail_Map_3_Aud_Print.pdf</code> and <code>_ANSWER.pdf</code> were rebuilt under their canonical names from this exact source state. The Option A and hybrid trial PDFs, plus one further OPTION_A/HYBRID/REFINED iteration set, are archived in <code>NorseBackpack/Drafts/2026-09-19_Aud_map_style_options/</code>, not deleted.</div>
+<section id="adventure" class="view" hidden><style>
+.adv-progress{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0}
+.adv-progress button{width:34px;height:34px;border-radius:50%;border:1px solid #d6d0c0;background:#f3efe5;font:600 12px/1 inherit;cursor:pointer}
+.adv-progress button.adv-done{background:#58716a;border-color:#58716a;color:#fff}
+.adv-progress button.adv-current{outline:2px solid #a2562d;outline-offset:2px}
+.adv-progress button:disabled{opacity:.35;cursor:not-allowed}
+.adv-stage{margin-top:6px}
+.adv-grid{display:flex;flex-wrap:wrap;gap:16px;margin:14px 0}
+.adv-item{width:180px}
+.adv-item img{display:block;width:100%;height:auto;border:1px solid #d7d1bf;border-radius:4px;background:#efe3c4}
+.adv-item figcaption{font-size:12px;color:#6b6656;margin-top:4px;text-align:center}
+.adv-item.adv-noimg{display:flex;align-items:center;justify-content:center;min-height:80px;border:1px dashed #c7c0aa;border-radius:4px;text-align:center;font-size:12px;color:#6b6656;padding:8px}
+.adv-form{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:16px}
+.adv-form input[type=text]{font:16px/1.2 inherit;padding:8px 10px;border:1px solid #b9b19a;border-radius:4px;min-width:160px;text-transform:uppercase}
+.adv-msg{font-size:13px;margin-top:8px}
+.adv-msg.adv-wrong{color:#a2412d}
+.adv-msg.adv-right{color:#3d6b4a}
+.adv-reveal{font-size:12px;color:#8a6d2f;cursor:pointer;background:none;border:none;padding:0;text-decoration:underline}
+</style>
+<div class="intro"><div><div class="eyebrow">Virtual walkthrough</div><h2>The full adventure</h2><p>Play through the whole release chain (<a href="#" data-view="questions" data-anchor="q-PC-18">PC-18</a>&rsquo;s 13 locks) on screen: see what&rsquo;s in hand at each step, then enter that lock&rsquo;s code to move on &mdash; a way to check the whole game reads right without printing everything. Built from the container structure decided 26 Sept 2026 (<code>ST-01</code>). <strong>This view is generated from its own data table in the page script, not from the puzzle/container data above</strong> &mdash; if a code, a container or a released item changes, this needs updating by hand to match.</p></div></div>
+<div id="adv-progress" class="adv-progress"></div>
+<div id="adv-stage" class="card adv-stage"></div>
+</section>
 </main>
 <script src="TravelMap/vendor/leaflet.js"></script><script src="TravelMap/vendor/land.js"></script><script src="TravelMap/stops.js"></script><script>
 const TRAILS={leif:{name:'Leif Erikson',color:'#216580'},rollo:{name:'Rollo &amp; descendants',color:'#a2562d'},aud:{name:'Aud the Deep-Minded',color:'#6d528b'},harald:{name:'Harald Hardrada',color:'#467444'},final:{name:'Endgame',color:'#8a6d2f'}};
@@ -3920,4 +3943,162 @@ document.getElementById('boardreset').onclick=()=>{path=[[5,5]];finished=false;d
 })();
 function routeFromHash(){var s=location.hash.slice(1).replace(/^view-/,'').split('/');navigate(s[0]||'story',s[1]);}
 window.addEventListener('hashchange',routeFromHash);routeFromHash();
-</script></body></html>
+</script><script>
+/* --- The full adventure: a virtual walkthrough of PC-18's 13-lock release chain,
+   against the container structure decided 26 Sept 2026 (ST-01). Hand-maintained --
+   does not read from the `puzzles` array above, which predates the container work
+   and is not fully in sync with it. Update this table by hand if PC-18/ST-01 change. */
+(function(){
+const CARD_SLUG={
+  L1:'L1_LAnse',L2:'L2_Battle_Harbour',L3:'L3_Baffin_Island',LD:'LD_Brattahlid',
+  R1:'R1_Chalus',R2:'R2_Rouen',R3:'R3_Bayeux',R4:'R4_Winchester',R5:'R5_Battle',R6:'R6_Roumare_Forest',RD:'RD_Walcheren',
+  A1:'A1_Dogurdarnes',A2:'A2_Hvammur',A3:'A3_Esjuberg',AD:'AD_Bjarnarhofn',
+  H1:'H1_Oslo',H2:'H2_Staraya_Ladoga',H3:'H3_Kyiv',H4:'H4_Hedeby',H5:'H5_Sicily',H6:'H6_Patara',HD:'HD_Constantinople'
+};
+function card(id){
+  const slug=CARD_SLUG[id];
+  return {kind:'card',label:id,front:`Postcards/Postcard_${slug}_Front.png`,back:`Postcards/Postcard_${slug}_Back.png`};
+}
+function prop(label,imgs){return {kind:'prop',label:label,imgs:imgs||[]};}
+
+const ADVENTURE=[
+{n:0,title:'Open at the start',container:'Back pocket (unlocked) + luggage tags',opened:'Nothing to solve yet',code:null,
+ items:[card('L1'),prop("L'Anse aux Meadows museum ticket",['Props/_Renders/Museum_Ticket_Front.png','Props/_Renders/Museum_Ticket_Back.png'])]},
+{n:1,title:'The luggage tags',container:'Main compartment',opened:'Luggage tags (PZ-13)',code:'1021',
+ items:[card('LD'),prop("Leif's trail map",['Props/_Renders/Trail_Map_1_Leif_Print.png']),
+  prop("Architect's scale ruler — loose in the compartment from here, first needed at step 5",[]),
+  prop('Four-wheel tally device — loose in the compartment from here, first needed at step 7',[])]},
+{n:2,title:'The beasts on the chart',container:'Lower front pocket',opened:'Leif’s map + LD’s imprint',code:'3212',
+ items:[card('L2'),card('L3')]},
+{n:3,title:'The hold-to-light join',container:'Main compartment — large pouch (Rollo)',opened:'Cards L2 + L3, held to a light',code:'1576',
+ items:[card('R2'),prop("Rollo's trail map",['Props/_Renders/Trail_Map_2_Rollo_Print.png']),
+  prop('Rouen museum ticket',['Props/RouenTicket/Rouen_Ticket_Front_300dpi.png','Props/RouenTicket/Rouen_Ticket_Back_300dpi.png'])]},
+{n:4,title:'The word-lock chain',container:'Lower left pocket',opened:'PZ-15',code:'1486',
+ items:[card('R1'),card('R6'),card('RD')]},
+{n:5,title:'Counting in the illustration',container:'Lower right pocket',opened:'PZ-19, using the ruler from step 1',code:'562',
+ items:[card('R3'),card('R4'),card('R5')]},
+{n:6,title:'The rebus distance',container:'Main compartment — large pouch (Aud)',opened:'PZ-14, measured on Rollo’s map',code:null,
+ note:'Code not decided yet (PZ-14) — measure Châlus–Saint-Clair-sur-Epte at the 1:5 scale the rebus names.',
+ items:[card('A2'),prop("Aud's trail map",['Props/_Renders/Trail_Map_3_Aud_Print.png']),
+  prop("Aud's Treasure Museum ticket",['Props/_Renders/Aud_Ticket_Front.png','Props/_Renders/Aud_Ticket_Back.png'])]},
+{n:7,title:'The treasure route',container:'Lower front pocket (relocked)',opened:'PZ-17, walking the map',code:'521',
+ items:[card('A1'),card('A3'),
+  prop('Coins',['Props/Coins/01_dirham_common.png','Props/Coins/02_dirham_rare.png','Props/Coins/03_denier_common.png','Props/Coins/04_denier_rare.png','Props/Coins/05_hedeby_ship.png','Props/Coins/06_york_cross.png','Props/Coins/07_raven.png'])]},
+{n:8,title:'The coin tally',container:'Inside top pocket',opened:'Tally device turned 180° (PZ-03)',code:'SOLE',
+ items:[card('AD'),prop('The comb',['Props/Comb/Aud_Comb_preview.png','Props/Comb/Aud_Comb_on_AD.png'])]},
+{n:9,title:'The comb grille',container:'Main compartment — large pouch (Harald)',opened:'Comb laid over card AD',code:'BOOK',
+ items:[card('H4'),card('H5'),prop("Harald's trail map",['Props/_Renders/Trail_Map_4_Harald_Front.png','Props/_Renders/Trail_Map_4_Harald_Back.png']),
+  prop("The raven's flights player card",[])]},
+{n:10,title:"The raven's flights",container:'Lower left pocket (relocked)',opened:'PZ-02',code:'2648',
+ items:[card('H2'),card('H3'),card('HD')]},
+{n:11,title:"What's in the horn",container:'Main compartment — board bag',opened:'PZ-20',code:'MEAD',
+ items:[card('H1'),prop('Hnefatafl board + pieces (setup insert)',['Props/_Renders/Hnefatafl_Board_Setup_Insert_Insert.png']),
+  prop('Oslo hnefatafl museum ticket',['Props/_Renders/Hnefatafl_Ticket_Front.png','Props/_Renders/Hnefatafl_Ticket_Back.png'])]},
+{n:12,title:"The king's escape",container:'Main compartment — large pouch (journal)',opened:'PZ-01, on the board',code:'253',
+ items:[card('H6'),prop('The missing tickets',[]),prop("Liv's journal page",['Props/_Renders/Journal_Family_Iconography_Page.png'])]},
+{n:13,title:'The route hidden in plain sight',container:'Inside middle pocket',opened:'PZ-18, tracing all four trails',code:'1972',
+ items:[prop('The final gift — plane ticket + letter',[])],final:true},
+];
+
+const STORE_KEY='norse-adventure-step';
+function loadStep(){try{const v=parseInt(localStorage.getItem(STORE_KEY),10);return Number.isFinite(v)&&v>=0&&v<ADVENTURE.length?v:0;}catch(e){return 0;}}
+function saveStep(n){try{localStorage.setItem(STORE_KEY,String(n));}catch(e){}}
+let current=loadStep();
+let unlocked=current; // highest step index reached
+try{const u=parseInt(localStorage.getItem(STORE_KEY+'-max'),10);if(Number.isFinite(u)&&u>current)unlocked=u;}catch(e){}
+
+function itemHtml(item){
+  if(item.kind==='card'){
+    return `<figure class="adv-item"><img src="${item.front}" alt="Postcard ${item.label}, front" loading="lazy"><figcaption>Card ${item.label}</figcaption></figure>`
+      +`<figure class="adv-item"><img src="${item.back}" alt="Postcard ${item.label}, back" loading="lazy"><figcaption>Card ${item.label} · back</figcaption></figure>`;
+  }
+  if(!item.imgs.length){
+    return `<div class="adv-item adv-noimg">${item.label}<br><span class="small muted">(no image asset yet)</span></div>`;
+  }
+  return item.imgs.map((src,i)=>`<figure class="adv-item"><img src="${src}" alt="${item.label}" loading="lazy"><figcaption>${item.label}${item.imgs.length>1?' '+(i+1):''}</figcaption></figure>`).join('');
+}
+
+function normalize(s){return (s||'').trim().toUpperCase().replace(/\s+/g,'');}
+
+function renderProgress(){
+  const el=document.getElementById('adv-progress');
+  if(!el)return;
+  el.innerHTML=ADVENTURE.map(s=>{
+    const reachable=s.n<=unlocked;
+    const cls=[s.n<current?'adv-done':'',s.n===current?'adv-current':''].filter(Boolean).join(' ');
+    return `<button type="button" data-goto="${s.n}" class="${cls}" ${reachable?'':'disabled'} title="Step ${s.n}: ${s.title}">${s.n}</button>`;
+  }).join('');
+}
+
+function renderStage(){
+  const step=ADVENTURE[current];
+  const el=document.getElementById('adv-stage');
+  if(!el)return;
+  const itemsHtml=step.items.map(itemHtml).join('');
+  let formHtml='';
+  if(step.final){
+    formHtml=`<div class="good" style="margin-top:16px"><strong>That's the end of the chain.</strong> Fourteen moments, thirteen locks, all twenty-two cards. <button type="button" class="secondary" id="adv-restart" style="margin-left:10px">Start over</button></div>`;
+  } else if(step.code===null){
+    formHtml=`<p class="small" style="margin-top:14px"><em>${step.note||'This lock has no code yet.'}</em></p>
+      <button type="button" class="secondary" id="adv-skip">Continue anyway</button>`;
+  } else {
+    formHtml=`<form class="adv-form" id="adv-form" autocomplete="off">
+      <label for="adv-code" class="small">Enter the code for <b>${step.opened}</b>:</label>
+      <input type="text" id="adv-code" placeholder="${/^[0-9]+$/.test(step.code)?'0000':'????'}">
+      <button type="submit" class="primary">Try</button>
+      <button type="button" class="adv-reveal" id="adv-reveal">reveal code</button>
+    </form><div id="adv-msg" class="adv-msg" aria-live="polite"></div>`;
+  }
+  el.innerHTML=`<div class="sectionhead"><div><div class="eyebrow">Step ${step.n} of ${ADVENTURE.length-1} · ${step.container}</div><h2>${step.title}</h2></div></div>
+    <p class="small muted">In hand now:</p>
+    <div class="adv-grid">${itemsHtml}</div>
+    ${formHtml}`;
+
+  const form=document.getElementById('adv-form');
+  if(form){
+    form.addEventListener('submit',e=>{
+      e.preventDefault();
+      const input=document.getElementById('adv-code');
+      const msg=document.getElementById('adv-msg');
+      if(normalize(input.value)===normalize(step.code)){
+        msg.textContent='Correct — opening the next container.';
+        msg.className='adv-msg adv-right';
+        advance();
+      } else {
+        msg.textContent='Not quite — try again.';
+        msg.className='adv-msg adv-wrong';
+      }
+    });
+  }
+  const reveal=document.getElementById('adv-reveal');
+  if(reveal)reveal.addEventListener('click',()=>{reveal.textContent='code: '+step.code;reveal.disabled=true;});
+  const skip=document.getElementById('adv-skip');
+  if(skip)skip.addEventListener('click',advance);
+  const restart=document.getElementById('adv-restart');
+  if(restart)restart.addEventListener('click',()=>{current=0;unlocked=0;saveStep(current);try{localStorage.setItem(STORE_KEY+'-max','0');}catch(e){}renderAll();});
+}
+
+function advance(){
+  if(current<ADVENTURE.length-1){
+    current+=1;
+    if(current>unlocked)unlocked=current;
+    saveStep(current);
+    try{localStorage.setItem(STORE_KEY+'-max',String(unlocked));}catch(e){}
+    renderAll();
+    document.getElementById('adv-stage').scrollIntoView({block:'start',behavior:'smooth'});
+  }
+}
+
+function renderAll(){renderProgress();renderStage();}
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-goto]');
+  if(!b||b.disabled)return;
+  current=parseInt(b.dataset.goto,10);
+  renderAll();
+});
+
+renderAll();
+})();
+</script>
+</body></html>
