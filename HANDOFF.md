@@ -1,5 +1,15 @@
 # Project Handoff
 
+## Session close — 2026-09-26 — Comb knotwork band (Codex)
+
+**Task/status:** user asked to complete item 1 of PR-19: replace the comb's placeholder handle twist. Generated an interlaced band based on Aud's comb stamp, retained the ImageGen source, made a 3200 × 400 black/white print asset and closed SVG, and rebuilt the comb with the SVG. The BOOK grille geometry is unchanged. Physical printing remains open.
+
+**Files changed:** `NorseBackpack/Props/Comb/knotwork_source.png`, `knotwork.png`, `knotwork.svg`, `build_knotwork.py`; regenerated `Aud_Comb.scad`, `Aud_Comb.stl`, `Aud_Comb_preview.png`, `comb_geometry.json`, `Aud_Comb_on_AD.png`; `NorseBackpack/Norse_Brainstorm.html`; this handoff. The exact ImageGen prompt and tracing method are recorded in the comb section of the project page.
+
+**Checks:** generated artwork and refreshed OpenSCAD preview inspected; SVG contains closed paths and the comb builder reports `handle_carving: band_svg`, `answer: BOOK`, and successful STL export. The STL's bounds and top/carve height levels were inspected. Project page loaded over HTTP in the in-app browser, the new band appeared, and no console errors were reported. The generated crossing gaps appear narrower than the 0.6 mm design target in places; their real print clarity is unverified. No physical print this session. Unrelated untracked SoleTally STLs preserved; no commit or push.
+
+**Next action:** print the updated comb STL and postcard AD at actual size; check the carving, tooth strength, dot registration and BOOK reveal together.
+
 ## Session close — 2026-09-26 — Postcard title alignment (Codex)
 
 **Task/status:** user selected visual-review item 3, standardize postcard titles. Implemented in the shared builder: 84 px Cinzel ExtraBold, common title/subtitle baselines, actual ink-bound centring and baseline-aligned accented glyphs. Bjarnarhöfn and Walcheren now clear their dividers. Existing illustration sources, title-band textures, names, card dimensions and backs are preserved. Full design record added to PC-19 in the main project page.

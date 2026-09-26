@@ -40,6 +40,6 @@
     "handle": 3.0,
     "carving_depth": 0.6
   },
-  "handle_carving": "placeholder_twist",
+  "handle_carving": "band_svg",
   "stl_written": true
 }
