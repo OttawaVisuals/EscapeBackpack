@@ -66,7 +66,7 @@ CARDS = [
         "EAST SUSSEX",
     ),
     (
-        POSTCARDS / "Postcard_R6_Roumare_Forest_Illustration_v2.png",
+        POSTCARDS / "Postcard_R6_Roumare_Forest_Illustration_v3.png",
         POSTCARDS / "Postcard_R6_Roumare_Forest_Front.png",
         "ROUMARE FOREST",
         "NORMANDY",
