@@ -170,6 +170,9 @@ def draw_back_card(c, x=0, y=0):
 
     # Fun Fact -- typed, real trivia (PC-12). Backup option chosen: parallels card 02's
     # saga-identification fact rather than repeating the aurora content already in her message.
+    # 26 Sept 2026: rewritten -- the old text restated the message's name-translation and
+    # treeless/rocky description. New fact keeps the saga-identification angle but states
+    # different content (landfall order, lack of a confirmed settlement site).
     funfact_top, funfact_bottom = 120, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
@@ -180,10 +183,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(INK)
     fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
     fact_text = (
-        "In the sagas, Helluland (“Flat-Stone Land”) is generally identified with "
-        "Baffin Island — its bare, rocky terrain matches medieval descriptions of a land with "
-        "no grass, just glaciers and flat stones, in the Saga of Erik the Red and the Saga of "
-        "the Greenlanders."
+        "Of the three lands named in the sagas — Helluland, Markland, Vinland — this was the "
+        "first one reached heading south from Greenland. Unlike Vinland, no Norse settlement "
+        "site has ever been confirmed here; the identification with Baffin Island rests on the "
+        "sagas' description alone."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

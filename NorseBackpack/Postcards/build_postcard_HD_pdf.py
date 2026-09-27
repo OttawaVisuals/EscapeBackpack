@@ -255,8 +255,12 @@ def draw_back_card(c, x=0, y=0):
         c.setLineWidth(0.4)
         c.line(address_x, line_y - 3, rule_right, line_y - 3)
 
-    # Fun Fact -- typed, real trivia (PC-12), deliberately more specific than the message's own
-    # "made his fortune" tease, so neither repeats the other.
+    # Fun Fact -- typed, real trivia (PC-12).
+    # 26 Sept 2026: rewritten -- the old text ("wealth... funded his eventual claim to the
+    # throne") was judged too close to the message's "made his fortune" line despite the
+    # different wording. New fact is unrelated Constantinople trivia instead. This supersedes
+    # PZ-20's design note in Norse_Brainstorm.html, which argued the old pairing didn't repeat --
+    # see that note for the superseded reasoning.
     funfact_top, funfact_bottom = 120, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
@@ -267,9 +271,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(INK)
     fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
     fact_text = (
-        "Harald really did serve here — in the Byzantine emperor's own Varangian Guard, from "
-        "1034 to 1043, under three different emperors. The wealth he brought home from "
-        "Constantinople is what funded his eventual claim to the throne of Norway."
+        "Runic graffiti scratched into a marble balustrade in the Hagia Sophia's upper "
+        "gallery — reading roughly “Halfdan carved these runes” — is usually credited to a "
+        "Varangian Guardsman passing the time on duty, centuries before tourists started "
+        "doing the same."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

@@ -172,6 +172,8 @@ def draw_back_card(c, x=0, y=0):
 
     # Fun Fact -- typed, real trivia (PC-12). Safe/no-date option: ties to the "Forest Land"
     # name in her message without needing a source-checked date.
+    # 26 Sept 2026: trimmed the opening "Forest Land" restatement (the message already
+    # translates the name) -- everything else here is still new content.
     funfact_top, funfact_bottom = 120, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
@@ -182,10 +184,10 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(INK)
     fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
     fact_text = (
-        "“Markland” appears in both the Saga of the Greenlanders and the Saga of "
-        "Erik the Red as the second landfall on the Vinland voyages. Its “Forest Land” "
-        "name likely marks the coast of Labrador, one of the few heavily wooded shores Norse "
-        "sailors would have passed after leaving treeless Greenland."
+        "Markland turns up in both the Saga of the Greenlanders and the Saga of Erik the Red "
+        "as the second landfall on the Vinland voyages — likely the coast of Labrador, one of "
+        "the only heavily wooded shores Norse sailors would have passed after leaving "
+        "treeless Greenland."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

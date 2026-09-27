@@ -176,9 +176,11 @@ def draw_back_card(c, x=0, y=0):
         c.setLineWidth(0.4)
         c.line(address_x, line_y - 3, rule_right, line_y - 3)
 
-    # Fun Fact -- typed, real trivia (PC-12). Bjarnarhöfn = "Björn's harbor," named for Aud's own
-    # brother (Laxdæla saga; also see stops.js a-bjarnarhofn). No digit or code lives in this one --
-    # AD is a decoy card whose job is the comb grille, not a number-fixing clue.
+    # Fun Fact -- typed, real trivia (PC-12). No digit or code lives in this one -- AD is a decoy
+    # card whose job is the comb grille, not a number-fixing clue.
+    # 26 Sept 2026: rewritten -- the old text ("brother's harbor... wintered here") just restated
+    # the message (PZ-17's comb-grille puzzle reads letters off that exact message, so it cannot
+    # change). New fact is unrelated trivia about the same place instead.
     funfact_top, funfact_bottom = 120, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
@@ -189,8 +191,9 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(INK)
     fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
     fact_text = (
-        "Bjarnarhöfn means “Björn's harbor,” named for Aud's own brother, whose land "
-        "this was. She wintered here before pushing on to found Hvammur herself."
+        "Bjarnarhöfn today is known for one very different kind of preserved find: the farm "
+        "runs Iceland's best-known hákarl operation, curing Greenland shark the same slow way "
+        "it's been done for centuries."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

@@ -1,5 +1,17 @@
 # Project Handoff
 
+## Session close — 2026-09-26 — Reviewed all 22 cards for message/Fun Fact overlap, rewrote five more (Claude Code)
+
+**Task/status:** continuing from the R1/R6/RD pass (below), user asked for a full review of all 22 cards to flag any others where the Fun Fact is too close to the handwritten message. Extracted and compared both texts for every card; flagged five, ranked by severity: `AD` (strongest — "brother's harbor... wintered here" stated near-verbatim in both), `L3` (name translation + barren/treeless description repeated), `LD` ("little church his wife built" repeated), `HD` ("made his fortune" → "funded his claim to the throne" — same core claim, different wording), and `L2` (borderline — only the "Forest Land" translation phrase repeated). Drafted rewrites for all five, user approved, wrote them in.
+
+**Important constraint found during review:** `AD`'s handwritten message is puzzle-critical — the comb-grille lock (`PZ-17`) reads specific first letters off specific lines of that exact message text (spells BOOK), so the message itself cannot change without a comb-geometry rebuild. Only `AD`'s Fun Fact was touched. Confirmed none of the other four Fun Facts feed a puzzle number (unlike R1/R6/RD's `PZ-19` dates) before rewriting freely.
+
+**Files changed:** `NorseBackpack/Postcards/build_postcard_AD_pdf.py`, `build_postcard_L3_pdf.py`, `build_postcard_LD_pdf.py`, `build_postcard_HD_pdf.py`, `build_postcard_L2_pdf.py` (Fun Fact text plus updated inline comments); `NorseBackpack/Norse_Brainstorm.html` (updated the `PZ-20`/mead design rationale, which had argued HD's old pairing didn't repeat — struck through and superseded; updated the L2 rewrite-pass note to record the trim); this handoff.
+
+**Checks:** regenerated all five individual PDFs and rendered their back pages to PNG for visual inspection — text fits inside the Fun Fact box on all five, `AD`'s message and `HD`'s rebus box confirmed unchanged. Rebuilt `Norse_Postcards_Full_Print.pdf` (44 pages) via `build_postcard_collection.py`. Grepped the whole repo for the old wording on all five cards plus the three from the prior entry — none found anywhere. Did not do an in-app browser visual check — same reasoning as the prior entry, no interactive HTML was touched.
+
+**Next action:** none pending from this task. All 22 cards' message/Fun Fact pairs have now been reviewed; none of the remaining 17 need changes. Still open from prior sessions: measure Rollo's map at 1:5 against the ruler to confirm the rebus-distance code (`PZ-14`/`PC-18` step 6, still the only unmeasured lock code), and the physical build/test backlog (coins, tally-wheel print test, keepsake medallion, raven's-flights card, luggage tags, hnefatafl board purchase, stamp print-proofs).
+
 ## Session close — 2026-09-26 — R1/R6/RD text edits: dropped a line, rewrote three Fun Facts (Claude Code)
 
 **Task/status:** user asked for R1's, R6's and RD's postcard message/Fun Fact text, then made two calls: (1) drop R1's "Odd place to start his family's story, at the very end of it" line (not a position claim per the existing rule-1 note, but the user found it confusing next to the Walcheren–Châlus ticket — removed anyway); (2) all three cards' Fun Facts were just restating their own handwritten message (R1: same crossbow-bolt-to-shoulder story twice; R6/RD: same "legend nobody can confirm" hedge twice). Rewrote all three Fun Facts to state a different fact while keeping the date each carries for the counting-lock puzzle (`PZ-19`: before 911 / 911 / 1199 sort order).

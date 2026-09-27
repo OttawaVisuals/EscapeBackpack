@@ -172,8 +172,10 @@ def draw_back_card(c, x=0, y=0):
         c.setLineWidth(0.4)
         c.line(address_x, line_y - 3, rule_right, line_y - 3)
 
-    # Fun Fact -- typed, real trivia (PC-12). Ties directly to the church foundations
-    # mentioned in the message above.
+    # Fun Fact -- typed, real trivia (PC-12).
+    # 26 Sept 2026: rewritten -- the old text restated the message's "little church his wife
+    # built" line almost exactly. New fact keeps the homestead/Eastern Settlement angle but
+    # states different content (the settlement's scale) instead of the church.
     funfact_top, funfact_bottom = 120, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
@@ -184,10 +186,9 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(INK)
     fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
     fact_text = (
-        "Brattahlíð, Erik the Red's homestead near modern Qassiarsuk, seeded the Eastern "
-        "Settlement -- the larger of Greenland's two medieval Norse colonies, home to "
-        "thousands at its peak. Its ruins include Þjóðhildar's Church, a tiny turf chapel "
-        "Erik built for his Christian wife around the year 1000."
+        "Brattahlíð seeded Greenland's Eastern Settlement, the larger of its two medieval "
+        "Norse colonies -- home to an estimated few thousand people at its peak, spread "
+        "across roughly 190 farms up and down this fjord system."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):
