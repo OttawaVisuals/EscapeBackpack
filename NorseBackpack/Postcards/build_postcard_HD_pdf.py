@@ -140,8 +140,12 @@ def draw_hourglass(c, cx, cy, w, h):
 def draw_back_card(c, x=0, y=0):
     c.saveState()
     c.translate(x, y)
+    # PC-20: 1.5mm bleed, same as build_postcard_L1_pdf.py. Extends the PAPER fill past the
+    # card edge so a slightly-off cut or duplex registration never shows a white band; only
+    # the sheet crop marks define trim. Confirmed on the L1/L2 print test, 2026-09-27.
+    BLEED = 1.5 / 25.4 * 72
     c.setFillColor(PAPER)
-    c.rect(0, 0, W, H, fill=1, stroke=0)
+    c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.7)
     c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)

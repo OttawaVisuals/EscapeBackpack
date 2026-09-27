@@ -18,18 +18,25 @@ Page 1 = front art of both cards. Page 2 = back text of both cards, same
 left/right order. Whether "same order" survives your physical flip is
 exactly what this test checks -- if a back ends up on the wrong card, swap
 CARD_IDS in the failing group below and regenerate.
+
+Images are placed as floating pictures anchored to absolute page coordinates
+(relativeFrom="page"), not inside a table. A table was tried first: even with
+autofit=False (fixed layout) and identical declared cell/row sizes, Word still
+grew the column to fit a picture wider than its cell, which re-centered the
+back page's table 1.5mm off from the front page's -- diagnosed from a printed
+test on 2026-09-27. Absolute positioning sidesteps that entirely: front and
+back pages compute the same trim-box coordinates from the same constants, so
+there is nothing for Word to auto-resize.
 """
 
-import io
 from pathlib import Path
 
 from docx import Document
-from docx.shared import Inches, Mm, Pt
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ROW_HEIGHT_RULE
+from docx.shared import Inches, Emu, Mm
 from docx.enum.section import WD_SECTION
 from docx.oxml.ns import qn
-from PIL import Image
+from PIL import Image, ImageDraw
+import io
 
 ROOT = Path(__file__).resolve().parent
 OUT_DIR = ROOT.parents[1] / "output" / "docx"      # repo-root output/, with the PDFs
@@ -51,32 +58,37 @@ CARD_W_IN = 3.5
 CARD_H_IN = 5.0
 TOP_MARGIN_IN = 0.3
 SIDE_MARGIN_IN = 0.6
+GAP_IN = 0.2  # between the two cards on a page
+PAGE_W_IN = 8.5  # python-docx default template: US Letter, 8.5in x 11in
 ROTATE_DEGREES = -90  # clockwise, applied to the art page
 # The physical flip between art and text pages is top-to-bottom (like a calendar page),
 # which inverts orientation. Confirmed on a printed test: rotating both pages the same
 # way put the text upside down. The text page needs the extra 180 deg to compensate.
 TEXT_ROTATE_DEGREES = ROTATE_DEGREES + 180
 
-# Measured on the printed test: the text (back) page lands 1.5mm left of the art page.
-# Shifting its margins right by that much compensates. Art page is untouched.
-TEXT_SHIFT = Mm(1.5)
+# Was Mm(1.5), applied as a left-margin shift, to compensate a left-shifted back page.
+# Retested 2026-09-27 after switching to a paper-guide slider that holds the sheet snug --
+# no offset needed. Now that positions are absolute (not margin-driven), this is a direct
+# X/Y nudge added to every back-page card position. Revisit if a duplex run shows drift.
+TEXT_SHIFT_X_IN = 0
+TEXT_SHIFT_Y_IN = 0
 
-# PC-20: 2mm bleed on the back (text) side only, matching the production card-back
+# PC-20: 1.5mm bleed on the back (text) side only, matching the production card-back
 # generators (build_postcard_L1/L2/L3/LD_pdf.py). The back is a flat colour so it can
 # safely print past the trim line; the front is edge-to-edge photo art, so it stays at
-# exact trim size -- no bleed applied there. Grown symmetrically so the box stays
-# centred on the same trim position.
-BLEED_IN = 2 / 25.4
+# exact trim size -- no bleed applied there. Grown symmetrically so the trim box stays
+# at the same absolute position.
+BLEED_IN = 1.5 / 25.4
 
 # Ink-saving test mode: draw an empty outline box at each card's exact size/position
 # instead of the actual image, so the alignment fix can be checked without printing art.
 OUTLINE_ONLY = False
-OUTLINE_WEIGHT_PT = 0.75  # hairline
-
+OUTLINE_WEIGHT_PX = 3
 
 # Matches PAPER in every build_postcard_<ID>_pdf.py -- the back's flat background colour.
 PAPER_RGB = (0xEF, 0xE3, 0xC4)
 SOURCE_DPI = 300
+EMU_PER_IN = 914400
 
 
 def rotated_image_stream(image_path, pad_in=0, rotate_degrees=ROTATE_DEGREES):
@@ -95,70 +107,92 @@ def rotated_image_stream(image_path, pad_in=0, rotate_degrees=ROTATE_DEGREES):
     return buf
 
 
-def remove_table_borders(table):
-    tbl_pr = table._tbl.tblPr
-    borders = tbl_pr.makeelement(qn("w:tblBorders"), {})
-    for edge in ("top", "left", "bottom", "right", "insideH", "insideV"):
-        el = borders.makeelement(qn(f"w:{edge}"), {qn("w:val"): "none"})
-        borders.append(el)
-    tbl_pr.append(borders)
+def outline_box_stream(w_in, h_in):
+    w_px = round(w_in * SOURCE_DPI)
+    h_px = round(h_in * SOURCE_DPI)
+    img = Image.new("RGBA", (w_px, h_px), (255, 255, 255, 0))
+    draw = ImageDraw.Draw(img)
+    draw.rectangle([0, 0, w_px - 1, h_px - 1], outline=(0, 0, 0, 255), width=OUTLINE_WEIGHT_PX)
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    buf.seek(0)
+    return buf
 
 
-def add_cell_outline(cell):
-    tc_pr = cell._tc.get_or_add_tcPr()
-    borders = tc_pr.makeelement(qn("w:tcBorders"), {})
-    sz = str(int(OUTLINE_WEIGHT_PT * 8))  # eighths of a point
-    for edge in ("top", "left", "bottom", "right"):
-        el = borders.makeelement(
-            qn(f"w:{edge}"), {qn("w:val"): "single", qn("w:sz"): sz, qn("w:color"): "000000"}
-        )
-        borders.append(el)
-    tc_pr.append(borders)
+def add_floating_picture(paragraph, image_stream, width_in, height_in, x_in, y_in):
+    """Insert a picture anchored to absolute page coordinates (top-left origin),
+    independent of margins, table cells, or any other auto-layout."""
+    run = paragraph.add_run()
+    run.add_picture(image_stream, width=Inches(width_in), height=Inches(height_in))
+    drawing = run._element.find(qn("w:drawing"))
+    inline = drawing.find(qn("wp:inline"))
+
+    inline.tag = qn("wp:anchor")
+    inline.set("behindDoc", "0")
+    inline.set("distT", "0")
+    inline.set("distB", "0")
+    inline.set("distL", "0")
+    inline.set("distR", "0")
+    inline.set("simplePos", "0")
+    inline.set("locked", "0")
+    inline.set("layoutInCell", "1")
+    inline.set("allowOverlap", "1")
+    inline.set("relativeHeight", "1")
+
+    simple_pos = inline.makeelement(qn("wp:simplePos"), {"x": "0", "y": "0"})
+    inline.insert(0, simple_pos)
+
+    pos_h = inline.makeelement(qn("wp:positionH"), {"relativeFrom": "page"})
+    off_h = pos_h.makeelement(qn("wp:posOffset"), {})
+    off_h.text = str(round(x_in * EMU_PER_IN))
+    pos_h.append(off_h)
+    inline.insert(1, pos_h)
+
+    pos_v = inline.makeelement(qn("wp:positionV"), {"relativeFrom": "page"})
+    off_v = pos_v.makeelement(qn("wp:posOffset"), {})
+    off_v.text = str(round(y_in * EMU_PER_IN))
+    pos_v.append(off_v)
+    inline.insert(2, pos_v)
+
+    extent = inline.find(qn("wp:extent"))
+    extent_index = list(inline).index(extent)
+    wrap_none = inline.makeelement(qn("wp:wrapNone"), {})
+    inline.insert(extent_index + 1, wrap_none)
 
 
-def add_card_cell(cell, card_id, image_path, bleed_in=0, rotate_degrees=ROTATE_DEGREES):
-    cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
-    if OUTLINE_ONLY:
-        add_cell_outline(cell)
-        return
-    run = cell.paragraphs[0].add_run()
-    run.add_picture(
-        rotated_image_stream(image_path, pad_in=bleed_in, rotate_degrees=rotate_degrees),
-        width=Inches(CARD_W_IN + 2 * bleed_in),
-        height=Inches(CARD_H_IN + 2 * bleed_in),
-    )
-
-
-def build_page(doc, card_ids, source_map, bleed_in=0, rotate_degrees=ROTATE_DEGREES):
-    table = doc.add_table(rows=1, cols=len(card_ids))
-    table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    table.autofit = False
-    remove_table_borders(table)
-    row = table.rows[0]
-    row.height_rule = WD_ROW_HEIGHT_RULE.EXACTLY
-    row.height = Inches(CARD_H_IN + 2 * bleed_in)
-    gap_in = 0 if OUTLINE_ONLY else 0.2
-    cell_width = Inches(CARD_W_IN + 2 * bleed_in + gap_in)
-    for cell, card_id in zip(row.cells, card_ids):
-        cell.width = cell_width
-        add_card_cell(cell, card_id, source_map[card_id], bleed_in=bleed_in, rotate_degrees=rotate_degrees)
-
-
-def set_margins(section, horizontal_shift=0):
-    section.top_margin = Inches(TOP_MARGIN_IN)
-    section.left_margin = Inches(SIDE_MARGIN_IN) + horizontal_shift
-    section.right_margin = Inches(SIDE_MARGIN_IN) - horizontal_shift
-    section.bottom_margin = Inches(0.3)
+def build_page(doc, card_ids, source_map, bleed_in=0, rotate_degrees=ROTATE_DEGREES,
+               shift_x_in=0, shift_y_in=0, mirror=False):
+    paragraph = doc.add_paragraph()
+    for i, card_id in enumerate(card_ids):
+        front_x = SIDE_MARGIN_IN + i * (CARD_W_IN + GAP_IN)
+        # Long-edge flip mirrors left-right: a card N in from the left on the front must sit
+        # N in from the RIGHT on the back. Reversing card order alone only mirrors correctly
+        # when the layout is centred on the page, which it isn't (0.6in left vs 0.7in right)
+        # -- that left the back 2.54mm off (printed test, 2026-09-27).
+        trim_x = (PAGE_W_IN - front_x - CARD_W_IN if mirror else front_x) + shift_x_in
+        trim_y = TOP_MARGIN_IN + shift_y_in
+        img_x = trim_x - bleed_in
+        img_y = trim_y - bleed_in
+        img_w = CARD_W_IN + 2 * bleed_in
+        img_h = CARD_H_IN + 2 * bleed_in
+        if OUTLINE_ONLY:
+            stream = outline_box_stream(img_w, img_h)
+        else:
+            stream = rotated_image_stream(source_map[card_id], pad_in=bleed_in, rotate_degrees=rotate_degrees)
+        add_floating_picture(paragraph, stream, img_w, img_h, img_x, img_y)
 
 
 def build_pair(card_ids, out_name):
     doc = Document()
-    set_margins(doc.sections[0])
     build_page(doc, card_ids, CARD_ART)
 
-    text_section = doc.add_section(WD_SECTION.NEW_PAGE)
-    set_margins(text_section, horizontal_shift=TEXT_SHIFT)
-    build_page(doc, card_ids, CARD_TEXT, bleed_in=BLEED_IN, rotate_degrees=TEXT_ROTATE_DEGREES)
+    doc.add_section(WD_SECTION.NEW_PAGE)
+    # Confirmed 2026-09-27 (corner-mark test): the manual flip is long-edge (book-style) --
+    # top stays top, left and right swap. mirror=True measures each back card from the right
+    # page edge, so it lands on the same physical card as the front. (Was same order, tuned for an
+    # assumed short-edge/calendar flip that turned out not to match the actual process.)
+    build_page(doc, card_ids, CARD_TEXT, bleed_in=BLEED_IN, rotate_degrees=TEXT_ROTATE_DEGREES,
+               shift_x_in=TEXT_SHIFT_X_IN, shift_y_in=TEXT_SHIFT_Y_IN, mirror=True)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     out_path = OUT_DIR / out_name

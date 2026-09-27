@@ -1,5 +1,27 @@
 # Project Handoff
 
+## Session close — 2026-09-27 — Print-test back page mirrored from the right edge (Claude Code)
+
+**Task/status:** On the L1/L2 print test, the back text sat off-centre from the front art, shifted right. Cause: the back page measured card positions from the left and only swapped the card order. That mirrors correctly only on a centred layout, and this layout isn't centred (0.6in left margin vs 0.7in right). The error was 2.54mm. Fixed using the user's rule: each back card sits the same distance from the RIGHT edge as its front sits from the LEFT, minus the 1.5mm bleed. Y is unchanged under a long-edge flip, minus the bleed. The bleed is kept.
+
+**Files changed:** `NorseBackpack/Postcards/build_print_test_docx.py` (new `PAGE_W_IN`; `build_page(..., mirror=True)` for the back page, replacing `reversed(card_ids)`). Rebuilt all 11 `output/docx/PrintTest_*.docx`. `PrintTest_L1_L2_Outline.docx` was untracked and was not touched.
+
+**Checks:** read the anchor positions from `PrintTest_L1_L2.docx`. L1 front: 15.24mm from the left. L1 back: 13.74mm from the right, 91.9 × 130mm, y 6.12mm (front y 7.62mm). L2 matches in the same way. The .docx was not rendered visually; the geometry was checked from the XML only. No commit or push.
+
+**Follow-up (same session):** The user reprinted L1/L2 and confirmed the alignment works. These settings are now final: the back page mirrors from the right edge and has a 1.5mm bleed. The other 18 `build_postcard_<ID>_pdf.py` scripts (A*, H*, R*) had no bleed, so each `draw_back_card` now gets the same 1.5mm PAPER bleed as L1/L2/L3/LD. Their Letter sheets were already centred horizontally, so they needed no mirroring. Rebuilt all 22 card PDFs (single + Letter), `build_page_images.py` (22 backs), `Norse_Postcards_Full_Print.pdf` (44 pages) and all 11 print .docx files. Rendered the R1 Letter back page and checked it: the bleed extends past the crop marks. The back PNGs are unchanged because the single-card page clips the bleed; the .docx pads its own bleed.
+
+**Next action:** print the remaining sheets from `output/docx/PrintTest_*.docx`.
+
+## Session close — 2026-09-27 — Roumare Forest boar correction (Codex)
+
+**Task/status:** Fixed the small background boar on postcard R6. Its rear looked like a second head; it now has a rounded rump, two hind legs and a short curled tail. Three boars remain countable.
+
+**Files changed:** added `NorseBackpack/Postcards/Postcard_R6_Roumare_Forest_Illustration_v3.png`; updated `build_postcard_front_images.py` to use it; rebuilt `Postcard_R6_Roumare_Forest_Front.png`, both R6 print PDFs and `output/pdf/Norse_Postcards_Full_Print.pdf`. Recorded the exact correction prompts in `NorseBackpack/Norse_Brainstorm.html`. Existing untracked SoleTally STL files were left alone.
+
+**Checks:** inspected the corrected boar at enlarged size, the full 1500 × 1050 front and the rendered R6 print PDF. Opened the Postcards tab over local HTTP and checked the R6 layout; browser console had no errors. `git diff --check` passed. No commit or push.
+
+**Next action:** review the updated R6 card at print size before the next print run. No puzzle rule changed.
+
 ## Session close — 2026-09-26 — Illustrated covers for all four adventures
 
 **Task/status:** user asked for backpack-on-a-table scene covers like Hiking's for each adventure. Completed locally with new Norse, Aurora and Space Exploration illustrations; reused Hiking's existing cover.

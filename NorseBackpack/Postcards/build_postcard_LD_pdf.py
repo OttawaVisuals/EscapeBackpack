@@ -65,11 +65,12 @@ def draw_front_card(c, x=0, y=0):
 def draw_back_card(c, x=0, y=0):
     c.saveState()
     c.translate(x, y)
-    # PC-20: bleed. Manual duplex prints leave ~1-2mm registration error, and without
-    # extra background past the trim line a slightly-off cut reveals a white band.
-    # 2mm bleed extends the PAPER fill past the card edge; only the sheet crop marks
-    # define trim, so this prints harmlessly into the surrounding paper.
-    BLEED = 2 / 25.4 * 72
+    # PC-20: bleed. Kept as a safety margin even after the manual-duplex offset was
+    # fixed (paper-guide slider) -- without extra background past the trim line, a
+    # slightly-off cut still reveals a white band. 1.5mm bleed extends the PAPER fill
+    # past the card edge; only the sheet crop marks define trim, so this prints
+    # harmlessly into the surrounding paper.
+    BLEED = 1.5 / 25.4 * 72
     c.setFillColor(PAPER)
     c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
     c.setStrokeColor(RULE)
