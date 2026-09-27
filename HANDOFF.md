@@ -1,5 +1,25 @@
 # Project Handoff
 
+## Session close — 2026-09-26 — Illustrated covers for all four adventures
+
+**Task/status:** user asked for backpack-on-a-table scene covers like Hiking's for each adventure. Completed locally with new Norse, Aurora and Space Exploration illustrations; reused Hiking's existing cover.
+
+**Files changed:** added `NorseBackpack/Art/Brand/Norse_Backpack_Scene_v1.png`, `Space Station Aurora/Brand/Aurora_Backpack_Scene_v1.png`, and `Brand/Space_Exploration_Backpack_Scene_v1.png`; changed `index.html` to show all four covers and projects. Added Norse cover and its exact ImageGen prompt to `NorseBackpack/Norse_Brainstorm.html`'s Design guide. Added the Aurora prompt to `Space Station Aurora/Brand/README.md`. The sibling `escape-backpack-games` site now shows all four covers and concise cards; the sibling `Space-Exploration` repo has the cover and asset record `AS-001`. Shared copies are under `C:\EscapeBackpack\brand\`.
+
+**Checks:** all four covers are 1536 × 1024. Served both project listings over local HTTP and visually checked desktop layouts; checked the Norse Design guide image over local HTTP. The public site's narrow layout was checked at Chrome headless's 500 CSS px minimum viewport; its navigation now wraps. `git diff --check` is clean for changed text. The Space kit reports 18 valid records and was rebuilt. No commit or push.
+
+**Next action:** review the new scene covers in context; adjust any scene details the user wants changed. No puzzle or story content was decided by the art.
+
+## Session close — 2026-09-26 — Adopted Aurora station badge
+
+**Task/status:** user selected the simplified space-station symbol as Space Station Aurora's public-facing mark. Done locally.
+
+**Files changed:** added `Space Station Aurora/Brand/` with SVG/PNG icon, banner and palette/type sheet plus a README explaining that the older maple-leaf patch remains an in-world mark. Added the new badge to this repo's `index.html`. In the sibling `escape-backpack-games` repo, added `assets/aurora-icon.png` and replaced the Aurora card's placeholder cover in `index.html`, with matching `styles.css`. Shared concept sources remain under `C:\EscapeBackpack\brand\`.
+
+**Checks:** Aurora SVG/PNG exports parsed successfully. Served both sites over local HTTP and visually checked the Aurora card on each page in headless Chrome; the icon renders and the layouts fit. No commit or push.
+
+**Next action:** when publishing the Aurora repository, set `Brand/banner.png` as its GitHub social preview if desired. No game prop or in-world patch replacement is pending from this decision.
+
 ## Session close — 2026-09-26 — Reviewed all 22 cards for message/Fun Fact overlap, rewrote five more (Claude Code)
 
 **Task/status:** continuing from the R1/R6/RD pass (below), user asked for a full review of all 22 cards to flag any others where the Fun Fact is too close to the handwritten message. Extracted and compared both texts for every card; flagged five, ranked by severity: `AD` (strongest — "brother's harbor... wintered here" stated near-verbatim in both), `L3` (name translation + barren/treeless description repeated), `LD` ("little church his wife built" repeated), `HD` ("made his fortune" → "funded his claim to the throne" — same core claim, different wording), and `L2` (borderline — only the "Forest Land" translation phrase repeated). Drafted rewrites for all five, user approved, wrote them in.
