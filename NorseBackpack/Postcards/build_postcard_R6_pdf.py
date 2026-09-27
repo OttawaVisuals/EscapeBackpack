@@ -165,6 +165,8 @@ def draw_back_card(c, x=0, y=0):
     # Fun Fact -- typed, real trivia (PC-12). Carries the counting-lock's sorting clue: 911,
     # middle of the three (PZ-19) -- sorts after Walcheren's "before 911" and before Chalus's
     # 1199.
+    # 26 Sept 2026: rewritten to stop restating the message's "nobody can pin the legend down"
+    # hedge -- now states the 911 treaty itself, still keeping the 911 date the lock needs.
     funfact_top, funfact_bottom = 120, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
@@ -175,9 +177,9 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(INK)
     fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
     fact_text = (
-        "This forest sits just outside Rouen, the city Rollo made his capital when he was "
-        "granted all of Normandy in 911. Its own naming legend claims a link to him, though no "
-        "source can confirm it — not every family story survives with its receipts."
+        "In 911 the Treaty of Saint-Clair-sur-Epte handed Rollo all of Normandy, with Rouen "
+        "— a few miles from this forest — as his new capital: the deal that turned a Viking "
+        "raider into a duke."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

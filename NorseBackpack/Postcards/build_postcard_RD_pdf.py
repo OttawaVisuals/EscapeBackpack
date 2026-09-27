@@ -165,6 +165,8 @@ def draw_back_card(c, x=0, y=0):
 
     # Fun Fact -- typed, real trivia (PC-12). Carries the counting-lock's sorting clue: "before
     # 911", earliest of the three (PZ-19) -- sorts before Roumare's 911 and Chalus's 1199.
+    # 26 Sept 2026: rewritten to stop restating the message's "if the old chronicles are to be
+    # believed" hedge -- still keeps "before 911" the lock needs.
     funfact_top, funfact_bottom = 120, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
@@ -175,10 +177,8 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(INK)
     fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
     fact_text = (
-        "Some medieval accounts say Rollo spent years raiding and wintering around Frisia and "
-        "Zeeland, this island included, before he ever became Duke of Normandy in 911. It’s "
-        "semi-legendary, but real Viking fleets were active on this exact coast in that same "
-        "period."
+        "This stretch of coast saw Viking fleets wintering here for years before 911, when "
+        "Rollo swapped raiding for a dukedom just south of here."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

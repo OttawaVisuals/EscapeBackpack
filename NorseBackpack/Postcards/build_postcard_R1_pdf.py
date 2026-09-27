@@ -84,11 +84,11 @@ def draw_back_card(c, x=0, y=0):
     # hedge. Mentions a crossbow bolt in passing (flavour) without stating the hidden count of
     # two -- that stays in the front art for players to find themselves.
     # 20 Sept 2026 (PZ-18) -- rule 1: deleted "but this is where I began". The Walcheren-Chalus journal entry places
-    # this card now. The Richard-dying-there line stays -- it is about the family story, not her trip.
+    # this card now. 26 Sept 2026: also deleted "Odd place to start his family's story, at the very
+    # end of it" -- not a position claim, but the user found it confusing alongside the ticket, so it goes too.
     paragraphs = [
         "The one with the real paper trail, for once: Châlus, where Richard the Lionheart’s whole story ends. He was besieging a tiny castle here over a supposed treasure hoard, of all things, when a crossbow bolt caught him in the shoulder.",
         "The wound turned to gangrene and he was gone within the fortnight. Grim, but it’s the kind of ending Rollo’s whole line seems to build toward — the fighting, always the fighting. Found an old carving near the gate of a bolt just like the one that got him.",
-        "Odd place to start his family’s story, at the very end of it.",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 7.7, 8.6
@@ -164,6 +164,8 @@ def draw_back_card(c, x=0, y=0):
     # Fun Fact -- typed, real trivia (PC-12). Carries the counting-lock's sorting clue: the
     # exact date 1199, latest of the three (PZ-19) -- sorts after Walcheren's "before 911" and
     # Roumare's "911".
+    # 26 Sept 2026: rewritten to stop retelling the message's bolt/shoulder/gangrene story --
+    # now a different fact (the lineage span) that still keeps the 1199 date the lock needs.
     funfact_top, funfact_bottom = 120, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
@@ -174,9 +176,9 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(INK)
     fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
     fact_text = (
-        "Richard the Lionheart — Rollo’s own descendant, five generations down — died "
-        "on 6 April 1199, twelve days after a crossbow bolt fired from the castle walls at "
-        "Châlus-Chabrol struck his shoulder. The wound itself looked minor at first."
+        "Richard the Lionheart died at Châlus-Chabrol on 6 April 1199 — nearly three "
+        "centuries after Rollo, and the last of his line to die fighting on this stretch "
+        "of France."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

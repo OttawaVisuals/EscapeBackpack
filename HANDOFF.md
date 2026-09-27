@@ -1,5 +1,15 @@
 # Project Handoff
 
+## Session close — 2026-09-26 — R1/R6/RD text edits: dropped a line, rewrote three Fun Facts (Claude Code)
+
+**Task/status:** user asked for R1's, R6's and RD's postcard message/Fun Fact text, then made two calls: (1) drop R1's "Odd place to start his family's story, at the very end of it" line (not a position claim per the existing rule-1 note, but the user found it confusing next to the Walcheren–Châlus ticket — removed anyway); (2) all three cards' Fun Facts were just restating their own handwritten message (R1: same crossbow-bolt-to-shoulder story twice; R6/RD: same "legend nobody can confirm" hedge twice). Rewrote all three Fun Facts to state a different fact while keeping the date each carries for the counting-lock puzzle (`PZ-19`: before 911 / 911 / 1199 sort order).
+
+**Files changed:** `NorseBackpack/Postcards/build_postcard_R1_pdf.py`, `build_postcard_R6_pdf.py`, `build_postcard_RD_pdf.py` (message/Fun Fact text plus updated inline comments); `NorseBackpack/Norse_Brainstorm.html` (struck through and superseded the old rule-1 "keep" note on R1, and added dated notes on `PZ-19`'s three history bullets explaining what each Fun Fact now says and why); this handoff.
+
+**Checks:** regenerated all three individual PDFs (`build_postcard_R1_pdf.py`/`R6`/`RD`) and rendered their back pages to PNG for visual inspection — text fits inside the Fun Fact box with no overflow, dates intact. Rebuilt `Norse_Postcards_Full_Print.pdf` (44 pages) via `build_postcard_collection.py` and scanned all pages' extracted text for the old wording — none found. Confirmed by grep that the old wording wasn't duplicated in any other file before editing. Did not do an in-app browser visual check — this session only touched Python-generated PDFs and one HTML decision-log edit, not interactive HTML.
+
+**Next action:** none pending from this task. Still open from prior sessions: measure Rollo's map at 1:5 against the ruler to confirm the rebus-distance code (`PZ-14`/`PC-18` step 6, still the only unmeasured lock code), and the physical build/test backlog (coins, tally-wheel print test, keepsake medallion, raven's-flights card, luggage tags, hnefatafl board purchase, stamp print-proofs).
+
 ## Session close — 2026-09-26 — Reviewed Codex's work, closed six open questions, decided containers (Claude Code)
 
 **Task/status:** reviewed the morning's Codex work (postcard title alignment, comb knotwork) and committed/pushed it (it had been sitting uncommitted). Then worked through the Open questions tab with the user turn by turn: corrected several stale "still open" pills that lagged work already done, and closed six real open questions by decision. All changes committed and pushed to `origin/main`; nothing pending.
