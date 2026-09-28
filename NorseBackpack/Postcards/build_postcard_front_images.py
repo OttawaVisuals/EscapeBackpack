@@ -18,13 +18,13 @@ CARDS = [
         "NEWFOUNDLAND AND LABRADOR",
     ),
     (
-        POSTCARDS / "Postcard_L2_Battle_Harbour_Illustration_v1.png",
+        POSTCARDS / "Postcard_L2_Battle_Harbour_Illustration_v2.png",
         POSTCARDS / "Postcard_L2_Battle_Harbour_Front.png",
         "BATTLE HARBOUR",
         "NEWFOUNDLAND AND LABRADOR",
     ),
     (
-        POSTCARDS / "Postcard_L3_Baffin_Island_Illustration_v1.png",
+        POSTCARDS / "Postcard_L3_Baffin_Island_Illustration_v2.png",
         POSTCARDS / "Postcard_L3_Baffin_Island_Front.png",
         "BAFFIN ISLAND",
         "NUNAVUT",

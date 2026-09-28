@@ -1,5 +1,15 @@
 # Project Handoff
 
+## Session close — 2026-09-27 — L2/L3 sky digits enlarged (Codex)
+
+**Task/status:** Enlarged the split `1576` cloud-fleck digits about 1.4× for the playtest follow-up. The four joined x-centres stay at 350, 620, 880 and 1150 px, with the seam on the card edges. L2/L3 v1 sources are retained; the front builder now reads v2.
+
+**Files changed:** New L2/L3 `Illustration_v2.png` and `Postcards/enlarge_topedge_digits.py`; refreshed L2/L3 front PNGs, `Postcard_L2_L3_1576_Alignment_Proof.png`, top-edge test PDF, L2/L3 single and Letter PDFs, the full-deck PDF preview, and the two affected `PrintTest_*.docx` pairs. Updated `build_postcard_front_images.py` and documented the measured coordinates and exact method in the top-edge puzzle (`PC-06`/`PC-13`) in `Norse_Brainstorm.html`. Other existing work was preserved. Commit and push requested in follow-up.
+
+**Checks:** The new 4× joined proof reads `1576` with no visible offset. L2/L3 v2 differ from v1 only in rows 0–49; every pixel below the sky edit is identical. Rendered and inspected both front PDFs and the true-size test sheet. The Norse page loaded over local HTTP; the puzzle layout was visually checked, and the browser console showed no errors. All inline scripts passed `node --check`; `git diff --check` was clean. Physical legibility on the final card stock remains untested.
+
+**Next action:** Print the refreshed `PrintTest_L1_L2.docx` and `PrintTest_L3_LD.docx` at actual size, trim and join L2/L3 under ordinary lighting, and have a fresh reader report the digits without prompting.
+
 ## Session close — 2026-09-27 — First playtest feedback on Leif's leg (Claude Code)
 
 **Task/status:** An outside playtester gave four notes on Leif's leg. First, at the user's request, froze the played version in `Storage/Norse_2026-09-27_Playtest1/`. It holds all of `NorseBackpack/` plus `output/pdf` and `output/docx`: 711 files, 1.26 GB, with a README. `Storage/` is in `.gitignore`, so it stays local. The user then approved the lock swap and chose the subtle wording for every card:
