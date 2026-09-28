@@ -1,5 +1,118 @@
 # Project Handoff
 
+## Session close — 2026-09-28 — Scale and hot-tea rebus drafts (Codex)
+
+**Task/status:** Added a second scale concept: close-up overlapping fish scale plates without a head or tail, plus a hot-tea cup with three steam lines. Kept the earlier whole-fish and two-finger hand drafts for comparison. All four draft icons are shown together in the Bayeux icon section of `Norse_Brainstorm.html` with the new exact prompts. Production icons and print files remain unchanged.
+
+**Files changed:** Added `Rebus_Fish_Scale_Patch_Bayeux_v3_Draft.png` and `Rebus_Teacup_Hot_Bayeux_v3_Draft.png`; updated `Norse_Brainstorm.html` draft note/gallery/prompts. Earlier icon draft files from the prior handoff remain.
+
+**Checks:** Both PNGs are 1254 × 1254 RGBA with transparency. Loaded the gallery over local HTTP and visually checked all four draft images; browser console had no errors. No print-size or fresh-reader check yet.
+
+**Next action:** User reviews whether the scale patch and steam treatment fit, then decide whether to update the production icons and R5 print files.
+
+## Session close — 2026-09-28 — Postcard update batch 1 built: Leif + Rollo (Claude Code)
+
+**Task/status:** The user exported drafts from the Postcard update tab. I reviewed them, and the user decided each point. Built at **9.5 pt message / 9 pt Fun Fact**:
+- L1, L2, L3, LD, R1, R2, R3, R4, R6: the user's text, with the small agreed fixes.
+- RD: resize only.
+
+What changed on the cards:
+- **LD** has "spell" underlined (the user's choice, for now).
+- **L1**'s message no longer names the place. L'Anse aux Meadows is still in the Fun Fact, the postmark and the front title.
+- **R5** was built the same day. The user chose line B: "Good thing I packed my old ruler: they only make sense at the right scale." The rebus still reads SCALE 1 TO 5.
+
+The museum ticket is **renamed to the Viking Museum of Brattahlíð** to match LD. The new front art is v5, which redraws only the two title lines. The back index and BEAR→3212 are unchanged.
+
+Aud's cards, Harald's cards and AD are still at 7.7 / 7.4 pt (batch 2).
+
+**Files changed:**
+- `NorseBackpack/Postcards/build_postcard_{L1,L2,L3,LD,R1,R2,R3,R4,R5,R6,RD}_pdf.py`. LD also gained `_word_` underline drawing.
+- Their back PNGs, single and Letter PDFs, and `Norse_Postcards_Full_Print.pdf`.
+- 6 `PrintTest_*` postcard .docx files, plus `PrintTest_MuseumTicket.docx`. The other .docx files were rebuilt but had identical images, so they were restored.
+- `Props/MuseumTicket/build_museum_ticket_pdf.py`, new `Museum_Ticket_Front_300dpi_v5_transparent.png` and new `rename_ticket_header.py`, the museum ticket PDFs, and `Props/_Renders/Museum_Ticket_Front.png`.
+- `Norse_Brainstorm.html`:
+  - ticket name and dated notes (itinerary rows, containers, Leif map, `PZ-12`, prop lists, puzzle data, adventure);
+  - dated notes on the opening, beasts, word-lock and rebus clues;
+  - a `PZ-14` "still to do" block (R5 line, a candidate 1:125 rebus reading, art redo list);
+  - the Postcard update tab's data refreshed to the built text, with a Batch 1 note.
+
+**Checks:**
+- Viewed all 10 new backs at full size: everything fits, the underline renders, and the R3/R4 rebus icons are clear of the text.
+- Viewed the ticket header render.
+- `node --check` passed on all 4 page scripts, and `git diff --check` is clean.
+- Headless Chrome over `file://` showed no console errors on the tab.
+- Nothing printed; no commit.
+
+**1:125 decided (same session):** R5's target scale is now 1:125, replacing 1:5. The printed rebus still shows SCALE 1 TO 5 until Codex redraws it; how "1 2 5" is drawn is not designed yet. See `PZ-14`.
+
+**Document sync (same session):**
+- `Norse_Brainstorm.html`:
+  - the design-guide type scale now reads 9.5/10.6, 9.8/11 and 9/10.7;
+  - `PZ-05` has a partly-superseded note, plus dated notes on the R6, R2 and LD lines that were cut;
+  - the final-riddle quotes now read L1 "first stop of my journey" and R5 "after seeing it on the tapestry" (tables and the clue data);
+  - every 1:5 mention now carries 1:125 (PC-15, PZ-05, PZ-14, the puzzle data, the adventure step, the R5 caption);
+  - the ticket name is updated in 5 more places, and the butternut and green-line mentions are dated.
+- `Tools/final_riddle_clues.py`: the labels are reworded. Re-run: TEST 1 and TEST 2 PASS.
+- R5 script comment notes 1:125.
+- Left as history: `Norse_Brainstorm_Review.html` and the `Review_2026-09-22/` snapshot, older handoff entries, and the ImageGen prompts for ticket v1/v2.
+- Checks: `node --check` passed on the page scripts, and `git diff --check` is clean. Headless Chrome showed 0 errors on the postcard-update, final-riddle, guide and puzzles tabs.
+
+**Next action:** print `PrintTest_L1_L2`, `L3_LD`, `R1_R2`, `R3_R4`, `R5_R6`, `RD_A1` and `MuseumTicket` to check the 9.5 / 9 pt text and the new ticket header on paper.
+
+**Open:** art redo for Codex, listed in `PZ-14`: R4 teacup steam, R5 two-finger hand, better fish scales. Also still open: the Harald map E-column mistake and ordering by difficulty (from the review), and A2's "south" clue not found in the text.
+
+## Session close — 2026-09-28 — Rebus scales and two-finger hand drafts (Codex)
+
+**Task/status:** User requested clearer fish scales and a hand showing two fingers for the Norse rebus. Generated two review drafts using built-in ImageGen, preserving the existing palette and drawing style. R5 currently uses the scale patch, I, plain arrow and five-pip die; its builder and print files were not changed in this draft pass.
+
+**Files changed:** Added `NorseBackpack/Postcards/RebusIcons/Rebus_Fish_Scales_Bayeux_v2_Draft.png` and `Rebus_Hand_Two_Bayeux_v1_Draft.png`. Added the two drafts, exact prompts and review status under the Bayeux icon gallery in `NorseBackpack/Norse_Brainstorm.html` (`rebus-rework-20260928`, PZ-14 / PC-15). Existing uncommitted postcard/text/print work was preserved.
+
+**Checks:** Both generated images inspected visually: fish scales are attached to an identifiable fish; hand has two raised fingers and three folded digits. Both are 1254 × 1254 RGBA PNGs with alpha spanning 0–255. Gallery inspected in the in-app browser over local HTTP on port 8734; corrected its spacing and confirmed both images load on the cream background. Browser reported no console errors. `git diff --check` passed (line-ending warnings only). No print-size or fresh-reader test yet.
+
+**Next action:** Review the two drafts, especially whether the fish prompts “scale”; then apply the selected icons to R5 and rebuild its print outputs.
+
+
+## Session close — 2026-09-28 — "Postcard update" review tab (Claude Code)
+
+**Task/status:** A reviewer's feedback on the postcards: bigger text, shorter and punchier Fun Facts, and handwritten messages that are more playful and refer more to the puzzles. The user chose **9.5 pt message / 9 pt Fun Fact** (was 7.7 / 7.4) and allowed L1 to be rewritten to fit. At the user's request, built a new **Postcard update** tab in `Norse_Brainstorm.html` (`#view-postcard-update`). It has one section per card (all 22, in release order), and each section shows:
+- the front art and the current back;
+- the puzzle step the card belongs to;
+- what the card must keep for the puzzles;
+- the original message and Fun Fact;
+- one shorter alternative fact, not source-checked (HI-05);
+- draft boxes for the message, sign-off, Fun Fact and notes;
+- a live canvas preview of the back at the new sizes, with a "lines spare/over" meter.
+
+Rebus, rune-key and comb space is reserved in the preview (R3/R4/R5, H4, HD). AD stays at 7.7 pt because its lines are locked to the comb. Drafts are stored in localStorage. **Export** writes `Norse_Postcard_Update_<date>.json` (there are also Copy and Import buttons). No postcard files were changed.
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html` only: a new nav button and a new `<section id="postcard-update">` with its own style and script, placed before `</main>`. The card text was extracted from the `build_postcard_*_pdf.py` scripts.
+
+**Checks:** `node --check` passed on the new script, and `git diff --check` is clean. The in-app browser refused localhost again, so I rendered the page in headless Chrome over `file://` instead. The overview, the L1 section and the R3/R4/R5/H4/H5/HD/AD previews all rendered correctly, and there were no console errors. Typing into the boxes and the export download were **not** exercised. The meter uses browser font metrics and may differ from the built PDF by about one line. A pre-existing stray "Aud map styling pass" note block (around line 3544, outside any section) shows above every tab. It is untouched.
+
+**Next action:** the user fills in drafts in the tab, exports the JSON and hands it back. Claude then updates the build scripts and rebuilds the backs at 9.5/9 pt.
+
+**Open from the review (not started):** Harald map has 2 symbols in the E column; consider ordering puzzles by difficulty instead of by leg. A2's "direction (south)" clue, cited in the Puzzles tab, was not found in the current A2 text.
+
+## Session close — 2026-09-28 — Raven's flights player card built (Claude Code)
+
+**Task/status:** The raven's flights card had no print file at all. The user chose 4 × 3 in on plain white paper. Built it from the approved 22 Sept spec (`RV-21`): graph data from `review_content.py`, node layout from the accepted sketch, approved title and clue, four blank answer boxes and a small raven emblem (`Art/Raven/Raven_Profile_Icon_v1.png`, in colour). No route or answer is marked. The script asserts that HRAFN reads 2648 before building.
+
+**Files changed:** new `NorseBackpack/Props/RavenFlights/build_raven_flights_pdf.py` and `Raven_Flights_Card_preview.png`; new `output/pdf/Raven_Flights_Card_Print.pdf` (4 × 3 in, one page) and `output/docx/PrintTest_RavenFlights.docx` (single page; card trim at 0.6 in from the left and 0.55 in from the top, with corner crop marks). `Norse_Brainstorm.html`: `PZ-02` pill and a dated note, plus the preview image on the lock-9 prop.
+
+**Checks:** rendered the PDF and the .docx image and inspected both: all 12 flights and digits are legible, and there are no overlaps. Read the .docx anchor: 4.5 × 3.5 in picture at x 0.35 in, y 0.3 in. `node --check` passed on all 3 inline scripts, and `git diff --check` is clean. The in-app browser refused localhost again, so the page was **not** checked visually. Nothing printed; no commit.
+
+**Next action:** print `PrintTest_RavenFlights.docx`, trim at the crop marks, and check that the small digits (Cinzel, 8.5 pt) read clearly at arm's length.
+
+## Session close — 2026-09-28 — A3 art prints upside down (Claude Code)
+
+**Task/status:** The user asked for postcard A3's art to print upside down. Added `ART_EXTRA_ROTATE = {"A3": 180}` to `NorseBackpack/Postcards/build_print_test_docx.py`. It applies to the art page only; the back is unchanged. Rebuilt the print files. Only `PrintTest_A2_A3.docx` changed in content. The other 10 rebuilt files were byte-for-byte the same images, so they were restored to avoid noise. The single and Letter PDFs for A3 are **not** flipped.
+
+**Files changed:** `build_print_test_docx.py`; `output/docx/PrintTest_A2_A3.docx`; `NorseBackpack/Norse_Brainstorm.html` (dated note in the A3 postcard header).
+
+**Checks:** compared the media in every PrintTest .docx with HEAD: only A3's art image differs. Extracted and viewed the four A2/A3 images: A3's art is rotated 180° from A2's, and both backs are unchanged. Word rendering was not checked, and nothing was printed. No commit.
+
+**Next action:** print `PrintTest_A2_A3.docx` and check that A3's art is upside down relative to its back.
+
 ## Session close — 2026-09-27 — L2/L3 sky digits enlarged (Codex)
 
 **Task/status:** Enlarged the split `1576` cloud-fleck digits about 1.4× for the playtest follow-up. The four joined x-centres stay at 350, 620, 880 and 1150 px, with the seam on the card edges. L2/L3 v1 sources are retained; the front builder now reads v2.

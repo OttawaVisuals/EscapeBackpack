@@ -91,12 +91,15 @@ def draw_back_card(c, x=0, y=0):
     # 20 Sept 2026 (PZ-18) -- rule 2: "Winchester next" was deictic -- it pointed at a card that is
     # not the one in hand, so any change to how the deck is collected or laid out destroyed the
     # referent. The Channel-ferry journal entry places this card now.
+    # 28 Sept 2026 (postcard update, batch 1 -- Leif + Rollo): message rewritten. Text from the user's
+    # Postcard update tab export; message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     paragraphs = [
-        "Winchester today — freezing here, but worth every minute. This cathedral is where Richard the Lionheart was crowned a second time, in 1194, after finally being released from years held captive abroad.",
-        "Another one of Rollo’s own line! Funny to think it all traces back to one deal, centuries earlier.",
+        'Winchester today — freezing here, but worth every minute. This cathedral is where Richard the Lionheart was crowned a second time.',
+        'Another one of Rollo’s own line! Funny to think it’s all because of one deal, centuries earlier.',
+        'I got to enjoy the local custom of a scone and hot beverage.',
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
         for line in wrap_text(paragraph, font, size, divider - left - 12):
@@ -105,9 +108,9 @@ def draw_back_card(c, x=0, y=0):
             y -= leading
         y -= 1.8
 
-    c.setFont("NothingYouCouldDo", 8)
+    c.setFont("NothingYouCouldDo", 9.8)
     c.drawString(left, y, "Love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.drawString(left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -124,7 +127,7 @@ def draw_back_card(c, x=0, y=0):
         c.drawImage(icon, -size / 2, -size / 2, size, size, mask="auto")
         c.restoreState()
 
-    row_y = (y - 9) - 26
+    row_y = (y - 11) - 26
     draw_rebus_icon("Rebus_Tree_Bayeux_v2.png", 55, row_y + 2, 28, -5)
     draw_rebus_icon("Rebus_Teacup_Bayeux_v2.png", 108, row_y - 4, 26, 6)
 
@@ -192,11 +195,11 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
+    # 28 Sept 2026 (postcard update, batch 1 -- Leif + Rollo): Fun Fact rewritten. Text from the user's
+    # Postcard update tab export; message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        "The Round Table hanging in Winchester’s Great Hall is a genuine medieval artifact — "
-        "just not King Arthur’s. Tree-ring dating shows it was built around 1290, and repainted "
-        "for Henry VIII, who had his own face put on it as King Arthur."
+        'The Round Table hanging in Winchester’s Great Hall is a genuine medieval artifact — just not King Arthur’s.'
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

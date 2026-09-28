@@ -90,13 +90,14 @@ def draw_back_card(c, x=0, y=0):
     # art, but the actual lock digit is six.
     # 20 Sept 2026 (PZ-18) -- rule 1: deleted "The last of Rollo's places on my list" and "to finish". The Rollo->Aud
     # ticket proves this card closes the leg. The Rouen proximity stays -- it is map-verifiable flavour.
+    # 28 Sept 2026 (postcard update, batch 1 -- Leif + Rollo): message rewritten. Text from the user's
+    # Postcard update tab export; message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     paragraphs = [
-        "Rollo’s own Normandy, and this little forest just outside Rouen has a local legend all its own, though nobody can really pin the story down.",
-        "What I can tell you is the wild boar are real: I counted a few slipping through the beech and oak, and for every one I actually saw, I’d bet good money there was a second one just out of sight.",
-        "I’ve ended up right back beside Rouen.",
+        'Rollo’s own Normandy, and this little forest just outside Rouen has a local legend all its own, though nobody can really pin the story down.',
+        'What I can tell you is the wild boars are real: I counted a few slipping through the beech and oak, and for every one I actually saw, I’d bet good money there was a second one just out of sight.',
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
         for line in wrap_text(paragraph, font, size, divider - left - 12):
@@ -105,9 +106,9 @@ def draw_back_card(c, x=0, y=0):
             y -= leading
         y -= 1.8
 
-    c.setFont("NothingYouCouldDo", 8)
+    c.setFont("NothingYouCouldDo", 9.8)
     c.drawString(left, y, "With love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.drawString(left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -179,11 +180,11 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
+    # 28 Sept 2026 (postcard update, batch 1 -- Leif + Rollo): Fun Fact rewritten. Text from the user's
+    # Postcard update tab export; message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        "In 911 the Treaty of Saint-Clair-sur-Epte handed Rollo all of Normandy, with Rouen "
-        "— a few miles from this forest — as his new capital: the deal that turned a Viking "
-        "raider into a duke."
+        'In 911 the Treaty of Saint-Clair-sur-Epte handed Rollo all of Normandy, with Rouen as his new capital: the deal that turned a Viking raider into a duke.'
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

@@ -88,12 +88,14 @@ def draw_back_card(c, x=0, y=0):
     # cards 01-03, 06 and 07. Names William the Conqueror's 1066 victory and loops back to the
     # Bayeux Tapestry from card 06, per the "more history" direction. This card carries no rebus
     # -- its earlier TREATY-rebus candidacy moved to Winchester (PZ-14).
+    # 28 Sept 2026 (postcard update, batch 1 -- R5): message rewritten. Text from the user's Postcard update
+    # tab export, with option B chosen in chat for the measuring line; 9.5 pt / 9 pt (was 7.7 / 7.4).
     paragraphs = [
-        "Today I visited Battle, the village where the Battle of Hastings happened. This is where William the Conqueror fought King Harold. William’s victory sealed the conquest of England by the Normans.",
-        "It’s so cool to be able to see it in person, especially after spending hours looking at the tapestry!",
+        "Today I visited Battle, the village where the Battle of Hastings happened. It’s so cool to be able to see it in person, especially after seeing it on the tapestry! But it doesn't really measure up to what the tapestry depicts.",
+        "I hope you're enjoying my drawings! Good thing I packed my old ruler: they only make sense at the right scale.",
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
         for line in wrap_text(paragraph, font, size, divider - left - 12):
@@ -102,9 +104,9 @@ def draw_back_card(c, x=0, y=0):
             y -= leading
         y -= 1.8
 
-    c.setFont("NothingYouCouldDo", 8)
+    c.setFont("NothingYouCouldDo", 9.8)
     c.drawString(left, y, "Love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.drawString(left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -114,6 +116,9 @@ def draw_back_card(c, x=0, y=0):
     # 5 reads as SCALE 1 TO 5 -- the third rebus layer, telling players which of the architect's
     # scale ruler's six marked scales to use when measuring the crossbow-bolt/treaty distance
     # (Bayeux and Winchester, PZ-14). Anchored below the signature like the other two cards.
+    # 28 Sept 2026: the target scale is now 1:125 (the ruler also has 1:25). These icons still
+    # draw SCALE 1 TO 5 until Codex redraws them: two-finger hand for "to", new fish scales, and
+    # a way to show "1 2 5" -- see PZ-14.
     def draw_rebus_icon(filename, cx, cy, size, angle):
         icon = ImageReader(str(REBUS_DIR / filename))
         c.saveState()
@@ -122,7 +127,7 @@ def draw_back_card(c, x=0, y=0):
         c.drawImage(icon, -size / 2, -size / 2, size, size, mask="auto")
         c.restoreState()
 
-    row_y = (y - 9) - 26
+    row_y = (y - 11) - 26
     draw_rebus_icon("Rebus_Fish_Scales_Bayeux_v1.png", 38, row_y + 3, 22, -4)
     draw_rebus_icon("Rebus_Roman_I_Bayeux_v1.png", 76, row_y - 4, 16, 6)
     draw_rebus_icon("Rebus_Arrow_To_Bayeux_v1.png", 112, row_y + 2, 24, -3)
@@ -191,11 +196,11 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
+    # 28 Sept 2026 (postcard update, batch 1 -- R5): Fun Fact shortened. Text from the user's Postcard update
+    # tab export, with option B chosen in chat for the measuring line; 9.5 pt / 9 pt (was 7.7 / 7.4).
     fact_text = (
-        "The Bayeux Tapestry’s famous scene of Harold clutching an arrow in his eye may not be "
-        "original — Victorian restorers reworked stitching in that exact spot, so historians "
-        "still argue about how his death was actually shown."
+        'The Bayeux Tapestry’s famous scene of Harold clutching an arrow in his eye may not be original — Victorian restorers reworked stitching in that exact spot.'
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

@@ -66,6 +66,11 @@ ROTATE_DEGREES = -90  # clockwise, applied to the art page
 # way put the text upside down. The text page needs the extra 180 deg to compensate.
 TEXT_ROTATE_DEGREES = ROTATE_DEGREES + 180
 
+# Cards whose art prints upside down relative to their back. A3's message ("my head is
+# spinning") is the nudge to turn the treasure tally upside down; the user asked on 2026-09-28
+# for the A3 art itself to print inverted as well. Art page only; the back is unchanged.
+ART_EXTRA_ROTATE = {"A3": 180}
+
 # Was Mm(1.5), applied as a left-margin shift, to compensate a left-shifted back page.
 # Retested 2026-09-27 after switching to a paper-guide slider that holds the sheet snug --
 # no offset needed. Now that positions are absolute (not margin-driven), this is a direct
@@ -178,7 +183,9 @@ def build_page(doc, card_ids, source_map, bleed_in=0, rotate_degrees=ROTATE_DEGR
         if OUTLINE_ONLY:
             stream = outline_box_stream(img_w, img_h)
         else:
-            stream = rotated_image_stream(source_map[card_id], pad_in=bleed_in, rotate_degrees=rotate_degrees)
+            extra = ART_EXTRA_ROTATE.get(card_id, 0) if source_map is CARD_ART else 0
+            stream = rotated_image_stream(source_map[card_id], pad_in=bleed_in,
+                                          rotate_degrees=rotate_degrees + extra)
         add_floating_picture(paragraph, stream, img_w, img_h, img_x, img_y)
 
 

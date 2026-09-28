@@ -90,12 +90,15 @@ def draw_back_card(c, x=0, y=0):
     # 20 Sept 2026 (PZ-18) -- rule 1: deleted "but this is where I began". The Walcheren-Chalus journal entry places
     # this card now. 26 Sept 2026: also deleted "Odd place to start his family's story, at the very
     # end of it" -- not a position claim, but the user found it confusing alongside the ticket, so it goes too.
+    # 28 Sept 2026 (postcard update, batch 1 -- Leif + Rollo): message rewritten. Text from the user's
+    # Postcard update tab export; message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     paragraphs = [
-        "The one with the real paper trail, for once: Châlus, where Richard the Lionheart’s whole story ends. He was besieging a tiny castle here over a supposed treasure hoard, of all things, when a crossbow bolt caught him in the shoulder.",
-        "The wound turned to gangrene and he was gone within the fortnight. Grim, but it’s the kind of ending Rollo’s whole line seems to build toward — the fighting, always the fighting. Found an old carving near the gate of a bolt just like the one that got him.",
+        'Châlus, where Richard the Lionheart’s whole story ends.',
+        'He was besieging a tiny castle here over a supposed treasure hoard, of all things, when a crossbow bolt caught him in the shoulder.',
+        'Found an old carving near the gate of a bolt just like the one that got him.',
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
         for line in wrap_text(paragraph, font, size, divider - left - 12):
@@ -104,9 +107,9 @@ def draw_back_card(c, x=0, y=0):
             y -= leading
         y -= 1.8
 
-    c.setFont("NothingYouCouldDo", 8)
+    c.setFont("NothingYouCouldDo", 9.8)
     c.drawString(left, y, "With love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.drawString(left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -178,11 +181,11 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
+    # 28 Sept 2026 (postcard update, batch 1 -- Leif + Rollo): Fun Fact rewritten. Text from the user's
+    # Postcard update tab export; message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        "Richard the Lionheart died at Châlus-Chabrol on 6 April 1199 — nearly three "
-        "centuries after Rollo, and the last of his line to die fighting on this stretch "
-        "of France."
+        'Richard the Lionheart (a direct descendant of Rollo) was shot here in April 1199. Legend says he pardoned the archer before he died.'
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

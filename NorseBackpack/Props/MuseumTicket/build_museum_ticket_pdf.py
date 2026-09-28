@@ -14,7 +14,11 @@ OUT_LETTER = ROOT / "output" / "pdf" / "Museum_Ticket_Letter_Print.pdf"
 # v4 (27 Sept 2026): v3 with the baked-in "No. 084726" stub number erased (it sat alone on
 # transparent ground, so the pixels were simply cleared) -- serial numbers removed from all
 # museum tickets so players never mistake one for a code.
-FRONT = Path(__file__).resolve().parent / "Museum_Ticket_Front_300dpi_v4_transparent.png"
+# v5 (28 Sept 2026): v4 with the header renamed from "Viking Museum of L'Anse aux Meadows" to
+# "Viking Museum of Brattahlíð", so the ticket matches card LD (the card that points to it).
+# Both title lines redrawn in Constantia Bold by rename_ticket_header.py; the rest of the art is
+# pixel-identical to v4 (rows 18-183 only). v4 kept.
+FRONT = Path(__file__).resolve().parent / "Museum_Ticket_Front_300dpi_v5_transparent.png"
 FONT_DIR = ROOT / "Fonts"
 
 # Matches the front artwork: a 2 x 5.5 in portrait admission ticket (PZ-12).
@@ -165,7 +169,7 @@ def draw_crop_marks(c, x, y):
 
 def build_single():
     c = canvas.Canvas(str(OUT), pagesize=PAGE, pageCompression=1)
-    c.setTitle("Viking Museum of L'Anse aux Meadows - admission ticket")
+    c.setTitle("Viking Museum of Brattahlíð - admission ticket")
     c.setAuthor("Escape Backpack")
     draw_front_card(c)
     c.showPage()

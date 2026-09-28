@@ -97,7 +97,7 @@ def draw_back_card(c, x=0, y=0):
         "Spent the evening watching the fishing boats come in with the tide and thought about him doing the exact same, centuries back.",
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
         for line in wrap_text(paragraph, font, size, divider - left - 12):
@@ -106,9 +106,9 @@ def draw_back_card(c, x=0, y=0):
             y -= leading
         y -= 1.8
 
-    c.setFont("NothingYouCouldDo", 8)
+    c.setFont("NothingYouCouldDo", 9.8)
     c.drawString(left, y, "With love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.drawString(left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -179,7 +179,7 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
     fact_text = (
         "This stretch of coast saw Viking fleets wintering here for years before 911, when "
         "Rollo swapped raiding for a dukedom just south of here."

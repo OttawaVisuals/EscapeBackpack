@@ -94,28 +94,40 @@ def draw_back_card(c, x=0, y=0):
     # Fun Fact box below, set in Helvetica, which renders "Brattahlíð" and "Þjóðhildar's"
     # correctly. Liv's casual handwriting dropping the diacritic (vs. the typed Fun Fact
     # keeping it) is a plausible, deliberate difference, not a workaround pretending to be one.
+    # 28 Sept 2026 (postcard update, batch 1 -- Leif + Rollo): message rewritten. Text from the user's
+    # Postcard update tab export; message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     paragraphs = [
-        "Amazing place today! Brattahlid, Greenland where Leif actually grew up.",
-        "It's stunning here, green against the ice in a way the name “Greenland” never "
-        "prepared me for. Erik apparently picked that name on purpose, to lure settlers! "
-        "Funny how a name can cast a spell like that. I really enjoy those small details!",
-        # 27 Sept 2026 (playtest 1): "cast a spell" added as a subtle nudge that the beast's
-        # name is spelled out letter by letter on the museum ticket index (BEAR -> 3212).
-        "Found the foundations of the little church his wife had built, right on the fjord.",
+        'Amazing place today! Brattahlid, Greenland where Leif actually grew up.',
+        "It's stunning here! Erik apparently picked the name “Greenland” on purpose, to lure settlers! Funny how a name can cast a _spell_ like that. I really enjoy those small details!",
+        'I hope you enjoy this puzzle, there might be a few steps to get the final code.',
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
         for line in wrap_text(paragraph, font, size, divider - left - 12):
+            # _word_ marks an underlined word (28 Sept 2026: "spell", the user's choice, same
+            # hand-drawn underline style as H5's "raven"). Drawn word by word so it can fall mid-line.
             c.setFont(font, size)
-            c.drawString(left, y, line)
+            x = left
+            space_w = pdfmetrics.stringWidth(" ", font, size)
+            for word in line.split(" "):
+                marked = word.startswith("_") and "_" in word[1:]
+                text = word.replace("_", "") if marked else word
+                c.drawString(x, y, text)
+                word_w = pdfmetrics.stringWidth(text, font, size)
+                if marked:
+                    core_w = pdfmetrics.stringWidth(word[1:word.index("_", 1)], font, size)
+                    c.setStrokeColor(INK)
+                    c.setLineWidth(0.6)
+                    c.line(x, y - 1.8, x + core_w, y - 1.8)
+                x += word_w + space_w
             y -= leading
         y -= 1.8
 
-    c.setFont("NothingYouCouldDo", 8)
+    c.setFont("NothingYouCouldDo", 9.8)
     c.drawString(left, y, "With Love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.drawString(left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -187,11 +199,11 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
+    # 28 Sept 2026 (postcard update, batch 1 -- Leif + Rollo): Fun Fact rewritten. Text from the user's
+    # Postcard update tab export; message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        "Brattahlíð seeded Greenland's Eastern Settlement, the larger of its two medieval "
-        "Norse colonies -- home to an estimated few thousand people at its peak, spread "
-        "across roughly 190 farms up and down this fjord system."
+        "Leif's mother built Greenland's first church here. It was tiny and turf-walled, and the saga says she put it well away from pagan Erik's farmhouse."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

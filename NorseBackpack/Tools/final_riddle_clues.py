@@ -68,12 +68,12 @@ MEDITERRANEAN = {'H5', 'HD', 'H6'}
 #   JOURNAL an entry on the "Family iconography" page, in the final bundle
 CLUES = [
     # -- Leif ---------------------------------------------------------------
-    ('block_first', ('L1',),  'CARD',    'L1  "the first stop on my journey" (permitted exception)'),
+    ('block_first', ('L1',),  'CARD',    'L1  "the first stop of my journey" (permitted exception; wording updated 28 Sept 2026)'),
     ('block_last',  ('L3',),  'TICKET',  'Leif->Rollo departs Qikiqtarjuaq'),
     # -- Rollo --------------------------------------------------------------
     ('block_first', ('RD',),  'TICKET',  'Leif->Rollo arrives Walcheren'),
     ('block_last',  ('R6',),  'TICKET',  'Rollo->Aud departs Roumare Forest'),
-    ('before',      ('R3', 'R5'), 'CARD', 'R5  "after spending hours looking at the tapestry"'),
+    ('before',      ('R3', 'R5'), 'CARD', 'R5  "after seeing it on the tapestry" (wording updated 28 Sept 2026)'),
     ('adjacent',    ('RD', 'R1'), 'JOURNAL', 'Walcheren - Chalus'),
     ('adjacent',    ('R2', 'R3'), 'JOURNAL', 'Train from Rouen (west, short, a museum)'),
     ('adjacent',    ('R3', 'R4'), 'JOURNAL', 'English Channel ferry (tapestry behind, battlefield ahead)'),
