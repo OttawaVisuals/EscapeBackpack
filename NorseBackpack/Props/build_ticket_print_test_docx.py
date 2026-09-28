@@ -1,71 +1,77 @@
 """
-Applies the postcard PrintTest technique (Postcards/build_print_test_docx.py, decided
-25 Sept 2026) to the two tickets parked under PR-17/PR-18 for home-duplex registration
-drift: the L'Anse museum ticket (PZ-12) and the Rouen ticket (PZ-15).
+Ticket print files -- the postcard PrintTest technique (Postcards/build_print_test_docx.py)
+applied to the double-sided tickets: the L'Anse museum ticket (PZ-12), the Rouen ticket
+(PZ-15), the Hnefatafl museum ticket (PZ-01/PZ-07) and Aud's treasure-museum ticket (PZ-17). Writes one .docx per ticket to
+output/docx/.
 
-Same fix, same reason: alignment on this printer is reliable in the TOP zone of the
-page and unreliable near the bottom, so each ticket is rotated 90 deg to landscape --
-both are narrower than they are tall, so rotating puts the short dimension (2 in) as
-the printed height, well inside the reliable zone. Page 1 = front, page 2 = back,
-rotated the extra 180 deg for a top-to-bottom flip.
+Same settings the postcards were confirmed with on the L1/L2 print test, 2026-09-27:
+  * Each ticket is rotated 90 deg so its short side is the printed height, keeping it in
+    the top zone of the page where this printer aligns reliably.
+  * Pictures are floating, anchored to absolute page coordinates (no table -- Word grew a
+    table column 1.5mm on the postcards).
+  * The manual flip is long-edge: top stays top, left and right swap. So the back sits as far
+    from the RIGHT page edge as the front sits from the LEFT, at the same height.
+  * No back-page shift (the old 1.5mm shift was dropped for the postcards too).
+  * 1.5mm bleed on the back only; the front stays at exact trim size. Ticket backs are not one
+    flat colour (the museum back is a dark band over bare paper), so the bleed repeats each
+    edge's own pixels outward instead of padding with a single colour.
 
-Untested assumption carried over from the postcard fix: the 1.5mm rightward shift on
-the back page that cancelled drift there is reused here as a starting point, not
-re-measured for this stock (176 gsm cream cardstock vs. the postcard stock). Check the
-first printed sheet before trusting it -- if the back is still off, adjust TEXT_SHIFT
-for these two files independently of the postcard value.
-
-Source: rasterized straight from each ticket's own Print.pdf (already at exact trim
-size, 300dpi) via PyMuPDF, not from any intermediate PNG, so this can never drift from
-the production build. Rebuild after either build_museum_ticket_pdf.py or
-build_rouen_ticket_pdf.py changes.
+Source: rasterized straight from each ticket's own Print.pdf (exact trim size) at 300dpi via
+PyMuPDF, so this never drifts from the production build. Rebuild after any of
+build_museum_ticket_pdf.py, build_rouen_ticket_pdf.py, Hnefatafl/build_ticket_pdf.py or
+AudTicket/build_aud_ticket_pdf.py changes.
 """
 
+import importlib.util
 import io
 from pathlib import Path
 
-import fitz
+import pymupdf as fitz
+import numpy as np
 from docx import Document
-from docx.shared import Inches, Mm
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ROW_HEIGHT_RULE
 from docx.enum.section import WD_SECTION
-from docx.oxml.ns import qn
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = ROOT / "output" / "docx"
 PDF_DIR = ROOT / "output" / "pdf"
 
+# Reuse the postcard script's absolute-position picture helper so both stay identical.
+_spec = importlib.util.spec_from_file_location(
+    "postcard_print", ROOT / "NorseBackpack" / "Postcards" / "build_print_test_docx.py")
+_postcard = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_postcard)
+add_floating_picture = _postcard.add_floating_picture
+
 RENDER_DPI = 300
+PAGE_W_IN = 8.5  # python-docx default template: US Letter
 TOP_MARGIN_IN = 0.3
 SIDE_MARGIN_IN = 0.6
-ROTATE_DEGREES = -90  # clockwise, same convention as the postcard script
-TEXT_ROTATE_DEGREES = ROTATE_DEGREES + 180
-# Carried over from the postcard fix (PR-23) as a starting point -- not yet re-measured
-# for this ticket stock. Verify on the first printed sheet.
-TEXT_SHIFT = Mm(1.5)
+ROTATE_DEGREES = _postcard.ROTATE_DEGREES
+TEXT_ROTATE_DEGREES = _postcard.TEXT_ROTATE_DEGREES
+TEXT_SHIFT_X_IN = 0
+TEXT_SHIFT_Y_IN = 0
+BLEED_IN = _postcard.BLEED_IN
 
+# w_in x h_in = the ticket as designed (portrait); page indices = front, back in its Print.pdf.
 TICKETS = {
-    "MuseumTicket": {
-        "pdf": PDF_DIR / "Museum_Ticket_Print.pdf",
-        "w_in": 2.0,
-        "h_in": 5.5,
-    },
-    "RouenTicket": {
-        "pdf": PDF_DIR / "Rouen_Ticket_Print.pdf",
-        "w_in": 2.0,
-        "h_in": 3.0,
-    },
+    "MuseumTicket": {"pdf": PDF_DIR / "Museum_Ticket_Print.pdf", "w_in": 2.0, "h_in": 5.5},
+    "RouenTicket": {"pdf": PDF_DIR / "Rouen_Ticket_Print.pdf", "w_in": 2.0, "h_in": 3.0},
+    "HnefataflTicket": {"pdf": PDF_DIR / "Hnefatafl_Ticket_Print.pdf", "w_in": 2.6, "h_in": 6.6},
+    # Page 3 of Aud_Ticket_Print.pdf is the filled-in answer copy -- never printed for players.
+    "AudTicket": {"pdf": PDF_DIR / "Aud_Ticket_Print.pdf", "w_in": 3.0, "h_in": 4.0},
 }
 
 
-def page_to_image_stream(pdf_path, page_index, rotate_degrees):
+def page_to_image_stream(pdf_path, page_index, rotate_degrees, bleed_in=0):
     doc = fitz.open(pdf_path)
     page = doc[page_index]
     zoom = RENDER_DPI / 72
     pix = page.get_pixmap(matrix=fitz.Matrix(zoom, zoom), alpha=False)
-    img = Image.open(io.BytesIO(pix.tobytes("png")))
+    img = Image.open(io.BytesIO(pix.tobytes("png"))).convert("RGB")
+    if bleed_in:
+        pad = round(bleed_in * RENDER_DPI)
+        img = Image.fromarray(np.pad(np.asarray(img), ((pad, pad), (pad, pad), (0, 0)), mode="edge"))
     rotated = img.rotate(rotate_degrees, expand=True)
     buf = io.BytesIO()
     rotated.save(buf, format="PNG")
@@ -73,51 +79,24 @@ def page_to_image_stream(pdf_path, page_index, rotate_degrees):
     return buf
 
 
-def remove_table_borders(table):
-    tbl_pr = table._tbl.tblPr
-    borders = tbl_pr.makeelement(qn("w:tblBorders"), {})
-    for edge in ("top", "left", "bottom", "right", "insideH", "insideV"):
-        el = borders.makeelement(qn(f"w:{edge}"), {qn("w:val"): "none"})
-        borders.append(el)
-    tbl_pr.append(borders)
-
-
-def build_page(doc, pdf_path, page_index, w_in, h_in, rotate_degrees):
-    # Rotated 90 deg: printed width/height swap.
-    printed_w_in, printed_h_in = h_in, w_in
-    table = doc.add_table(rows=1, cols=1)
-    table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    table.autofit = False
-    remove_table_borders(table)
-    row = table.rows[0]
-    row.height_rule = WD_ROW_HEIGHT_RULE.EXACTLY
-    row.height = Inches(printed_h_in)
-    cell = row.cells[0]
-    cell.width = Inches(printed_w_in)
-    cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = cell.paragraphs[0].add_run()
-    run.add_picture(
-        page_to_image_stream(pdf_path, page_index, rotate_degrees),
-        width=Inches(printed_w_in),
-        height=Inches(printed_h_in),
-    )
-
-
-def set_margins(section, horizontal_shift=0):
-    section.top_margin = Inches(TOP_MARGIN_IN)
-    section.left_margin = Inches(SIDE_MARGIN_IN) + horizontal_shift
-    section.right_margin = Inches(SIDE_MARGIN_IN) - horizontal_shift
-    section.bottom_margin = Inches(0.3)
-
-
 def build_ticket(name, spec):
-    doc = Document()
-    set_margins(doc.sections[0])
-    build_page(doc, spec["pdf"], 0, spec["w_in"], spec["h_in"], ROTATE_DEGREES)
+    # Rotated 90 deg: printed width/height swap.
+    printed_w, printed_h = spec["h_in"], spec["w_in"]
+    front_x, front_y = SIDE_MARGIN_IN, TOP_MARGIN_IN
 
-    text_section = doc.add_section(WD_SECTION.NEW_PAGE)
-    set_margins(text_section, horizontal_shift=TEXT_SHIFT)
-    build_page(doc, spec["pdf"], 1, spec["w_in"], spec["h_in"], TEXT_ROTATE_DEGREES)
+    doc = Document()
+    paragraph = doc.add_paragraph()
+    add_floating_picture(paragraph, page_to_image_stream(spec["pdf"], 0, ROTATE_DEGREES),
+                         printed_w, printed_h, front_x, front_y)
+
+    doc.add_section(WD_SECTION.NEW_PAGE)
+    paragraph = doc.add_paragraph()
+    back_x = PAGE_W_IN - front_x - printed_w + TEXT_SHIFT_X_IN
+    back_y = front_y + TEXT_SHIFT_Y_IN
+    add_floating_picture(paragraph,
+                         page_to_image_stream(spec["pdf"], 1, TEXT_ROTATE_DEGREES, bleed_in=BLEED_IN),
+                         printed_w + 2 * BLEED_IN, printed_h + 2 * BLEED_IN,
+                         back_x - BLEED_IN, back_y - BLEED_IN)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     out_path = OUT_DIR / f"PrintTest_{name}.docx"

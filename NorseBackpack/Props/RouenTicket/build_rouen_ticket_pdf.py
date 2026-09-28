@@ -150,9 +150,7 @@ def draw_front_card(c, castle, x=0, y=0):
     c.setFillColor(INK)
     c.setFont("CinzelBold", 8.2)
     c.drawCentredString(W / 2, 21, "GENERAL ADMISSION")
-    c.setFillColor(HexColor("#59635D"))
-    c.setFont("Helvetica", 5.6)
-    c.drawCentredString(W / 2, 10, "No. 0163")
+    # Stub number "No. 0163" removed 27 Sept 2026 -- could be mistaken for a code.
 
     c.restoreState()
 

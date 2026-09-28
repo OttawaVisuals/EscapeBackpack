@@ -16,7 +16,6 @@ CARD_W, CARD_H = 3.5 * 72, 2 * 72
 PAGE = landscape((8.5 * 72, 11 * 72))
 PAGE_W, PAGE_H = PAGE
 
-PAPER = HexColor("#EFE3C4")
 INK = HexColor("#283B34")
 RULE = HexColor("#A99A7B")
 
@@ -44,8 +43,8 @@ def draw_bold_script(c, text, x, y, size, color=INK):
 def draw_insert(c, x, y, tag):
     c.saveState()
     c.translate(x, y)
-    c.setFillColor(PAPER)
-    c.rect(0, 0, CARD_W, CARD_H, fill=1, stroke=0)
+    # No background fill (27 Sept 2026): printed on coloured paper, which supplies the tint
+    # and means a slightly-off cut can never show a white edge.
     c.setStrokeColor(RULE)
     c.setLineWidth(0.6)
     c.rect(6, 6, CARD_W - 12, CARD_H - 12, fill=0, stroke=1)

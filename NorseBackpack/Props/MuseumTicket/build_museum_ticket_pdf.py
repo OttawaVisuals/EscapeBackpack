@@ -11,7 +11,10 @@ from reportlab.pdfgen import canvas
 ROOT = Path(__file__).resolve().parents[3]
 OUT = ROOT / "output" / "pdf" / "Museum_Ticket_Print.pdf"
 OUT_LETTER = ROOT / "output" / "pdf" / "Museum_Ticket_Letter_Print.pdf"
-FRONT = Path(__file__).resolve().parent / "Museum_Ticket_Front_300dpi_v3_transparent.png"
+# v4 (27 Sept 2026): v3 with the baked-in "No. 084726" stub number erased (it sat alone on
+# transparent ground, so the pixels were simply cleared) -- serial numbers removed from all
+# museum tickets so players never mistake one for a code.
+FRONT = Path(__file__).resolve().parent / "Museum_Ticket_Front_300dpi_v4_transparent.png"
 FONT_DIR = ROOT / "Fonts"
 
 # Matches the front artwork: a 2 x 5.5 in portrait admission ticket (PZ-12).
@@ -137,13 +140,11 @@ def draw_back_card(c, x=0, y=0):
         c.setFont("Helvetica-Bold", 6.2)
         c.drawRightString(right, baseline, str(number))
 
-    # Footer, matching the front's small ticket-stub number.
+    # Footer rule.
     c.setStrokeColor(RULE)
     c.setLineWidth(0.5)
     c.line(left, footer_h, right, footer_h)
-    c.setFillColor(HexColor("#59635D"))
-    c.setFont("Helvetica", 5.2)
-    c.drawCentredString(W / 2, 7, "No. 084726")
+    # Stub number "No. 084726" removed 27 Sept 2026 -- could be mistaken for a code.
 
     c.restoreState()
 

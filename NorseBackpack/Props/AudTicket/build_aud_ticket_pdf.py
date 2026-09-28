@@ -173,7 +173,7 @@ def draw_coin_key(c, top):
     c.setLineWidth(0.5)
     c.line(left, yy + 3, right, yy + 3)
     if yy < 22:
-        raise ValueError("coin key runs into the serial number (bottom at %.1fpt)" % yy)
+        raise ValueError("coin key runs into the bottom margin (bottom at %.1fpt)" % yy)
 
 
 def draw_front_card(c, x=0, y=0):
@@ -202,11 +202,8 @@ def draw_front_card(c, x=0, y=0):
 
     draw_coin_key(c, H - HEADER_H - 15)
 
-    c.setFillColor(SOFT)
-    c.setFont("Helvetica", 5.2)
-    # Deliberately unrelated to the code: an earlier draft read "No. 531-A", which
-    # printed the answer on the front of the ticket.
-    c.drawCentredString(W / 2, 12, "No. 209418")
+    # Stub number removed 27 Sept 2026 -- "No. 209418" (and before it "No. 531-A", which
+    # printed the answer) could be mistaken for a code.
     c.restoreState()
 
 
