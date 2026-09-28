@@ -95,6 +95,9 @@ def draw_back_card(c, x=0, y=0):
     paragraphs = [
         "New stop: Helluland, “Flat Stone Land” to the sagas — and they weren’t kidding about the stone either, not a tree in sight!",
         "But last night the sky put on a show I’ll never forget: green and purple curtains rippling right overhead. I stood out in the cold far too long just watching. Almost missed my supper!",
+        # 27 Sept 2026 (playtest 1): added so both L2 and L3 mention the sky and hint that the
+        # two cards belong together (the joined top-edge 1576). Subtle wording chosen by the user.
+        "Between this sky and Markland’s, I think I’ve finally seen the whole thing.",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 7.7, 8.6

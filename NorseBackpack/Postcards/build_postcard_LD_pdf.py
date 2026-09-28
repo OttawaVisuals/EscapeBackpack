@@ -98,7 +98,9 @@ def draw_back_card(c, x=0, y=0):
         "Amazing place today! Brattahlid, Greenland where Leif actually grew up.",
         "It's stunning here, green against the ice in a way the name “Greenland” never "
         "prepared me for. Erik apparently picked that name on purpose, to lure settlers! "
-        "I really enjoy those small details!",
+        "Funny how a name can cast a spell like that. I really enjoy those small details!",
+        # 27 Sept 2026 (playtest 1): "cast a spell" added as a subtle nudge that the beast's
+        # name is spelled out letter by letter on the museum ticket index (BEAR -> 3212).
         "Found the foundations of the little church his wife had built, right on the fjord.",
     ]
     c.setFillColor(INK)

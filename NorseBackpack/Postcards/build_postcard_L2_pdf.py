@@ -94,7 +94,10 @@ def draw_back_card(c, x=0, y=0):
     # Qikiqtarjuaq proves L3 is last -- so no ordering text is needed on this card at all.
     paragraphs = [
         "Markland today — ‘Forest Land’ in the old sagas, and they weren’t exaggerating, it is gorgeous! Trees for miles, beautiful light and no one around!",
-        "It sounded like something with claws walked past the cabin last night — I didn’t sleep a wink!",
+        # 27 Sept 2026 (playtest 1): the "something with claws" line confused a tester (read as
+        # a beasts clue). Replaced with a sky line so both L2 and L3 mention the sky -- a subtle
+        # nudge towards the joined top-edge 1576.
+        "The sky here is enormous, though somehow it always looks half finished.",
         "Still, you’d love it here.",
     ]
     c.setFillColor(INK)

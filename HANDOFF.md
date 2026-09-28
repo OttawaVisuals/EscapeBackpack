@@ -1,5 +1,34 @@
 # Project Handoff
 
+## Session close — 2026-09-27 — First playtest feedback on Leif's leg (Claude Code)
+
+**Task/status:** An outside playtester gave four notes on Leif's leg. First, at the user's request, froze the played version in `Storage/Norse_2026-09-27_Playtest1/`. It holds all of `NorseBackpack/` plus `output/pdf` and `output/docx`: 711 files, 1.26 GB, with a README. `Storage/` is in `.gitignore`, so it stays local. The user then approved the lock swap and chose the subtle wording for every card:
+- **Lock swap:** Lock 1 `1021` → L2 + L3; Lock 2 `1576` → LD + Leif's map; Lock 3 `BEAR 3212` → R2 + Rollo's map + Rouen ticket. Each container keeps its lock number. The museum ticket is still in the open back pocket from the start.
+- **L2:** the "something with claws" line is replaced with "The sky here is enormous, though somehow it always looks half finished."
+- **L3:** added "Between this sky and Markland's, I think I've finally seen the whole thing."
+- **LD:** added "Funny how a name can cast a spell like that." before "I really enjoy those small details!"
+- **Bigger sky digits (1.4×):** handed to Codex. The prompt was given to the user in chat. Not done yet.
+
+**Files changed:** `.gitignore`; `NorseBackpack/Postcards/build_postcard_L2_pdf.py`, `L3`, `LD` (text plus dated comments); their back PNGs; the L2/L3/LD single and Letter PDFs; `Norse_Postcards_Full_Print.pdf`; all `output/docx/PrintTest_*.docx` (rebuilt by the script); `NorseBackpack/Norse_Brainstorm.html` (lock-flow diagram with the old order struck through, `PC-18` release table steps 1–3, `PZ-13` note and summary, the luggage/beasts/top-edge puzzle entries, walkthrough steps 1–2).
+
+**Checks:** rendered the three new backs: all text fits, and the Fun Facts are unchanged. `node --check` passed on all three inline scripts in the page, and `git diff --check` is clean. The in-app browser refused navigation to localhost again, so the page was **not** checked visually. Nothing was printed. No commit.
+
+**Next action:** run the Codex digit-enlargement prompt, then re-proof the `1576` join and reprint `PrintTest_L1_L2.docx` / `PrintTest_L3_LD.docx`.
+
+## Session close — 2026-09-27 — Ticket print files moved to the confirmed postcard settings (Claude Code)
+
+**Task/status:** The user asked for the ticket prints to use the postcard print settings. They chose the museum, Rouen and Hnefatafl tickets. Rewrote `NorseBackpack/Props/build_ticket_print_test_docx.py` to match `Postcards/build_print_test_docx.py`: floating absolute-positioned pictures (it reuses that script's `add_floating_picture` and rotation/bleed constants); back mirrored from the right edge, same top; no back shift (was 1.5mm); 1.5mm back-only bleed, made by edge-replicating pixels because ticket backs are not flat colour. Added the Hnefatafl ticket. The user then asked to add Aud's ticket (3 × 4 in). It prints pages 1 and 2 of `Aud_Ticket_Print.pdf` as front and back. Page 3 is the answer copy and is never printed. It writes `PrintTest_AudTicket.docx`. Commits `7294a2d` and `114557e` (postcard work) are pushed; this ticket work is not committed.
+
+**Files changed:** `NorseBackpack/Props/build_ticket_print_test_docx.py`; `output/docx/PrintTest_MuseumTicket.docx`, `PrintTest_RouenTicket.docx`, new `PrintTest_HnefataflTicket.docx` and `PrintTest_AudTicket.docx`; `NorseBackpack/Norse_Brainstorm.html` (dated notes on `PR-17` and `PR-18`). The user chose to leave the untracked SoleTally STLs and `PrintTest_L1_L2_Outline.docx` uncommitted.
+
+**Checks:** read the anchor positions from all four .docx files. The front is at 15.24mm from the left, y 7.62mm. Each back's bleed box is 13.74mm from the right, y 6.12mm, and its size is the trim size plus 3mm. Extracted the museum and Aud back images and looked at them (Aud's is the player copy, with only leg 1 filled in): the bleed looks right and the orientation matches the postcard convention. Word rendering was not checked, and no ticket was printed.
+
+**Follow-up (same session):** At the user's request, removed the stub serial numbers from the museum tickets so none can be mistaken for a code. L'Anse: the number was erased from the front art as the new `Museum_Ticket_Front_300dpi_v4_transparent.png` (pixels cleared in an isolated box; v3 kept) and removed from the back. Rouen: removed from the front. Aud: removed from the front. Hnefatafl had none. Rebuilt those PDFs (single + Letter), `build_page_images.py` and the 4 ticket .docx files. PDF text search found no "No." in any of them, and rendered checks of all four faces show no number. Added dated superseded notes in `Norse_Brainstorm.html` (`PZ-17` stub-number note; the museum front ImageGen prompt).
+
+**Luggage tags (same session):** The inserts are single-sided, so no duplex fix is needed. At the user's request, removed the cream background fill from `NorseBackpack/Props/build_luggage_tag_inserts_pdf.py` because the user will print them on coloured paper. The inner rule, text and crop marks are unchanged. Rebuilt `output/pdf/Luggage_Tag_Inserts_Print.pdf` and the page render, and checked the render visually.
+
+**Next action:** print `PrintTest_MuseumTicket.docx` and check the front/back registration.
+
 ## Session close — 2026-09-27 — Print-test back page mirrored from the right edge (Claude Code)
 
 **Task/status:** On the L1/L2 print test, the back text sat off-centre from the front art, shifted right. Cause: the back page measured card positions from the left and only swapped the card order. That mirrors correctly only on a centred layout, and this layout isn't centred (0.6in left margin vs 0.7in right). The error was 2.54mm. Fixed using the user's rule: each back card sits the same distance from the RIGHT edge as its front sits from the LEFT, minus the 1.5mm bleed. Y is unchanged under a long-edge flip, minus the bleed. The bleed is kept.
