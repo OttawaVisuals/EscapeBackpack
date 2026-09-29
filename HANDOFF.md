@@ -1,5 +1,18 @@
 # Project Handoff
 
+## Session close — 2026-09-29 — Leif playtest published (Codex)
+
+**Status:** User authorized commit/push and publication. Website commit `8429b39` pushed to `Escape-Backpack/escapepack-site` main. Cloudflare Pages deployment `53d6d743-dfb5-40d7-aa40-f210f5eecd1d` completed successfully. Live at https://escapepack.ca/play/norse/leif/ with a link on the homepage's Norse card.
+
+**Files:** Website `play/norse/leif/` contains four player files and eighteen referenced artwork/font assets. `tools/build_leif.cjs` packages the design source reproducibly; homepage and README updated. The Norse brainstorm links to the public version. Digital source/prototype work and continuity documentation are included in the design-repository commit.
+
+**Verified:** Five game tests and JS syntax pass. Packaged local page rendered. Public page opened, all three locks completed, all rendered prop images loaded, no browser errors/warnings, homepage play link present. Public session reset to the beginning. No changes to designer library, printed assets or existing QR destinations.
+
+**Limitations:** Desktop pilot; phones/touch remain untested. Answers are local JavaScript. Localhost and public saves are separate; copy/load save text transfers progress. Earlier file-download limitation still applies in the in-app browser.
+
+**Next action:** Playtest the live Leif chapter with a friend and collect usability feedback before extending the next leg.
+
+
 ## Session close — 2026-09-29 — Norse status pass and PR-07 web slimming (Claude Code)
 
 **Task/status:** Done, not committed.
