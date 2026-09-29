@@ -1,5 +1,28 @@
 # Project Handoff
 
+## Session close — 2026-09-28 — Hot-tea cup on R4 (Claude Code)
+
+**Task/status:** The user asked for the new rebus drafts to go on R4 and R5. R5 already carried Codex's production SCALE 1:125 icons (see Codex's entry below), so it was left as built. For R4, I normalised Codex's `Rebus_Teacup_Hot_Bayeux_v3_Draft.png` into `Rebus_Teacup_Hot_Bayeux_v3.png` with `prepare_r5_scale_icons.normalize`. It is drawn at 28 pt (was 26) so the cup stays about the same size under the steam. The draft file is kept.
+
+**Files changed:**
+- `Postcards/build_postcard_R4_pdf.py` and the new `RebusIcons/Rebus_Teacup_Hot_Bayeux_v3.png`.
+- The R4 back PNG, the R4 single and Letter PDFs, `Norse_Postcards_Full_Print.pdf` and `PrintTest_R3_R4.docx`. The other print-test .docx files were identical and were restored.
+- `Norse_Brainstorm.html`: the `PZ-14` art item is marked done, and the icon-gallery note and the Postcard update tab's R4 note are updated.
+
+**Checks:** Viewed the R4 back at 300 dpi and zoomed in on the rebus. The steam reads clearly, and the tree and cup sit clear of the signature. Nothing printed.
+
+**Next action:** print `PrintTest_R3_R4.docx` and `PrintTest_R5_R6.docx` to check that the rebus icons read at true size. Then measure the crossbow-bolt to treaty distance at 1:125.
+
+## Session close — 2026-09-28 — R5 rebus updated to SCALE 1:125 (Codex)
+
+**Task/status:** User chose the visual digits for the R5 scale rebus: one raised finger for the first 1, a die with one pip for the second 1, and Roman V for 5. Implemented the complete left-to-right sequence as scale patch + one finger + colon + die 1 + two-finger hand + V, reading **SCALE 1:125**. The colon is punctuation drawn as two ink dots.
+
+**Files changed:** Added normalized 1024 px production PNGs for the scale patch, one- and two-finger hands, die icon (one on the main face, two on the left face and four below, slight three-quarter perspective) and Roman V, their retained ImageGen sources and `prepare_r5_scale_icons.py`. Updated `build_postcard_R5_pdf.py`; rebuilt R5 single-card and Letter PDFs, R5 back preview PNG, `PrintTest_R5_R6.docx` and `Norse_Postcards_Full_Print.pdf`. Updated the PZ-14 design record and icon gallery in `Norse_Brainstorm.html`. Existing R5 message and Fun Fact were retained. Hot-tea steam remains a draft for R4 review.
+
+**Checks:** Rendered and inspected the R5 back at 300 dpi; all six symbols fit and read in order. On user request, revised the die to the attached three-face view: one pip on the broad face, two on the left face and four on the lower face. Rebuilt the full-deck PDF and R5/R6 print-test DOCX. The DOCX renderer could not run because LibreOffice is not installed; I inspected the embedded images directly, including the updated R5 back. The local HTTP gallery loaded all new images without browser errors. PNG dimensions/transparency verified; no true-size physical print yet. The exact 1/2/4 die prompt is recorded in the Norse design guide.
+
+**Next action:** Confirm print-size legibility of the new 1:125 rebus, then calculate the crossbow-bolt to treaty distance at 1:125.
+
 ## Session close — 2026-09-28 — Scale and hot-tea rebus drafts (Codex)
 
 **Task/status:** Added a second scale concept: close-up overlapping fish scale plates without a head or tail, plus a hot-tea cup with three steam lines. Kept the earlier whole-fish and two-finger hand drafts for comparison. All four draft icons are shown together in the Bayeux icon section of `Norse_Brainstorm.html` with the new exact prompts. Production icons and print files remain unchanged.

@@ -112,13 +112,8 @@ def draw_back_card(c, x=0, y=0):
     # divider and the postmark, above the address box. See postcard_marks.py.
     draw_mark(c, "R5")
 
-    # Rebus icons (PZ-14): fish ("scale") + Roman numeral I + plain arrow ("to") + die showing
-    # 5 reads as SCALE 1 TO 5 -- the third rebus layer, telling players which of the architect's
-    # scale ruler's six marked scales to use when measuring the crossbow-bolt/treaty distance
-    # (Bayeux and Winchester, PZ-14). Anchored below the signature like the other two cards.
-    # 28 Sept 2026: the target scale is now 1:125 (the ruler also has 1:25). These icons still
-    # draw SCALE 1 TO 5 until Codex redraws them: two-finger hand for "to", new fish scales, and
-    # a way to show "1 2 5" -- see PZ-14.
+    # Rebus icons (PZ-14): fish scales + one raised finger + colon + one-pip die + two raised
+    # fingers + Roman V. Read as SCALE 1:125, the selected architect's ruler scale.
     def draw_rebus_icon(filename, cx, cy, size, angle):
         icon = ImageReader(str(REBUS_DIR / filename))
         c.saveState()
@@ -128,10 +123,15 @@ def draw_back_card(c, x=0, y=0):
         c.restoreState()
 
     row_y = (y - 11) - 26
-    draw_rebus_icon("Rebus_Fish_Scales_Bayeux_v1.png", 38, row_y + 3, 22, -4)
-    draw_rebus_icon("Rebus_Roman_I_Bayeux_v1.png", 76, row_y - 4, 16, 6)
-    draw_rebus_icon("Rebus_Arrow_To_Bayeux_v1.png", 112, row_y + 2, 24, -3)
-    draw_rebus_icon("Rebus_Die_5_Bayeux_v1.png", 150, row_y - 3, 22, 8)
+    draw_rebus_icon("Rebus_Fish_Scale_Patch_Bayeux_v3.png", 29, row_y + 1, 23, -2)
+    draw_rebus_icon("Rebus_Hand_One_Bayeux_v1.png", 56, row_y, 21, 0)
+    # The colon is punctuation between the two scale-ratio numbers, drawn as two simple ink dots.
+    c.setFillColor(INK)
+    c.circle(80, row_y + 3, 1.35, fill=1, stroke=0)
+    c.circle(80, row_y - 3, 1.35, fill=1, stroke=0)
+    draw_rebus_icon("Rebus_Die_1_Perspective_Bayeux_v6.png", 103, row_y, 19, 0)
+    draw_rebus_icon("Rebus_Hand_Two_Bayeux_v1.png", 130, row_y, 21, 0)
+    draw_rebus_icon("Rebus_Roman_V_Bayeux_v1.png", 159, row_y, 17, 0)
 
     # Rollo's trail stamp (comet) -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72

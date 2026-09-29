@@ -129,7 +129,10 @@ def draw_back_card(c, x=0, y=0):
 
     row_y = (y - 11) - 26
     draw_rebus_icon("Rebus_Tree_Bayeux_v2.png", 55, row_y + 2, 28, -5)
-    draw_rebus_icon("Rebus_Teacup_Bayeux_v2.png", 108, row_y - 4, 26, 6)
+    # 28 Sept 2026: hot-tea cup (three steam lines) so the cup reads as TEA, per the user.
+    # v3 is Codex's draft, normalised with RebusIcons/prepare_r5_scale_icons.normalize; drawn
+    # 28 pt (was 26) so the cup itself stays about the old size under the added steam.
+    draw_rebus_icon("Rebus_Teacup_Hot_Bayeux_v3.png", 108, row_y - 3, 28, 6)
 
     # Rollo's trail stamp (comet) -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72
