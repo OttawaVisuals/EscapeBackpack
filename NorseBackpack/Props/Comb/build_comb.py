@@ -2,7 +2,7 @@
 
 How it plays. The comb lies upright on the back of AD, handle in the left margin, teeth pointing
 right. Its two end ring-and-dots are drilled through; players sit the two printed ring-and-dots
-(build_postcard_AD_pdf.COMB_MARKS) in those holes. There is one tooth per line of Liv's message,
+(build_postcard_AD_pdf.COMB_MARKS) in those holes. There is one tooth per line of Liv's message and sign-off (13 in all),
 at the message's own line spacing. Intact teeth cover their whole line. Four teeth are broken
 short, each ending just before a chosen letter, so the only text left showing is
 
@@ -79,12 +79,12 @@ def read_layout():
     for block in page.get_text("rawdict")["blocks"]:
         for line in block.get("lines", []):
             x0, y0, x1, y1 = line["bbox"]
-            if x0 < 30 and 25 < y0 < 145:   # message lines only (signature starts ~y 151)
+            if x0 < 30 and 25 < y0 < 185:   # message lines plus the two signature lines
                 chars = [ch for span in line["spans"] for ch in span["chars"]]
                 lines.append(((y0 + y1) / 2, chars))
     lines.sort(key=lambda item: item[0])
-    if len(lines) != 11:
-        raise SystemExit("expected 11 message lines on AD, found %d" % len(lines))
+    if len(lines) != 13:
+        raise SystemExit("expected 11 message + 2 signature lines on AD, found %d" % len(lines))
     tips = {}
     for number, word, index in TARGETS:
         chars = lines[number - 1][1]
@@ -269,7 +269,7 @@ def overlay_png(handle, teeth, holes, cuts):
     for h in holes:
         mg.polygon([(x * k + pad, y * k) for x, y in h.exterior.coords], fill=255)
     out.paste(base, (0, 0), mask)
-    out.convert("RGB").crop((0, 0, pad + int(200 * k), int(175 * k))).save(HERE / "Aud_Comb_on_AD.png")
+    out.convert("RGB").crop((0, 0, pad + int(200 * k), int(252 * k))).save(HERE / "Aud_Comb_on_AD.png")
 
 
 def main():
