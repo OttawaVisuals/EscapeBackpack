@@ -12,6 +12,7 @@ Same settings the postcards were confirmed with on the L1/L2 print test, 2026-09
   * The manual flip is long-edge: top stays top, left and right swap. So the back sits as far
     from the RIGHT page edge as the front sits from the LEFT, at the same height.
   * No back-page shift (the old 1.5mm shift was dropped for the postcards too).
+  * A thin cut border is drawn just outside the trim on the front (the art itself is unchanged).
   * 1.5mm bleed on the back only; the front stays at exact trim size. Ticket backs are not one
     flat colour (the museum back is a dark band over bare paper), so the bleed repeats each
     edge's own pixels outward instead of padding with a single colour.
@@ -30,7 +31,7 @@ import pymupdf as fitz
 import numpy as np
 from docx import Document
 from docx.enum.section import WD_SECTION
-from PIL import Image
+from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = ROOT / "output" / "docx"
@@ -52,6 +53,12 @@ TEXT_ROTATE_DEGREES = _postcard.TEXT_ROTATE_DEGREES
 TEXT_SHIFT_X_IN = 0
 TEXT_SHIFT_Y_IN = 0
 BLEED_IN = _postcard.BLEED_IN
+# Front cut border: a thin black line drawn just OUTSIDE the trim edge (the art stays at exact
+# trim size). Cut along the inner edge of the line and it is gone. CUT_GAP_IN is white space
+# between the art and the line; CUT_LINE_IN is the line thickness.
+CUT_GAP_IN = 0.0
+CUT_LINE_IN = 0.01
+CUT_PAD_IN = CUT_GAP_IN + CUT_LINE_IN + 0.02
 
 # w_in x h_in = the ticket as designed (portrait); page indices = front, back in its Print.pdf.
 TICKETS = {
@@ -63,7 +70,7 @@ TICKETS = {
 }
 
 
-def page_to_image_stream(pdf_path, page_index, rotate_degrees, bleed_in=0):
+def page_to_image_stream(pdf_path, page_index, rotate_degrees, bleed_in=0, cut_border=False):
     doc = fitz.open(pdf_path)
     page = doc[page_index]
     zoom = RENDER_DPI / 72
@@ -72,6 +79,15 @@ def page_to_image_stream(pdf_path, page_index, rotate_degrees, bleed_in=0):
     if bleed_in:
         pad = round(bleed_in * RENDER_DPI)
         img = Image.fromarray(np.pad(np.asarray(img), ((pad, pad), (pad, pad), (0, 0)), mode="edge"))
+    if cut_border:
+        pad = round(CUT_PAD_IN * RENDER_DPI)
+        line = max(1, round(CUT_LINE_IN * RENDER_DPI))
+        gap = round(CUT_GAP_IN * RENDER_DPI)
+        img = Image.fromarray(np.pad(np.asarray(img), ((pad, pad), (pad, pad), (0, 0)),
+                                     mode="constant", constant_values=255))
+        draw = ImageDraw.Draw(img)
+        o = pad - gap - line          # inner edge of the line sits `gap` outside the trim
+        draw.rectangle([o, o, img.width - 1 - o, img.height - 1 - o], outline=(0, 0, 0), width=line)
     rotated = img.rotate(rotate_degrees, expand=True)
     buf = io.BytesIO()
     rotated.save(buf, format="PNG")
@@ -86,8 +102,10 @@ def build_ticket(name, spec):
 
     doc = Document()
     paragraph = doc.add_paragraph()
-    add_floating_picture(paragraph, page_to_image_stream(spec["pdf"], 0, ROTATE_DEGREES),
-                         printed_w, printed_h, front_x, front_y)
+    add_floating_picture(paragraph,
+                         page_to_image_stream(spec["pdf"], 0, ROTATE_DEGREES, cut_border=True),
+                         printed_w + 2 * CUT_PAD_IN, printed_h + 2 * CUT_PAD_IN,
+                         front_x - CUT_PAD_IN, front_y - CUT_PAD_IN)
 
     doc.add_section(WD_SECTION.NEW_PAGE)
     paragraph = doc.add_paragraph()

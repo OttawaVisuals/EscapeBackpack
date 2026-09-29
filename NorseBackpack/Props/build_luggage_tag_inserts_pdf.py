@@ -1,3 +1,4 @@
+import importlib.util
 from pathlib import Path
 
 from reportlab.lib.colors import HexColor
@@ -11,13 +12,21 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "pdf" / "Luggage_Tag_Inserts_Print.pdf"
 FONT_DIR = ROOT / "Fonts"
 
-# Matches the Lewis N. Clark luggage tag's business-card insert slot.
-CARD_W, CARD_H = 3.5 * 72, 2 * 72
+# Measured paper area inside the Lewis N. Clark luggage tag's insert slot: 9 cm x 5.4 cm.
+CM = 72 / 2.54
+CARD_W, CARD_H = 9 * CM, 5.4 * CM
 PAGE = landscape((8.5 * 72, 11 * 72))
 PAGE_W, PAGE_H = PAGE
 
 INK = HexColor("#283B34")
 RULE = HexColor("#A99A7B")
+
+# The raven's flights card (path only) shares this sheet; it is drawn by its own build script.
+_spec = importlib.util.spec_from_file_location(
+    "raven_flights", Path(__file__).resolve().parent / "RavenFlights" / "build_raven_flights_pdf.py")
+_raven = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_raven)
+RAVEN_W, RAVEN_H = _raven.CARD_W, _raven.CARD_H
 
 pdfmetrics.registerFont(TTFont("NothingYouCouldDo", str(FONT_DIR / "Nothing_You_Could_Do" / "NothingYouCouldDo-Regular.ttf")))
 
@@ -51,52 +60,61 @@ def draw_insert(c, x, y, tag):
 
     # Printed manufacturer boilerplate.
     c.setFillColor(INK)
-    c.setFont("Helvetica", 8.5)
-    c.drawCentredString(CARD_W / 2, CARD_H - 24, "IF FOUND, PLEASE RETURN TO")
+    c.setFont("Helvetica", 10.5)
+    c.drawCentredString(CARD_W / 2, CARD_H - 28, "IF FOUND, PLEASE RETURN TO")
     c.setStrokeColor(RULE)
     c.setLineWidth(0.5)
-    c.line(CARD_W / 2 - 60, CARD_H - 30, CARD_W / 2 + 60, CARD_H - 30)
+    c.line(CARD_W / 2 - 75, CARD_H - 35, CARD_W / 2 + 75, CARD_H - 35)
 
     # Handwritten over: she jotted down the hotel she was staying at instead.
-    c.setFont("NothingYouCouldDo", 12)
+    c.setFont("NothingYouCouldDo", 16)
     c.setFillColor(INK)
-    c.drawCentredString(CARD_W / 2, CARD_H - 52, tag["hotel"])
-    draw_bold_script(c, tag["street"], CARD_W / 2, CARD_H - 74, 14)
-    c.setFont("NothingYouCouldDo", 12)
-    c.drawCentredString(CARD_W / 2, CARD_H - 94, tag["city"])
+    c.drawCentredString(CARD_W / 2, CARD_H - 62, tag["hotel"])
+    draw_bold_script(c, tag["street"], CARD_W / 2, CARD_H - 90, 19)
+    c.setFont("NothingYouCouldDo", 16)
+    c.drawCentredString(CARD_W / 2, CARD_H - 117, tag["city"])
 
     c.restoreState()
 
 
-def draw_crop_marks(c, x, y):
+def draw_crop_marks(c, x, y, w=CARD_W, h=CARD_H):
     c.saveState()
     c.setStrokeColor(HexColor("#777777"))
     c.setLineWidth(0.35)
     gap, length = 3, 8
-    for px in (x, x + CARD_W):
+    for px in (x, x + w):
         c.line(px, y - gap, px, y - gap - length)
-        c.line(px, y + CARD_H + gap, px, y + CARD_H + gap + length)
-    for py in (y, y + CARD_H):
+        c.line(px, y + h + gap, px, y + h + gap + length)
+    for py in (y, y + h):
         c.line(x - gap, py, x - gap - length, py)
-        c.line(x + CARD_W + gap, py, x + CARD_W + gap + length, py)
+        c.line(x + w + gap, py, x + w + gap + length, py)
     c.restoreState()
 
 
 def main():
     OUT.parent.mkdir(parents=True, exist_ok=True)
     c = canvas.Canvas(str(OUT), pagesize=PAGE, pageCompression=1)
-    c.setTitle("Luggage tag inserts - opening puzzle")
+    c.setTitle("Luggage tag inserts and raven's flights card")
     c.setAuthor("Escape Backpack")
 
     gap = 30
     total_w = len(TAGS) * CARD_W + (len(TAGS) - 1) * gap
     start_x = (PAGE_W - total_w) / 2
-    y = (PAGE_H - CARD_H) / 2
+    row_gap = 36
+    block_h = CARD_H + row_gap + RAVEN_H
+    y = (PAGE_H + block_h) / 2 - CARD_H   # tags on top, raven card below, block centred
 
     for index, tag in enumerate(TAGS):
         x = start_x + index * (CARD_W + gap)
         draw_insert(c, x, y, tag)
         draw_crop_marks(c, x, y)
+
+    rx, ry = (PAGE_W - RAVEN_W) / 2, y - row_gap - RAVEN_H
+    c.saveState()
+    c.translate(rx, ry)
+    _raven.draw_card(c)
+    c.restoreState()
+    draw_crop_marks(c, rx, ry, RAVEN_W, RAVEN_H)
 
     c.showPage()
     c.save()

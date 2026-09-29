@@ -278,8 +278,14 @@ HARALD_RUNES_DECOY = (
     (4, 10, 3, 1),
     (7, 4, 1, 6),
     (7, 8, 2, 3),
-    (2, 7, 3, 4),
+    # 29 Sept 2026: was (2, 7, 3, 4) -- relettered E7, a second stem in column E competing with
+    # the real F at E3, so RAVEN allowed both HRAFN and HRALN (review RV finding, 22 Sept). Moved
+    # one column right to I7, the fix approved in the 22 Sept review; I is not a RAVEN column.
+    (3, 7, 3, 4),
 )
+# Every RAVEN column (relettered R, A, V, E, N = original 6, 0, 8, 2, 5) must hold exactly one stem.
+for _col in (6, 0, 8, 2, 5):
+    assert sum(1 for r in HARALD_RUNES_REAL + HARALD_RUNES_DECOY if r[0] == _col) == 1, _col
 
 
 

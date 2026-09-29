@@ -17,6 +17,7 @@ Writes:
 
 import importlib.util
 import io
+import math
 import sys
 from pathlib import Path
 
@@ -56,9 +57,10 @@ pdfmetrics.registerFont(TTFont("CinzelRegular", str(FONT_DIR / "Cinzel" / "stati
 # Perch centres in the accepted sketch's pixel space (y down).
 SKETCH = {"H": (128, 329), "R": (385, 293), "T": (675, 329), "A": (385, 444),
           "O": (128, 465), "N": (675, 465), "F": (253, 604), "S": (550, 604)}
-GRAPH_W = 2.7 * inch
-GRAPH_TOP = 0.8 * inch  # from the card top, to the top perch centre
-NODE_R = 0.125 * inch
+GRAPH_W = 3.4 * inch
+GRAPH_TOP = 0.0  # unused: the graph is centred vertically in draw_card
+NODE_R = 0.16 * inch
+DIGIT_PT, NODE_PT = 11, 12
 
 
 def check_route():
@@ -79,51 +81,39 @@ def node_positions():
 
 
 def draw_card(c):
+    """Path only: perches, flights and their digits. No title, text, answer boxes or emblem.
+    Nothing is filled white, so the card can be printed on coloured paper: each flight stops
+    at the perch outline and breaks around its digit instead of using a white knockout."""
     pos = node_positions()
-    c.setFillColor(INK)
-    c.setFont("CinzelBold", 12.5)
-    c.drawCentredString(CARD_W / 2, CARD_H - 0.3 * inch, "THE RAVEN’S FLIGHTS")
-    c.setFont("Helvetica", 7)
-    c.drawCentredString(CARD_W / 2, CARD_H - 0.44 * inch, "Follow the five letters you uncovered.")
-    c.drawCentredString(CARD_W / 2, CARD_H - 0.555 * inch, "Read the number on each flight, in order.")
+    ys = [y for _, y in pos.values()]
+    dy = CARD_H / 2 - (max(ys) + min(ys)) / 2   # centre the graph vertically on the card
+    pos = {k: (x, y + dy) for k, (x, y) in pos.items()}
 
-    # Flights: all drawn alike, digit on a white knockout at the midpoint.
     c.setStrokeColor(LINE)
-    c.setLineWidth(0.6)
-    for a, b, _ in PERCH_FLIGHTS:
-        (x1, y1), (x2, y2) = pos[a], pos[b]
-        c.line(x1, y1, x2, y2)
-    c.setFont("CinzelRegular", 8.5)
+    c.setLineWidth(0.8)
+    digit_gap = 6.5
+    c.setFont("CinzelRegular", DIGIT_PT)
     for a, b, n in PERCH_FLIGHTS:
         (x1, y1), (x2, y2) = pos[a], pos[b]
+        length = math.hypot(x2 - x1, y2 - y1)
+        ux, uy = (x2 - x1) / length, (y2 - y1) / length
         mx, my = (x1 + x2) / 2, (y1 + y2) / 2
-        c.setFillColor(white)
-        c.rect(mx - 4.2, my - 4.6, 8.4, 9.2, stroke=0, fill=1)
+        # Gap half-width along the line: enough to clear the digit's box in this direction.
+        half = digit_gap / max(abs(ux), abs(uy) * 0.75) * 0.9 + 0.5
+        sx, sy = x1 + ux * NODE_R, y1 + uy * NODE_R
+        ex, ey = x2 - ux * NODE_R, y2 - uy * NODE_R
+        c.line(sx, sy, mx - ux * half, my - uy * half)
+        c.line(mx + ux * half, my + uy * half, ex, ey)
         c.setFillColor(INK)
-        c.drawCentredString(mx, my - 3, str(n))
+        c.drawCentredString(mx, my - DIGIT_PT * 0.34, str(n))
 
-    # Perches.
-    c.setLineWidth(0.8)
+    c.setLineWidth(1.0)
     c.setStrokeColor(INK)
-    c.setFont("CinzelBold", 9.5)
+    c.setFont("CinzelBold", NODE_PT)
     for k, (x, y) in pos.items():
-        c.setFillColor(white)
-        c.circle(x, y, NODE_R, stroke=1, fill=1)
+        c.circle(x, y, NODE_R, stroke=1, fill=0)
         c.setFillColor(INK)
-        c.drawCentredString(x, y - 3.4, k)
-
-    # Four blank answer boxes.
-    box, gap = 0.26 * inch, 0.07 * inch
-    total = 4 * box + 3 * gap
-    bx, by = (CARD_W - total) / 2, 0.16 * inch
-    c.setLineWidth(0.6)
-    c.setStrokeColor(LINE)
-    for i in range(4):
-        c.rect(bx + i * (box + gap), by, box, box, stroke=1, fill=0)
-
-    # Small raven emblem, matching the one on the pouch lock (PZ-02 release note).
-    icon = 0.32 * inch
-    c.drawImage(str(RAVEN_ICON), CARD_W - icon - 0.14 * inch, 0.12 * inch, icon, icon, mask="auto")
+        c.drawCentredString(x, y - NODE_PT * 0.36, k)
 
 
 def build_pdf():
@@ -176,7 +166,8 @@ def build_docx():
 def main():
     check_route()
     print(build_pdf())
-    print(build_docx())
+    # The card is now printed on the luggage-tag sheet (Props/build_luggage_tag_inserts_pdf.py);
+    # build_docx() made the old stand-alone print file and is no longer called.
 
 
 if __name__ == "__main__":

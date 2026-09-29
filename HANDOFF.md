@@ -1,5 +1,38 @@
 # Project Handoff
 
+## Session close — 2026-09-29 — Aud's comb: teeth over the sign-off (Claude Code)
+
+**Task/status:** The two empty slots beside "With love, / Aunt Liv" on AD could be misread as W and A. The comb now has full-length teeth there: 13 teeth (11 message + 2 signature). Still reads BOOK. Committed as `a3ab202`.
+
+**Files changed:** `Props/Comb/build_comb.py` (reads the two signature lines from the AD print PDF; expects 13 lines; overlay crop extended to 252 pt so the lower ring mark shows), `Aud_Comb.scad`, `Aud_Comb.stl`, `Aud_Comb_on_AD.png`.
+
+**Checks:**
+- Full-height overlay: the bottom two teeth cover both sign-off lines. A few stray ink pixels show below the last tooth (descender stub, not a letter).
+- STL size unchanged at 69.0 × 65.6 mm (the ring marks set the height). Min tooth gap 1.27 mm.
+- The comb is built from the AD print PDF (9.5 pt text, 10.6 pt leading). PDF and script are from the same commit `2303ec0`.
+- Not checked against a physical print.
+
+**Next action:** reprint the comb from `Aud_Comb.stl` and test it on a printed AD.
+
+## Session close — 2026-09-29 — Harald map E-column fix (Claude Code)
+
+**Task/status:** The reviewer found 2 rune stems in column E on Harald's map: the real F at E3 and a decoy at E7. RAVEN selects whole columns, so players could read HRAFN or HRALN. I moved the E7 decoy to **I7**, which is not a RAVEN column. The 22 Sept review had proposed exactly this fix (`Review_2026-09-22/build_review_props.py`), but it was only ever applied to a review PDF.
+
+The builder now asserts that each RAVEN column (R, A, V, E, N) holds exactly one stem. The answer HRAFN → 2648, the route and the board back are unchanged.
+
+**Files changed:**
+- `TravelMap/build_trail_maps_pdf.py`.
+- `output/pdf/Trail_Map_4_Harald_Print.pdf` and `_ANSWER.pdf`. The other three maps rebuilt pixel-identical, so they were restored.
+- `Props/_Renders/Trail_Map_4_Harald_Front.png`, and the H2 back PNG (re-rendered by `build_page_images.py`).
+- `Norse_Brainstorm.html`: a note in `PZ-02`, the "corrected review map" note, and the Approved changes clue and risk text.
+
+**Checks:**
+- Rendered the map: the columns hold A10 / C4 / E3 / I7, I9 / K2, K10 / N2 / R6 / T4, T8 / V9.
+- `node --check` passed, and `git diff --check` is clean. Headless Chrome showed 0 errors on 5 tabs.
+- Nothing printed; no commit.
+
+**Next action:** reprint the laminated Harald map (page 1 changed; page 2, the board back, did not).
+
 ## Session close — 2026-09-29 — Postcard update batch 2: Aud + Harald, wider column (Claude Code)
 
 **Task/status:** The user exported batch 2 from the Postcard update tab. I reviewed it and the user answered five questions:
@@ -212,6 +245,11 @@ Rebus, rune-key and comb space is reserved in the preview (R3/R4/R5, H4, HD). AD
 
 **Luggage tags (same session):** The inserts are single-sided, so no duplex fix is needed. At the user's request, removed the cream background fill from `NorseBackpack/Props/build_luggage_tag_inserts_pdf.py` because the user will print them on coloured paper. The inner rule, text and crop marks are unchanged. Rebuilt `output/pdf/Luggage_Tag_Inserts_Print.pdf` and the page render, and checked the render visually.
 
+**Luggage tags resized (29 Sept 2026):** The user measured the tag's paper slot at 9 cm x 5.4 cm (was 3.5 x 2 in). Cut size in `build_luggage_tag_inserts_pdf.py` is now exactly 9 x 5.4 cm; fonts raised (boilerplate 8.5 to 10.5 pt, hotel and city 12 to 16 pt, street 14 to 19 pt) and lines respaced. Rebuilt the PDF and `Luggage_Tag_Inserts_Sheet.png`; checked the render visually. Not yet test-printed and cut against the real tag.
+
+**Word versions of remaining printables (29 Sept 2026):** New `NorseBackpack/Props/build_printables_docx.py` writes `output/docx/Print_LuggageTags.docx`, `Print_JournalFamilyIconography.docx`, `Print_TransitionTickets.docx`, `Print_HnefataflBoardSetupInsert.docx` (each rasterised from its own PDF, one floating picture at exact size, centred on Letter). Exported all four through Word to PDF and checked page counts (1 each) and two renders visually. Trail maps already have `Norse_Trail_Maps_Print.docx`; postcards, double-sided tickets and Raven's Flights already had `PrintTest_*.docx`. Rerun the script after any source PDF changes.
+
+**Raven's flights moved onto the luggage-tag sheet (29 Sept 2026):** At the user's request the card is now path only (no title, instructions, answer boxes or raven emblem), drawn with no white fills so it works on coloured paper (lines stop at the perch outlines and break around each digit). Graph enlarged (3.4 in wide, digits 11 pt). It prints on the same Letter landscape page as the two luggage tags, below them, still on a 4 x 3 in trim with crop marks: `build_luggage_tag_inserts_pdf.py` imports `draw_card` from `RavenFlights/build_raven_flights_pdf.py`. Rebuilt `Luggage_Tag_Inserts_Print.pdf`, `Print_LuggageTags.docx`, `Luggage_Tag_Inserts_Sheet.png` and the raven preview PNG; checked the PDF render visually. Removed the stand-alone `output/docx/PrintTest_RavenFlights.docx`; `Raven_Flights_Card_Print.pdf` remains but is no longer the print file. Norse page text updated the same day (PZ-02 built note and new user note, RV-21 card description, release note, PR-26 table row, runes status); old wording kept as "superseded". Div balance checked; browser preview navigation was refused, so not checked visually. Not test-printed.
 **Next action:** print `PrintTest_MuseumTicket.docx` and check the front/back registration.
 
 ## Session close — 2026-09-27 — Print-test back page mirrored from the right edge (Claude Code)
