@@ -1,5 +1,96 @@
 # Project Handoff
 
+## Session close — 2026-09-29 — Norse status pass and PR-07 web slimming (Claude Code)
+
+**Task/status:** Done, not committed.
+- Status updates from the user, in the Open questions tab: PR-01 luggage tag bought; PR-08 board 3D-printed instead of bought; PR-04 runes and PR-05 stamps passed on paper; PR-10 maps accepted as-is (the user wrote "card", which I read as the maps; confirm if not); PR-17 and PR-18 tickets marked "To re-print"; HI-03 dropped (the museum label it targeted was dropped on 17 Sept). PR-09, PR-19, PR-24, PR-25, PR-26 and PR-28 are still to test.
+- PR-07 decided and built: Norse commits only what the website uses, and text sources stay committed. New `NorseBackpack/Tools/build_web_assets.py` makes 1200 px WebP copies of the postcard images (`NorseBackpack/Web/Postcards/`) and 150 dpi copies of the print PDFs (`NorseBackpack/Web/pdf/`), repoints quoted links, and writes a generated Norse block in `.gitignore`. The Norse part of the site went from about 398 MB to about 101 MB. Three runtime-built postcard paths were repointed by hand (`Norse_Brainstorm.html` lines 3773 and 4317, and `Digital/leif-data.js` line 4, which is Codex's uncommitted work); the script now warns about paths like these.
+- `git rm --cached` has staged 422 now-ignored files (about 1.3 GB) as deletions. They are still on disk, and this computer now holds the only copy of the full-size postcard art and the print PDFs, so they need a separate backup. `.git` is still 6.4 GB; shrinking it would need a history rewrite, which is not planned.
+
+**Files changed:** `NorseBackpack/Norse_Brainstorm.html` (statuses, PR-07 note, links to web copies), `NorseBackpack/Norse_Brainstorm_Review.html` and `Digital/Prototype_Comb_Tally.html` (links only), `Digital/leif-data.js`, `.gitignore`, `AGENTS.md` (Project Map line about `Web/` and the script), `.claude/launch.json` (`static-preview` now passes port 8734; before, it served on 8000 and never connected). New: `NorseBackpack/Tools/build_web_assets.py` and `NorseBackpack/Web/` (111 files, 48 MB).
+
+**Checks:** Served over http://localhost:8734. Opened every tab of the Norse page, and it made 197 image and PDF requests: none failed and none went to a full-size file. `Digital/Leif.html` loads its postcard from `Web/`. No console errors. No site file is gitignored (checked with `git check-ignore`). Viewed the H2 back WebP: text is sharp. Viewed page 1 of a compressed postcard PDF: clean. Nothing printed; no commit.
+
+**Next action:** the user reviews the staged changes (`git status`) and commits when ready. After that, reprint `PrintTest_H2_H3` for the indent check (now a local-only file in `output/docx/`).
+
+## Session close — 2026-09-29 — H2 (DRINK) indent cut to half a space (Claude Code)
+
+**Task/status:** Done. The user asked for less indent on the H2 Staraya Ladoga back. It went from 10 pt to one space (about 5 pt), then to half a space (about 2.5 pt). The wrapped lines and the sign-off use this indent. Half a space is close to the minimum: the "y" in "you" hangs about 1.6 pt left of where the letter starts, so that line already looks flush with the margin. The wording is unchanged. The narrower indent let "true." and "bend." move up onto the line before, so the message is now 2 lines shorter.
+
+**Files changed:** `Postcards/build_postcard_H2_pdf.py`, `output/pdf/Postcard_H2_Staraya_Ladoga_Print.pdf` and `_Letter_Print.pdf`, and `Postcards/Postcard_H2_Staraya_Ladoga_Back.png` (from `build_page_images.py`; no other image changed), and `output/docx/PrintTest_H2_H3.docx`. The other print docx files were rebuilt too but only their timestamps changed, so I restored them. `PrintTest_L3_LD.docx` could not be restored because the file is locked (probably open in Word). Its content is unchanged.
+
+**Checks:** Rendered the back page and viewed it. Also checked the H2 back image inside the print docx. Everything fits, and the D/R/I/N/K starts still sit on the margin. Nothing printed; no commit.
+
+**Next action:** reprint `PrintTest_H2_H3` to check the indent on paper.
+
+## Session close — 2026-09-29 — Playable Leif digital pilot (Codex)
+
+**Task/status:** User approved building Leif’s leg. Implemented a local solo playtest with all three Leif locks and an endpoint opening Rollo’s pouch. No commits, pushes or deployment.
+
+**Files added:** `NorseBackpack/Digital/Leif.html`, `leif.css`, `leif.js`, `leif-data.js`, `leif.test.cjs`, and a spoiler-free `Leif_Preview.png`. References existing artwork; no physical assets changed. The separate comb/tally prototype is preserved.
+
+**Files updated:** `NorseBackpack/Norse_Brainstorm.html` Digital tab records the pilot scope, digital adaptations, verification and remaining limitations, and links to the game. This handoff entry.
+
+**Checks:** Five Node tests pass (starting inventory, progression/rejection, save round-trip, corrupted save validation, asset existence); JS syntax passes. In-app browser over existing localhost:8734: all three locks completed, incorrect answer rejected, card reverse and map close-up/zoom inspected, L2/L3 joined cloud digits verified using source images, dragging and tidy checked, stowed map retrieved, hints and notebook survive reload, portable save text restores completion, invalid text leaves progress intact, restart returns to four starting props. No warning/error browser logs at checked points. The game was reset for the user's playtest. The Digital tab and its pilot link were visually checked; that designer page emitted an unattributed MutationObserver error (no corresponding observer code in the edited HTML or embedded comb prototype), while the Leif game logs remained clear.
+
+**Limitations:** No phone/touch or independent player test. The lamp is an edge-alignment adaptation, not physical paper transmission. File download event was not reported by the in-app browser; copyable save text and paste-to-load provide a tested fallback. File picker import not end-to-end tested. Local answer checks are visible in source. Existing uncommitted work preserved.
+
+**Next action:** User plays the fresh pilot at `http://localhost:8734/NorseBackpack/Digital/Leif.html` and identifies unclear or fiddly interactions before extending the game.
+
+
+## Session review — 2026-09-29 — Physical and virtual editions (Codex)
+
+**Task/status:** Reviewed the existing Norse digital work and the proposal for physical and online editions. Review only; no game-design decisions or implementation changes made.
+
+**Inspected:** Digital tab and DG questions in `NorseBackpack/Norse_Brainstorm.html`, the prototype and asset exporter, current adventure sequence, repository state, and public-site README.
+
+**Verified:** In-app browser over existing localhost:8734: postcard flip, comb rotation/drag and seating on AD, tally wheel drag. No browser warning/error logs at the time checked. Source confirms no save/resume or complete lock/inventory progression in this prototype. Phone/touch behavior and the full adventure were not tested. The ruler answer remains explicitly unresolved in the design page.
+
+**Files changed:** This handoff entry only. Existing uncommitted digital work preserved; nothing committed or published.
+
+**Next action:** Discuss the proposed shared-content approach and a small playable Norse segment with the user before implementing. Full-build timing remains the user's existing decision: after the physical game is finished.
+
+
+## Session close — 2026-09-29 — Digital version tab added (Claude Code)
+
+**Task/status:** The user liked the prototype (entry below) and asked for it as a new tab on the brainstorm page. Done; nothing committed.
+
+**Files changed:**
+- `NorseBackpack/Norse_Brainstorm.html`: a new **Digital version** tab (`#view-digital`). It records the three decisions (friends online, solo, build after the game is finished), the three-screen idea, a physical-to-digital table (3 prototyped, 4 ideas) and the prototype embedded in an iframe. A new **DG** group in Open questions holds DG-01 ruler scale, DG-02 answers in the page source, DG-03 tactile moments, DG-04 hosting and DG-05 phones.
+- `AGENTS.md`: `DG-` added to the list of ID prefixes.
+
+**Checks:** over HTTP (8734), the tab opens from the nav and the hash; all 8 internal links resolve; the pills are styled; the iframe loads the comb; 0 console errors. Also checked with a headless Chrome full-page render. `git diff --check` is clean.
+
+**Found, not fixed:** a block of Aud map-styling notes (starting "Aud map styling pass — 18 Sept 2026", near the end of the page) sits directly under `<main>`, outside every tab, so it shows on every tab. It was already like this in HEAD `ea5ed55`.
+
+**Next action:** the user decides where that stray Aud map block belongs.
+
+## Session close — 2026-09-29 — Digital prototype: comb + SOLE tally (Claude Code)
+
+**Task/status:** The user asked whether the Norse game could become a browser version. Their answers: for friends playing online, solo play (no shared table), and to be built once the physical game is finished. As a feel test, they asked for a prototype of two props on a virtual table. It works; nothing is committed.
+- **Card AD:** drag, rotate, and turn over (double-click or F).
+- **Aud's comb:** drag, rotate, and turn face down (this hides the carving). It seats with a click only when both holes sit over AD's two ring-and-dots, then moves with the card.
+- **SOLE tally:** 3D wheels, turned by dragging up/down or by scrolling one notch at a time, with click sounds. "Turn upside down" rotates it 180°.
+
+**Files added (all untracked):**
+- `NorseBackpack/Digital/Prototype_Comb_Tally.html`
+- `NorseBackpack/Digital/build_digital_assets.py`: imports `Props/Comb/build_comb.py` and exports the comb as SVG, in card points.
+- `NorseBackpack/Digital/assets/comb.svg`, `comb.json` and `comb.js`. The page loads `comb.js` with a script tag, so it opens with a double-click (from file://), with no server needed.
+
+The page reuses the AD front and back PNGs from `Postcards/`. The tally's digit sizes and ring sizes come from `Props/SoleTally`. Nothing was added to `Norse_Brainstorm.html`; recording the digital-version decisions there is still to be proposed.
+
+**Checks (in-app browser over HTTP):**
+- Comb dropped about 3 px off seats exactly on the dots, and the visible text matches `Aud_Comb_on_AD.png`.
+- Wheel drag and scroll both change the digits. Setting 3705 and turning the tally upside down reads SOLE.
+- The face-down comb hides the carving.
+- 0 console errors.
+- Heads-up: the `static-preview` launch config passes no port, so `python -m http.server` served on **8000**, not 8734.
+- Not tested: phone or touch screens, or a small window (the table scales down to fit, and the cards get small).
+
+- From file:// (checked with a headless Chrome screenshot), the card, comb, tally and font all load.
+
+**Next action:** the user double-clicks `NorseBackpack/Digital/Prototype_Comb_Tally.html`, plays with it and says what feels wrong.
+
 ## Session close — 2026-09-29 — Aud's comb: teeth over the sign-off (Claude Code)
 
 **Task/status:** The two empty slots beside "With love, / Aunt Liv" on AD could be misread as W and A. The comb now has full-length teeth there: 13 teeth (11 message + 2 signature). Still reads BOOK. Committed as `a3ab202`.

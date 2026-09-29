@@ -103,7 +103,10 @@ def draw_back_card(c, x=0, y=0):
     y = H - 36
     # 29 Sept 2026 (user): hanging indent -- only the D, R, I, N, K sentence starts sit on the
     # margin; every wrapped continuation line, and the sign-off, is set in by INDENT.
-    INDENT = 10
+    # 29 Sept 2026 (user): indent reduced from 10 pt to one space, then to half a space (~2.5 pt).
+    # Close to the floor: "y" overhangs its origin by ~1.6 pt, so below ~2 pt the "you is starting"
+    # line would sit flush with the margin.
+    INDENT = pdfmetrics.stringWidth(" ", font, size) / 2
     full_w = divider - msg_left - 6
     for paragraph in paragraphs:
         first = wrap_text(paragraph, font, size, full_w)[0]

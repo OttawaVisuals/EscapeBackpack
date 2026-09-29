@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comb & Tally Prototype</title>
+<!--
+  Norse Backpack, digital prototype (29 Sept 2026). Two props on a virtual table:
+  Aud's comb over card AD, and the SOLE tally. Not part of the game yet.
+  The comb shape comes from assets/comb.svg, exported by build_digital_assets.py from
+  Props/Comb/build_comb.py, so it matches the printed comb. Tally sizes come from
+  Props/SoleTally (ring 24 mm across, 9.5 mm wide; seven-segment digits 3.4 x 5.6 mm).
+  Opens straight from disk (double-click) or over HTTP.
+-->
+<style>
+@font-face { font-family: "Cinzel"; src: url("../../Fonts/Cinzel/Cinzel-VariableFont_wght.ttf"); }
+:root {
+  --bone: #e2d6bc; --bone-edge: #6e5a3c; --bone-cut: #9a8462;
+  --ring: #ddd0b2; --ring-edge: #8c7a58; --digit: #2b2118;
+  --bar: #151311; --bar-line: #3a332b; --text: #efe7d8; --muted: #b3a891;
+  --accent: #c89b4a;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1714; color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { position: absolute; inset: 0 0 auto 0; height: 52px; display: flex; align-items: center;
+  gap: 14px; padding: 0 16px; background: var(--bar); border-bottom: 1px solid var(--bar-line); z-index: 5; }
+h1 { font-family: "Cinzel", Georgia, serif; font-size: 18px; font-weight: 600; margin: 0;
+  letter-spacing: .04em; white-space: nowrap; }
+.chip { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--accent);
+  border: 1px solid #6b5530; border-radius: 99px; padding: 2px 8px; }
+.help { flex: 1; font-size: 12.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+kbd { font: 11px ui-monospace, monospace; border: 1px solid #4a4238; border-bottom-width: 2px;
+  border-radius: 4px; padding: 0 4px; color: var(--text); }
+button { font: inherit; font-size: 13px; color: var(--text); background: #2a2520; border: 1px solid #4a4238;
+  border-radius: 6px; padding: 5px 10px; cursor: pointer; }
+button:hover { background: #352e27; }
+
+#stage { position: absolute; inset: 52px 0 0 0; overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(255,220,160,.10), transparent 65%),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.08) 0 2px, transparent 2px 7px, rgba(255,255,255,.025) 7px 9px, transparent 9px 23px),
+    linear-gradient(180deg, #5a3e28, #4a3220); }
+#world { position: absolute; left: 0; top: 0; width: 1500px; height: 950px; transform-origin: 0 0; }
+
+.piece { position: absolute; left: 0; top: 0; touch-action: none; user-select: none; -webkit-user-select: none; }
+.piece.anim { transition: transform .3s ease; }
+.piece.snap { transition: transform .12s ease-out; }
+
+/* Postcard */
+.card { perspective: 2400px; cursor: grab; }
+.card .inner { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform .55s ease; }
+.card.back-up .inner { transform: rotateY(180deg); }
+.card .face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 5px;
+  background-size: 100% 100%; box-shadow: 0 2px 3px rgba(0,0,0,.35), 0 10px 26px rgba(0,0,0,.35); }
+.card .face.front { background-image: url("../Web/Postcards/Postcard_AD_Bjarnarhofn_Front.webp"); }
+.card .face.back { background-image: url("../Web/Postcards/Postcard_AD_Bjarnarhofn_Back.webp"); transform: rotateY(180deg); }
+
+/* Comb: only the comb itself is clickable, so gaps between teeth reach the card below */
+.comb { pointer-events: none; }
+.comb svg { width: 100%; height: 100%; overflow: visible; display: block;
+  filter: drop-shadow(2px 5px 4px rgba(0,0,0,.45)); transition: filter .15s; }
+.comb.seated svg { filter: drop-shadow(1px 1.5px 1px rgba(0,0,0,.45)); }
+.comb .body { fill: var(--bone); stroke: var(--bone-edge); stroke-width: .35; pointer-events: visiblePainted; cursor: grab; }
+.comb .cut, .comb .knot { fill: var(--bone-cut); pointer-events: none; }
+.comb.facedown .cut, .comb.facedown .knot { display: none; }
+.comb.facedown .body { fill: #d8cbae; }
+
+/* SOLE tally */
+.tally .shadow { position: absolute; left: 18px; right: 18px; top: 30px; bottom: 30px; border-radius: 22px;
+  box-shadow: 0 12px 24px rgba(0,0,0,.45), 0 3px 5px rgba(0,0,0,.35); }
+.tally .row { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  perspective: 1400px; }
+.tally .cap { width: 80px; height: 222px; border-radius: 22px; position: relative; cursor: grab;
+  background: linear-gradient(180deg, #b8a684 0%, #e6dbc2 22%, #efe6d2 48%, #d9ccae 72%, #9c8a68 100%);
+  border: 1px solid var(--ring-edge); }
+.tally .cap::after { content: ""; position: absolute; left: 8px; right: 8px; top: 50%; height: 3px; margin-top: -1.5px;
+  background: var(--digit); border-radius: 2px; opacity: .85; }
+.tally .ring { width: 76px; height: 224px; position: relative; transform-style: preserve-3d; cursor: ns-resize; }
+.tally .prism { position: absolute; left: 0; top: 50%; width: 76px; height: 0; transform-style: preserve-3d; }
+.tally .prism.settle { transition: transform .14s ease-out; }
+.tally .facet { position: absolute; left: 1px; top: -29.7px; width: 74px; height: 59.4px;
+  backface-visibility: hidden; background: var(--ring); border-top: 1px solid var(--ring-edge);
+  border-bottom: 1px solid var(--ring-edge); }
+.tally .facet svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tally .facet .shade { position: absolute; inset: 0; background: #000; transition: opacity .14s; }
+
+#tools { position: absolute; z-index: 4; display: none; gap: 6px; padding: 5px; border-radius: 8px;
+  background: rgba(20,18,16,.92); border: 1px solid var(--bar-line); box-shadow: 0 4px 14px rgba(0,0,0,.4);
+  transform: translate(-50%, -100%); }
+#tools.show { display: flex; }
+#tools button { padding: 4px 9px; font-size: 12.5px; }
+
+@media (max-width: 760px) { .help { display: none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Aud's comb &amp; SOLE tally</h1>
+  <span class="chip">Prototype</span>
+  <span class="help">Drag to move · <kbd>R</kbd> rotate · <kbd>F</kbd> turn over · double-click a card to turn it · drag a wheel up or down, or scroll over it</span>
+  <button id="reset" type="button">Reset table</button>
+</header>
+<script src="assets/comb.js"></script>
+<div id="stage">
+  <div id="world"></div>
+  <div id="tools">
+    <button type="button" data-act="rotate">Rotate ⟳</button>
+    <button type="button" data-act="flip">Turn over</button>
+  </div>
+</div>
+
+<script>
+const W = 1500, H = 950;
+const S = 2.2;          // screen px per card point (AD is 360 x 252 pt)
+const MM = 8;           // screen px per mm for the tally
+const SNAP_TOL = 6 * S; // hole-to-dot distance (6 pt, about 2 mm) at which the comb settles in
+
+const stage = document.getElementById("stage");
+const world = document.getElementById("world");
+const tools = document.getElementById("tools");
+let scale = 1, offX = 0, offY = 0, z = 10, selected = null;
+
+function fit() {
+  const r = stage.getBoundingClientRect();
+  scale = Math.min(r.width / W, r.height / H);
+  offX = (r.width - W * scale) / 2;
+  offY = (r.height - H * scale) / 2;
+  world.style.transform = `translate(${offX}px, ${offY}px) scale(${scale})`;
+  placeTools();
+}
+function toWorld(e) {
+  const r = stage.getBoundingClientRect();
+  return { x: (e.clientX - r.left - offX) / scale, y: (e.clientY - r.top - offY) / scale };
+}
+
+// ---- click sounds -------------------------------------------------------------------
+let ac = null;
+function tick(freq = 2600, dur = 0.016, gain = 0.22) {
+  try {
+    ac = ac || new AudioContext();
+    const n = Math.floor(ac.sampleRate * dur), buf = ac.createBuffer(1, n, ac.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 4);
+    const src = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+    src.buffer = buf; f.type = "bandpass"; f.frequency.value = freq; f.Q.value = 1.2; g.gain.value = gain;
+    src.connect(f).connect(g).connect(ac.destination); src.start();
+  } catch (_) { /* no audio is fine */ }
+}
+
+// ---- pieces -------------------------------------------------------------------------
+// Each piece sits at (x, y) = its centre in world px, turned by rot degrees, and mirrored
+// top-to-bottom when fy = -1. A point p inside the piece lands at centre + R(rot) F (p - half size).
+function apply(p, mode) {
+  p.el.classList.toggle("anim", mode === "anim");
+  p.el.classList.toggle("snap", mode === "snap");
+  p.el.style.transform = `translate(${p.x - p.w / 2}px, ${p.y - p.h / 2}px) rotate(${p.rot}deg) scale(1, ${p.fy})`;
+  if (p === selected) placeTools();
+}
+function toWorldPt(p, lx, ly) {
+  const cx = lx - p.w / 2, cy = (ly - p.h / 2) * p.fy, a = p.rot * Math.PI / 180;
+  return { x: p.x + cx * Math.cos(a) - cy * Math.sin(a), y: p.y + cx * Math.sin(a) + cy * Math.cos(a) };
+}
+function raise(p) {
+  p.el.style.zIndex = ++z;
+  if (p === card && comb.seated) comb.el.style.zIndex = ++z;
+}
+function makePiece(cls, w, h, html) {
+  const el = document.createElement("div");
+  el.className = "piece " + cls;
+  el.style.width = w + "px"; el.style.height = h + "px";
+  el.innerHTML = html || "";
+  world.appendChild(el);
+  return { el, w, h, x: 0, y: 0, rot: 0, fy: 1 };
+}
+
+const card = makePiece("card", 360 * S, 252 * S,
+  '<div class="inner"><div class="face front"></div><div class="face back"></div></div>');
+card.backUp = false;
+
+let COMB = null;
+const comb = makePiece("comb", 10, 10);
+comb.seated = false;
+
+// SOLE tally: base, four decagonal rings, end cap.
+const APO = 11.43 * MM;                 // ring apothem
+function segs(v) {
+  const on = ["abcdef", "bc", "abged", "abgcd", "fgbc", "afgcd", "afgedc", "abc", "abcdefg", "abcdfg"][v];
+  const w = 3.4, h = 5.6, t = 0.7;      // mm, from sole_tally_ring.scad
+  const R = { a: [-w/2, -h/2, w, t], b: [w/2 - t, -h/2, t, h/2], c: [w/2 - t, 0, t, h/2], d: [-w/2, h/2 - t, w, t],
+              e: [-w/2, 0, t, h/2], f: [-w/2, -h/2, t, h/2], g: [-w/2, -t/2, w, t] };
+  return [...on].map(s => `<rect x="${R[s][0]}" y="${R[s][1]}" width="${R[s][2]}" height="${R[s][3]}"/>`).join("");
+}
+let tallyHtml = '<div class="shadow"></div><div class="row"><div class="cap"></div>';
+for (let i = 0; i < 4; i++) {
+  tallyHtml += `<div class="ring" data-i="${i}"><div class="prism">`;
+  for (let k = 0; k < 10; k++) {
+    const digit = (10 - k) % 10;        // rolling the front face upward counts up, like an odometer
+    tallyHtml += `<div class="facet" style="transform: rotateX(${36 * k}deg) translateZ(${APO}px)">` +
+      `<svg viewBox="-4.625 -3.71 9.25 7.42"><g transform="translate(-0.25 0)" fill="var(--digit)">${segs(digit)}</g></svg>` +
+      `<div class="shade"></div></div>`;
+  }
+  tallyHtml += "</div></div>";
+}
+tallyHtml += '<div class="cap"></div></div>';
+const tally = makePiece("tally", 500, 280, tallyHtml);
+const wheels = [...tally.el.querySelectorAll(".ring")].map(el => ({
+  el, prism: el.querySelector(".prism"), shades: [...el.querySelectorAll(".shade")], a: 0 }));
+
+function setWheel(wh, a, settle) {
+  wh.a = a;
+  wh.prism.classList.toggle("settle", !!settle);
+  wh.prism.style.transform = `rotateX(${a}deg)`;
+  wh.shades.forEach((s, k) => {
+    const t = (a + 36 * k) * Math.PI / 180;
+    s.style.opacity = Math.min(0.85, 1.3 * (1 - Math.cos(t)) + (Math.sin(t) < 0 ? 0.06 : 0)).toFixed(3);
+  });
+}
+
+// ---- initial layout -----------------------------------------------------------------
+function layout() {
+  Object.assign(card, { x: 450, y: 470, rot: 0, fy: 1, backUp: false });
+  card.el.classList.remove("back-up");
+  Object.assign(comb, { x: 1150, y: 290, rot: 90, fy: 1, seated: false });
+  comb.el.classList.remove("facedown", "seated");
+  Object.assign(tally, { x: 1150, y: 745, rot: 0, fy: 1 });
+  wheels.forEach(wh => setWheel(wh, 0));
+  [card, comb, tally].forEach(p => apply(p));
+  select(null);
+}
+
+// ---- comb and card --------------------------------------------------------------------
+function combHoles() {
+  return COMB.holes_pt.map(([x, y]) => toWorldPt(comb, (x - COMB.origin_pt[0]) * S, (y - COMB.origin_pt[1]) * S));
+}
+function cardDots() {
+  return card.backUp ? COMB.card_marks_pt.map(([x, y]) => toWorldPt(card, x * S, y * S)) : null;
+}
+function unseat() {
+  comb.seated = false;
+  comb.el.classList.remove("seated");
+}
+// The comb settles only the way the real one would: both holes over both printed dots.
+function trySeat() {
+  if (!COMB) return;
+  const dots = cardDots();
+  if (!dots || ((comb.rot - card.rot) % 180 + 180) % 180 !== 0) return;
+  const h = combHoles(), dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+  const err = Math.min(Math.max(dist(h[0], dots[0]), dist(h[1], dots[1])),
+                       Math.max(dist(h[0], dots[1]), dist(h[1], dots[0])));
+  if (err > SNAP_TOL) return;
+  comb.x += (dots[0].x + dots[1].x - h[0].x - h[1].x) / 2;
+  comb.y += (dots[0].y + dots[1].y - h[0].y - h[1].y) / 2;
+  if (!comb.seated) tick(900, 0.03, 0.35);
+  comb.seated = true;
+  comb.el.classList.add("seated");
+  raise(comb);
+  apply(comb, "snap");
+}
+
+// ---- actions ---------------------------------------------------------------------------
+function act(p, what) {
+  if (!p) return;
+  if (what === "rotate") {
+    p.rot += 90;
+    if (p === card || p === comb) unseat();
+    apply(p, "anim");
+  } else if (what === "flip") {
+    if (p === card) {
+      card.backUp = !card.backUp;
+      card.el.classList.toggle("back-up", card.backUp);
+      unseat();
+    } else if (p === comb) {
+      comb.fy *= -1;
+      comb.el.classList.toggle("facedown", comb.fy < 0);
+      unseat();
+      apply(comb, "anim");
+    } else {
+      p.rot += 180;                     // the tally: turn it upside down
+      apply(p, "anim");
+    }
+  }
+  tick(1800, 0.02, 0.12);
+  setTimeout(() => { if (p === card || p === comb) trySeat(); placeTools(); }, 320);
+}
+
+function select(p) {
+  selected = p;
+  tools.classList.toggle("show", !!p);
+  if (p) {
+    tools.querySelector('[data-act="flip"]').textContent = p === tally ? "Turn upside down" : "Turn over";
+    placeTools();
+  }
+}
+function placeTools() {
+  if (!selected) return;
+  const r = selected.el.getBoundingClientRect(), s = stage.getBoundingClientRect();
+  let top = r.top - s.top - 8;
+  if (top < 48) top = r.bottom - s.top + 48;
+  tools.style.left = Math.min(Math.max(r.left + r.width / 2 - s.left, 110), s.width - 110) + "px";
+  tools.style.top = top + "px";
+}
+tools.addEventListener("pointerdown", e => e.stopPropagation());
+tools.addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (b) act(selected, b.dataset.act);
+});
+
+// ---- dragging pieces -------------------------------------------------------------------
+let drag = null, turn = null;
+function startDrag(p, e) {
+  e.preventDefault();
+  raise(p);
+  select(p);
+  const w = toWorld(e);
+  if (p === comb) unseat();
+  drag = { p, dx: w.x - p.x, dy: w.y - p.y };
+}
+card.el.addEventListener("pointerdown", e => startDrag(card, e));
+card.el.addEventListener("dblclick", () => act(card, "flip"));
+comb.el.addEventListener("pointerdown", e => { if (e.target.closest(".body")) startDrag(comb, e); });
+tally.el.querySelectorAll(".cap").forEach(c => c.addEventListener("pointerdown", e => startDrag(tally, e)));
+
+// Turning a wheel: the finger drags the face under it; movement is measured along the
+// tally's own up-down axis, so it still feels right when the tally is upside down.
+wheels.forEach(wh => {
+  wh.el.addEventListener("pointerdown", e => {
+    e.preventDefault(); e.stopPropagation();
+    raise(tally); select(tally);
+    turn = { wh, start: toWorld(e), a0: wh.a, last: Math.round(wh.a / 36) };
+  });
+  wh.el.addEventListener("wheel", e => {
+    e.preventDefault();
+    const dir = Math.sign(e.deltaY) * (Math.round(((tally.rot % 360) + 360) % 360) === 180 ? -1 : 1);
+    setWheel(wh, Math.round(wh.a / 36) * 36 - 36 * dir, true);
+    tick();
+  }, { passive: false });
+});
+
+window.addEventListener("pointermove", e => {
+  if (drag) {
+    const w = toWorld(e), p = drag.p;
+    const nx = w.x - drag.dx, ny = w.y - drag.dy;
+    if (p === card && comb.seated) { comb.x += nx - p.x; comb.y += ny - p.y; apply(comb); }
+    p.x = nx; p.y = ny;
+    apply(p);
+  } else if (turn) {
+    const w = toWorld(e), a = tally.rot * Math.PI / 180;
+    const dx = w.x - turn.start.x, dy = w.y - turn.start.y;
+    const along = -dx * Math.sin(a) + dy * Math.cos(a);
+    const ang = turn.a0 - along / APO * 180 / Math.PI;
+    setWheel(turn.wh, ang);
+    const step = Math.round(ang / 36);
+    if (step !== turn.last) { turn.last = step; tick(); }
+  }
+});
+window.addEventListener("pointerup", () => {
+  if (drag) {
+    if (drag.p === comb || drag.p === card) trySeat();
+    drag = null;
+  }
+  if (turn) {
+    setWheel(turn.wh, Math.round(turn.wh.a / 36) * 36, true);
+    turn = null;
+  }
+});
+stage.addEventListener("pointerdown", e => { if (e.target === stage || e.target === world) select(null); });
+
+window.addEventListener("keydown", e => {
+  if (e.target.closest && e.target.closest("input, textarea")) return;
+  const k = e.key.toLowerCase();
+  if (k === "r") act(selected, "rotate");
+  if (k === "f") act(selected, "flip");
+  if (k === "escape") select(null);
+});
+document.getElementById("reset").addEventListener("click", layout);
+window.addEventListener("resize", fit);
+
+// ---- load the comb (assets/comb.js, written by build_digital_assets.py) -------------------
+if (window.COMB_ASSET) {
+  COMB = window.COMB_ASSET;
+  comb.w = COMB.size_pt[0] * S; comb.h = COMB.size_pt[1] * S;
+  comb.el.style.width = comb.w + "px"; comb.el.style.height = comb.h + "px";
+  comb.el.innerHTML = COMB.svg;
+} else {
+  comb.el.textContent = "Comb did not load: assets/comb.js is missing";
+}
+
+fit();
+layout();
+</script>
+</body>
+</html>

@@ -23,7 +23,7 @@ Read this before assuming what a prompt is asking for.
 
 - **Each project's main HTML page is the main repository for that project** — not just a status board. Decisions, brainstormed options, puzzles, clues, props, tone/voice guides, and any other durable design content belong there, written in full, not summarized elsewhere. If it is part of the game's design, a human or agent should be able to find it by reading the page — not by asking Claude, not by digging through chat history, and not in any agent's private memory. For Norse that is `NorseBackpack/Norse_Brainstorm.html`. Update it as the work happens, in the same session, rather than leaving decisions only in chat.
 - **`HANDOFF.md` carries session continuity only**: what this session did, which files changed, what was checked, one next action. It must not hold a backlog of open design questions — that backlog belongs in the project page, and keeping it in two places is how the two drift apart.
-- **Every open question gets a stable ID** so chat, the handoff and the page all refer to the same thing. Norse uses `ST-` structure, `PC-` postcards, `PZ-` puzzles, `PR-` props, `HI-` history, listed in the Open questions tab.
+- **Every open question gets a stable ID** so chat, the handoff and the page all refer to the same thing. Norse uses `ST-` structure, `PC-` postcards, `PZ-` puzzles, `PR-` props, `HI-` history, `DG-` digital version, listed in the Open questions tab.
 - When a decision is taken, move the pill in the page. When something is superseded, say so where the old text was rather than deleting it silently.
 
 ## Agent Roles
@@ -41,6 +41,7 @@ Not a hard rule, but this is the split that works and it saves rediscovering it 
 - `Lego/` — Lego backpack materials.
 - `NorseBackpack/` — Norse-themed concept and brainstorming materials.
 - `NorseBackpack/Norse_Brainstorm.html` — the single source of truth for the Norse game: story, postcard system, puzzles, open questions, options, props, design spec and design guide, as tabs in one page.
+- `NorseBackpack/Web/` — smaller website copies of the Norse postcard images and print PDFs (PR-07). Norse commits only what the website uses; full-size art and `output/pdf/`, `output/docx/` are local print masters. After rebuilding a postcard image or print PDF, run `python NorseBackpack/Tools/build_web_assets.py`, and link new files by their full-size path — the script repoints links and updates `.gitignore`.
 - `Space Station Aurora/` — active space-station escape-game materials.
 - `Space Station Aurora/Station_Map.html` — interactive map built from the detailed AutoCAD station plan.
 - `Space Station Aurora/StationBluePrint/` — original DWG/DXF/PDF blueprint sources, the layer-preserving SVG converter, and the rendered map base.
