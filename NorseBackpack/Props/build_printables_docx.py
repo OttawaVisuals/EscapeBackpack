@@ -28,7 +28,7 @@ add_floating_picture = _postcard.add_floating_picture
 DPI = 300
 # name -> source PDF (page 1 only)
 PRINTABLES = {
-    "Print_LuggageTags": "Luggage_Tag_Inserts_Print.pdf",                 # Letter landscape
+    "Print_LuggageTags": "Luggage_Tag_Inserts_Print.pdf",                 # Letter portrait
     "Print_JournalFamilyIconography": "Journal_Family_Iconography_Letter_Print.pdf",
     "Print_TransitionTickets": "Transition_Tickets_Letter_Print.pdf",
     "Print_HnefataflBoardSetupInsert": "Hnefatafl_Board_Setup_Insert.pdf",  # small, centred

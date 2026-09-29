@@ -2,7 +2,6 @@ import importlib.util
 from pathlib import Path
 
 from reportlab.lib.colors import HexColor
-from reportlab.lib.pagesizes import landscape
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
@@ -15,7 +14,7 @@ FONT_DIR = ROOT / "Fonts"
 # Measured paper area inside the Lewis N. Clark luggage tag's insert slot: 9 cm x 5.4 cm.
 CM = 72 / 2.54
 CARD_W, CARD_H = 9 * CM, 5.4 * CM
-PAGE = landscape((8.5 * 72, 11 * 72))
+PAGE = (8.5 * 72, 11 * 72)  # US Letter portrait
 PAGE_W, PAGE_H = PAGE
 
 INK = HexColor("#283B34")
@@ -97,19 +96,18 @@ def main():
     c.setTitle("Luggage tag inserts and raven's flights card")
     c.setAuthor("Escape Backpack")
 
-    gap = 30
-    total_w = len(TAGS) * CARD_W + (len(TAGS) - 1) * gap
-    start_x = (PAGE_W - total_w) / 2
-    row_gap = 36
-    block_h = CARD_H + row_gap + RAVEN_H
-    y = (PAGE_H + block_h) / 2 - CARD_H   # tags on top, raven card below, block centred
-
-    for index, tag in enumerate(TAGS):
-        x = start_x + index * (CARD_W + gap)
+    # One centred column: tag, tag, then the raven card, all on US Letter portrait.
+    gap = 36
+    block_h = 2 * CARD_H + RAVEN_H + 2 * gap
+    top = (PAGE_H + block_h) / 2
+    x = (PAGE_W - CARD_W) / 2
+    ys = [top - CARD_H, top - 2 * CARD_H - gap]
+    for tag, y in zip(TAGS, ys):
         draw_insert(c, x, y, tag)
         draw_crop_marks(c, x, y)
+    y = ys[1]
 
-    rx, ry = (PAGE_W - RAVEN_W) / 2, y - row_gap - RAVEN_H
+    rx, ry = (PAGE_W - RAVEN_W) / 2, y - gap - RAVEN_H
     c.saveState()
     c.translate(rx, ry)
     _raven.draw_card(c)
