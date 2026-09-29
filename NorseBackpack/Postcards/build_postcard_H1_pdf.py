@@ -76,6 +76,9 @@ def draw_back_card(c, x=0, y=0):
     c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)
 
     left, right = 20, W - 20
+    # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
+    # 6 pt before the divider (was 12), at the user's request, on all 22 cards.
+    msg_left = 15
     divider = 184
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 6.5)
@@ -98,18 +101,18 @@ def draw_back_card(c, x=0, y=0):
         "he travels each time.",
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
-        for line in wrap_text(paragraph, font, size, divider - left - 12):
+        for line in wrap_text(paragraph, font, size, divider - msg_left - 6):
             c.setFont(font, size)
-            c.drawString(left, y, line)
+            c.drawString(msg_left, y, line)
             y -= leading
         y -= 1.8
 
-    c.setFont("NothingYouCouldDo", 8)
-    c.drawString(left, y, "Love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.setFont("NothingYouCouldDo", 9.8)
+    c.drawString(msg_left, y, "Love,")
+    c.drawString(msg_left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -179,11 +182,11 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
+    # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): Fun Fact rewritten. Text from the user's Postcard
+    # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        "Snorri's saga credits Harald with founding Oslo around 1050 — but a church and "
-        "cemetery already stood there by the year 1000, and in 2026 archaeologists found a "
-        "Viking boat grave buried beneath the site of his own royal manor, older than his reign."
+        'King Harald Hardrada established Oslo as a designated trading place. It was renamed Christiania for centuries before finally returning to the name Oslo.'
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

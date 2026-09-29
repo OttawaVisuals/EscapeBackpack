@@ -76,6 +76,9 @@ def draw_back_card(c, x=0, y=0):
     c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)
 
     left, right = 20, W - 20
+    # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
+    # 6 pt before the divider (was 12), at the user's request, on all 22 cards.
+    msg_left = 15
     divider = 184
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 6.5)
@@ -105,15 +108,15 @@ def draw_back_card(c, x=0, y=0):
     font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
-        for line in wrap_text(paragraph, font, size, divider - left - 12):
+        for line in wrap_text(paragraph, font, size, divider - msg_left - 6):
             c.setFont(font, size)
-            c.drawString(left, y, line)
+            c.drawString(msg_left, y, line)
             y -= leading
         y -= 1.8
 
     c.setFont("NothingYouCouldDo", 9.8)
-    c.drawString(left, y, "With love,")
-    c.drawString(left, y - 11, "Aunt Liv")
+    c.drawString(msg_left, y, "With love,")
+    c.drawString(msg_left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.

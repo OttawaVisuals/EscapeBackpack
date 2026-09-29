@@ -151,6 +151,9 @@ def draw_back_card(c, x=0, y=0):
     c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)
 
     left, right = 20, W - 20
+    # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
+    # 6 pt before the divider (was 12), at the user's request, on all 22 cards.
+    msg_left = 15
     divider = 184
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 6.5)
@@ -167,12 +170,12 @@ def draw_back_card(c, x=0, y=0):
         "Found this in a little shop near the Hippodrome, couldn't resist:",
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
-        for line in wrap_text(paragraph, font, size, divider - left - 12):
+        for line in wrap_text(paragraph, font, size, divider - msg_left - 6):
             c.setFont(font, size)
-            c.drawString(left, y, line)
+            c.drawString(msg_left, y, line)
             y -= leading
         y -= 1.6
 
@@ -182,10 +185,10 @@ def draw_back_card(c, x=0, y=0):
     rebus_bottom = max(34, rebus_top - 46)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.6)
-    c.rect(left, rebus_bottom, divider - left - 8, rebus_top - rebus_bottom, fill=0, stroke=1)
+    c.rect(msg_left, rebus_bottom, divider - msg_left - 6, rebus_top - rebus_bottom, fill=0, stroke=1)
     row_y = (rebus_top + rebus_bottom) / 2 + 3
-    box_w = divider - left - 8
-    icon_xs = [left + box_w * 0.18, left + box_w * 0.5, left + box_w * 0.82]
+    box_w = divider - msg_left - 6
+    icon_xs = [msg_left + box_w * 0.18, msg_left + box_w * 0.5, msg_left + box_w * 0.82]
     draw_sugar_cubes(c, icon_xs[0], row_y, 12)
     draw_bubbling_jar(c, icon_xs[1], row_y, 16, 22)
     draw_hourglass(c, icon_xs[2], row_y, 13, 20)
@@ -196,9 +199,9 @@ def draw_back_card(c, x=0, y=0):
     c.drawCentredString((icon_xs[1] + icon_xs[2]) / 2, plus_y, "+")
 
     c.setFillColor(INK)
-    c.setFont("NothingYouCouldDo", 8)
-    c.drawString(left, rebus_bottom - 11, "Love,")
-    c.drawString(left, rebus_bottom - 20, "Aunt Liv")
+    c.setFont("NothingYouCouldDo", 9.8)
+    c.drawString(msg_left, rebus_bottom - 12, "Love,")
+    c.drawString(msg_left, rebus_bottom - 23, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -273,12 +276,11 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
+    # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): Fun Fact rewritten. Text from the user's Postcard
+    # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        "Runic graffiti scratched into a marble balustrade in the Hagia Sophia's upper "
-        "gallery — reading roughly “Halfdan carved these runes” — is usually credited to a "
-        "Varangian Guardsman passing the time on duty, centuries before tourists started "
-        "doing the same."
+        "A Viking carved “Halfdan was here” in runes on a marble balustrade in Hagia Sophia. It's still there."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

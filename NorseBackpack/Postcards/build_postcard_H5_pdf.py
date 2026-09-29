@@ -76,6 +76,9 @@ def draw_back_card(c, x=0, y=0):
     c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)
 
     left, right = 20, W - 20
+    # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
+    # 6 pt before the divider (was 12), at the user's request, on all 22 cards.
+    msg_left = 15
     divider = 184
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 6.5)
@@ -86,8 +89,8 @@ def draw_back_card(c, x=0, y=0):
     # Message text approved in chat (PZ-02/PZ-09, 17 Sept 2026). "raven" is drawn underlined
     # below -- that is the whole reading-order clue (PZ-02): spell RAVEN against the relettered
     # columns on Harald's map. No other emphasis or explanation is added on the card itself.
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
-    max_w = divider - left - 12
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
+    max_w = divider - msg_left - 6
     y = H - 36
 
     def draw_paragraph(segments):
@@ -116,7 +119,7 @@ def draw_back_card(c, x=0, y=0):
     def draw_line(line):
         nonlocal y
         c.setFont(font, size)
-        x = left
+        x = msg_left
         for i, (word, underline) in enumerate(line):
             if i:
                 x += pdfmetrics.stringWidth(" ", font, size)
@@ -135,15 +138,15 @@ def draw_back_card(c, x=0, y=0):
     draw_paragraph([
         ("Being a good tourist, I enjoyed a gelato while walking around the ruins. Little "
          "did I know, that is a great way to attract wildlife. A", False),
-        ("raven", True),
+        ("RAVEN", False),  # 29 Sept 2026: capitals instead of the underline (user)
         ("followed me the whole time!", False),
     ])
     draw_paragraph([("Half convinced it was you, checking up on me.", False)])
 
     c.setFillColor(INK)
-    c.setFont("NothingYouCouldDo", 8)
-    c.drawString(left, y, "Love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.setFont("NothingYouCouldDo", 9.8)
+    c.drawString(msg_left, y, "Love,")
+    c.drawString(msg_left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -214,11 +217,11 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
+    # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): Fun Fact rewritten. Text from the user's Postcard
+    # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        "Aci Castello's rock is over 500,000 years old — lava that cooled underwater into "
-        "a mass of glassy basalt pillars. The castle itself later spent three centuries as a "
-        "prison, until an 1818 earthquake made it too unsafe to hold anyone."
+        "Aci Castello's rock is lava that cooled underwater into glassy basalt pillars. The castle sits on top of an old eruption."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

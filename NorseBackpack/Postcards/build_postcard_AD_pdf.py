@@ -31,7 +31,10 @@ FUNFACT = HexColor("#B56A2A")
 # above line 1 and below the signature. The comb's two end ring-and-dots are drilled through at
 # the centre; players sit each printed dot inside its hole. Given in points from the card's
 # TOP-left corner, the convention Props/Comb/build_comb.py reads the text layout in.
-COMB_MARKS = [(22.0, 19.5), (22.0, 158.5)]
+# 29 Sept 2026: lower mark moved from y 158.5 to 186 -- at 9.5 pt the signature now ends near
+# y 174, so the old position sat on "With love,". Upper mark raised from 19.5 to 16 so the comb's
+# flared end clears the taller first tooth. The comb was regenerated to match.
+COMB_MARKS = [(22.0, 16.0), (22.0, 186.0)]
 COMB_MARK_RING, COMB_MARK_DOT = 5.2, 1.4
 
 pdfmetrics.registerFont(TTFont("CinzelExtraBold", str(FONT_DIR / "Cinzel" / "static" / "Cinzel-ExtraBold.ttf")))
@@ -82,6 +85,9 @@ def draw_back_card(c, x=0, y=0):
     c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)
 
     left, right = 20, W - 20
+    # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
+    # 6 pt before the divider (was 12), at the user's request, on all 22 cards.
+    msg_left = 15
     divider = 184
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 6.5)
@@ -102,18 +108,18 @@ def draw_back_card(c, x=0, y=0):
         "This is actually the real treasure, a piece of history that we can use!",
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
-        for line in wrap_text(paragraph, font, size, divider - left - 12):
+        for line in wrap_text(paragraph, font, size, divider - msg_left - 6):
             c.setFont(font, size)
-            c.drawString(left, y, line)
+            c.drawString(msg_left, y, line)
             y -= leading
         y -= 1.8
 
-    c.setFont("NothingYouCouldDo", 8)
-    c.drawString(left, y, "With love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.setFont("NothingYouCouldDo", 9.8)
+    c.drawString(msg_left, y, "With love,")
+    c.drawString(msg_left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -193,11 +199,11 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
+    # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): Fun Fact rewritten. Text from the user's Postcard
+    # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        "Bjarnarhöfn today is known for one very different kind of preserved find: the farm "
-        "runs Iceland's best-known hákarl operation, curing Greenland shark the same slow way "
-        "it's been done for centuries."
+        'Bjarnarhöfn is famous for hákarl: Greenland shark fermented, then hung to dry for months. It smells exactly as bad as it sounds.'
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

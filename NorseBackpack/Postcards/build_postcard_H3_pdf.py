@@ -76,6 +76,9 @@ def draw_back_card(c, x=0, y=0):
     c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)
 
     left, right = 20, W - 20
+    # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
+    # 6 pt before the divider (was 12), at the user's request, on all 22 cards.
+    msg_left = 15
     divider = 184
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 6.5)
@@ -88,27 +91,25 @@ def draw_back_card(c, x=0, y=0):
     # 20 Sept 2026 (PZ-18) -- rule 2: "Kyiv next" was deictic. Nothing replaces it mechanically --
     # H4's Mediterranean line already keeps Kyiv before Hedeby, and the Staraya Ladoga - Kyiv
     # journal entry orders it against H2. The new opener carries no ordering content at all.
+    # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): message rewritten. Text from the user's Postcard
+    # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     paragraphs = [
-        "Kyiv, and it might be the most beautiful city on this whole trip — golden "
-        "domes catching the light on every hill.",
-        "Stopped by St. Michael's this morning and lit a candle for you. Cheesy, I know.",
-        "Here's a little riddle for you, the kind we used to trade back and forth: I'm sweet, "
-        "but no fruit tree grew me. I'm gold, but no smith ever cast me. Thousands of tiny "
-        "workers made me and set six-sided walls to guard me.",
+        'Kyiv, and it might be the most beautiful city on this whole trip — golden domes catching the light on every hill.',
+        "Here's a little riddle for you, the kind we used to trade back and forth: I'm sweet, but no fruit tree grew me. I'm gold, but no smith ever cast me. Thousands of tiny workers made me and set six-sided walls to guard me.",
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
-        for line in wrap_text(paragraph, font, size, divider - left - 12):
+        for line in wrap_text(paragraph, font, size, divider - msg_left - 6):
             c.setFont(font, size)
-            c.drawString(left, y, line)
+            c.drawString(msg_left, y, line)
             y -= leading
         y -= 1.6
 
-    c.setFont("NothingYouCouldDo", 8)
-    c.drawString(left, y, "Love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.setFont("NothingYouCouldDo", 9.8)
+    c.drawString(msg_left, y, "Love,")
+    c.drawString(msg_left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -179,12 +180,11 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
+    # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): Fun Fact rewritten. Text from the user's Postcard
+    # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        "Oleg of Novgorod made Kyiv the Rus' capital and, per the Primary Chronicle, sailed "
-        "on Constantinople in 907 — supposedly nailing his shield to the gates (a legend modern "
-        "historians doubt). The real treaty that followed in 911 gave Rus' merchants tax-free "
-        "trading rights there for up to six months."
+        "Harald married Elisiv, daughter of Kyiv's Grand Prince Yaroslav, after years abroad earning a fortune to win her."
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

@@ -75,6 +75,9 @@ def draw_back_card(c, x=0, y=0):
     c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)
 
     left, right = 20, W - 20
+    # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
+    # 6 pt before the divider (was 12), at the user's request, on all 22 cards.
+    msg_left = 15
     divider = 184
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 6.5)
@@ -97,25 +100,27 @@ def draw_back_card(c, x=0, y=0):
     # 25 Sept 2026 (PZ-03): rewritten by the user. The weighing paragraph is gone; "fetch a
     # pretty penny" is the only nudge towards adding the coins' values. The cache mark is left
     # for players to notice (map marks = ticket icons), with the hint companion as backstop.
+    # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): message rewritten. Text from the user's Postcard
+    # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     paragraphs = [
-        "Dogurdarnes today.",
-        "What a beautiful place, I understand why Aud stopped here during her journey.",
-        "I heard you can find some treasure around here, especially historical coins that fetch "
-        "a pretty penny!",
+        'Dogurdarnes today.',
+        'What a beautiful place, I understand why Aud stopped here during her journey.',
+        'I heard you can find some treasure around here, especially historical coins that fetch a pretty penny!',
+        'I was mostly interested in the coins from the treasure hunt though.',
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
-        for line in wrap_text(paragraph, font, size, divider - left - 12):
+        for line in wrap_text(paragraph, font, size, divider - msg_left - 6):
             c.setFont(font, size)
-            c.drawString(left, y, line)
+            c.drawString(msg_left, y, line)
             y -= leading
         y -= 1.8
 
-    c.setFont("NothingYouCouldDo", 8)
-    c.drawString(left, y, "With love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.setFont("NothingYouCouldDo", 9.8)
+    c.drawString(msg_left, y, "With love,")
+    c.drawString(msg_left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -186,7 +191,7 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
     fact_text = (
         "Dögurðarnes takes its name from dögurður, an Old Norse word for the day's main "
         "meal — a rest stop preserved in the map itself, long before it was a place anyone lived."

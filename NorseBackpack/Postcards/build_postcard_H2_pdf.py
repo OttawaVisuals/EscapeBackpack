@@ -76,6 +76,9 @@ def draw_back_card(c, x=0, y=0):
     c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)
 
     left, right = 20, W - 20
+    # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
+    # 6 pt before the divider (was 12), at the user's request, on all 22 cards.
+    msg_left = 15
     divider = 184
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 6.5)
@@ -86,26 +89,35 @@ def draw_back_card(c, x=0, y=0):
     # Message text approved in chat (PZ-20, 17 Sept 2026): an acrostic. The first letter of each
     # of the five sentences below spells DRINK -- one third of the MEAD riddle. Each sentence is
     # its own paragraph so its first letter opens a fresh line, same as a normal handwritten note.
+    # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): message rewritten. Text from the user's Postcard
+    # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     paragraphs = [
-        "Days here move slower than I expected, and I love it.",
-        "Rurik supposedly ruled from right here, if the old chronicles are true.",
-        "I climbed up on the fortress wall for a look at the whole river bend.",
-        "Nobody warned me how far this feels from anywhere else.",
-        "Keeping my postcards dry has become a full-time job in this weather.",
+        'Dinners take hours here and nobody rushes, which suits me fine.',
+        'Rurik supposedly ruled from right here, if the old chronicles are true.',
+        'I climbed up on the fortress wall for a look at the whole river bend.',
+        'Nobody warned me how far this feels from anywhere else.',
+        'Keeping up with new puzzles for you is starting to be a challenge!',
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
+    # 29 Sept 2026 (user): hanging indent -- only the D, R, I, N, K sentence starts sit on the
+    # margin; every wrapped continuation line, and the sign-off, is set in by INDENT.
+    INDENT = 10
+    full_w = divider - msg_left - 6
     for paragraph in paragraphs:
-        for line in wrap_text(paragraph, font, size, divider - left - 12):
+        first = wrap_text(paragraph, font, size, full_w)[0]
+        rest = paragraph[len(first):].strip()
+        lines = [(msg_left, first)] + [(msg_left + INDENT, l) for l in (wrap_text(rest, font, size, full_w - INDENT) if rest else [])]
+        for x, line in lines:
             c.setFont(font, size)
-            c.drawString(left, y, line)
+            c.drawString(x, y, line)
             y -= leading
         y -= 1.6
 
-    c.setFont("NothingYouCouldDo", 8)
-    c.drawString(left, y, "Love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.setFont("NothingYouCouldDo", 9.8)
+    c.drawString(msg_left + INDENT, y, "Love,")
+    c.drawString(msg_left + INDENT, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -176,11 +188,11 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
+    # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): Fun Fact rewritten. Text from the user's Postcard
+    # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        "A wooden stick found at Staraya Ladoga in 1950 carries 52 Younger Futhark runes — "
-        "likely a fragment of skaldic verse, dated to around 840–865 AD, one of the oldest "
-        "runic inscriptions ever found in Russia. It's still on display in the Hermitage."
+        'A wooden stick carved with Viking runes was found here — probably a scrap of poetry, and one of the oldest runic finds in Russia.'
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):
@@ -193,8 +205,10 @@ def draw_back_card(c, x=0, y=0):
     c.line(left, credit_top + 7, right, credit_top + 7)
     c.setFillColor(HexColor("#59635D"))
     c.setFont("Helvetica", 4)
+    # 29 Sept 2026: author name transliterated (Александр Байдуков) -- Helvetica has no Cyrillic
+    # glyphs, so the original printed as black boxes.
     credit_lines = [
-        'Image adaptation: "The Fortress Of Staraya Ladoga. Fortress wall" - Александр Байдуков, CC BY-SA 4.0.',
+        'Image adaptation: "The Fortress Of Staraya Ladoga. Fortress wall" - Aleksandr Baydukov, CC BY-SA 4.0.',
     ]
     for index, line in enumerate(credit_lines):
         c.drawString(left, credit_top - index * 5, line)

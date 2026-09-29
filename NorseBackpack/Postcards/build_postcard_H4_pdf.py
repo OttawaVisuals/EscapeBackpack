@@ -76,6 +76,9 @@ def draw_back_card(c, x=0, y=0):
     c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)
 
     left, right = 20, W - 20
+    # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
+    # 6 pt before the divider (was 12), at the user's request, on all 22 cards.
+    msg_left = 15
     divider = 184
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 6.5)
@@ -92,32 +95,30 @@ def draw_back_card(c, x=0, y=0):
     # knowledge of the Dnieper. The replacement names the Mediterranean instead, which the map
     # resolves: it puts Sicily, Constantinople and Patara after Hedeby and leaves Kyiv before it,
     # taking the leg from 60 possible orders to 4 and saving a journal entry.
+    # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): message rewritten. Text from the user's Postcard
+    # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     paragraphs = [
-        "Today: Hedeby — barely a Hedeby left to stand in, just a green ring of earthworks "
-        "where the ramparts ran. From here I’m turning south: nothing but Mediterranean "
-        "weather for the rest of this trip.",
-        "A woodcarver at the reconstruction huts showed me how the old branch-runes worked "
-        "— count the branches one way for the family, the other way for the letter. I "
-        "copied his key out for you before I forgot it.",
+        'Today: Hedeby — barely a Hedeby left. From here I’m turning south: nothing but Mediterranean weather for the rest of this trip.',
+        'A woodcarver showed me how the old branch-runes worked — count the branches one way for the family, the other way for the letter.',
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
-        for line in wrap_text(paragraph, font, size, divider - left - 12):
+        for line in wrap_text(paragraph, font, size, divider - msg_left - 6):
             c.setFont(font, size)
-            c.drawString(left, y, line)
+            c.drawString(msg_left, y, line)
             y -= leading
         y -= 1.8
 
-    c.setFont("NothingYouCouldDo", 8)
-    c.drawString(left, y, "Love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.setFont("NothingYouCouldDo", 9.8)
+    c.drawString(msg_left, y, "Love,")
+    c.drawString(msg_left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
     draw_mark(c, "H4")
-    y -= 9
+    y -= 11  # 29 Sept 2026: matches the 11 pt sign-off spacing (was 9)
 
     # Her copied rune key (PZ-02): a hand-drawn table, not typed -- this is Liv's own copy, not
     # museum reference material, so it lives in her handwriting font like the message above it.
@@ -128,18 +129,18 @@ def draw_back_card(c, x=0, y=0):
     table_bottom = max(30, table_top - 66)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.6)
-    c.rect(left, table_bottom, divider - left - 8, table_top - table_bottom, fill=0, stroke=1)
+    c.rect(msg_left, table_bottom, divider - msg_left - 6, table_top - table_bottom, fill=0, stroke=1)
     c.setFillColor(INK)
     c.setFont("NothingYouCouldDo", 7.6)
-    c.drawString(left + 6, table_top - 12, "his key, copied out:")
+    c.drawString(msg_left + 6, table_top - 12, "his key, copied out:")
     rows = ["1 — f u þ ö r k", "2 — h n i a s", "3 — t b m l r'"]
     row_y = table_top - 24
     for row in rows:
         c.setFont("NothingYouCouldDo", 8.2)
-        c.drawString(left + 10, row_y, row)
+        c.drawString(msg_left + 10, row_y, row)
         row_y -= 10.2
     c.setFont("NothingYouCouldDo", 6.4)
-    c.drawString(left + 6, row_y - 1, "(left branches = which row. right = where in it.)")
+    c.drawString(msg_left + 6, row_y - 1, "(left branches = which row. right = where in it.)")
 
     # Same trail stamp as the other Harald cards -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72
@@ -205,11 +206,11 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
+    # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): Fun Fact rewritten. Text from the user's Postcard
+    # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        "In 1050, during his war with Denmark, Harald burned Hedeby to the ground — "
-        "sailing burning ships straight into the harbour. Archaeologists later found their "
-        "charred timbers still lying in the Schlei."
+        'During his war with Denmark, Harald burned Hedeby to the ground — sailing burning ships straight into the harbour.'
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

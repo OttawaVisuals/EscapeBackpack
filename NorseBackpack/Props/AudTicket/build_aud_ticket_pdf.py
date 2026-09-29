@@ -225,9 +225,15 @@ def draw_back_card(c, x=0, y=0, answer=False):
     c.setFillColor(RUST)
     c.setFont("Helvetica-Bold", 6.4)
     c.drawCentredString(W / 2, H - 38, "TRACE THE ROUTE ON YOUR MAP")
-    c.setFillColor(CREAM)
-    c.setFont("Helvetica", 5.8)
-    c.drawCentredString(W / 2, H - 48, "COUNT WHAT YOU CROSS")
+    # 29 Sept 2026 (user): the player copy no longer carries the tally -- no "COUNT WHAT YOU
+    # CROSS" line, no BRG/FRD/GTE boxes, no worked leg 1, no legend. Card A2 now says what to count
+    # ("It was fun to count how many bridges, fords and gates I crossed"). The answer copy keeps
+    # the boxes as the designer's reference.
+    tally = answer
+    if tally:
+        c.setFillColor(CREAM)
+        c.setFont("Helvetica", 5.8)
+        c.drawCentredString(W / 2, H - 48, "COUNT WHAT YOU CROSS")
 
     c.setStrokeColor(RULE)
     c.setLineWidth(0.7)
@@ -239,14 +245,15 @@ def draw_back_card(c, x=0, y=0, answer=False):
     gap = 2.0
     tally_w = box_w * 3 + gap * 2
     tally_x = right - tally_w
-    text_w = tally_x - left - 16 - 6          # 16pt for the leg number column
+    text_w = (tally_x - left - 16 - 6) if tally else (right - left - 16)   # 16pt for the leg number column
 
     # column heads
     head_y = H - band - 12
-    c.setFillColor(SOFT)
-    c.setFont("Helvetica-Bold", 5.4)
-    for i, lab in enumerate(("BRG", "FRD", "GTE")):
-        c.drawCentredString(tally_x + box_w * i + box_w / 2 + gap * i, head_y, lab)
+    if tally:
+        c.setFillColor(SOFT)
+        c.setFont("Helvetica-Bold", 5.4)
+        for i, lab in enumerate(("BRG", "FRD", "GTE")):
+            c.drawCentredString(tally_x + box_w * i + box_w / 2 + gap * i, head_y, lab)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.5)
     c.line(left, head_y - 4, right, head_y - 4)
@@ -256,7 +263,8 @@ def draw_back_card(c, x=0, y=0, answer=False):
     # measure first so a too-long leg fails loudly instead of overflowing the card
     line_h = 8.0
     blocks = [wrap(c, t, "Helvetica", 6.8, text_w) for t in LEGS]
-    needed = sum(max(len(b) * line_h + 7.0, box_w + 7.0) for b in blocks)
+    min_row = (box_w + 7.0) if tally else 0.0
+    needed = sum(max(len(b) * line_h + 7.0, min_row) for b in blocks)
     if needed > top - bottom:
         raise ValueError("leg text needs %.1fpt but only %.1fpt is available on the card"
                          % (needed, top - bottom))
@@ -264,7 +272,7 @@ def draw_back_card(c, x=0, y=0, answer=False):
 
     yy = top
     for i, (leg, lines) in enumerate(zip(LEGS, blocks), start=1):
-        rows_h = max(len(lines) * line_h + 7.0, box_w + 7.0) + pad
+        rows_h = max(len(lines) * line_h + 7.0, min_row) + pad
         if i % 2 == 0:
             c.setFillColor(ZEBRA)
             c.rect(6, yy - rows_h, W - 12, rows_h, fill=1, stroke=0)
@@ -275,8 +283,8 @@ def draw_back_card(c, x=0, y=0, answer=False):
         c.setFont("Helvetica", 6.8)
         for k, ln in enumerate(lines):
             c.drawString(left + 16, yy - 10 - k * line_h, ln)
-        # three tally boxes
-        for b in range(3):
+        # three tally boxes (answer copy only, since 29 Sept 2026)
+        for b in (range(3) if tally else ()):
             bx = tally_x + b * (box_w + gap)
             by = yy - 4 - box_w
             c.setStrokeColor(RULE)
@@ -298,17 +306,13 @@ def draw_back_card(c, x=0, y=0, answer=False):
     c.setStrokeColor(RULE)
     c.setLineWidth(0.5)
     c.line(left, 24, right, 24)
-    c.setFillColor(SOFT)
-    c.setFont("Helvetica", 5.4)
-    c.drawCentredString(W / 2, 16, "BRG BRIDGES · FRD FORDS · GTE GATES")
     if answer:
+        c.setFillColor(SOFT)
+        c.setFont("Helvetica", 5.4)
+        c.drawCentredString(W / 2, 16, "BRG BRIDGES · FRD FORDS · GTE GATES")
         c.setFillColor(RUST)
         c.setFont("Helvetica-Bold", 6.0)
         c.drawCentredString(W / 2, 8, "ANSWER  %d %d %d" % ANSWER)
-    else:
-        c.setFillColor(SOFT)
-        c.setFont("Helvetica", 5.4)
-        c.drawCentredString(W / 2, 8, "LEG 1 FILLED IN · TOTAL EACH COLUMN")
     c.restoreState()
 
 

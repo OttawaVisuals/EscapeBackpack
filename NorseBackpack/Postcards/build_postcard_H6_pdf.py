@@ -75,6 +75,9 @@ def draw_back_card(c, x=0, y=0):
     c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)
 
     left, right = 20, W - 20
+    # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
+    # 6 pt before the divider (was 12), at the user's request, on all 22 cards.
+    msg_left = 15
     divider = 184
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 6.5)
@@ -85,25 +88,27 @@ def draw_back_card(c, x=0, y=0):
     # Message drafted 17 Sept 2026 (concept), rewritten by the user 19 Sept 2026 (PZ-05/PC-07).
     # H6 is Harald's leg-closing, final-reveal card: it carries the "one more puzzle" nudge
     # toward the endgame rather than a lock of its own.
+    # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): message rewritten. Text from the user's Postcard
+    # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     paragraphs = [
-        "Patara is the last stop of my travels for now.",
-        "I had so much fun exploring the Vikings and Norse travels!",
-        "For your university summer break, I would love for you to join me on my next "
-        "adventure. You have one more puzzle to solve and you will get your rewards!",
+        'Patara is the last stop of my travels for now.',
+        'I had so much fun exploring the Vikings and Norse travels!',
+        'For your university summer break, I would love for you to join me on my next adventure. You have one more puzzle to solve and you will get your rewards!',
+        'Now you should have all you need to retrace my steps!',
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
-        for line in wrap_text(paragraph, font, size, divider - left - 12):
+        for line in wrap_text(paragraph, font, size, divider - msg_left - 6):
             c.setFont(font, size)
-            c.drawString(left, y, line)
+            c.drawString(msg_left, y, line)
             y -= leading
         y -= 1.8
 
-    c.setFont("NothingYouCouldDo", 8)
-    c.drawString(left, y, "With love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.setFont("NothingYouCouldDo", 9.8)
+    c.drawString(msg_left, y, "With love,")
+    c.drawString(msg_left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -173,11 +178,11 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
+    # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): Fun Fact rewritten. Text from the user's Postcard
+    # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        "Archaeologists actually found a real 9th/10th-century Viking sword in 2018 in Patara. "
-        "It almost certainly belonged to a Varangian Guard soldier. Harald Hardrada, later King "
-        "of Norway, was a prominent member of the Varangian Guard."
+        'Archaeologists discovered a Viking sword at the Patara excavation site. It almost certainly belonged to a soldier of the Varangian Guard, of which Harald was a prominent member.'
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

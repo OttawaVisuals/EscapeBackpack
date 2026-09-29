@@ -56,10 +56,12 @@ TARGETS = [(1, "brother", 0), (3, "could", 1), (8, "alongside", 2), (9, "keep", 
 ANSWER = "BOOK"
 
 # Geometry, in card points (x right, y down from the card's top-left) unless marked mm.
-TOOTH_ROOT_X = 18.5               # message text starts at x = 20
+# 29 Sept 2026: regenerated for AD at 9.5 pt / 10.6 pt leading with the wider message column
+# (text now starts at x = 15 and may run to x = 178). Same four target words, still BOOK.
+TOOTH_ROOT_X = 13.5               # message text starts at x = 15 (was 18.5 for x = 20)
 HANDLE_OUTER_X = -15.5            # handle overhangs the card's left edge by ~5.5 mm
-INTACT_TIP_X = 168.0              # longest line ends at ~165.7; divider at 184
-TOOTH_HALF = 3.1                  # 2.19 mm teeth; ~0.85 mm gaps at 8.6 pt leading
+INTACT_TIP_X = 180.0              # longest line can reach x = 178; divider at 184 (was 168)
+TOOTH_HALF = 3.5                  # 2.47 mm teeth for 9.5 pt text; ~1.27 mm gaps at 10.6 pt leading (was 3.1)
 INK_SHIFT = -0.6                  # handwriting ink sits a little above the glyph-box centre
 TIP_CLEAR = 0.4                   # broken tip stops this far short of the letter
 LOBE_R = 8.0                      # flared end around each alignment hole
@@ -77,7 +79,7 @@ def read_layout():
     for block in page.get_text("rawdict")["blocks"]:
         for line in block.get("lines", []):
             x0, y0, x1, y1 = line["bbox"]
-            if x0 < 30 and 25 < y0 < 125:
+            if x0 < 30 and 25 < y0 < 145:   # message lines only (signature starts ~y 151)
                 chars = [ch for span in line["spans"] for ch in span["chars"]]
                 lines.append(((y0 + y1) / 2, chars))
     lines.sort(key=lambda item: item[0])

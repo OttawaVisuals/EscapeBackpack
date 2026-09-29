@@ -1,5 +1,44 @@
 # Project Handoff
 
+## Session close — 2026-09-29 — Postcard update batch 2: Aud + Harald, wider column (Claude Code)
+
+**Task/status:** The user exported batch 2 from the Postcard update tab. I reviewed it and the user answered five questions:
+- R5 stays on line B.
+- H2 gets a new Viking fact with no numbers: the rune stick.
+- H5 uses capitals: "A RAVEN".
+- The message column is widened on all 22 cards.
+- A3's front flips in the PDFs too.
+
+A1–AD and H1–HD are built at 9.5 / 9 pt with the user's text. Agreed fixes: H2's acrostic line now starts "Keeping up with new puzzles…", and H6's fact had its grammar fixed. H2 has a 10 pt hanging indent on wrapped lines and the sign-off (the user's request).
+
+The message column now runs from `x 15` to 6 pt before the divider (`msg_left` in every `build_postcard_*_pdf.py`, measure 163 pt). H4's rune table and HD's rebus box follow it.
+
+**AD's comb was regenerated** (`Props/Comb/build_comb.py`):
+- The same four words still give BOOK: brother / could / alongside / keep.
+- The alignment marks moved to y 16 and y 186.
+- Teeth are 2.47 mm wide with 1.27 mm gaps; the STL was rewritten.
+- Any comb already printed must be reprinted.
+
+**Aud's ticket:** the player copy's back lost the tally boxes, the "COUNT WHAT YOU CROSS" line, the worked leg 1 and the legend. The answer copy keeps them.
+
+**Files changed:**
+- All 22 `build_postcard_*_pdf.py`, their back PNGs, and their single and Letter PDFs. `Norse_Postcards_Full_Print.pdf`.
+- 12 `PrintTest_*` .docx files. Unchanged ones were restored from HEAD.
+- `Props/Comb/*` (build_comb.py, scad, stl, overlay, json).
+- `Props/AudTicket/build_aud_ticket_pdf.py`, the Aud ticket PDFs and `_Renders/Aud_Ticket_Back.png`.
+- `Norse_Brainstorm.html`: new notes in PR-19, PZ-17, PZ-02, PZ-20 and PZ-05; the design-guide type scale and column; the A3 header; the Approved changes RAVEN mentions; the mead clue note; the Postcard update tab (Batch 2 note, preview geometry `x 15` / 163 pt, data refreshed, AD no longer locked).
+
+**Checks:**
+- Viewed all 22 backs: everything fits, and H4's table, HD's box and H2's indent render correctly.
+- Viewed the comb overlay (reads BOOK), the Aud ticket back and the A3 flipped front.
+- `node --check` passed on 4 scripts; `git diff --check` is clean. Headless Chrome showed 0 errors on 5 tabs.
+- `final_riddle_clues.py`: TEST 1 and TEST 2 PASS.
+- Nothing printed; no commit.
+
+**H2 credit fixed (same session):** the photographer's Cyrillic name printed as black boxes, because Helvetica has no Cyrillic. It is now transliterated to "Aleksandr Baydukov". H2 and the full deck were rebuilt.
+
+**Next action:** print a few batch-2 print tests (`PrintTest_H2_H3`, `AD_H1`) and reprint the comb to check it against the new AD.
+
 ## Session close — 2026-09-28 — Hot-tea cup on R4 (Claude Code)
 
 **Task/status:** The user asked for the new rebus drafts to go on R4 and R5. R5 already carried Codex's production SCALE 1:125 icons (see Codex's entry below), so it was left as built. For R4, I normalised Codex's `Rebus_Teacup_Hot_Bayeux_v3_Draft.png` into `Rebus_Teacup_Hot_Bayeux_v3.png` with `prepare_r5_scale_icons.normalize`. It is drawn at 28 pt (was 26) so the cup stays about the same size under the steam. The draft file is kept.

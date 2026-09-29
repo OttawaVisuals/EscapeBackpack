@@ -57,6 +57,12 @@ def draw_front_card(c, x=0, y=0):
             f"Postcard_A3_Esjuberg_Front.png is {fw}x{fh}, expected 1500x1050 (PC-13, "
             f"5x3.5in @300dpi). Drawing it here would stretch it to fit the page."
         )
+    # 29 Sept 2026: art printed upside down relative to the back (the user's request; the print
+    # test .docx already did this via ART_EXTRA_ROTATE). "My head is spinning" is the nudge to turn
+    # the coin tally 180 degrees. Rotated about the card centre so the trim box does not move.
+    c.translate(W / 2, H / 2)
+    c.rotate(180)
+    c.translate(-W / 2, -H / 2)
     c.drawImage(front, 0, 0, W, H, preserveAspectRatio=False, mask="auto")
     c.restoreState()
 
@@ -75,6 +81,9 @@ def draw_back_card(c, x=0, y=0):
     c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)
 
     left, right = 20, W - 20
+    # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
+    # 6 pt before the divider (was 12), at the user's request, on all 22 cards.
+    msg_left = 15
     divider = 184
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 6.5)
@@ -97,18 +106,18 @@ def draw_back_card(c, x=0, y=0):
         "Still amazed by the treasures I found!",
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
-        for line in wrap_text(paragraph, font, size, divider - left - 12):
+        for line in wrap_text(paragraph, font, size, divider - msg_left - 6):
             c.setFont(font, size)
-            c.drawString(left, y, line)
+            c.drawString(msg_left, y, line)
             y -= leading
         y -= 1.8
 
-    c.setFont("NothingYouCouldDo", 8)
-    c.drawString(left, y, "With love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.setFont("NothingYouCouldDo", 9.8)
+    c.drawString(msg_left, y, "With love,")
+    c.drawString(msg_left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -178,7 +187,7 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
     fact_text = (
         "Esjuberg, on Kjalarnes, is where Laxdæla saga places Aud's meeting with her brother "
         "Helgi — and her refusal of his offer to settle down."

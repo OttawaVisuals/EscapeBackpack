@@ -75,6 +75,9 @@ def draw_back_card(c, x=0, y=0):
     c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)
 
     left, right = 20, W - 20
+    # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
+    # 6 pt before the divider (was 12), at the user's request, on all 22 cards.
+    msg_left = 15
     divider = 184
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 6.5)
@@ -86,28 +89,28 @@ def draw_back_card(c, x=0, y=0):
     # merged from the old legs 5+6. Two checks are load-bearing -- direction (south) and the
     # forest the road runs beside (H5/H6/I5/I6) -- neither named outright, both checkable
     # on the sheet. Also carries the "count what you crossed" nudge for the treasure hunt.
+    # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): message rewritten. Text from the user's Postcard
+    # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     paragraphs = [
-        "Hvammur today.",
-        "Such a lovely place and a great museum dedicated to Aud.",
-        "They even had a treasure hunt to find artifacts from Aud’s time.",
-        "I was able to solve it and had a lovely time discovering the countryside. "
-        "I particularly enjoyed the road that followed the forest.",
-        # 25 Sept 2026: "rivers" -> "bridges", to match the ticket's tally columns exactly.
-        "I might just have to remember how many bridges, fords and gates I crossed.",
+        'Hvammur today.',
+        'Such a lovely place and a great museum dedicated to Aud.',
+        'They even had a treasure hunt to find artifacts from Aud’s time.',
+        'I was able to solve it and had a lovely time discovering the countryside. I particularly enjoyed the road that followed the forest.',
+        'It was fun to count how many bridges, fords and gates I crossed.',
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 7.7, 8.6
+    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
     y = H - 36
     for paragraph in paragraphs:
-        for line in wrap_text(paragraph, font, size, divider - left - 12):
+        for line in wrap_text(paragraph, font, size, divider - msg_left - 6):
             c.setFont(font, size)
-            c.drawString(left, y, line)
+            c.drawString(msg_left, y, line)
             y -= leading
         y -= 1.8
 
-    c.setFont("NothingYouCouldDo", 8)
-    c.drawString(left, y, "With love,")
-    c.drawString(left, y - 9, "Aunt Liv")
+    c.setFont("NothingYouCouldDo", 9.8)
+    c.drawString(msg_left, y, "With love,")
+    c.drawString(msg_left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the address box. See postcard_marks.py.
@@ -176,12 +179,11 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 7.5)
     c.drawString(address_x, funfact_top - 11, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 7.4, 8.8
+    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
+    # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): Fun Fact rewritten. Text from the user's Postcard
+    # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        "Aud claimed the entire valley between two rivers here in Dalasysla, then freed every "
-        "thrall aboard her ships and granted each one land of their own. One, Vifill, got the "
-        "valley still called Vifilsdalur today — she's one of very few women named as a primary "
-        "land-claimant in Landnamabok, Iceland's own settlement record."
+        'Aud claimed the entire valley between two rivers here in Dalasysla, then freed every thrall aboard her ships and granted each one land of their own.'
     )
     fact_y = funfact_top - 24
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):
