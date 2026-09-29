@@ -111,8 +111,7 @@ def draw_page(c, ox=0, oy=0):
     c.saveState()
     c.translate(ox, oy)
 
-    c.setFillColor(PAPER)
-    c.rect(0, 0, W, H, fill=1, stroke=0)
+    # No paper fill (29 Sept 2026): printed on coloured paper, which supplies the tint.
 
     left, right = MARGIN, W - MARGIN
     inner = right - left
