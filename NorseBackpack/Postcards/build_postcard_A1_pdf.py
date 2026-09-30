@@ -102,11 +102,13 @@ def draw_back_card(c, x=0, y=0):
     # for players to notice (map marks = ticket icons), with the hint companion as backstop.
     # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): message rewritten. Text from the user's Postcard
     # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
+    # 29 Sept 2026 (user, 30 Sept export): last sentence reworded, was "...the coins from the
+    # treasure hunt though."
     paragraphs = [
         'Dogurdarnes today.',
         'What a beautiful place, I understand why Aud stopped here during her journey.',
         'I heard you can find some treasure around here, especially historical coins that fetch a pretty penny!',
-        'I was mostly interested in the coins from the treasure hunt though.',
+        'I was mostly interested in the coins that I got at the end of the treasure hunt.',
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 9.5, 10.6

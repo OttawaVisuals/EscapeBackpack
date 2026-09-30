@@ -1,5 +1,39 @@
 # Project Handoff
 
+## Session — 2026-09-29 — HD chemical reaction icon options (Codex)
+
+**Task/status:** Drew four rough middle-icon options for Constantinople's `PZ-20` rebus: fizzing flask, pour + fizz, molecule change, and foaming crock. Awaiting the user's choice. The print card and its builder are unchanged.
+
+**Files changed:** `NorseBackpack/Postcards/HD_Reaction_Icon_Options.svg` (new), `NorseBackpack/Norse_Brainstorm.html` (PZ-20 sketch link), this handoff note. A local PNG preview is Git-ignored. Preserved unrelated A1 and handoff changes already in the working tree.
+
+**Checks:** Rendered and viewed the four-icon comparison PNG. Opened the design page over local HTTP, verified its options link, and found no browser warnings/errors. `git diff --check` passed.
+
+**Next action:** User chooses an icon to test in the HD rebus at actual print size.
+
+## Session close — 2026-09-29 — Postcard update export review + A1 rebuilt (Claude Code)
+
+**Task/status:** Done, not committed. Compared `Downloads/Norse_Postcard_Update_2026-09-30.json` with the 29 Sept export, the page's Postcard update data and the 22 builder scripts. The only new draft was A1's last sentence (H6 only gained a full stop the built card already had). Page text matched every builder. The other draft-vs-page differences are the agreed batch 1/2 fixes: the browser drafts are older than the page there, so they should not be rebuilt as-is.
+
+**Built (user approved):** A1's last sentence is now "I was mostly interested in the coins that I got at the end of the treasure hunt." The two page notes that still said H2's indent was 10 pt (`PZ-20` row, and H2's "matters" line in the Postcard update data) now say half a space, about 2.5 pt.
+
+**Files changed:** `NorseBackpack/Postcards/build_postcard_A1_pdf.py`, `NorseBackpack/Norse_Brainstorm.html`, `NorseBackpack/Web/Postcards/Postcard_A1_Dogurdarnes_Back.webp`, `NorseBackpack/Web/pdf/Postcard_A1_Dogurdarnes_Print.pdf`. Local-only: A1 print PDFs, `Postcard_A1_Dogurdarnes_Back.png`, `output/docx/PrintTest_RD_A1.docx`. The full docx run stopped at `PrintTest_L3_LD.docx` (still open in Word); only RD_A1 was rebuilt, and the others were restored from a copy taken first.
+
+**Checks:** Viewed the A1 back at full size: the sentence wraps to three lines and the sign-off fits with plenty of room. Page served at http://localhost:8734: new A1 text present, old text gone, both H2 notes updated, no console errors. Screenshot of the tab timed out, so it was checked as text only.
+
+**Still open:** the `PZ-20` note links `Postcards/HD_Fermentation_Sketch.png`, which `.gitignore` excludes, so it will be a dead link on the website (the sketch is Codex's proposal, not decided).
+
+**Next action:** reprint `PrintTest_RD_A1` together with `PrintTest_H2_H3` to check A1 and the H2 indent on paper.
+
+## Session — 2026-09-29 — Constantinople rebus brainstorm (Codex)
+
+**Task/status:** Discussed clearer icons for the HD Constantinople clue (`PZ-20`) and drew a rough yeast + bubbling airlock jar + hourglass sketch. The user has not yet reviewed it; the print card is unchanged.
+
+**Files changed:** `Postcards/HD_Fermentation_Sketch.svg` (new source), `Norse_Brainstorm.html` (PZ-20 proposal and link), this handoff note. A local PNG preview was rendered from the SVG but is ignored by Git. Existing uncommitted handoff changes were preserved.
+
+**Checked:** Read the current `PZ-20` design notes and `build_postcard_HD_pdf.py`; viewed `Postcard_HD_Constantinople_Back.png` at full size and the sketch PNG at full size. Opened the Norse puzzle page over local HTTP; the sketch link renders and the page reports no browser warning/error logs. `git diff --check` passed.
+
+**Next action:** Get feedback on the sketch; if accepted, adapt it to the HD card’s actual print box and test whether a reader infers fermentation without prompting.
+
 ## Session close — 2026-09-29 — Leif playtest published (Codex)
 
 **Status:** User authorized commit/push and publication. Website commit `8429b39` pushed to `Escape-Backpack/escapepack-site` main. Cloudflare Pages deployment `53d6d743-dfb5-40d7-aa40-f210f5eecd1d` completed successfully. Live at https://escapepack.ca/play/norse/leif/ with a link on the homepage's Norse card.
@@ -24,7 +58,11 @@
 
 **Checks:** Served over http://localhost:8734. Opened every tab of the Norse page, and it made 197 image and PDF requests: none failed and none went to a full-size file. `Digital/Leif.html` loads its postcard from `Web/`. No console errors. No site file is gitignored (checked with `git check-ignore`). Viewed the H2 back WebP: text is sharp. Viewed page 1 of a compressed postcard PDF: clean. Nothing printed; no commit.
 
-**Next action:** the user reviews the staged changes (`git status`) and commits when ready. After that, reprint `PrintTest_H2_H3` for the indent check (now a local-only file in `output/docx/`).
+**Committed and pushed** as `fef97bd`. Codex then pushed `e687936`, a HANDOFF note.
+
+**Git history rewritten (user-approved), same session:** `git filter-repo` removed 482 binary paths under `NorseBackpack/` and `output/` that are not in the current commit, from every commit. Text files kept their history. `main` history went from about 5.5 GB to 0.54 GB. There are now 154 commits, because one only touched stripped files. The current tree is byte-identical (tree `f5dd5c7`), and `HEAD` is `d5e0137`. It was force-pushed with a lease on `e687936`, Pages redeployed, and all 200 links on the live Norse page load. Every commit ID changed, so any other clone must re-clone and must not push its old history. Local `.git` is still 1.8 GB, because six local-only `refs/codex/turn-diffs/checkpoints/*` refs point at tree snapshots that filter-repo cannot rewrite; they were never on GitHub. Full pre-rewrite backup: `C:\EscapeBackpack\EscapeBackpack_backup.git` (6.5 GB mirror, verified; also holds the old full-size art and PDFs). GitHub's reported repo size updates lazily.
+
+**Next action:** reprint `PrintTest_H2_H3` (now local-only in `output/docx/`) to check the H2 indent.
 
 ## Session close — 2026-09-29 — H2 (DRINK) indent cut to half a space (Claude Code)
 
