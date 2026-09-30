@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 390" role="img" aria-label="Four alternative chemical reaction icons for the Constantinople postcard">
+  <rect width="1240" height="390" fill="#efe3c5"/>
+  <g fill="#f8f2df" stroke="#a99678" stroke-width="2">
+    <rect x="15" y="15" width="290" height="355" rx="6"/>
+    <rect x="322" y="15" width="290" height="355" rx="6"/>
+    <rect x="629" y="15" width="290" height="355" rx="6"/>
+    <rect x="936" y="15" width="290" height="355" rx="6"/>
+  </g>
+  <g fill="#263f3a" font-family="Arial, sans-serif" text-anchor="middle">
+    <text x="160" y="55" font-size="22" font-weight="700">A</text>
+    <text x="467" y="55" font-size="22" font-weight="700">B</text>
+    <text x="774" y="55" font-size="22" font-weight="700">C</text>
+    <text x="1081" y="55" font-size="22" font-weight="700">D</text>
+    <text x="160" y="337" font-size="18">Fizzing flask</text>
+    <text x="467" y="337" font-size="18">Pour + fizz</text>
+    <text x="774" y="337" font-size="18">Molecules change</text>
+    <text x="1081" y="337" font-size="18">Foaming crock</text>
+  </g>
+  <g fill="none" stroke="#263f3a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- A: the most conventional science symbol. -->
+    <path d="M139 100 H181 M147 101 V151 L98 256 Q91 273 110 280 H210 Q229 273 222 256 L173 151 V101"/>
+    <path d="M118 240 Q140 227 160 240 T204 240" stroke-width="4"/>
+    <circle cx="145" cy="213" r="5"/><circle cx="177" cy="220" r="4"/>
+    <circle cx="162" cy="188" r="6"/><circle cx="151" cy="163" r="3"/>
+    <circle cx="179" cy="137" r="4"/>
+
+    <!-- B: cause and effect, with a tipped test tube and energetic bubbles. -->
+    <path d="M383 112 L448 145 M393 94 L458 127 M394 96 L380 123 Q374 139 389 149 L422 166 Q439 175 448 157 L460 128"/>
+    <path d="M418 128 L444 141" stroke-width="3"/>
+    <path d="M478 176 V271 Q478 282 491 282 H550 Q563 282 563 271 V176"/>
+    <path d="M474 176 H567 M489 239 Q508 229 527 239 T552 239" stroke-width="4"/>
+    <path d="M457 163 L466 181 M464 183 L470 195" stroke-width="4"/>
+    <circle cx="509" cy="214" r="5"/><circle cx="540" cy="203" r="4"/>
+    <circle cx="520" cy="188" r="3"/><circle cx="535" cy="159" r="4"/>
+
+    <!-- C: a stylized bond rearrangement, without lab glassware. -->
+    <circle cx="696" cy="181" r="22"/><circle cx="737" cy="227" r="17"/>
+    <path d="M712 198 L724 211"/>
+    <circle cx="828" cy="173" r="18"/><circle cx="863" cy="214" r="23"/>
+    <path d="M841 187 L850 197"/>
+    <path d="M758 142 H801 M790 130 L803 142 L790 154"/>
+    <path d="M757 269 H801 M769 257 L756 269 L769 281"/>
+    <path d="M756 187 L766 197 M766 187 L756 197" stroke-width="4"/>
+
+    <!-- D: a domestic fermenting vessel, with an obvious rising foam cap. -->
+    <path d="M1036 129 Q1026 148 1023 172 V257 Q1023 280 1047 280 H1116 Q1140 280 1140 257 V172 Q1137 148 1127 129"/>
+    <path d="M1036 129 H1127"/>
+    <path d="M1024 174 Q1041 164 1052 175 Q1067 153 1082 173 Q1097 158 1110 176 Q1128 161 1140 175" stroke-width="4"/>
+    <path d="M1036 227 Q1058 213 1080 227 T1128 227" stroke-width="4"/>
+    <circle cx="1053" cy="204" r="4"/><circle cx="1090" cy="202" r="5"/>
+    <circle cx="1113" cy="194" r="3"/><circle cx="1066" cy="145" r="4"/>
+    <circle cx="1098" cy="136" r="5"/><circle cx="1081" cy="111" r="3"/>
+  </g>
+</svg>

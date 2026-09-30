@@ -1,5 +1,48 @@
 # Project Handoff
 
+## Session close — 2026-09-29 — HD MEAD rebus review and layout fixes (Claude Code)
+
+**Task/status:** Done, not committed. Reviewed Codex's new HD rebus (dotted sugar spoon + yeast + fizzing flask), then made the fixes the user approved: spoon handle shortened to about half (icon now centred on its x), packet label lettered "Yeast" in NothingYouCouldDo 6.3 pt instead of Helvetica "YEAST", plus signs 9 → 14 pt, icons spaced evenly (12 pt margins, equal gaps) and lowered 3 pt to sit centred in the box. The ImageGen prompt that was only in a JS comment is now visible in the `PZ-20` (MEAD) entry's risk text; the comment is removed.
+
+**Files changed:** `NorseBackpack/Postcards/build_postcard_HD_pdf.py`, `NorseBackpack/Norse_Brainstorm.html` (MEAD entry note + prompt), `NorseBackpack/Web/Postcards/Postcard_HD_Constantinople_Back.webp`, `NorseBackpack/Web/pdf/Postcard_HD_Constantinople_Print.pdf`. Local-only: HD print PDFs, back PNG, `output/docx/PrintTest_H6_HD.docx`. Codex's five `HD_*.svg` files are still untracked; the page links them, so commit them with the page.
+
+**Checks:** Viewed an 8x zoom of the rebus from the print PDF: even spacing, icons centred, label legible. Page over http://localhost:8734: note and prompt present, all five SVG links return 200, both HD images load, no console errors.
+
+**Follow-up, same session (user):** sugar dots enlarged (radius 0.4 → 0.63 pt) and the second sign changed to an arrow (sugar + yeast → flask). Both signs are now drawn 0.9 pt strokes, since the handwriting "+" looked weak beside the drawn arrow (the font has no arrow glyph). Page note and rebus descriptions (incl. the Postcard update tab entry) updated; images, web copies and `PrintTest_H6_HD.docx` rebuilt; viewed at 300 dpi.
+
+**Still open (in the page):** at print size the dotted cubes can read as dice, so watch for that in the reader test; the "Found this in a little shop" lead-in doesn't describe a flask.
+
+**Next action:** print `PrintTest_H6_HD` at actual size and ask a fresh reader what the three symbols suggest.
+## Session — 2026-09-29 — Constantinople rebus updated (Codex)
+
+**Task/status:** User chose dotted sugar cubes on a spoon + yeast + reaction icon A (fizzing flask), and removed time. Built this rebus into the HD Constantinople postcard.
+
+**Files changed:** `NorseBackpack/Postcards/build_postcard_HD_pdf.py` (three new vector icons and layout); `NorseBackpack/Norse_Brainstorm.html` (PZ-20 decision and card description); regenerated `NorseBackpack/Web/Postcards/Postcard_HD_Constantinople_Back.webp` and `NorseBackpack/Web/pdf/Postcard_HD_Constantinople_Print.pdf`. Local Git-ignored print masters and PNG previews were regenerated. Earlier SVG sketches remain as labelled history.
+
+**Checks:** Viewed the print postcard back at 300 dpi, the letter sheet back, and both web assets; icons and text fit. Opened the design page over local HTTP; updated PZ-20 text appears and browser logs are clear. No paper print or unprompted reader test.
+
+**Next action:** Print the HD postcard at actual size and ask a fresh reader what the three symbols suggest.
+
+## Session — 2026-09-29 — HD dotted sugar spoon sketch (Codex)
+
+**Task/status:** User supplied a spoon holding three sugar cubes and asked for a similar icon with small dots on the cube faces. Made a transparent ImageGen draft, a print-friendly vector icon, and a full rebus sketch with the previously selected fizzing flask and hourglass. Production HD postcard and builder are unchanged.
+
+**Files changed:** New `NorseBackpack/Postcards/HD_Sugar_Spoon_Dotted.svg` and `HD_Rebus_Sketch_v2.svg`; updated `Norse_Brainstorm.html` with the chosen direction, links, and exact ImageGen prompt; updated this handoff. Local Git-ignored previews: `HD_Sugar_Spoon_Dotted_v1.png` (ImageGen), `HD_Sugar_Spoon_Dotted_Preview.png`, `HD_Rebus_Sketch_v2.png`, and `HD_Rebus_Sketch_v2_PrintScale.png`. Existing uncommitted work preserved.
+
+**Checks:** Viewed the generated draft and vector sketch, including the full rebus at approximate 300 dpi print scale; cube dots remain visible on screen. The new links were opened from the design page over local HTTP with no browser errors; `git diff --check` passed. No paper print or unprompted reader test.
+
+**Next action:** Get user feedback on the full rebus sketch; if accepted, adapt the HD PDF builder and render a physical-size test card.
+
+## Session — 2026-09-29 — HD sugar icon options (Codex)
+
+**Task/status:** User chose reaction icon A (fizzing flask) for Constantinople's `PZ-20` sketch. Drew four sugar options: labelled packet, bowl with cubes, textured cubes, and spoon of grains. Awaiting the sugar choice. Production postcard and builder unchanged.
+
+**Files changed:** `NorseBackpack/Postcards/HD_Sugar_Icon_Options.svg` (new), `NorseBackpack/Norse_Brainstorm.html` (PZ-20 decision and link), this handoff note. The rendered PNG preview is local and Git-ignored. Existing unrelated changes preserved.
+
+**Checks:** Rendered and visually inspected the four-icon sheet. `git diff --check` passed. The updated design-page link was checked over local HTTP, with no browser errors.
+
+**Next action:** User picks a sugar icon; then lay it out with the chosen flask and hourglass at actual card size for review.
+
 ## Session — 2026-09-29 — HD chemical reaction icon options (Codex)
 
 **Task/status:** Drew four rough middle-icon options for Constantinople's `PZ-20` rebus: fizzing flask, pour + fizz, molecule change, and foaming crock. Awaiting the user's choice. The print card and its builder are unchanged.
@@ -12,7 +55,7 @@
 
 ## Session close — 2026-09-29 — Postcard update export review + A1 rebuilt (Claude Code)
 
-**Task/status:** Done, not committed. Compared `Downloads/Norse_Postcard_Update_2026-09-30.json` with the 29 Sept export, the page's Postcard update data and the 22 builder scripts. The only new draft was A1's last sentence (H6 only gained a full stop the built card already had). Page text matched every builder. The other draft-vs-page differences are the agreed batch 1/2 fixes: the browser drafts are older than the page there, so they should not be rebuilt as-is.
+**Task/status:** Done; committed and pushed as `a809de6` (user asked; Codex's uncommitted HD sketch line in the page and the two HD `.svg` files were left out). Compared `Downloads/Norse_Postcard_Update_2026-09-30.json` with the 29 Sept export, the page's Postcard update data and the 22 builder scripts. The only new draft was A1's last sentence (H6 only gained a full stop the built card already had). Page text matched every builder. The other draft-vs-page differences are the agreed batch 1/2 fixes: the browser drafts are older than the page there, so they should not be rebuilt as-is.
 
 **Built (user approved):** A1's last sentence is now "I was mostly interested in the coins that I got at the end of the treasure hunt." The two page notes that still said H2's indent was 10 pt (`PZ-20` row, and H2's "matters" line in the Postcard update data) now say half a space, about 2.5 pt.
 

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 390" role="img" aria-label="Four alternative sugar icons for the Constantinople postcard">
+  <rect width="1240" height="390" fill="#efe3c5"/>
+  <g fill="#f8f2df" stroke="#a99678" stroke-width="2">
+    <rect x="15" y="15" width="290" height="355" rx="6"/>
+    <rect x="322" y="15" width="290" height="355" rx="6"/>
+    <rect x="629" y="15" width="290" height="355" rx="6"/>
+    <rect x="936" y="15" width="290" height="355" rx="6"/>
+  </g>
+  <g fill="#263f3a" font-family="Arial, sans-serif" text-anchor="middle">
+    <text x="160" y="55" font-size="22" font-weight="700">A</text>
+    <text x="467" y="55" font-size="22" font-weight="700">B</text>
+    <text x="774" y="55" font-size="22" font-weight="700">C</text>
+    <text x="1081" y="55" font-size="22" font-weight="700">D</text>
+    <text x="160" y="337" font-size="18">Sugar packet</text>
+    <text x="467" y="337" font-size="18">Sugar bowl</text>
+    <text x="774" y="337" font-size="18">Textured cubes</text>
+    <text x="1081" y="337" font-size="18">Spoon of grains</text>
+  </g>
+  <g fill="none" stroke="#263f3a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- A: explicit at a glance, though the word does most of the work. -->
+    <path d="M101 280 V103 L119 113 L138 99 L158 113 L178 99 L198 113 L219 101 V280 Z"/>
+    <path d="M117 147 H203 M117 235 H203" stroke-width="3"/>
+    <circle cx="231" cy="257" r="3" fill="#263f3a"/>
+    <circle cx="243" cy="269" r="3" fill="#263f3a"/>
+    <circle cx="226" cy="277" r="3" fill="#263f3a"/>
+
+    <!-- B: table sugar bowl, cube corners visible above the rim. -->
+    <path d="M383 197 H551 Q546 273 504 278 H430 Q388 273 383 197 Z"/>
+    <path d="M377 195 Q467 182 557 195"/>
+    <path d="M405 190 V148 H446 V190 M449 187 V139 H492 V187 M496 190 V151 H536 V190" stroke-width="5"/>
+    <path d="M540 170 L568 144" stroke-width="5"/>
+    <ellipse cx="575" cy="137" rx="16" ry="8" transform="rotate(-30 575 137)" stroke-width="4"/>
+    <path d="M427 278 H507" stroke-width="4"/>
+
+    <!-- C: three solid-looking cubes with edges and speckled faces. -->
+    <path d="M690 159 L727 136 L767 157 L731 180 Z M690 159 V217 L731 239 V180 M731 180 L767 157 V216 L731 239"/>
+    <path d="M764 186 L801 163 L842 184 L805 207 Z M764 186 V244 L805 266 V207 M805 207 L842 184 V243 L805 266"/>
+    <path d="M705 97 L741 76 L782 98 L745 120 Z M705 97 V151 L745 174 V120 M745 120 L782 98 V151 L745 174"/>
+    <circle cx="719" cy="192" r="2" fill="#263f3a"/><circle cx="744" cy="205" r="2" fill="#263f3a"/>
+    <circle cx="786" cy="224" r="2" fill="#263f3a"/><circle cx="815" cy="230" r="2" fill="#263f3a"/>
+    <circle cx="731" cy="139" r="2" fill="#263f3a"/><circle cx="762" cy="148" r="2" fill="#263f3a"/>
+
+    <!-- D: granules heaped on a spoon, with a few falling grains. -->
+    <path d="M1033 194 Q1046 221 1080 221 Q1114 221 1128 194"/>
+    <path d="M1033 194 Q1080 211 1128 194" stroke-width="4"/>
+    <path d="M1128 200 L1172 173"/>
+    <path d="M1048 193 Q1060 161 1081 162 Q1106 161 1117 193" stroke-width="4"/>
+    <circle cx="1062" cy="180" r="2" fill="#263f3a"/><circle cx="1081" cy="174" r="2" fill="#263f3a"/>
+    <circle cx="1102" cy="182" r="2" fill="#263f3a"/>
+    <circle cx="1057" cy="247" r="3" fill="#263f3a"/><circle cx="1085" cy="255" r="3" fill="#263f3a"/>
+    <circle cx="1111" cy="243" r="3" fill="#263f3a"/><circle cx="1096" cy="275" r="2" fill="#263f3a"/>
+  </g>
+  <text x="160" y="201" fill="#263f3a" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" letter-spacing="1">SUGAR</text>
+</svg>

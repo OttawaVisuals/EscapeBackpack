@@ -62,79 +62,105 @@ def draw_front_card(c, x=0, y=0):
     c.restoreState()
 
 
-def draw_sugar_cubes(c, cx, cy, s):
-    # Three small squares, stacked/offset like sugar cubes tipped from a bowl.
+def draw_sugar_spoon(c, cx, cy):
+    # Three dotted cubes on a spoon. Coordinates follow the approved vector sketch.
+    # 29 Sept 2026 review: handle shortened to about half (x past 204 scaled by 0.45) so the
+    # spoon is closer in width to the yeast and flask; the icon is now centred on cx.
+    c.saveState()
+    c.translate(cx - 22.25, cy + 16.3)
+    c.scale(0.125, -0.125)
     c.setStrokeColor(INK)
-    c.setLineWidth(0.7)
-    c.setFillColor(PAPER)
-    offsets = [(-s * 0.55, -s * 0.35), (s * 0.15, -s * 0.5), (-s * 0.15, s * 0.15)]
-    for ox, oy in offsets:
-        c.rect(cx + ox, cy + oy, s * 0.55, s * 0.55, fill=1, stroke=1)
+    c.setLineWidth(8)
+    c.setLineCap(1)
+    c.setLineJoin(1)
 
+    def line(points):
+        p = c.beginPath()
+        p.moveTo(*points[0])
+        for point in points[1:]:
+            p.lineTo(*point)
+        c.drawPath(p, stroke=1, fill=0)
 
-def draw_bubbling_jar(c, cx, cy, w, h):
-    # An open jar (narrow neck, rounded body), a liquid line partway up, and bubbles rising
-    # above it -- read as "something fermenting", not a lidded box.
-    c.setStrokeColor(INK)
-    c.setLineWidth(0.8)
-    c.setFillColor(PAPER)
-    body_bottom, body_top = cy - h / 2, cy + h * 0.28
-    neck_top = cy + h / 2
-    neck_w = w * 0.5
-    body_w = w
-    p = c.beginPath()
-    p.moveTo(cx - neck_w / 2, neck_top)
-    p.lineTo(cx - neck_w / 2, body_top)
-    p.curveTo(cx - body_w / 2, body_top, cx - body_w / 2, body_top, cx - body_w / 2, cy)
-    p.curveTo(cx - body_w / 2, body_bottom, cx + body_w / 2, body_bottom, cx + body_w / 2, cy)
-    p.curveTo(cx + body_w / 2, body_top, cx + body_w / 2, body_top, cx + neck_w / 2, body_top)
-    p.lineTo(cx + neck_w / 2, neck_top)
-    c.drawPath(p, fill=1, stroke=1)
-    # liquid line partway up the body
-    c.setLineWidth(0.6)
-    c.line(cx - body_w / 2 + 1, cy - h * 0.05, cx + body_w / 2 - 1, cy - h * 0.05)
-    # bubbles rising inside and just above the neck
+    for left, top in ((43, 121), (108, 121), (76, 67)):
+        center = left + 33
+        right = left + 66
+        line([(left, top + 24), (center, top), (right, top + 24), (center, top + 47), (left, top + 24)])
+        lower = 183 if top == 121 else 145
+        line([(left, top + 24), (left, lower)])
+        line([(center, top + 47), (center, lower)])
+        line([(right, top + 24), (right, lower)])
+
+    bowl = c.beginPath()
+    bowl.moveTo(36, 182)
+    bowl.curveTo(39, 222, 76, 232, 179, 210)
+    bowl.curveTo(190, 199, 194, 196, 204, 190)
+    bowl.curveTo(236, 158, 278, 147, 310, 157)
+    bowl.curveTo(319, 160, 320, 174, 313, 182)
+    bowl.curveTo(278, 168, 239, 180, 211, 206)
+    bowl.curveTo(202, 214, 202, 214, 190, 229)
+    bowl.curveTo(148, 258, 83, 250, 42, 243)
+    bowl.curveTo(36, 226, 36, 217, 36, 207)
+    bowl.close()
+    c.drawPath(bowl, stroke=1, fill=0)
+    line([(38, 183), (184, 183)])
     c.setFillColor(INK)
-    bubble_spots = [(-2.2, cy - h * 0.2), (1.8, cy - h * 0.02), (-1.0, cy + h * 0.18),
-                     (0.6, neck_top + 1.5), (-1.4, neck_top + 4.5)]
-    for bx, by in bubble_spots:
-        c.circle(cx + bx, by, 0.9, fill=1, stroke=0)
+    for x, y in ((101, 87), (120, 88), (90, 117), (127, 123),
+                 (64, 145), (58, 169), (93, 174), (129, 145),
+                 (122, 172), (156, 173)):
+        c.circle(x, y, 5, stroke=0, fill=1)  # 29 Sept 2026: radius 3.2 -> 5 (0.4 -> 0.63 pt) so dots print
+    c.restoreState()
 
 
-def draw_hourglass(c, cx, cy, w, h):
-    # Two triangles meeting at the waist, classic hourglass silhouette, with a little sand.
+def draw_yeast_packet(c, cx, cy):
+    c.saveState()
     c.setStrokeColor(INK)
-    c.setLineWidth(0.8)
+    c.setLineWidth(0.9)
     c.setFillColor(PAPER)
-    top = cy + h / 2
-    mid = cy
-    bottom = cy - h / 2
-    left, right = cx - w / 2, cx + w / 2
-    # frame bars
-    c.line(left, top, right, top)
-    c.line(left, bottom, right, bottom)
-    # upper triangle
+    x, bottom, width, top = cx - 10, cy - 13, 20, cy + 13
     p = c.beginPath()
-    p.moveTo(left, top)
-    p.lineTo(right, top)
-    p.lineTo(cx, mid)
+    p.moveTo(x, bottom)
+    p.lineTo(x, top - 3)
+    for dx, dy in ((3, 0), (6, -3), (9, 0), (12, -3), (15, 0), (18, -3), (20, 0)):
+        p.lineTo(x + dx, top + dy)
+    p.lineTo(x + width, bottom)
     p.close()
     c.drawPath(p, fill=1, stroke=1)
-    # lower triangle
-    p2 = c.beginPath()
-    p2.moveTo(left, bottom)
-    p2.lineTo(right, bottom)
-    p2.lineTo(cx, mid)
-    p2.close()
-    c.drawPath(p2, fill=1, stroke=1)
-    # a little settled sand at the bottom
+    c.setLineWidth(0.5)
+    c.line(x + 2, cy + 6, x + width - 2, cy + 6)
+    c.line(x + 2, cy - 6, x + width - 2, cy - 6)
     c.setFillColor(INK)
-    p3 = c.beginPath()
-    p3.moveTo(cx - w * 0.18, bottom + 1.5)
-    p3.lineTo(cx + w * 0.18, bottom + 1.5)
-    p3.lineTo(cx, mid - h * 0.12)
-    p3.close()
-    c.drawPath(p3, fill=1, stroke=0)
+    # 29 Sept 2026 review: lettered in Aunt Liv's hand, not a typeset product label.
+    c.setFont("NothingYouCouldDo", 6.3)
+    c.drawCentredString(cx, cy - 1.8, "Yeast")
+    c.restoreState()
+
+
+def draw_reaction_flask(c, cx, cy):
+    c.saveState()
+    c.setStrokeColor(INK)
+    c.setLineWidth(1)
+    c.setLineCap(1)
+    c.setLineJoin(1)
+    c.setFillColor(PAPER)
+    p = c.beginPath()
+    p.moveTo(cx - 3, cy + 13)
+    p.lineTo(cx - 3, cy + 4)
+    p.lineTo(cx - 11, cy - 11)
+    p.curveTo(cx - 12, cy - 13, cx - 10, cy - 14, cx - 8, cy - 14)
+    p.lineTo(cx + 8, cy - 14)
+    p.curveTo(cx + 10, cy - 14, cx + 12, cy - 13, cx + 11, cy - 11)
+    p.lineTo(cx + 3, cy + 4)
+    p.lineTo(cx + 3, cy + 13)
+    c.drawPath(p, fill=1, stroke=1)
+    c.line(cx - 4.5, cy + 13, cx + 4.5, cy + 13)
+    wave = c.beginPath()
+    wave.moveTo(cx - 8, cy - 8)
+    wave.curveTo(cx - 3, cy - 5, cx + 2, cy - 10, cx + 8, cy - 8)
+    c.drawPath(wave, stroke=1, fill=0)
+    c.setFillColor(INK)
+    for dx, dy, radius in ((-3, -3, 1), (4, -2, 1), (0, 3, 1.1), (-2, 8, 0.7)):
+        c.circle(cx + dx, cy + dy, radius, stroke=0, fill=1)
+    c.restoreState()
 
 
 def draw_back_card(c, x=0, y=0):
@@ -179,24 +205,41 @@ def draw_back_card(c, x=0, y=0):
             y -= leading
         y -= 1.6
 
-    # The rebus itself (PZ-20): sugar cubes + a bubbling jar + an hourglass, read together as
-    # FERMENTED -- sugar (raw sweetness), visible fermentation, and time acting on it.
+    # PZ-20, revised 29 Sept 2026: dotted sugar cubes on a spoon + yeast + reaction flask.
+    # The hourglass and bubbling jar are superseded. The three icons point to fermentation.
     rebus_top = y - 4
     rebus_bottom = max(34, rebus_top - 46)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.6)
     c.rect(msg_left, rebus_bottom, divider - msg_left - 6, rebus_top - rebus_bottom, fill=0, stroke=1)
-    row_y = (rebus_top + rebus_bottom) / 2 + 3
-    box_w = divider - msg_left - 6
-    icon_xs = [msg_left + box_w * 0.18, msg_left + box_w * 0.5, msg_left + box_w * 0.82]
-    draw_sugar_cubes(c, icon_xs[0], row_y, 12)
-    draw_bubbling_jar(c, icon_xs[1], row_y, 16, 22)
-    draw_hourglass(c, icon_xs[2], row_y, 13, 20)
+    # 29 Sept 2026 review: icons lowered 3 pt to sit centred in the box, spaced evenly
+    # (12 pt margins, equal gaps), and the signs drawn as 0.9 pt strokes (plus, then arrow).
+    row_y = (rebus_top + rebus_bottom) / 2
+    icon_xs = [msg_left + 29.75, msg_left + 87.75, msg_left + 139.5]
+    draw_sugar_spoon(c, icon_xs[0], row_y)
+    draw_yeast_packet(c, icon_xs[1], row_y)
+    draw_reaction_flask(c, icon_xs[2], row_y)
     c.setFillColor(INK)
-    c.setFont("NothingYouCouldDo", 9)
-    plus_y = row_y - 2.5
-    c.drawCentredString((icon_xs[0] + icon_xs[1]) / 2, plus_y, "+")
-    c.drawCentredString((icon_xs[1] + icon_xs[2]) / 2, plus_y, "+")
+    # Plus drawn with the same line weight as the arrow below, so the two signs match.
+    px = msg_left + 62.6
+    c.setStrokeColor(INK)
+    c.setLineWidth(0.9)
+    c.setLineCap(1)
+    c.line(px - 4, row_y, px + 4, row_y)
+    c.line(px, row_y - 4, px, row_y + 4)
+    # 29 Sept 2026 (user): second sign is an arrow, so the flask reads as the result of
+    # sugar + yeast. Drawn, because NothingYouCouldDo has no arrow glyph.
+    ax, ay = msg_left + 112.9, row_y
+    c.setStrokeColor(INK)
+    c.setLineWidth(0.9)
+    c.setLineCap(1)
+    c.setLineJoin(1)
+    c.line(ax - 6, ay, ax + 5.5, ay)
+    head = c.beginPath()
+    head.moveTo(ax + 2.5, ay + 3)
+    head.lineTo(ax + 6, ay)
+    head.lineTo(ax + 2.5, ay - 3)
+    c.drawPath(head, stroke=1, fill=0)
 
     c.setFillColor(INK)
     c.setFont("NothingYouCouldDo", 9.8)

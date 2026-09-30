@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 260" role="img" aria-label="Spoon holding three dotted sugar cubes">
+  <g fill="none" stroke="#263f3a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Two lower cubes and one above, following the supplied spoon reference. -->
+    <path d="M43 145 L76 121 L109 145 L76 168 Z M43 145 V183 M76 168 V183 M109 145 V183"/>
+    <path d="M108 145 L141 121 L174 145 L141 168 Z M108 145 V183 M141 168 V183 M174 145 V183"/>
+    <path d="M76 91 L109 67 L142 91 L109 115 Z M76 91 V145 M109 115 V145 M142 91 V145"/>
+    <!-- Bowl, rim and long swept handle. -->
+    <path d="M36 182 Q39 222 76 232 Q135 250 179 210 Q190 199 204 190 C275 158 366 147 440 157 Q460 160 462 174 Q461 185 446 182 C368 168 281 180 220 206 Q202 214 190 229 Q148 258 83 250 Q42 243 36 207 Z"/>
+    <path d="M38 183 H184"/>
+  </g>
+  <g fill="#263f3a">
+    <circle cx="101" cy="87" r="3.2"/><circle cx="120" cy="88" r="3.2"/>
+    <circle cx="90" cy="117" r="3.2"/><circle cx="127" cy="123" r="3.2"/>
+    <circle cx="64" cy="145" r="3.2"/><circle cx="58" cy="169" r="3.2"/>
+    <circle cx="93" cy="174" r="3.2"/><circle cx="129" cy="145" r="3.2"/>
+    <circle cx="122" cy="172" r="3.2"/><circle cx="156" cy="173" r="3.2"/>
+  </g>
+</svg>
