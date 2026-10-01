@@ -1,5 +1,15 @@
 # Project Handoff
 
+## Session close — 2026-10-01 — Rollo map: measuring end points via dotted leader lines (PZ-14) (Claude Code)
+
+**Task/status:** Done, not committed. The 1:125 measurement on Rollo's map was unclear about where to stop. After trying and reverting "pin each icon on its dot", the user chose **dotted leader lines**: every story icon stays put and gets a grey dotted line (`#59635D`, the town dots' outline colour) from its nearest inked edge to its town dot. The treaty scroll moved below Saint-Clair-sur-Epte so its line shows; the longship's line goes to Battle. Then the six word-lock icons got lines too, each to a real town added in the **same grid square** as the icon (so `PZ-15` square counts are unchanged): cow→Manchester, hen→Eindhoven, fight→Troyes, forest→Saumur, inn→Vichy, people→Montauban (`icon_towns`, admitted by projected position because Eindhoven lies east of the nominal 4°E frame; `fixed_labels` puts Manchester's label beside its dot). 20 non-stop towns were removed from the sheet (`omit_towns`), and 24 remain. Word-lock icons (`PZ-15`: fight H6, folk F11, hen I3, inn H9 carry code 1486) must keep their grid squares; they were never moved.
+
+**Files changed:** `NorseBackpack/TravelMap/build_trail_maps_pdf.py` (`omit_towns` + skip; `icon_towns`; `fixed_labels`; scroll box; `ROLLO_LEADER_TOWN`, `LEADER_INK`, `draw_leader`, leaders on the word-lock icons). `NorseBackpack/Norse_Brainstorm.html` (`PZ-14` decision + history; `PZ-15` towns note; `PR-11` Rollo vignettes card note). Rebuilt `Props/_Renders/Trail_Map_2_Rollo_Print.png`, plus `Web/pdf/Trail_Map_2_Rollo_Print.pdf` and `_ANSWER.pdf`. Mock-ups (gap and leader variants, three line colours) stay in the session scratchpad only.
+
+**Checks:** Rendered and viewed Normandy, England and Châlus at 4x: every leader runs dot to icon, all 30 labels placed, none dropped; each new town dot checked to lie in its icon's square. The page over http://localhost:8734 renders `PZ-14` with no console errors. Châlus to Saint-Clair dot to dot is unchanged: 235.6 pt = 83.1 mm = about 10.39 m at 1:125. That's calculated, not measured on paper, and about 1 mm from the 10/11 rounding boundary.
+
+**Next action:** print `Trail_Map_2_Rollo_Print.pdf` at 100% and measure Châlus to Saint-Clair with the 1:125 edge of the ruler, then set the precision rule and the code in `PZ-14`.
+
 ## Session close — 2026-09-29 — HD MEAD rebus review and layout fixes (Claude Code)
 
 **Task/status:** Done, not committed. Reviewed Codex's new HD rebus (dotted sugar spoon + yeast + fizzing flask), then made the fixes the user approved: spoon handle shortened to about half (icon now centred on its x), packet label lettered "Yeast" in NothingYouCouldDo 6.3 pt instead of Helvetica "YEAST", plus signs 9 → 14 pt, icons spaced evenly (12 pt margins, equal gaps) and lowered 3 pt to sit centred in the box. The ImageGen prompt that was only in a JS comment is now visible in the `PZ-20` (MEAD) entry's risk text; the comment is removed.

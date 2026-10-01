@@ -150,6 +150,25 @@ TRAILS = {
                      ("Portsmouth", 50.80, -1.09), ("Salisbury", 51.07, -1.79),
                      ("Oxford", 51.75, -1.26), ("Chichester", 50.84, -0.78),
                      ("Lewes", 50.87, 0.01), ("Exeter", 50.72, -3.53)],
+        # Added 1 Oct 2026 so each word-lock icon (PZ-15) has a town dot for its leader line.
+        # Each is the largest town near its icon that lies in the SAME grid square, with its dot
+        # clear of the drawing: counting squares from the town instead of the icon must give the
+        # same answer. APPROX coordinates, general knowledge. Kept apart from extra_towns because
+        # Eindhoven lies east of the frame's nominal 4E yet prints inside it (conic projection),
+        # so these are admitted by projected position, not by the raw lon/lat box.
+        icon_towns=[("Manchester", 53.48, -2.24), ("Eindhoven", 51.44, 5.47),
+                    ("Troyes", 48.30, 4.07), ("Saumur", 47.26, -0.08),
+                    ("Vichy", 46.13, 3.43), ("Montauban", 44.02, 1.35)],
+        # Label spots fixed by hand, (dx, dy) from the dot to the label's baseline start.
+        # Manchester's dot sits inside the cow's reserved square, so every candidate the
+        # labeller tries is blocked by the box, although the drawing is 5 pt lower.
+        fixed_labels={"Manchester": (4.4, -2.8)},
+        # Removed 1 Oct 2026 (user's call, PZ-14): none is a route stop or used by any puzzle,
+        # and six of them only ever printed as nameless dots.
+        omit_towns=["Caen", "Falaise", "Chichester", "Château Gaillard", "Dives estuary",
+                    "Le Havre", "Lewes", "Pevensey", "Salisbury", "Southampton",
+                    "Coutances", "Évreux", "Hastings", "Amiens", "Calais", "Chartres",
+                    "Alençon", "Avranches", "Limoges", "Dover"],
     ),
     "aud": dict(
         n=3, title="THE ISLAND SETTLEMENT", sub="Aud the Deep-Minded", band="#6D528B",
@@ -231,13 +250,71 @@ LEIF_ART = (
 # Rescaled 20 Sept 2026, twice (see LEIF_ART above) -- same exact transform.
 ROLLO_ART = (
     ("Rollo_Crossbow_Bolt_v1.png", (371.48, 198.98, 37.13, 37.13), 0.62),  # Chalus
-    ("Rollo_Treaty_Scroll_v1.png", (370.49, 458.92, 37.13, 37.13), 0.62),  # Saint-Clair-sur-Epte
+    ("Rollo_Treaty_Scroll_v1.png", (384.70, 436.50, 37.13, 37.13), 0.62),  # Saint-Clair-sur-Epte
     ("Rollo_Ducal_Coronet_v1.png", (391.03, 499.00, 37.13, 37.13), 0.62),  # Rouen
     ("Rollo_Needle_Thread_v1.png", (259.09, 446.22, 37.13, 37.13), 0.62),  # Bayeux
     ("Rollo_Crown_v1.png", (281.57, 611.37, 37.13, 37.13), 0.62),          # Winchester
     ("Rollo_Longship_v1.png", (304.04, 545.90, 37.13, 37.13), 0.62),       # Battle / Hastings
     ("Rollo_Boar_v1.png", (323.59, 508.76, 37.13, 37.13), 0.62),           # Roumare forest
 )
+# The scroll moved down 1 Oct 2026 (from 370.49, 458.92) so its leader line below has some length.
+
+# Dotted leader lines from each story icon to its town's dot (PZ-14, decided 1 Oct 2026). They make
+# the town dot the one clear end point for measuring, without moving the icons: their positions
+# feed nothing, but moving them was judged too risky. The line runs from just off the dot to just
+# off the nearest inked pixel, in a colour of its own so it does not read as part of the drawing.
+# Battle's dot takes the longship now that Hastings is no longer on the sheet.
+ROLLO_LEADER_TOWN = {
+    "Rollo_Crossbow_Bolt_v1.png": "Châlus",
+    "Rollo_Treaty_Scroll_v1.png": "Saint-Clair-sur-Epte",
+    "Rollo_Ducal_Coronet_v1.png": "Rouen",
+    "Rollo_Needle_Thread_v1.png": "Bayeux",
+    "Rollo_Crown_v1.png": "Winchester",
+    "Rollo_Longship_v1.png": "Battle",
+    "Rollo_Boar_v1.png": "Roumare forest",
+    "Rollo_Cow_v1.png": "Manchester",                 # word-lock icons, PZ-15
+    "Rollo_Hen_v1.png": "Eindhoven",
+    "Rollo_Combat_v1.png": "Troyes",
+    "Rollo_Forest_v1.png": "Saumur",
+    "Rollo_Inn_v1.png": "Vichy",
+    "Rollo_Folk_v1.png": "Montauban",
+}
+LEADER_INK = HexColor("#59635D")      # the town dots' own outline colour
+
+
+def draw_leader(c, lab, path, box, dot):
+    """Dotted line from a town dot to the nearest inked pixel of a vignette drawn in box."""
+    from PIL import Image
+    alpha = Image.open(path).getchannel("A")
+    iw, ih = alpha.size
+    x, y, w, h = box
+    k = min(w / iw, h / ih)
+    x0, y0 = x + (w - iw * k) / 2, y + (h - ih * k) / 2
+    step = 4
+    small = alpha.resize((iw // step, ih // step))
+    sw = small.size[0]
+    best = None
+    for i, v in enumerate(small.tobytes()):
+        if v > 40:
+            px, py = x0 + (i % sw) * step * k, y0 + (ih - (i // sw) * step) * k
+            d = math.hypot(px - dot[0], py - dot[1])
+            if best is None or d < best[0]:
+                best = (d, px, py)
+    d, qx, qy = best
+    ux, uy = (qx - dot[0]) / d, (qy - dot[1]) / d
+    ax, ay = dot[0] + ux * 3.0, dot[1] + uy * 3.0
+    bx, by = qx - ux * 1.2, qy - uy * 1.2
+    c.saveState()
+    c.setStrokeColor(LEADER_INK)
+    c.setLineWidth(0.8)
+    c.setLineCap(1)
+    c.setDash([0.01, 1.8])
+    c.line(ax, ay, bx, by)
+    c.restoreState()
+    n = max(1, int(math.hypot(bx - ax, by - ay) / 3))
+    for i in range(n + 1):
+        t = i / n
+        lab.reserve_centred(ax + (bx - ax) * t, ay + (by - ay) * t, 1.6, 1.6, pad=0.4)
 
 # Word-lock puzzle vignettes (PZ-15, concept stage): six icons, each somewhere inside its named
 # grid cell -- unlike ROLLO_ART above, these ARE the puzzle's answer squares, not scenery placed
@@ -606,9 +683,15 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
     for s_ in stops:                      # stops first, so they can never be crowded out
         towns[s_["name"].split(" · ")[0]] = (s_["lat"], s_["lng"])
     for name, lat, lng in corpus + cfg["extra_towns"]:
+        if name in cfg.get("omit_towns", ()):
+            continue
         if lo0 <= lng <= lo1 and la0 <= lat <= la1:
             dlat, dlon = plot_nudge(name)
             towns.setdefault(name, (lat + dlat, lng + dlon))
+    for name, lat, lng in cfg.get("icon_towns", ()):
+        px, py = pt(lng, lat)
+        assert MX0 <= px <= MX1 and MY0 <= py <= MY1, "%s: icon town %s is off the map" % (key, name)
+        towns.setdefault(name, (lat, lng))
 
     digit = next((d["digit"] for d in plan.get("digitOrder", []) if d["trip"] == key), "?")
     out = OUT_DIR / ("Trail_Map_%d_%s_%s.pdf"
@@ -703,10 +786,14 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
             draw_vignette(c, SOURCE_ART_DIR / filename, box, alpha)
             x, y, w, h = box
             lab.reserve(x, y, x + w, y + h)
+            lat, lon = towns[ROLLO_LEADER_TOWN[filename]]
+            draw_leader(c, lab, SOURCE_ART_DIR / filename, box, pt(lon, lat))
         for filename, box, alpha in ROLLO_WORDLOCK_ART:
             draw_vignette(c, SOURCE_ART_DIR / filename, box, alpha)
             x, y, w, h = box
             lab.reserve(x, y, x + w, y + h)
+            lat, lon = towns[ROLLO_LEADER_TOWN[filename]]
+            draw_leader(c, lab, SOURCE_ART_DIR / filename, box, pt(lon, lat))
     elif key == "harald":
         for col_idx, row, group, position, rune_letter in HARALD_RUNES_REAL:
             x, y = cell_center(col_idx, row)
@@ -775,7 +862,14 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
         c.setLineWidth(0.6)
         c.circle(x, y, 1.7, stroke=1, fill=1)
         lab.reserve_centred(x, y, 5, 5, pad=0.5)
-        spot = lab.place(name, x, y, "Plex", 6.6)
+        if name in cfg.get("fixed_labels", {}):
+            dx, dy = cfg["fixed_labels"][name]
+            spot = (x + dx, y + dy)
+            lab.reserve(spot[0] - 1.4, spot[1] - 1.4,
+                        spot[0] + pdfmetrics.stringWidth(name, "Plex", 6.6) + 1.4,
+                        spot[1] + 6.6 * 0.86 + 1.4)
+        else:
+            spot = lab.place(name, x, y, "Plex", 6.6)
         if spot:
             c.setFillColor(INK_SOFT)
             c.setFont("Plex", 6.6)
