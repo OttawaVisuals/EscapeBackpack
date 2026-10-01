@@ -2,7 +2,7 @@
 
 ## Session close — 2026-10-01 — Leif digital: real-scale growing table, prop tools, magnifier, lamp removed (Claude Code)
 
-**Task/status:** Done, committed and pushed (design repo; site repo build script). Not yet published: the live game at escapepack.ca/play/norse/leif/ is still the 29 Sept version until `node tools/build_leif.cjs` is run in escapepack-site and pushed. Earlier the same day, the site got a `/play/norse` → `/play/norse/leif/` redirect (site commit `fe581a6`, live), because without a page there Cloudflare served the homepage with broken CSS.
+**Task/status:** Done and published. Design repo `958c2d4`; site repo `9fb2b7d` (build script) and `0e6a91c` (repackaged game, live at https://escapepack.ca/play/norse/leif/). The package now ships WebP postcards; the 10 unused PNG postcards (about 14 MB) were removed from the site. Verified live: `/play/norse` redirects to the game, the table starts at 22 in and reaches 37 in after all three locks, all 11 props' images load, no console errors; the test save was cleared. Earlier the same day, the site got a `/play/norse` → `/play/norse/leif/` redirect (site commit `fe581a6`, live), because without a page there Cloudflare served the homepage with broken CSS.
 
 **What changed (all user requests):**
 - Real scale: every prop is defined in inches (88 units/in). Before, the trail map was drawn at about 64% of the postcards' scale and the Rouen ticket was stretched.
@@ -20,7 +20,7 @@
 
 **Checks:** 15/15 Node tests pass. Over http://localhost:8734 with pointer events or real clicks: all three locks, table growth 22 → 22 → 29 → 37 and Tidy back to 29; hover bar Rotate, Flip, Zoom, Move and Esc; close-up bar; snap (L2 dropped 18 units above and 7 right of L3 landed flush and aligned; with Alt it stayed put); no console errors. Composing the two web images edge to edge reads 1 5 7 6, faintly. Not checked: lining the cards up by hand under the magnifier in the browser (the in-app pane often stopped drawing), phones/touch, and real full screen in a normal browser.
 
-**Next action:** User plays lock 2 locally and confirms 1576 reads under the magnifier; then repackage and publish to the website.
+**Next action:** User plays lock 2 on the live site and confirms 1576 reads under the magnifier after snapping the cards together.
 
 ## Session close — 2026-10-01 — Rollo map: measuring end points via dotted leader lines (PZ-14) (Claude Code)
 
