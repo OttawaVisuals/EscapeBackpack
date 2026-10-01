@@ -969,26 +969,9 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
         c.drawCentredString(0, 0, "A N S W E R   K E Y")
         c.restoreState()
 
-    # scale bar, rounded to something legible at this frame's width
-    mid = (la0 + la1) / 2
-    x0, _ = to_map(cfg["lon0"], mid)
-    x1, _ = to_map(cfg["lon0"] + 1.0, mid)
-    km_per_deg = abs(x1 - x0) / 1000.0
-    span_km = (lo1 - lo0) * km_per_deg
-    nice = min([1, 2, 5, 10, 20, 50, 100, 200, 500, 1000],
-               key=lambda v: abs(v - span_km / 4))
-    length = (nice / km_per_deg) * abs(x1 - x0) * scale
-    bx, by = NEAT[2] - 20 - length, NEAT[1] + 30
-    seg = length / 4
-    c.setStrokeColor(INK)
-    c.setLineWidth(0.8)
-    for i in range(4):
-        c.setFillColor(INK if i % 2 == 0 else WHITE)
-        c.rect(bx + i * seg, by, seg, 3.2, stroke=1, fill=1)
-    c.setFillColor(INK_SOFT)
-    c.setFont("Plex", 6.2)
-    c.drawString(bx, by - 8.5, "0")
-    c.drawRightString(bx + length, by - 8.5, "%d km" % nice)
+    # No km scale bar on any sheet (removed 1 Oct 2026, PZ-14). Rollo's is measured with the
+    # architect's ruler at 1:125, where a second, different scale invites the wrong reading, and
+    # the other three dropped theirs too so the four sheets match.
 
     # compass
     x, y, r = NEAT[2] - 46, MY0 + 42, 17
@@ -1026,8 +1009,8 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
     missing = [s["name"].split(" · ")[0] for s in stops
                if s["name"].split(" · ")[0] not in towns]
     print("%-6s -> %s%s" % (key, out.name, ("  [digit %s]" % digit) if answer else ""))
-    print("        frame lon %.2f..%.2f lat %.2f..%.2f | %d labels | scale bar %d km"
-          % (lo0, lo1, la0, la1, len(towns), nice))
+    print("        frame lon %.2f..%.2f lat %.2f..%.2f | %d labels"
+          % (lo0, lo1, la0, la1, len(towns)))
     if lab.skipped:
         print("        labels dropped for collision: %s" % ", ".join(lab.skipped))
     # A stop can also go unfindable by losing its label to a collision rather than by being absent

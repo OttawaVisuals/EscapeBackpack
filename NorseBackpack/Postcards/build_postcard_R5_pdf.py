@@ -95,7 +95,9 @@ def draw_back_card(c, x=0, y=0):
     # tab export, with option B chosen in chat for the measuring line; 9.5 pt / 9 pt (was 7.7 / 7.4).
     paragraphs = [
         "Today I visited Battle, the village where the Battle of Hastings happened. It’s so cool to be able to see it in person, especially after seeing it on the tapestry! But it doesn't really measure up to what the tapestry depicts.",
-        "I hope you're enjoying my drawings! Good thing I packed my old ruler: they only make sense at the right scale.",
+        # 1 Oct 2026 (PZ-14): "they" became "my maps", so the hint points at the map, where dotted
+        # leader lines run from each drawing to its town dot, rather than at the drawings.
+        "I hope you're enjoying my drawings! Good thing I packed my old ruler: my maps only make sense at the right scale.",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 9.5, 10.6
