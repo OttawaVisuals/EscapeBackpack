@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>Full table layout · Norse digital</title>
+<style>
+:root{--ink:#263e3b;--muted:#65786d;--paper:#f9f6ec;--felt:#b9c4b4;--surround:#83927f;--brass:#b28b50;--warn:#9c4334}
+*{box-sizing:border-box}
+body{margin:0;background:#eee9dd;color:var(--ink);font:14px/1.5 system-ui,sans-serif}
+header{background:#203e3c;color:#f4edd9;padding:14px 24px;display:flex;gap:24px;align-items:baseline;flex-wrap:wrap;border-bottom:3px solid var(--brass)}
+header h1{margin:0;font:500 20px Georgia,serif;letter-spacing:1px}
+header p{margin:0;font-size:12px;opacity:.8}
+.bar{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:10px 24px;font-size:12px;color:var(--muted)}
+.bar label{display:flex;gap:6px;align-items:center;cursor:pointer}
+#check{font-weight:600}
+#check.bad{color:var(--warn)}
+.stage{padding:0 16px 16px}
+.surround{background:var(--surround);border-radius:8px;padding:12px}
+#table{position:relative;transform-origin:0 0;border-radius:14px;box-shadow:0 4px 18px #1b302840,inset 0 0 0 3px #a2b0a0;background:var(--felt);background-image:radial-gradient(ellipse at 35% 40%,#d4d8c880,transparent 70%),repeating-linear-gradient(30deg,#60766809 0px,#60766809 1px,transparent 1px,transparent 4px)}
+.prop{position:absolute;box-shadow:2px 8px 20px #1b30283d;background:#fffdf5}
+.prop img,.prop svg{display:block;width:100%;height:100%}
+.prop.coin,.prop.round{border-radius:50%;overflow:hidden;background:#d8c9a3}
+.prop.est{background:#e9e4d4;border:6px dashed #8a7a5a;box-shadow:none;display:flex;align-items:center;justify-content:center;text-align:center;color:#5b4c33;font:600 40px/1.15 system-ui;padding:10px}
+.tag{position:absolute;left:0;top:100%;margin-top:6px;font:600 30px/1.1 system-ui;color:#1f3a34;white-space:nowrap;background:#fffbefd9;padding:2px 8px;border-radius:4px}
+body.nolabels .tag{display:none}
+.zone{position:absolute;border:4px dashed #47645455;border-radius:10px;pointer-events:none}
+.zone span{position:absolute;left:12px;top:-52px;font:600 34px system-ui;letter-spacing:4px;color:#47645499;text-transform:uppercase}
+body.nozones .zone{display:none}
+table.list{border-collapse:collapse;margin:16px 24px 32px;font-size:12px;max-width:900px}
+.list th,.list td{text-align:left;padding:4px 12px 4px 0;border-bottom:1px solid #d6d6c8}
+.list .est-row td:last-child{color:var(--warn)}
+</style>
+</head>
+<body>
+<header><h1>Full table · the whole game at real scale</h1><p>52 × 28 in table · positions from table-layout.js, the same file the game uses · design preview, not a player page</p></header>
+<div class="bar"><span id="count"></span><span id="check"></span><label><input type="checkbox" id="labels" checked> Labels</label><label><input type="checkbox" id="zones" checked> Zones</label><span>Hover any prop for its size. Dashed outlines are 3D-printed props at estimated sizes.</span></div>
+<div class="stage"><div class="surround"><div id="size"><div id="table"></div></div></div></div>
+<table class="list" id="list"><thead><tr><th>Prop</th><th>Kind</th><th>Size (in)</th><th>Source</th></tr></thead><tbody></tbody></table>
+<script src="table-layout.js"></script>
+<script>
+'use strict';
+const L = TableLayout, PPI = L.PPI, TABLE = L.table, P = L.props;
+const R = '../Props/_Renders/';
+const card = slug => `../Web/Postcards/Postcard_${slug}_Front.webp`;
+const props = [];
+const add = (name, kind, pos, opts = {}) => props.push({ name, kind, ...pos, ...opts });
+
+// Maps: the top row. The game fills these slots in arrival order.
+[['Leif’s sea chart', 'Trail_Map_1_Leif_Print'], ['Rollo’s trail map', 'Trail_Map_2_Rollo_Print'], ['Aud’s trail map', 'Trail_Map_3_Aud_Print'], ['Harald’s trail map', 'Trail_Map_4_Harald_Front']]
+  .forEach(([name, file], i) => add(name, 'Map', L.mapSlot(i + 1), { src: R + file + '.png' }));
+
+// Postcards: the 7-wide grid below the maps, also filled in arrival order in the game.
+['L1_LAnse', 'L2_Battle_Harbour', 'L3_Baffin_Island', 'LD_Brattahlid',
+ 'R1_Chalus', 'R2_Rouen', 'R3_Bayeux', 'R4_Winchester', 'R5_Battle', 'R6_Roumare_Forest', 'RD_Walcheren',
+ 'A1_Dogurdarnes', 'A2_Hvammur', 'A3_Esjuberg', 'AD_Bjarnarhofn',
+ 'H1_Oslo', 'H2_Staraya_Ladoga', 'H3_Kyiv', 'H4_Hedeby', 'H5_Sicily', 'H6_Patara', 'HD_Constantinople']
+  .forEach((slug, n) => add(slug.replace('_', ' · ').replace(/_/g, ' '), 'Postcard', L.cardSlot(n + 1), { src: card(slug) }));
+
+add('Journal · family iconography page', 'Journal page (A5)', P.journalIconography, { src: R + 'Journal_Family_Iconography_Page.png' });
+add('Journal · highlights page', 'Journal page (A5)', P.journalHighlights, { est: 'no render yet' });
+[1, 2, 3].forEach(i => add(`Transition ticket ${i}`, 'Ticket', P['transition' + i], { src: `${R}Transition_Tickets_Ticket${i}.png` }));
+add('Hnefatafl board setup insert', 'Card', P.boardInsert, { src: R + 'Hnefatafl_Board_Setup_Insert_Insert.png' });
+add('Hnefatafl board (3D print)', '3D print', P.board, { est: 'size estimated' });
+add('Raven’s flights card', 'Card', P.ravenFlights, { src: '../Props/RavenFlights/Raven_Flights_Card_preview.png' });
+add('Aud’s ticket', 'Ticket', P.audTicket, { src: R + 'Aud_Ticket_Front.png' });
+add('Brattahlíð museum ticket', 'Ticket', P.museumTicket, { src: R + 'Museum_Ticket_Front.png' });
+add('Rouen museum ticket', 'Ticket', P.rouenTicket, { src: '../Props/RouenTicket/Rouen_Ticket_Front_300dpi.png' });
+add('Hnefatafl ticket', 'Ticket', P.hnefataflTicket, { src: R + 'Hnefatafl_Ticket_Front.png' });
+add('Luggage tag · Vinland', 'Luggage tag', P.tagA, { crop: [460, 260, 610, 356] });
+add('Luggage tag · Rouen', 'Luggage tag', P.tagB, { crop: [460, 735, 610, 356] });
+add('SOLE tally (3D print)', '3D print', P.tally, { est: 'size estimated' });
+add('Aud’s comb (3D print)', '3D print', P.comb, { est: 'size estimated' });
+add('Medallion (3D print)', '3D print', P.medallion, { est: '50 mm', round: true });
+['01_dirham_common', '02_dirham_rare', '03_denier_common', '04_denier_rare', '05_hedeby_ship', '06_york_cross', '07_raven']
+  .forEach((file, i) => add(`Coin · ${file.slice(3).replace(/_/g, ' ')}`, 'Coin (3D print, 28 mm)', P['coin' + (i + 1)], { src: `../Props/Coins/${file}.png`, coin: true }));
+
+const zones = [['Maps', 0.25, 0.25, 35.6, 11.5], ['Postcards and small props', 0.25, 11.75, 38, 15.9], ['Other props', 38.55, 0.25, 13.25, 27.5]];
+
+const table = document.getElementById('table'), u = v => v * PPI + 'px';
+table.style.width = u(TABLE.w); table.style.height = u(TABLE.h);
+for (const [name, x, y, w, h] of zones) {
+  const z = document.createElement('div'); z.className = 'zone'; Object.assign(z.style, { left: u(x), top: u(y), width: u(w), height: u(h) });
+  const s = document.createElement('span'); s.textContent = name; z.append(s); table.append(z);
+}
+for (const p of props) {
+  const el = document.createElement('div');
+  el.className = 'prop' + (p.coin ? ' coin' : '') + (p.round ? ' round' : '') + (p.est ? ' est' : '');
+  Object.assign(el.style, { left: u(p.x), top: u(p.y), width: u(p.w), height: u(p.h) });
+  el.title = `${p.name} · ${p.w} × ${p.h} in`;
+  if (p.crop) {
+    el.innerHTML = `<svg viewBox="${p.crop.join(' ')}"><image href="${R}Luggage_Tag_Inserts_Sheet.png" width="1530" height="1980"/></svg>`;
+  } else if (p.src) {
+    const img = new Image(); img.src = p.src; img.alt = p.name; el.append(img);
+  } else el.textContent = p.name.replace(/ \(3D print\)/, '');
+  const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = p.name; el.append(tag);
+  table.append(el);
+}
+
+// Checks: nothing overlaps, nothing leaves the table.
+const problems = [];
+for (const p of props) if (p.x < 0 || p.y < 0 || p.x + p.w > TABLE.w || p.y + p.h > TABLE.h) problems.push(`${p.name} leaves the table`);
+for (let i = 0; i < props.length; i++) for (let j = i + 1; j < props.length; j++) {
+  const a = props[i], b = props[j];
+  if (a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h) problems.push(`${a.name} overlaps ${b.name}`);
+}
+const counts = props.reduce((c, p) => (c[p.kind] = (c[p.kind] || 0) + 1, c), {});
+document.getElementById('count').textContent = `${props.length} props: ${counts.Postcard} postcards, ${counts.Map} maps, ${props.length - counts.Postcard - counts.Map} others`;
+const check = document.getElementById('check');
+check.textContent = problems.length ? `⚠ ${problems.join('; ')}` : '✓ No overlaps, everything on the table';
+check.className = problems.length ? 'bad' : '';
+
+const body = document.querySelector('#list tbody');
+for (const p of props) {
+  const tr = document.createElement('tr'); if (p.est) tr.className = 'est-row';
+  tr.innerHTML = `<td></td><td></td><td>${p.w} × ${p.h}</td><td>${p.est || 'printed artwork'}</td>`;
+  tr.children[0].textContent = p.name; tr.children[1].textContent = p.kind; body.append(tr);
+}
+
+function fit() {
+  const avail = document.querySelector('.surround').clientWidth - 24, s = avail / (TABLE.w * PPI);
+  table.style.transform = `scale(${s})`;
+  document.getElementById('size').style.height = TABLE.h * PPI * s + 'px';
+}
+new ResizeObserver(fit).observe(document.querySelector('.surround')); fit();
+document.getElementById('labels').onchange = e => document.body.classList.toggle('nolabels', !e.target.checked);
+document.getElementById('zones').onchange = e => document.body.classList.toggle('nozones', !e.target.checked);
+</script>
+</body></html>

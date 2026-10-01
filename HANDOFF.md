@@ -1,5 +1,27 @@
 # Project Handoff
 
+## Session close — 2026-10-01 — Leif digital: real-scale growing table, prop tools, magnifier, lamp removed (Claude Code)
+
+**Task/status:** Done, committed and pushed (design repo; site repo build script). Not yet published: the live game at escapepack.ca/play/norse/leif/ is still the 29 Sept version until `node tools/build_leif.cjs` is run in escapepack-site and pushed. Earlier the same day, the site got a `/play/norse` → `/play/norse/leif/` redirect (site commit `fe581a6`, live), because without a page there Cloudflare served the homepage with broken CSS.
+
+**What changed (all user requests):**
+- Real scale: every prop is defined in inches (88 units/in). Before, the trail map was drawn at about 64% of the postcards' scale and the Rouen ticket was stretched.
+- Growing table: play starts on 22 × 11.85 in and grows through 29, 37, 44 and 52 in wide (same shape). New props go in the first free spot from the top left (0.4 in edge, 0.5 in gaps); if none is free the table grows a size, with an animated zoom-out. It never shrinks in play, and props already placed stay put. Tidy table packs everything face up on the smallest table that holds it. Old saves open on a table big enough for their pieces. Leif's leg: 22 → 22 → 29 → 37 in. Placement only follows arrival order, so it reveals nothing about the final riddle.
+- Whole-game plan: `Digital/table-layout.js` holds the table sizes and a full 52 × 28 in layout of all 50 props (22 postcards, 4 maps, 24 others; 3D prints at estimated sizes). `Digital/Table_Full_Layout.html` previews it (design page, not packaged). The tests check it fits with no overlaps.
+- The whole table always fits its area; zoom menus replaced by a magnifier (button, M key, or Zoom in the close-up): a round lens following the pointer, scroll for 1.5–10×.
+- Prop tools: hovering a prop shows a bar with Zoom, Rotate, Flip (greyed out for one-sided props) and Move (drag it, or click then click where it goes; Esc puts it back). Tap shows it on touch. With a bar open, another prop takes it only after the pointer rests 0.4 s on it, so crossing an overlapping card does not steal it. The toolbar keeps only Put away.
+- Close-up: no header; the same bar floats on top with Close. It shows the prop as it lies on the table, and Rotate/Flip there change the table too. Move closes it and carries the prop under the pointer.
+- Selection shows in the toolbar name and shelf chip, not as an orange frame; a dragged prop lifts; resting shadows are tight so they barely darken a neighbour's edge.
+- Edge snap: while dragging or carrying, edges within 12 screen px pull flush (also out of a slight overlap) and the sides line up; Alt places freely; keyboard nudges never snap.
+- Lamp removed ("Hold to light", its dialog, saved state and styles). Lock 2 (1576) is solved on the table: rotate Battle Harbour twice and join its top edge to Baffin Island's. Hints 2 and 3 and the intro were reworded. The L2/L3 card text is about joining skies, not light.
+- Layout fills the window height, with a Full screen button (falls back to a page-filling layout where the browser refuses).
+
+**Files changed:** `NorseBackpack/Digital/Leif.html`, `leif.css`, `leif.js`, `leif-data.js`, `leif.test.cjs`; new `table-layout.js` and `Table_Full_Layout.html`. Site repo: `tools/build_leif.cjs` now also copies `table-layout.js`.
+
+**Checks:** 15/15 Node tests pass. Over http://localhost:8734 with pointer events or real clicks: all three locks, table growth 22 → 22 → 29 → 37 and Tidy back to 29; hover bar Rotate, Flip, Zoom, Move and Esc; close-up bar; snap (L2 dropped 18 units above and 7 right of L3 landed flush and aligned; with Alt it stayed put); no console errors. Composing the two web images edge to edge reads 1 5 7 6, faintly. Not checked: lining the cards up by hand under the magnifier in the browser (the in-app pane often stopped drawing), phones/touch, and real full screen in a normal browser.
+
+**Next action:** User plays lock 2 locally and confirms 1576 reads under the magnifier; then repackage and publish to the website.
+
 ## Session close — 2026-10-01 — Rollo map: measuring end points via dotted leader lines (PZ-14) (Claude Code)
 
 **Task/status:** Main work committed and pushed as `6420cae`. The 1:125 measurement on Rollo's map was unclear about where to stop. After trying and reverting "pin each icon on its dot", the user chose **dotted leader lines**: every story icon stays put and gets a grey dotted line (`#59635D`, the town dots' outline colour) from its nearest inked edge to its town dot. The treaty scroll moved below Saint-Clair-sur-Epte so its line shows; the longship's line goes to Battle. Then the six word-lock icons got lines too, each to a real town added in the **same grid square** as the icon (so `PZ-15` square counts are unchanged): cow→Manchester, hen→Eindhoven, fight→Troyes, forest→Saumur, inn→Vichy, people→Montauban (`icon_towns`, admitted by projected position because Eindhoven lies east of the nominal 4°E frame; `fixed_labels` puts Manchester's label beside its dot). 20 non-stop towns were removed from the sheet (`omit_towns`), and 24 remain. Word-lock icons (`PZ-15`: fight H6, folk F11, hen I3, inn H9 carry code 1486) must keep their grid squares; they were never moved.
