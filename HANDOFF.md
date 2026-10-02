@@ -85,6 +85,8 @@
 
 **Follow-up, same session (committed and pushed separately):** R5's measuring line reworded (option B): "…Good thing I packed my old ruler: **my maps** only make sense at the right scale." ("they" pointed at the drawings). The km scale bar was removed from **all four maps** (user's call, for consistency; on Rollo's it competed with the 1:125 ruler). All four maps were rebuilt; diffing the old and new renders shows only the scale-bar corner changed on Leif, Aud and Harald. Aud's Krosshólaborg label is still dropped, as before. Fixed a stale "on hold" sentence in `PZ-14`. Files: `Postcards/build_postcard_R5_pdf.py`, `TravelMap/build_trail_maps_pdf.py`, `Norse_Brainstorm.html` (`PZ-14` note, Postcard update data, puzzle data), rebuilt R5 web back/PDF, all four maps' web PDFs and renders. R5 back viewed at 300 dpi: text fits. Map footer viewed: bar gone, compass kept. The Leif digital files and the entry above belong to another session and are not part of this work.
 
+**Print files, 2 Oct 2026:** `output/docx/Norse_Trail_Maps_Print.docx` was stale (20 Sept, no script). New `NorseBackpack/TravelMap/build_trail_maps_docx.py` rebuilds it: four Letter pages, each map cropped to its neat line and placed at exact size, margins equal to the PDF border. Exported through Word: 4 pages, and the Rollo frame lands within 1 px (0.2 mm) of the PDF's. `PrintTest_R5_R6.docx` (and the other postcard print files) were rebuilt with `build_print_test_docx.py` for the R5 rewording.
+
 **Next action:** user prints `Trail_Map_2_Rollo_Print.pdf` at 100% and measures Châlus to Saint-Clair with the 1:125 edge of the ruler; then set the precision rule, lock format and code in `PZ-14`.
 
 ## Session close — 2026-09-29 — HD MEAD rebus review and layout fixes (Claude Code)
