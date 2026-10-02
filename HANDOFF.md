@@ -2,7 +2,7 @@
 
 ## Session close — 2026-10-01 — Rollo's leg online: locks 4 and 5 (Claude Code)
 
-**Task/status:** Done locally; not committed or published. The user asked to continue the digital game with Rollo's leg. Decided in chat (recorded as `DG-06`): build locks 4 and 5 now and pause before lock 6, because the `PZ-14` code is still unmeasured; online, the ruler arrives with Bayeux, Winchester and Battle rather than from lock 1. The same game and save continue, so Leif players carry straight on.
+**Task/status:** Done and published. Design repo `8178a7d`; site repo `3560f08`, live at https://escapepack.ca/play/norse/leif/ (homepage card now reads "Play Leif’s and Rollo’s trails online." with a "Play online" link; site README updated). Verified live: all five codes open in order, 02 / ROLLO'S TRAIL, 18 props, no broken images, no console errors; test save cleared. The user asked to continue the digital game with Rollo's leg. Decided in chat (recorded as `DG-06`): build locks 4 and 5 now and pause before lock 6, because the `PZ-14` code is still unmeasured; online, the ruler arrives with Bayeux, Winchester and Battle rather than from lock 1. The same game and save continue, so Leif players carry straight on.
 
 **What was built:**
 - Lock 4, lower left pocket, 1486 (`PZ-15`): releases R1 Châlus, R6 Roumare Forest, RD Walcheren. Lock 5, lower right pocket, 562 (`PZ-19`, three digits): releases R3 Bayeux, R4 Winchester, R5 Battle and the ruler. Four hints each (the fourth is the solution), drafted from the design page; R2's own words (fighting, people, poultry, inn) are named in hint 3 of lock 4.
@@ -14,7 +14,7 @@
 
 **Checks:** 17/17 Node tests (new: Rollo's codes and releases, three-digit 562 rejected before 1486, old back: true saves). Browser over http://localhost:8734: from lock 4, 1486 and then 562 opened; chapter label, three-digit prompt, input clipped to three digits, 18 props with no broken images, ruler Flip cycles faces 1→2→3→1, ruler scale names clear of the ticks under the magnifier; no console errors. Design page shows DG-06/07 with no errors. Not done: playing the Rollo puzzles by hand (reading the ticket and map grid under the magnifier).
 
-**Next action:** User plays locks 4 and 5 locally and says whether the map grid and ticket read well enough on screen; then commit and publish.
+**Next action:** User plays locks 4 and 5 on the live site and says whether the map grid and ticket read well enough on screen.
 
 ## Session close — 2026-10-01 — Leif digital: real-scale growing table, prop tools, magnifier, lamp removed (Claude Code)
 
