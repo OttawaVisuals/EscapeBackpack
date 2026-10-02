@@ -50,3 +50,84 @@ body.moving,body.moving *{cursor:grabbing!important}
 #table{transition:transform .6s ease,width .6s ease,height .6s ease}
 #table-size{transition:width .6s ease,height .6s ease}
 @media(prefers-reduced-motion:reduce){#table,#table-size{transition:none}}
+/* Turn handle for the ruler: a brass knob at its far end. */
+#turn-handle{position:fixed;z-index:24;width:28px;height:28px;margin:-14px 0 0 -14px;padding:0;border-radius:50%;background:#e5c989;border:2px solid #8a6a35;color:#1d332f;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px #10241f55;cursor:grab;touch-action:none}
+#turn-handle:active{cursor:grabbing}
+#turn-handle .icon{margin:0;width:15px;height:15px}
+body.magnifying #turn-handle{opacity:.55}
+/* Treasure tally (PR-24), ported from Prototype_Comb_Tally.html: drawn at 500 x 280 px and scaled to its real 62.5 x 35 mm. */
+.tally{--ring:#ddd0b2;--ring-edge:#8c7a58;--digit:#2b2118;position:absolute;left:0;top:0;width:500px;height:280px;transform-origin:0 0;pointer-events:auto}
+.piece .tally svg{width:100%;height:100%}
+.tally .shadow{position:absolute;left:18px;right:18px;top:30px;bottom:30px;border-radius:22px;box-shadow:0 12px 24px rgba(0,0,0,.45),0 3px 5px rgba(0,0,0,.35)}
+.tally .row{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;perspective:1400px}
+.tally .cap{width:80px;height:222px;border-radius:22px;position:relative;background:linear-gradient(180deg,#b8a684 0%,#e6dbc2 22%,#efe6d2 48%,#d9ccae 72%,#9c8a68 100%);border:1px solid var(--ring-edge)}
+.tally .cap::after{content:"";position:absolute;left:8px;right:8px;top:50%;height:3px;margin-top:-1.5px;background:var(--digit);border-radius:2px;opacity:.85}
+.tally .ring{width:76px;height:224px;position:relative;transform-style:preserve-3d;cursor:ns-resize;touch-action:none}
+.tally .prism{position:absolute;left:0;top:50%;width:76px;height:0;transform-style:preserve-3d}
+.tally .prism.settle{transition:transform .14s ease-out}
+.tally .facet{position:absolute;left:1px;top:-29.7px;width:74px;height:59.4px;backface-visibility:hidden;background:var(--ring);border-top:1px solid var(--ring-edge);border-bottom:1px solid var(--ring-edge)}
+.tally .facet svg{position:absolute;inset:0;width:100%;height:100%;fill:var(--digit)}
+.tally .facet .shade{position:absolute;inset:0;background:#000;transition:opacity .14s}
+.piece[data-id=tally]{box-shadow:none;background:none}
+/* Coins are round; the comb casts a small shadow once it settles on the card. */
+.piece[data-id^=coin]{border-radius:50%;box-shadow:1px 2px 4px #1b302861}
+.piece[data-id=comb]{box-shadow:none}
+.piece[data-id=comb] img{filter:drop-shadow(1px 2px 2px #1b302859)}
+.piece[data-id=comb].seated img{filter:drop-shadow(.5px 1px .6px rgba(0,0,0,.45))}
+#combination.letters{text-transform:uppercase}
+#combination:disabled{opacity:.5}
+/* Hnefatafl board and pieces, drawn in table units (1 in = 88). */
+.tafl{position:absolute;left:0;top:0;transform-origin:0 0;background:#d8c29a;border-radius:10px;box-shadow:inset 0 0 0 3px #a88a5c}
+.tafl-grid{position:absolute;left:0;top:0}
+.tafl-grid rect{fill:#e6d4ae;stroke:#5d4a2e;stroke-width:1.2}
+.tafl-grid rect.special{fill:#d9b98a}
+.tafl-grid .mark{fill:none;stroke:#b35e2a;stroke-width:2}
+.tafl-grid text{font:600 10px system-ui;fill:#5d4a2e;text-anchor:middle}
+.tafl-tray{position:absolute;left:8px;right:8px;top:452px;bottom:8px;border-radius:8px;background:#c4a979;box-shadow:inset 0 2px 6px #5d4a2e66}
+.tafl-piece{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;cursor:grab;touch-action:none;box-shadow:1px 2px 3px #00000059}
+.tafl-piece.dark{background:#28322f;border-radius:5px;border:1.5px solid #10181a}
+.tafl-piece.light{background:#f2ead8;border-radius:5px;border:1.5px solid #5d4a2e}
+.tafl-piece.king{background:#b8642f;border-radius:50%;border:1.5px solid #6e3518;width:28px;height:28px;margin:-14px 0 0 -14px}
+.tafl-piece.lifted{z-index:5;box-shadow:3px 8px 10px #00000066;cursor:grabbing}
+.tafl-clear{position:absolute;right:16px;bottom:14px;font-size:11px;padding:3px 8px}
+.piece[data-id=board]{border-radius:10px}
+/* Progress, grouped by trail (idea from the Hiking playtest). */
+#progress .count{border:0;padding:0 0 6px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#688079;font-weight:700}
+#progress li.leg{display:block;padding:6px 0}
+#progress .leg-head{display:flex;gap:9px;align-items:center}
+#progress .leg-head small{margin-left:auto;font-size:10px;color:#899184;font-weight:400}
+#progress .leg.done{color:#677963}
+#progress .leg.current{color:#314d45;font-weight:700}
+#progress .leg ol{list-style:none;margin:6px 0 2px 28px;padding:0}
+#progress .leg ol li{border:0;padding:2px 0;font-size:11px;font-weight:400;color:#899184}
+#progress .leg ol li.current{color:#314d45;font-weight:700}
+#progress .leg ol li.done{color:#677963}
+.lock-nudge{font-size:13px;color:#314d45;margin:0 0 8px}
+/* Lock-open pop-up and the glow on what arrived. */
+.opened{max-width:480px}
+.opened h2{font-size:26px;margin-bottom:12px}
+.opened p{font-size:14px}
+@keyframes arrived{0%,100%{box-shadow:1px 3px 7px #1b302845}50%{box-shadow:0 0 0 7px #e5c989d0,0 0 30px 10px #e5c98999}}
+.piece.arrived{animation:arrived 1.4s ease-in-out 3}
+@media(prefers-reduced-motion:reduce){.piece.arrived{animation:none;box-shadow:0 0 0 6px #e5c989}}
+/* Prop name at the start of the hover bar. */
+.tools-name{color:#e5c989;font-size:11px;font-weight:600;padding:5px 8px 5px 6px;white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis;align-self:center}
+/* Compare: a second prop beside the close-up. */
+#viewer-scroll.comparing{gap:24px;justify-content:center;align-items:center}
+#viewer-scroll.comparing #viewer-art{margin:0}
+#viewer-side{position:relative;flex:none;margin:0}
+#viewer-side img,#viewer-side svg{width:100%;height:100%;display:block}
+.prop-tools .compare{display:flex;align-items:center;gap:5px;color:#f4edd9;font-size:11px;padding:0 6px 0 9px}
+.prop-tools .compare .icon{margin:0;width:15px;height:15px}
+.prop-tools .compare select{font-size:11px;padding:3px 4px;max-width:150px;background:#2f4f48;color:#f4edd9;border-color:#4b6a62}
+/* Wet-erase marker on the maps. */
+.marked{position:relative;width:100%;height:100%}
+.marked img,.piece .marked img{display:block;width:100%;height:100%}
+.marked svg.marks{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.marks line{stroke:#1d4fa3;stroke-linecap:round;opacity:.85}
+.marks line.drawing{opacity:.6}
+#viewer-scroll.marking #viewer-art{cursor:crosshair}
+.marker-tools{display:flex;gap:2px}
+/* The ending. */
+.liv-note{margin:14px 0;padding:12px 14px;border-left:3px solid #b28b50;background:#f3ecdc;font:italic 15px/1.5 Georgia,serif;color:#314d45}
+.piece[data-id=medallion]{border-radius:50%;box-shadow:1px 3px 6px #1b302866}

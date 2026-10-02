@@ -57,10 +57,9 @@ const add = (name, kind, pos, opts = {}) => props.push({ name, kind, ...pos, ...
   .forEach((slug, n) => add(slug.replace('_', ' · ').replace(/_/g, ' '), 'Postcard', L.cardSlot(n + 1), { src: card(slug) }));
 
 add('Journal · family iconography page', 'Journal page (A5)', P.journalIconography, { src: R + 'Journal_Family_Iconography_Page.png' });
-add('Journal · highlights page', 'Journal page (A5)', P.journalHighlights, { est: 'no render yet' });
 [1, 2, 3].forEach(i => add(`Transition ticket ${i}`, 'Ticket', P['transition' + i], { src: `${R}Transition_Tickets_Ticket${i}.png` }));
 add('Hnefatafl board setup insert', 'Card', P.boardInsert, { src: R + 'Hnefatafl_Board_Setup_Insert_Insert.png' });
-add('Hnefatafl board (3D print)', '3D print', P.board, { est: 'size estimated' });
+add('Hnefatafl board (3D print)', '3D print', P.board, { est: 'board estimated; in the game it has a tray of pieces below' });
 add('Raven’s flights card', 'Card', P.ravenFlights, { src: '../Props/RavenFlights/Raven_Flights_Card_preview.png' });
 add('Aud’s ticket', 'Ticket', P.audTicket, { src: R + 'Aud_Ticket_Front.png' });
 add('Brattahlíð museum ticket', 'Ticket', P.museumTicket, { src: R + 'Museum_Ticket_Front.png' });
@@ -68,12 +67,12 @@ add('Rouen museum ticket', 'Ticket', P.rouenTicket, { src: '../Props/RouenTicket
 add('Hnefatafl ticket', 'Ticket', P.hnefataflTicket, { src: R + 'Hnefatafl_Ticket_Front.png' });
 add('Luggage tag · Vinland', 'Luggage tag', P.tagA, { crop: [460, 260, 610, 356] });
 add('Luggage tag · Rouen', 'Luggage tag', P.tagB, { crop: [460, 735, 610, 356] });
-add('SOLE tally (3D print)', '3D print', P.tally, { est: 'size estimated' });
-add('Aud’s comb (3D print)', '3D print', P.comb, { est: 'size estimated' });
+add('SOLE tally (3D print)', '3D print', P.tally, { est: 'in the game: four turning wheels' });
+add('Aud’s comb (3D print)', 'Comb', P.comb, { src: 'assets/Comb_Front.svg' });
 add('Medallion (3D print)', '3D print', P.medallion, { est: '50 mm', round: true });
 add('Architect’s scale ruler (face 3)', 'Ruler', P.ruler, { src: 'assets/Ruler_Face_3.svg' });
-['01_dirham_common', '02_dirham_rare', '03_denier_common', '04_denier_rare', '05_hedeby_ship', '06_york_cross', '07_raven']
-  .forEach((file, i) => add(`Coin · ${file.slice(3).replace(/_/g, ' ')}`, 'Coin (3D print, 28 mm)', P['coin' + (i + 1)], { src: `../Props/Coins/${file}.png`, coin: true }));
+['01_dirham_common', '01_dirham_common', '01_dirham_common', '01_dirham_common', '02_dirham_rare', '03_denier_common', '03_denier_common', '03_denier_common', '04_denier_rare', '05_hedeby_ship', '06_york_cross', '07_raven']
+  .forEach((file, i) => add(`Coin · ${file.slice(3).replace(/_/g, ' ')}`, 'Coin (3D print, 28 mm)', P['coin' + (i + 1)], { src: `assets/Coin_${file}.svg`, coin: true }));
 
 const zones = [['Maps', 0.25, 0.25, 35.6, 11.5], ['Postcards and small props', 0.25, 11.75, 38, 15.9], ['Other props', 38.55, 0.25, 13.25, 27.5]];
 

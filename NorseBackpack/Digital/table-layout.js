@@ -13,25 +13,24 @@
   const cardSlot = n => ({ w: 5, h: 3.5, x: 0.5 + 5.4 * ((n - 1) % 7), y: 12 + 3.9 * Math.floor((n - 1) / 7) });
   const props = {
     journalIconography: { w: 5.83, h: 8.27, x: 38.8, y: 0.5 },
-    journalHighlights: { w: 5.83, h: 8.27, x: 38.8, y: 9.17 },
     audTicket: { w: 3, h: 4, x: 38.8, y: 17.84 },
     museumTicket: { w: 2, h: 5.5, x: 42.2, y: 17.84 },
     boardInsert: { w: 4.82, h: 6.12, x: 45.03, y: 0.5 },
-    board: { w: 5, h: 5, x: 45.03, y: 7.02, est: true },
-    hnefataflTicket: { w: 2.6, h: 6.6, x: 45.03, y: 12.42 },
-    tagA: { w: 3.54, h: 2.07, x: 48.03, y: 12.42 },
-    tagB: { w: 3.54, h: 2.07, x: 48.03, y: 14.89 },
+    board: { w: 5, h: 6.3, x: 45.03, y: 7.02, est: true },
+    hnefataflTicket: { w: 2.6, h: 6.6, x: 45.03, y: 13.72 },
+    tagA: { w: 3.54, h: 2.07, x: 48.03, y: 13.72 },
+    tagB: { w: 3.54, h: 2.07, x: 48.03, y: 16.19 },
     transition1: { w: 5.4, h: 2.5, x: 5.9, y: 24.2 },
     transition2: { w: 5.4, h: 2.5, x: 11.7, y: 24.2 },
     transition3: { w: 5.4, h: 2.5, x: 17.5, y: 24.2 },
     ravenFlights: { w: 4, h: 3, x: 23.3, y: 24 },
     rouenTicket: { w: 2, h: 3, x: 27.7, y: 24 },
-    tally: { w: 3.5, h: 1.6, x: 30.1, y: 24, est: true },
-    comb: { w: 3.5, h: 1.5, x: 30.1, y: 25.9, est: true },
+    tally: { w: 2.46, h: 1.38, x: 30.1, y: 24 },
+    comb: { w: 2.743, h: 2.611, x: 38.8, y: 25.2 },
     medallion: { w: 1.97, h: 1.97, x: 34, y: 24 },
     ruler: { w: 11.81, h: 0.59, x: 38.8, y: 24.2 }
   };
-  for (let i = 0; i < 7; i++) props['coin' + (i + 1)] = { w: 1.1, h: 1.1, x: 36.1 + 1.3 * (i % 2), y: 0.5 + 1.3 * Math.floor(i / 2) };
+  for (let i = 0; i < 12; i++) props['coin' + (i + 1)] = { w: 1.1, h: 1.1, x: 36.1 + 1.3 * (i % 2), y: 0.5 + 1.3 * Math.floor(i / 2) };
   // Every start position in the whole game: 4 map slots, 22 postcard slots, the named props.
   const all = () => [
     ...[1, 2, 3, 4].map(n => ['map' + n, mapSlot(n)]),
