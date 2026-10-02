@@ -23,6 +23,8 @@
 
 **Status:** committed and published at the user's request (2 Oct 2026), with lock 6 still pending. Design repo `710e408`; site repo `f21533b`, live at https://escapepack.ca/play/norse/leif/. Homepage card now reads "Play all four trails online. One lock is still being built."; site README updated. Verified live: the first five codes open, lock 6 shows the "still being built" note with the box disabled, "5 of 13 locks open", no broken images, no console errors; `?lock=13` is ignored on escapepack.ca (starts at lock 1). Three generated WebPs (ticket light face, medallion faces) were force-added because `.gitignore` ignores WebP under NorseBackpack. Not committed: Codex's root `index.html` change and its `Hiking_Trip/Digital/`.
 
+**Part 5, keepsakes shelf on the left (2 Oct 2026):** the user asked to move "Collected keepsakes" to a left column to free height for the table. The table is wide (up to 52 × 28 in), so a fixed column made it smaller on many screens (1440 × 860: 1082 → 884 px wide). `placeShelf` in `leif.js` now puts the shelf in a 200 px left column only when that gives a bigger table (1536 × 730: +17%; 1920 × 950: +8%) and keeps the bottom row otherwise and at 1000 px wide or less. Committed and published at the user's request: design repo `13c29be`, site repo `7d17318`; verified live.
+
 **Next action:** User measures Châlus to Saint-Clair on a 100% print of Rollo's map and sets lock 6's code; then commit and publish the full game.
 
 ## Session close — 2026-10-01 — Ruler turns to any angle (Claude Code)
