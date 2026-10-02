@@ -87,7 +87,9 @@
 
 **Print files, 2 Oct 2026:** `output/docx/Norse_Trail_Maps_Print.docx` was stale (20 Sept, no script). New `NorseBackpack/TravelMap/build_trail_maps_docx.py` rebuilds it: four Letter pages, each map cropped to its neat line and placed at exact size, margins equal to the PDF border. Exported through Word: 4 pages, and the Rollo frame lands within 1 px (0.2 mm) of the PDF's. `PrintTest_R5_R6.docx` (and the other postcard print files) were rebuilt with `build_print_test_docx.py` for the R5 rewording.
 
-**Next action:** user prints `Trail_Map_2_Rollo_Print.pdf` at 100% and measures Châlus to Saint-Clair with the 1:125 edge of the ruler; then set the precision rule, lock format and code in `PZ-14`.
+**Code, 2 Oct 2026:** the user printed the maps docx at 100% and measured Châlus to Saint-Clair, dot to dot, at 1:125: **10.4 m → code 104**, matching the calculated 10.39 m. Recorded in `PZ-14` (pill now "Built · code 104"), the puzzle summary and the adventure step (`code:'104'`). Risk noted in the page: reading to 0.1 m is 0.8 mm on paper, and the true distance is about 0.3 mm from reading 103.
+
+**Next action:** have a fresh player measure Châlus to Saint-Clair on the printed map, to test whether 104 is read reliably; then choose the 3-digit lock (`ST-01`).
 
 ## Session close — 2026-09-29 — HD MEAD rebus review and layout fixes (Claude Code)
 
