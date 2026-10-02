@@ -123,10 +123,22 @@
   /* The whole table always fits its area; the magnifier does the zooming. */
   function fitTable() {
     const box = $('table-scroll'), pad = 12, T = G.sizes[state.table];
+    placeShelf(box, T, pad);
     $('table').style.width = T.w + 'px'; $('table').style.height = T.h + 'px';
     scale = Math.max(0.05, Math.min((box.clientWidth - pad * 2) / T.w, (box.clientHeight - pad * 2) / T.h));
     $('table').style.transform = `scale(${scale})`; $('table-size').style.width = T.w * scale + 'px'; $('table-size').style.height = T.h * scale + 'px';
     refreshLens(); placeTurnHandle();
+  }
+  /* The shelf of keepsakes sits under the table or in a column on its left, whichever leaves the
+     bigger table (the table is wide, so the column only wins on short windows). */
+  const SHELF_COLUMN = 200; let shelfRow = 110;
+  function placeShelf(box, T, pad) {
+    const body = document.body, left = body.classList.contains('shelf-left');
+    if (innerWidth <= 1000) { body.classList.remove('shelf-left'); return; }
+    if (!left) shelfRow = document.querySelector('.inventory').offsetHeight;
+    const fit = (w, h) => Math.min((w - pad * 2) / T.w, (h - pad * 2) / T.h), w = box.clientWidth, h = box.clientHeight;
+    const other = left ? fit(w + SHELF_COLUMN, h - shelfRow) : fit(w - SHELF_COLUMN, h + shelfRow);
+    if (other > fit(w, h) * 1.03) body.classList.toggle('shelf-left');
   }
   function renderProgress() {
     // Locks grouped by trail: finished and future trails fold to one line; the current one lists its locks.

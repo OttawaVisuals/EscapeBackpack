@@ -131,3 +131,21 @@ body.magnifying #turn-handle{opacity:.55}
 /* The ending. */
 .liv-note{margin:14px 0;padding:12px 14px;border-left:3px solid #b28b50;background:#f3ecdc;font:italic 15px/1.5 Georgia,serif;color:#314d45}
 .piece[data-id=medallion]{border-radius:50%;box-shadow:1px 3px 6px #1b302866}
+/* Collected keepsakes: a row under the table, or a column on the left when that gives a bigger table (leif.js decides). */
+main{grid-template-columns:minmax(0,1fr) 284px;grid-template-areas:"work pack" "shelf pack";grid-template-rows:minmax(0,1fr) auto}
+.workspace{grid-area:work}
+.backpack{grid-area:pack}
+.inventory{grid-area:shelf;min-width:0;margin:0 24px;padding:8px 0}
+@media(min-width:681px) and (min-height:600px){.workspace{padding-bottom:0}}
+@media(max-width:1000px){.inventory{margin:0 15px}}
+@media(max-width:680px){main{display:flex;flex-direction:column}.inventory{order:1;margin:0 12px 12px}.backpack{order:2}}
+@media(min-width:1001px){
+body.shelf-left main{grid-template-columns:200px minmax(0,1fr) 284px;grid-template-areas:"shelf work pack";grid-template-rows:minmax(0,1fr)}
+body.shelf-left .inventory{display:flex;flex-direction:column;min-height:0;margin:0;background:#f9f6ed;border-top:0;border-right:1px solid #cdd0c1;padding:16px 10px 10px 12px}
+body.shelf-left .workspace{padding-bottom:16px}
+body.shelf-left .inventory-heading{flex-direction:column;align-items:flex-start;gap:3px;margin-bottom:10px}
+body.shelf-left .inventory-heading .sep{display:none}
+body.shelf-left .inventory-heading>span>span{display:block;text-align:left}
+body.shelf-left #shelf{flex-direction:column;overflow-x:hidden;overflow-y:auto;min-height:0;flex:1;gap:5px;padding:2px 4px 6px 2px}
+body.shelf-left #shelf .shelf-item{max-width:none;width:100%}
+}
