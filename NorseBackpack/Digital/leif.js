@@ -16,10 +16,11 @@
   }
   function toast(message) { $('toast').textContent = message; $('toast').classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => $('toast').classList.remove('show'), 5200); }
   function pieceState(id) {
-    if (!state.pieces[id]) state.pieces[id] = { x: G.items[id].at[0], y: G.items[id].at[1], rot: 0, back: false, stowed: false };
+    if (!state.pieces[id]) state.pieces[id] = { x: G.items[id].at[0], y: G.items[id].at[1], rot: 0, face: 0, stowed: false };
     return state.pieces[id];
   }
-  function artwork(id, back = false) {
+  const faceName = (id, face) => { const n = G.items[id].faces?.length || 1; return n > 2 ? `face ${face + 1} of ${n}` : face ? 'back' : 'front'; };
+  function artwork(id, face = 0) {
     const item = G.items[id];
     if (item.crop) {
       const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -27,8 +28,8 @@
       const img = document.createElementNS(svg.namespaceURI, 'image');
       img.setAttribute('href', '../Props/_Renders/Luggage_Tag_Inserts_Sheet.png'); img.setAttribute('width', '1530'); img.setAttribute('height', '1980'); svg.append(img); return svg;
     }
-    const img = new Image(); img.src = item.faces[back && item.faces.length > 1 ? 1 : 0];
-    img.alt = `${item.name} · ${back ? 'back' : 'front'}`; img.draggable = false;
+    const img = new Image(); img.src = item.faces[Math.min(face, item.faces.length - 1)];
+    img.alt = `${item.name} · ${faceName(id, face)}`; img.draggable = false;
     img.addEventListener('error', () => toast(`Could not load ${item.name}. Keep this page with the Norse artwork folders.`), { once: true }); return img;
   }
   function constrain(id) {
@@ -47,15 +48,15 @@
     elements.forEach((el, key) => el.classList.toggle('selected', key === id));
     if (id && raise) elements.get(id).style.zIndex = ++z;
     $('selected-name').textContent = id ? G.items[id].name : 'Your table';
-    if (id) $('selected-type').textContent = `${G.items[id].kind} · ${pieceState(id).back ? 'back' : 'front'}`;
+    if (id) $('selected-type').textContent = `${G.items[id].kind} · ${faceName(id, pieceState(id).face)}`;
     else $('selected-type').innerHTML = 'Drag to arrange · double-click to inspect · <kbd>M</kbd> magnifier';
     $('stow').disabled = !id;
     document.querySelectorAll('.shelf-item').forEach(el => el.setAttribute('aria-pressed', el.dataset.id === id ? 'true' : 'false'));
   }
   function flip(id) {
     if (!id || !(G.items[id].faces?.length > 1)) return;
-    const p = pieceState(id); p.back = !p.back;
-    elements.get(id).replaceChildren(artwork(id, p.back)); select(id, false); save();
+    const p = pieceState(id); p.face = (p.face + 1) % G.items[id].faces.length;
+    elements.get(id).replaceChildren(artwork(id, p.face)); select(id, false); save();
     if ($('viewer').open) renderViewer();
   }
   function rotate(id) { if (!id) return; const p = pieceState(id); p.rot = (p.rot + 90) % 360; constrain(id); position(id); save(); if ($('viewer').open) renderViewer(); }
@@ -67,7 +68,7 @@
       el.type = 'button'; el.className = 'piece'; el.dataset.id = id;
       el.setAttribute('aria-label', `${item.name}. Select, then Inspect to read. Arrow keys move; F turns over; R rotates.`);
       el.style.width = item.w + 'px'; el.style.height = item.h + 'px';
-      el.append(artwork(id, p.back)); $('table').append(el); elements.set(id, el); constrain(id); position(id);
+      el.append(artwork(id, p.face)); $('table').append(el); elements.set(id, el); constrain(id); position(id);
       el.addEventListener('click', () => { select(id); showTools(id); });
       el.addEventListener('pointerenter', e => { if (e.pointerType !== 'touch') hoverTools(id); });
       el.addEventListener('pointerleave', () => { clearTimeout(switchTimer); hideToolsSoon(); });
@@ -115,7 +116,13 @@
     });
     const done = state.stage === G.locks.length;
     $('lock-panel').hidden = done; $('complete').hidden = !done;
-    if (!done) { $('lock-number').textContent = `Lock ${state.stage + 1} of ${G.locks.length}`; $('lock-name').textContent = G.locks[state.stage].name; }
+    const lock = G.locks[Math.min(state.stage, G.locks.length - 1)], digits = lock.answer.length;
+    $('chapter').textContent = `0${lock.leg} / ${G.legs[lock.leg].toUpperCase()}`;
+    if (!done) {
+      $('lock-number').textContent = `Lock ${state.stage + 1} of ${G.locks.length}`; $('lock-name').textContent = lock.name;
+      $('combination').maxLength = digits; $('combination').pattern = `[0-9]{${digits}}`; $('combination').placeholder = '·'.repeat(digits);
+      $('lock-ask').textContent = `Find a ${digits === 3 ? 'three' : 'four'}-digit combination among Liv’s keepsakes.`;
+    }
     $('lock-message').textContent = ''; $('combination').value = ''; renderHints();
   }
   function renderHints() {
@@ -134,7 +141,7 @@
     const host = $('viewer-scroll'), boxW = sideways ? item.h : item.w, boxH = sideways ? item.w : item.h;
     const fit = Math.max(0.01, Math.min((host.clientWidth - 40) / boxW, (host.clientHeight - 90) / boxH));
     $('viewer-art').style.width = boxW * fit + 'px'; $('viewer-art').style.height = boxH * fit + 'px';
-    const art = artwork(viewerId, p.back);
+    const art = artwork(viewerId, p.face);
     Object.assign(art.style, { position: 'absolute', width: item.w * fit + 'px', height: item.h * fit + 'px', left: (boxW - item.w) * fit / 2 + 'px', top: (boxH - item.h) * fit / 2 + 'px', transform: `rotate(${p.rot}deg)` });
     $('viewer-art').replaceChildren(art); refreshLens();
   }
@@ -147,7 +154,7 @@
     if (state.stage === G.locks.length) $('complete').scrollIntoView({ block: 'nearest' });
     else $('combination').focus();
   };
-  $('combination').oninput = () => { $('combination').value = $('combination').value.replace(/[^0-9]/g, '').slice(0, 4); };
+  $('combination').oninput = () => { $('combination').value = $('combination').value.replace(/[^0-9]/g, '').slice(0, $('combination').maxLength); };
   $('hint-next').onclick = () => { if (state.stage >= G.locks.length) return; state.hints[state.stage] = Math.min(4, state.hints[state.stage] + 1); renderHints(); save(); };
   $('notes').value = state.notes; $('notes').oninput = () => { state.notes = $('notes').value; save(); };
   $('viewer-flip').onclick = () => flip(viewerId); $('viewer-rotate').onclick = () => rotate(viewerId);
@@ -177,7 +184,7 @@
   function loadSavedText(text) {
     try {
       if (text.length > 100000) throw new Error('Too large');
-      const raw = JSON.parse(text); if (raw.version !== 1 || !Number.isInteger(raw.stage) || raw.stage < 0 || raw.stage > 3) throw new Error('Invalid save');
+      const raw = JSON.parse(text); if (raw.version !== 1 || !Number.isInteger(raw.stage) || raw.stage < 0 || raw.stage > G.locks.length) throw new Error('Invalid save');
       state = G.restore(raw); selected = null; $('notes').value = state.notes; buildTable(); renderProgress(); save(); $('save-dialog').close(); toast('Your saved game is loaded.');
     } catch (_) { $('save-result').textContent = 'That is not a valid Leif’s trail save. Your current game was kept.'; }
   }

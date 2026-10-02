@@ -7,7 +7,7 @@
 <script src="table-layout.js" defer></script><script src="leif-data.js" defer></script><script src="leif.js" defer></script>
 </head>
 <body>
-<header class="masthead"><div class="brand">ESCAPE BACKPACK <span>THE NORSE ADVENTURE</span></div><div class="chapter">01 / LEIF’S TRAIL <span class="badge">PLAYTEST</span></div><button id="help">How to play</button></header>
+<header class="masthead"><div class="brand">ESCAPE BACKPACK <span>THE NORSE ADVENTURE</span></div><div class="chapter"><span id="chapter">01 / LEIF’S TRAIL</span> <span class="badge">PLAYTEST</span></div><button id="help">How to play</button></header>
 <main>
 <section class="workspace" aria-label="Your table">
   <div class="table-heading"><div><p class="eyebrow">A journey from Aunt Liv</p><h1>Across the northern sea</h1></div></div>
@@ -18,8 +18,8 @@
 <aside class="backpack" aria-label="Backpack and progress">
   <p class="eyebrow">Your backpack</p><div class="bag-art" aria-hidden="true"><div class="bag-handle"></div><div class="bag-body"><div class="bag-flap"></div><div class="bag-strap left"></div><div class="bag-strap right"></div><div class="bag-pocket"><span>ᛚ</span></div></div></div>
   <ol id="progress" aria-label="Locks"></ol>
-  <section id="lock-panel"><p class="eyebrow" id="lock-number"></p><h2 id="lock-name"></h2><p class="muted">Find a four-digit combination among Liv’s keepsakes.</p><form id="lock-form"><label for="combination">Combination</label><div class="code-row"><input id="combination" name="combination" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" placeholder="····" required><button class="primary" type="submit">Open</button></div></form><p id="lock-message" role="status"></p><button id="hint-next" class="text-button">Need a hint?</button><div id="hints" aria-live="polite"></div></section>
-  <section id="complete" hidden><p class="eyebrow">Leif’s leg complete</p><h2>Next stop: Normandy.</h2><p>You’ve opened Rollo’s pouch. Its keepsakes are on the table to explore.</p><p class="muted">This playtest ends here. The rest of the online adventure is still to come.</p><button id="review-table">Explore the keepsakes</button></section>
+  <section id="lock-panel"><p class="eyebrow" id="lock-number"></p><h2 id="lock-name"></h2><p class="muted" id="lock-ask">Find a four-digit combination among Liv’s keepsakes.</p><form id="lock-form"><label for="combination">Combination</label><div class="code-row"><input id="combination" name="combination" inputmode="numeric" pattern="[0-9]{3,4}" maxlength="4" autocomplete="off" placeholder="····" required><button class="primary" type="submit">Open</button></div></form><p id="lock-message" role="status"></p><button id="hint-next" class="text-button">Need a hint?</button><div id="hints" aria-live="polite"></div></section>
+  <section id="complete" hidden><p class="eyebrow">Playtest ends here</p><h2>To be continued in Normandy.</h2><p>You’ve opened the lower right pocket: Bayeux, Winchester and Battle are on the table, with Liv’s architect’s ruler.</p><p class="muted">The next lock is still being built. Your progress is saved in this browser, so you can carry on from here when it’s ready.</p><button id="review-table">Explore the keepsakes</button></section>
   <details class="notes"><summary>Your notebook</summary><label class="sr-only" for="notes">Notes</label><textarea id="notes" maxlength="6000" placeholder="Places, observations, possible codes…"></textarea></details>
   <div class="session-controls"><button id="export-save">Save a copy</button><button id="import-save">Load a copy</button><input id="save-file" type="file" accept="application/json,.json" hidden><button id="restart" class="text-button">Start again</button></div>
 </aside>

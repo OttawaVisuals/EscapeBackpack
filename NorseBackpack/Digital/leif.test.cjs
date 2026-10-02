@@ -19,13 +19,13 @@ test('locks reject wrong and later answers; each correct answer releases the nex
 });
 test('save round-trip preserves progress, notes and arrangement', () => {
   const s = G.fresh(); G.attempt(s, '1021'); s.notes = 'Try the skies'; s.hints[1] = 2;
-  s.pieces.L2 = { x: 120, y: 180, rot: 180, back: true, stowed: true };
+  s.pieces.L2 = { x: 120, y: 180, rot: 180, face: 1, stowed: true };
   assert.deepEqual(G.restore(JSON.parse(JSON.stringify(s))), s);
 });
 test('corrupt save data cannot inject unavailable props or invalid positions', () => {
   const s = G.restore({ version: 1, stage: -10, hints: [-8, 999, 'bad'], pieces: { L1: { x: Infinity, y: -1000, rot: 42 }, map: { x: 3 } }, light: { top: 'map', dx: 99999 }, notes: {} });
   assert.equal(s.stage, 0); assert.equal(s.pieces.map, undefined); assert.equal(s.pieces.L1.rot, 0); assert.equal(s.pieces.L1.y, 10);
-  assert.deepEqual(s.hints, [0, 4, 0]); assert.equal(s.light, undefined);
+  assert.deepEqual(s.hints, [0, 4, 0, 0, 0]); assert.equal(s.light, undefined);
   assert.deepEqual(G.restore(null), G.fresh());
 });
 test('all referenced physical artwork exists', () => {
@@ -79,9 +79,9 @@ test('the table grows as props arrive, never shrinks, and moved props stay put',
 });
 test('tidy packs everything face up on the smallest table that holds it', () => {
   const s = G.fresh(); G.attempt(s, '1021'); G.attempt(s, '1576'); G.deal(s);
-  s.table = 3; s.pieces.L2.rot = 90; s.pieces.L2.back = true;
+  s.table = 3; s.pieces.L2.rot = 90; s.pieces.L2.face = 1;
   G.arrange(s);
-  assert.ok(s.table < 3); assert.equal(s.pieces.L2.rot, 0); assert.equal(s.pieces.L2.back, false); overlapFree(s);
+  assert.ok(s.table < 3); assert.equal(s.pieces.L2.rot, 0); assert.equal(s.pieces.L2.face, 0); overlapFree(s);
 });
 test('old saves without a table size open on a table big enough for their pieces', () => {
   const s = G.restore({ version: 1, stage: 2, pieces: { map: { x: 3500, y: 1500, rot: 0 } } });
@@ -93,8 +93,8 @@ test('the largest table is the whole-game table', () => {
 });
 test('snap pulls nearby edges flush and lines up the sides, but leaves distant props alone', () => {
   const s = G.fresh(); G.attempt(s, '1021'); G.deal(s);
-  s.pieces.L3 = { x: 1000, y: 600, rot: 0, back: false, stowed: false };
-  s.pieces.L2 = { x: 1010, y: 600 - G.items.L2.h - 15, rot: 180, back: false, stowed: false };
+  s.pieces.L3 = { x: 1000, y: 600, rot: 0, face: 0, stowed: false };
+  s.pieces.L2 = { x: 1010, y: 600 - G.items.L2.h - 15, rot: 180, face: 0, stowed: false };
   assert.equal(G.snap(s, 'L2', 25), true);
   assert.deepEqual([s.pieces.L2.x, s.pieces.L2.y], [1000, 600 - G.items.L2.h]);
   s.pieces.L2.y -= 200;
@@ -103,8 +103,22 @@ test('snap pulls nearby edges flush and lines up the sides, but leaves distant p
 });
 test('snap pulls a slightly overlapping card out to meet the edge', () => {
   const s = G.fresh(); G.attempt(s, '1021'); G.deal(s);
-  s.pieces.L3 = { x: 1000, y: 600, rot: 0, back: false, stowed: false };
-  s.pieces.L2 = { x: 1000, y: 600 - G.items.L2.h + 10, rot: 180, back: false, stowed: false };
+  s.pieces.L3 = { x: 1000, y: 600, rot: 0, face: 0, stowed: false };
+  s.pieces.L2 = { x: 1000, y: 600 - G.items.L2.h + 10, rot: 180, face: 0, stowed: false };
   G.snap(s, 'L2', 25);
   assert.equal(s.pieces.L2.y, 600 - G.items.L2.h);
+});
+test('Rollo’s leg: 1486 releases Châlus, Roumare and Walcheren; the three-digit 562 releases Bayeux–Battle and the ruler', () => {
+  const s = G.fresh();
+  for (const code of ['1021', '1576', '3212']) assert.equal(G.attempt(s, code), true);
+  assert.equal(G.attempt(s, '562'), false);
+  assert.equal(G.attempt(s, '1486'), true); assert.deepEqual(G.available(s.stage).slice(-3), ['R1', 'R6', 'RD']);
+  assert.equal(G.attempt(s, '562'), true); assert.deepEqual(G.available(s.stage).slice(-4), ['R3', 'R4', 'R5', 'ruler']);
+  assert.equal(s.stage, G.locks.length);
+  G.deal(s); overlapFree(s);
+  assert.deepEqual(G.locks.map(l => l.leg), [1, 1, 1, 2, 2]);
+});
+test('old saves with back: true keep their card turned over; the ruler has three faces', () => {
+  const s = G.restore({ version: 1, stage: 1, pieces: { L2: { x: 100, y: 100, rot: 0, back: true } } });
+  assert.equal(s.pieces.L2.face, 1); assert.equal(G.items.ruler.faces.length, 3);
 });

@@ -21,31 +21,52 @@
     map: { name: 'Leif’s sea chart', kind: 'Map', faces: ['../Props/_Renders/Trail_Map_1_Leif_Print.png'], ...mapSlot(1) },
     R2: { name: 'Rouen', kind: 'Postcard', faces: postcard('R2_Rouen'), ...cardSlot(5) },
     rolloMap: { name: 'Rollo’s trail map', kind: 'Map', faces: ['../Props/_Renders/Trail_Map_2_Rollo_Print.png'], ...mapSlot(2) },
+    R1: { name: 'Châlus', kind: 'Postcard', faces: postcard('R1_Chalus'), ...cardSlot(6) },
+    R6: { name: 'Roumare Forest', kind: 'Postcard', faces: postcard('R6_Roumare_Forest'), ...cardSlot(7) },
+    RD: { name: 'Walcheren', kind: 'Postcard', faces: postcard('RD_Walcheren'), ...cardSlot(8) },
+    R3: { name: 'Bayeux', kind: 'Postcard', faces: postcard('R3_Bayeux'), ...cardSlot(9) },
+    R4: { name: 'Winchester', kind: 'Postcard', faces: postcard('R4_Winchester'), ...cardSlot(10) },
+    R5: { name: 'Battle', kind: 'Postcard', faces: postcard('R5_Battle'), ...cardSlot(11) },
+    // Triangular 30 cm architect's scale ruler: three faces, Flip turns to the next one.
+    ruler: { name: 'Architect’s scale ruler', kind: 'Ruler', faces: [1, 2, 3].map(n => `./assets/Ruler_Face_${n}.svg`), ...slot('ruler') },
     rouenTicket: { name: 'Rouen museum ticket', kind: 'Ticket', faces: ['../Props/RouenTicket/Rouen_Ticket_Front_300dpi.png', '../Props/RouenTicket/Rouen_Ticket_Back_300dpi.png'], ...slot('rouenTicket') }
   };
   const locks = [
-    { name: 'Main compartment', answer: '1021', releases: ['L2', 'L3'], message: 'Inside are two more postcards from Liv.', hints: [
+    { leg: 1, name: 'Main compartment', answer: '1021', releases: ['L2', 'L3'], message: 'Inside are two more postcards from Liv.', hints: [
       'Look at both luggage tags and both sides of the first postcard.',
       'Each tag has a street number. The postcard is from the first stop of Liv’s journey. Which tag matches that place?',
       'Use the Vinland tag’s street number first, followed by the Rouen tag’s street number.',
       'The combination is 1021.'
     ] },
-    { name: 'Lower front pocket', answer: '1576', releases: ['LD', 'map'], message: 'A postcard from Greenland and Leif’s sea chart were tucked inside.', hints: [
+    { leg: 1, name: 'Lower front pocket', answer: '1576', releases: ['LD', 'map'], message: 'A postcard from Greenland and Leif’s sea chart were tucked inside.', hints: [
       'Read the two new postcards. What do they both say about the sky?',
       'Try bringing the two illustrated skies together on the table. You can rotate and move the cards.',
       'Put Battle Harbour above Baffin Island, both picture-side up. Rotate Battle Harbour twice so it is upside down, then move it until its top edge meets Baffin Island’s top edge. Use the magnifier on the join.',
       'The joined cloud fragments read 1576.'
     ] },
-    { name: 'Rollo’s pouch', answer: '3212', releases: ['R2', 'rolloMap', 'rouenTicket'], message: 'Leif’s leg is complete. Liv’s journey continues with Rollo.', hints: [
+    { leg: 1, name: 'Rollo’s pouch', answer: '3212', releases: ['R2', 'rolloMap', 'rouenTicket'], message: 'Leif’s leg is complete. Liv’s journey continues with Rollo.', hints: [
       'Inspect every detail on the Brattahlíð postcard, including the small print. Keep the sea chart and museum ticket nearby.',
       '“Series F, No. 1” points to a square on the chart. What animal is there?',
       'The animal is a bear. Spell its name using the visitor index on the back of the museum ticket, taking one digit per letter.',
       'B → 3, E → 2, A → 1, R → 2. The combination is 3212.'
+    ] },
+    { leg: 2, name: 'Lower left pocket', answer: '1486', releases: ['R1', 'R6', 'RD'], message: 'Three more postcards from Rollo’s trail.', hints: [
+      'Read the Rouen postcard next to the back of the Rouen museum ticket. Some of Liv’s words have a partner on the ticket.',
+      'The ticket pairs everyday Saxon words (numbered) with their Norman partners (lettered). A matched pair gives a letter and a number: a square on Rollo’s map.',
+      'Liv mentions fighting, people, poultry and an inn, in that order. For each, match the pair, find its square on the map, and count the squares to the drawing for that word.',
+      'Fight 1, people 4, poultry 8, inn 6. The combination is 1486.'
+    ] },
+    { leg: 2, name: 'Lower right pocket', answer: '562', releases: ['R3', 'R4', 'R5', 'ruler'], message: 'Three more postcards, and Liv’s architect’s ruler.', hints: [
+      'Look closely at the pictures on the three new postcards. Each message mentions something small in passing.',
+      'Count the Viking boats at Walcheren, the wild boars in Roumare Forest and the crossbow bolts at Châlus. Use the magnifier: some hide well. Read Roumare’s message again before you settle on its number.',
+      'The Fun Facts on the backs date each place. Put the counts in date order: Walcheren, then Roumare, then Châlus. Liv thinks there were twice as many boars as she saw.',
+      '5 boats, 3 boars doubled to 6, 2 bolts. The combination is 562.'
     ] }
   ];
+  const legs = { 1: 'Leif’s trail', 2: 'Rollo’s trail' };
   const initial = ['L1', 'tagA', 'tagB', 'ticket'];
   const available = stage => [...initial, ...locks.slice(0, stage).flatMap(lock => lock.releases)];
-  const fresh = () => ({ version: 1, stage: 0, table: 0, pieces: {}, hints: [0, 0, 0], notes: '' });
+  const fresh = () => ({ version: 1, stage: 0, table: 0, pieces: {}, hints: locks.map(() => 0), notes: '' });
   const clamp = (v, min, max, fallback) => Number.isFinite(v) ? Math.min(max, Math.max(min, v)) : fallback;
   function restore(raw) {
     const state = fresh();
@@ -56,7 +77,7 @@
     for (const id of available(state.stage)) {
       const p = raw.pieces?.[id];
       if (!p || typeof p !== 'object') continue;
-      state.pieces[id] = { x: clamp(p.x, 10, table.w - items[id].w - 10, items[id].at[0]), y: clamp(p.y, 10, table.h - items[id].h - 10, items[id].at[1]), rot: [0, 90, 180, 270].includes(p.rot) ? p.rot : 0, back: !!p.back && items[id].faces?.length === 2, stowed: !!p.stowed };
+      state.pieces[id] = { x: clamp(p.x, 10, table.w - items[id].w - 10, items[id].at[0]), y: clamp(p.y, 10, table.h - items[id].h - 10, items[id].at[1]), rot: [0, 90, 180, 270].includes(p.rot) ? p.rot : 0, face: faceOf(id, p), stowed: !!p.stowed };
     }
     state.table = Math.max(Number.isInteger(raw.table) ? clamp(raw.table, 0, sizes.length - 1, 0) : 0, sizeFor(state));
     return state;
@@ -106,7 +127,12 @@
     p.x += dx; p.y += dy;
     return dx !== 0 || dy !== 0;
   }
-  const lying = ([x, y]) => ({ x, y, rot: 0, back: false, stowed: false });
+  const lying = ([x, y]) => ({ x, y, rot: 0, face: 0, stowed: false });
+  // Which face is up. Saves before 1 Oct 2026 stored back: true/false instead.
+  function faceOf(id, p) {
+    const n = items[id].faces?.length || 1;
+    return Number.isInteger(p.face) ? clamp(p.face, 0, n - 1, 0) : (p.back && n > 1 ? 1 : 0);
+  }
   // Deal every collected prop that is not on the table yet, growing the table if needed.
   function deal(state) {
     for (const id of available(state.stage)) {
@@ -135,7 +161,7 @@
     state.stage++;
     return true;
   }
-  const api = { PPI, table, sizes, items, locks, initial, available, fresh, restore, attempt, clamp, deal, arrange, footprint, snap };
+  const api = { PPI, table, sizes, items, locks, legs, initial, available, fresh, restore, attempt, clamp, deal, arrange, footprint, snap };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.LeifGame = api;
 })(typeof window === 'undefined' ? globalThis : window);

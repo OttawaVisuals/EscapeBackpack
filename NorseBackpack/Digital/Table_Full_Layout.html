@@ -71,6 +71,7 @@ add('Luggage tag · Rouen', 'Luggage tag', P.tagB, { crop: [460, 735, 610, 356] 
 add('SOLE tally (3D print)', '3D print', P.tally, { est: 'size estimated' });
 add('Aud’s comb (3D print)', '3D print', P.comb, { est: 'size estimated' });
 add('Medallion (3D print)', '3D print', P.medallion, { est: '50 mm', round: true });
+add('Architect’s scale ruler (face 3)', 'Ruler', P.ruler, { src: 'assets/Ruler_Face_3.svg' });
 ['01_dirham_common', '02_dirham_rare', '03_denier_common', '04_denier_rare', '05_hedeby_ship', '06_york_cross', '07_raven']
   .forEach((file, i) => add(`Coin · ${file.slice(3).replace(/_/g, ' ')}`, 'Coin (3D print, 28 mm)', P['coin' + (i + 1)], { src: `../Props/Coins/${file}.png`, coin: true }));
 

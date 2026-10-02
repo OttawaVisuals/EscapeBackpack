@@ -28,7 +28,8 @@
     rouenTicket: { w: 2, h: 3, x: 27.7, y: 24 },
     tally: { w: 3.5, h: 1.6, x: 30.1, y: 24, est: true },
     comb: { w: 3.5, h: 1.5, x: 30.1, y: 25.9, est: true },
-    medallion: { w: 1.97, h: 1.97, x: 34, y: 24 }
+    medallion: { w: 1.97, h: 1.97, x: 34, y: 24 },
+    ruler: { w: 11.81, h: 0.59, x: 38.8, y: 24.2 }
   };
   for (let i = 0; i < 7; i++) props['coin' + (i + 1)] = { w: 1.1, h: 1.1, x: 36.1 + 1.3 * (i % 2), y: 0.5 + 1.3 * Math.floor(i / 2) };
   // Every start position in the whole game: 4 map slots, 22 postcard slots, the named props.

@@ -1,5 +1,21 @@
 # Project Handoff
 
+## Session close — 2026-10-01 — Rollo's leg online: locks 4 and 5 (Claude Code)
+
+**Task/status:** Done locally; not committed or published. The user asked to continue the digital game with Rollo's leg. Decided in chat (recorded as `DG-06`): build locks 4 and 5 now and pause before lock 6, because the `PZ-14` code is still unmeasured; online, the ruler arrives with Bayeux, Winchester and Battle rather than from lock 1. The same game and save continue, so Leif players carry straight on.
+
+**What was built:**
+- Lock 4, lower left pocket, 1486 (`PZ-15`): releases R1 Châlus, R6 Roumare Forest, RD Walcheren. Lock 5, lower right pocket, 562 (`PZ-19`, three digits): releases R3 Bayeux, R4 Winchester, R5 Battle and the ruler. Four hints each (the fourth is the solution), drafted from the design page; R2's own words (fighting, people, poultry, inn) are named in hint 3 of lock 4.
+- The lock box adapts to three or four digits; the masthead reads 02 / ROLLO'S TRAIL from lock 4; the end panel now says the playtest pauses in Normandy.
+- Ruler: `Digital/build_ruler_svg.py` draws a 30 cm triangular metric ruler, three faces (1:20/1:25, 1:50/1:75, 1:100/1:125, assumed; `DG-07`), into `Digital/assets/Ruler_Face_{1,2,3}.svg`. Flip turns to the next face, so prop state now stores a face number instead of back: true/false (old saves convert). The whole-game plan in `table-layout.js` and the preview page include the ruler.
+- Checked the web-size art: three boars on R6 and both crossbow bolts on R1 are findable.
+
+**Files changed:** `NorseBackpack/Digital/Leif.html`, `leif.js`, `leif-data.js`, `leif.test.cjs`, `table-layout.js`, `Table_Full_Layout.html`; new `build_ruler_svg.py` and `assets/Ruler_Face_{1,2,3}.svg`; `Norse_Brainstorm.html` (`DG-06`, `DG-07`).
+
+**Checks:** 17/17 Node tests (new: Rollo's codes and releases, three-digit 562 rejected before 1486, old back: true saves). Browser over http://localhost:8734: from lock 4, 1486 and then 562 opened; chapter label, three-digit prompt, input clipped to three digits, 18 props with no broken images, ruler Flip cycles faces 1→2→3→1, ruler scale names clear of the ticks under the magnifier; no console errors. Design page shows DG-06/07 with no errors. Not done: playing the Rollo puzzles by hand (reading the ticket and map grid under the magnifier).
+
+**Next action:** User plays locks 4 and 5 locally and says whether the map grid and ticket read well enough on screen; then commit and publish.
+
 ## Session close — 2026-10-01 — Leif digital: real-scale growing table, prop tools, magnifier, lamp removed (Claude Code)
 
 **Task/status:** Done and published. Design repo `958c2d4`; site repo `9fb2b7d` (build script) and `0e6a91c` (repackaged game, live at https://escapepack.ca/play/norse/leif/). The package now ships WebP postcards; the 10 unused PNG postcards (about 14 MB) were removed from the site. Verified live: `/play/norse` redirects to the game, the table starts at 22 in and reaches 37 in after all three locks, all 11 props' images load, no console errors; the test save was cleared. Earlier the same day, the site got a `/play/norse` → `/play/norse/leif/` redirect (site commit `fe581a6`, live), because without a page there Cloudflare served the homepage with broken CSS.
