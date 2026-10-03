@@ -35,6 +35,8 @@ Tests: 40/40 (lanes test and trail-stack test removed; new tests for Tidy by age
 - Codex's root `index.html` change and `Hiking_Trip/Digital/` are still uncommitted here.
 - Minor (`DG-12`): Ctrl+P prints only the certificate; on a phone the table leaves large empty areas.
 
+**Padlock wheels (user chose option 1 of 4):** the wheel face was ambiguous (clicking its top half went back, ↑ and drag-up went forward). Each wheel now has a ▲ (next, 5 → 6) and ▼ (back) button (`.turn` in `leif.css`, built in `buildDial`); clicking the face no longer turns it; drag, scroll, typing and ↑/↓ unchanged. Tests 40/40; checked in the browser on desktop and phone width. Not committed or rebuilt for the site yet.
+
 **Next action:** User sketches the difficulty order for `ST-06` (which lock releases which postcards and props); then the online chain is re-sequenced in `leif-data.js` and rebuilt with `node tools/build_leif.cjs` in escapepack-site.
 
 ## Session — 2026-10-01 — Full game online, part 1: Aud's leg (Claude Code)

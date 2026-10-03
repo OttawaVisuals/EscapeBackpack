@@ -389,8 +389,9 @@
     track('certificate_printed'); setTimeout(() => print(), 150);
   };
   $('open-feedback-end').onclick = () => openFeedback();
-  /* The padlock's wheels: digits or letters. Drag, scroll or click above/below the window to
-     turn; with the keyboard, type the character (focus moves on), or use the arrow keys. */
+  /* The padlock's wheels: digits or letters. Each wheel has a ▲ (next: 5 → 6) and a ▼ (back)
+     button; dragging up or scrolling also turns it forward. With the keyboard, type the character
+     (focus moves on), or use the arrow keys (↑ next, ↓ back). */
   const DIGITS = '0123456789', LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let dialChars = DIGITS, dialVals = [];
   function buildDial(length, letters, disabled) {
@@ -400,17 +401,25 @@
       const w = document.createElement('button'); w.type = 'button'; w.className = 'wheel'; w.disabled = disabled;
       w.setAttribute('role', 'spinbutton'); w.setAttribute('aria-label', `Wheel ${i + 1} of ${length}`);
       w.innerHTML = '<span class="prev" aria-hidden="true"></span><span class="cur"></span><span class="next" aria-hidden="true"></span>';
-      wireWheel(w, i); return w;
+      wireWheel(w, i);
+      const turn = (d, label) => {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'turn'; b.tabIndex = -1; b.disabled = disabled;
+        b.setAttribute('aria-label', `Wheel ${i + 1}: ${label}`); b.innerHTML = '<svg viewBox="0 0 12 8" aria-hidden="true"><path d="M1 7 6 2l5 5"/></svg>';
+        b.addEventListener('click', () => { turnWheel(i, d); w.focus({ preventScroll: true }); }); return b;
+      };
+      const col = document.createElement('div'); col.className = 'wheel-col';
+      col.append(turn(1, 'next'), w, turn(-1, 'back')); return col;
     }));
     dialVals.forEach((_, i) => paintWheel(i));
   }
   function paintWheel(i, dir) {
-    const w = $('dial').children[i], n = dialChars.length, v = dialVals[i];
+    const w = dialWheels()[i], n = dialChars.length, v = dialVals[i];
     w.querySelector('.prev').textContent = dialChars[(v + n - 1) % n]; w.querySelector('.cur').textContent = dialChars[v]; w.querySelector('.next').textContent = dialChars[(v + 1) % n];
     w.setAttribute('aria-valuenow', v); w.setAttribute('aria-valuemin', 0); w.setAttribute('aria-valuemax', n - 1); w.setAttribute('aria-valuetext', dialChars[v]);
     if (dir) { w.style.setProperty('--dir', dir > 0 ? '10px' : '-10px'); w.classList.remove('spin'); void w.offsetWidth; w.classList.add('spin'); }
     $('combination').value = dialVals.map(k => dialChars[k]).join('');
   }
+  const dialWheels = () => [...$('dial').querySelectorAll('.wheel')];
   function turnWheel(i, d) {
     const n = dialChars.length; dialVals[i] = ((dialVals[i] + d) % n + n) % n; paintWheel(i, d); sound('tick');
     if ($('lock-message').className === 'error') { $('lock-message').textContent = ''; $('lock-message').className = ''; }
@@ -418,20 +427,17 @@
   function setDial(i, ch) { const k = dialChars.indexOf(ch.toUpperCase()); if (k < 0) return false; const d = k === dialVals[i] ? 0 : 1; dialVals[i] = k; paintWheel(i, d); return true; }
   function wireWheel(w, i) {
     let drag = null;
-    w.addEventListener('pointerdown', e => { if (e.button !== 0 || w.disabled) return; try { w.setPointerCapture(e.pointerId); } catch (_) { /* gone */ } drag = { y: e.clientY, last: e.clientY, moved: false }; });
+    w.addEventListener('pointerdown', e => { if (e.button !== 0 || w.disabled) return; try { w.setPointerCapture(e.pointerId); } catch (_) { /* gone */ } drag = { last: e.clientY }; });
     w.addEventListener('pointermove', e => {
       if (!drag) return; const dy = e.clientY - drag.last;
-      if (Math.abs(dy) >= 14) { turnWheel(i, dy < 0 ? 1 : -1); drag.last = e.clientY; drag.moved = true; }
+      if (Math.abs(dy) >= 14) { turnWheel(i, dy < 0 ? 1 : -1); drag.last = e.clientY; }
     });
-    w.addEventListener('pointerup', e => {
-      if (!drag) return; const moved = drag.moved || Math.abs(e.clientY - drag.y) > 4; drag = null;
-      if (!moved) { const r = w.getBoundingClientRect(); turnWheel(i, e.clientY < r.top + r.height / 2 ? -1 : 1); }
-    });
+    w.addEventListener('pointerup', () => { drag = null; });
     w.addEventListener('pointercancel', () => { drag = null; });
     w.addEventListener('click', e => e.preventDefault());
     w.addEventListener('wheel', e => { if (w.disabled) return; e.preventDefault(); turnWheel(i, e.deltaY > 0 ? 1 : -1); }, { passive: false });
     w.addEventListener('keydown', e => {
-      const wheels = [...$('dial').children];
+      const wheels = dialWheels();
       if (e.key === 'ArrowUp') { e.preventDefault(); turnWheel(i, 1); }
       else if (e.key === 'ArrowDown') { e.preventDefault(); turnWheel(i, -1); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); wheels[i + 1]?.focus(); }
@@ -443,7 +449,7 @@
   $('dial').addEventListener('paste', e => {
     const text = (e.clipboardData?.getData('text') || '').toUpperCase().split('').filter(c => dialChars.includes(c));
     if (!text.length) return; e.preventDefault();
-    const start = Math.max(0, [...$('dial').children].indexOf(document.activeElement));
+    const start = Math.max(0, dialWheels().indexOf(document.activeElement));
     text.slice(0, dialVals.length - start).forEach((c, k) => setDial(start + k, c));
   });
   function renderHints() {

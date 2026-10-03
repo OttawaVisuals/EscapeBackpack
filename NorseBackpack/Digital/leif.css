@@ -188,6 +188,13 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 304px;grid-template-areas:
 .shackle{position:absolute;left:50%;top:0;width:56%;height:34px;margin-left:-28%;border:7px solid #9C9384;border-bottom:0;border-radius:30px 30px 0 0;background:none;transition:transform .45s cubic-bezier(.3,1.6,.6,1);transform-origin:85% 100%;z-index:0}
 .padlock.unlocked .shackle{transform:translateY(-12px) rotate(-12deg)}
 .dial{position:relative;z-index:1;display:flex;justify-content:center;gap:4px;padding:9px 8px;border-radius:12px;background:linear-gradient(160deg,#D8B47A,#B5874A 45%,#8C6430);border:1px solid #6B4A22;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 4px 10px rgba(30,20,10,.25)}
+.wheel-col{display:flex;flex-direction:column;align-items:center;gap:3px}
+.turn{width:36px;height:22px;padding:0;display:grid;place-items:center;border:1px solid #6B4A22;border-radius:6px;background:linear-gradient(180deg,#E6C890,#C49A5C);color:#3A2810;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+.turn svg{width:12px;height:8px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.turn:last-child svg{transform:rotate(180deg)}
+.turn:hover:not(:disabled){background:linear-gradient(180deg,#F0D6A4,#CFA668)}
+.turn:active:not(:disabled){background:linear-gradient(180deg,#B48A4E,#D2AA6C);box-shadow:inset 0 1px 3px rgba(40,25,10,.4)}
+.turn:disabled{opacity:.45;cursor:default}
 .wheel{position:relative;width:36px;height:62px;padding:0;border:1px solid #4E3519;border-radius:6px;background:linear-gradient(180deg,#2A231A 0%,#E9E0CC 30%,#FFF9EC 50%,#E9E0CC 70%,#2A231A 100%);color:#1D1A14;overflow:hidden;touch-action:none;cursor:ns-resize;display:flex;flex-direction:column;align-items:center;justify-content:center;font:700 24px/1 ui-monospace,"Cascadia Mono",Consolas,monospace}
 .wheel:hover:not(:disabled){background:linear-gradient(180deg,#2A231A 0%,#EFE6D2 30%,#FFFDF5 50%,#EFE6D2 70%,#2A231A 100%)}
 .wheel .prev,.wheel .next{font-size:13px;opacity:.55;height:15px;line-height:15px}
@@ -358,7 +365,7 @@ body.expanded .bag{max-width:170px}
   .chapter{font-size:11px;letter-spacing:.08em}
   .masthead{padding:0 16px;gap:10px}
   .badge{display:none}
-  .wheel{width:32px}
+  .wheel,.turn{width:32px}
 }
 @media(max-width:680px){
   .masthead{height:auto;min-height:64px;padding:10px 14px}
@@ -540,6 +547,7 @@ body.zooming #table,body.zooming #table-size{transition:none}
   .actions button,.zoom button{min-height:40px}
   .prop-tools button{padding:9px 12px}
   .wheel{height:70px}
+  .turn{height:30px}
   .shelf-item{min-height:44px}
 }
 /* Tablets held upright (and other tall, narrow windows): table on top, backpack below with the
