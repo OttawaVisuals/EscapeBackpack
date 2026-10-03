@@ -18,6 +18,9 @@
     <button id="together" hidden aria-haspopup="dialog"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="3.2"/><circle cx="16.5" cy="9.5" r="2.6"/><path d="M2.5 19c.8-3.3 3-5 5.5-5s4.7 1.7 5.5 5M13.5 15.3c.9-.8 1.9-1.2 3-1.2 2.1 0 3.8 1.5 4.5 4.4"/></svg>Play together</button>
     <div class="sound-wrap"><button id="sound-btn" aria-haspopup="true" aria-expanded="false" aria-controls="sound-menu" title="Sound"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path id="sound-waves" d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/></svg><span class="sr-only">Sound</span></button>
       <div id="sound-menu" class="sound-menu" hidden><label><input type="checkbox" id="sound-fx"> Sound effects</label><label><input type="checkbox" id="sound-amb"> Sea and hearth ambience</label></div></div>
+    <button id="feedback-top" class="laptop-only">Feedback</button>
+    <div class="sound-wrap game-wrap laptop-only"><button id="game-btn" aria-haspopup="true" aria-expanded="false" aria-controls="game-menu">Game <span aria-hidden="true">▾</span></button>
+      <div id="game-menu" class="sound-menu game-menu" hidden><button id="menu-export">Save a copy</button><button id="menu-import">Load a copy</button><button id="menu-restart">Start again</button></div></div>
     <button id="help">How to play</button>
   </div>
 </header>
@@ -37,7 +40,7 @@
     <div class="pack-lock">
       <section id="lock-panel" aria-labelledby="lock-name"><p class="eyebrow" id="lock-number"></p><h2 id="lock-name"></h2><p class="lock-nudge" id="lock-nudge"></p><p class="muted" id="lock-ask"></p>
         <form id="lock-form"><div class="lock-row"><div class="padlock" id="padlock"><div class="shackle" aria-hidden="true"></div><div class="dial" id="dial" role="group" aria-label="Combination wheels"></div></div><button class="primary open-button" type="submit">Open</button></div><input id="combination" class="sr-only" tabindex="-1" aria-hidden="true" autocomplete="off"></form>
-        <p id="lock-message" role="status"></p><div id="attempts" class="attempts"></div><div id="hints" aria-live="polite"></div><button id="hint-next" type="button" class="text-button">Need a hint?</button></section>
+        <p id="lock-message" role="status"></p><div id="attempts" class="attempts"></div><div id="hints" class="hints"></div></section>
       <section id="complete" hidden><p class="eyebrow">The last pocket opens</p><h2>You found her route.</h2><div class="liv-hand" id="ending-letter"></div>
         <dl class="ending-stats" id="ending-stats"></dl>
         <label for="team-name" class="team-label">Name for the certificate</label><input id="team-name" maxlength="40" placeholder="Your name or team" autocomplete="off">
@@ -53,7 +56,7 @@
 <div class="small-screen" role="note"><strong>Best on a laptop, desktop or tablet.</strong> The table is a real-size spread of Liv’s keepsakes; on a phone it is too small to read. You can still look around here.</div>
 
 <dialog id="unpack" class="unpack" aria-labelledby="unpack-title"><div class="unpack-inner">
-  <article class="letter" aria-label="Aunt Liv’s letter"><div class="postmark" aria-hidden="true">NORGE · NOREG</div><div id="letter-text" class="liv-hand"></div></article>
+  <article class="letter" aria-label="Aunt Liv’s letter"><div class="postmark" aria-hidden="true"><img src="assets/Raven_Postmark.png" alt=""></div><div id="letter-text" class="liv-hand"></div></article>
   <div class="unpack-side"><p class="eyebrow light">Escape Backpack · Norse adventure</p><h1 id="unpack-title">The Raven Inheritance</h1><p>A battered backpack has arrived from Aunt Liv, with a postcard, two luggage tags and a museum ticket tucked under its straps. Every pocket is locked.</p>
     <div class="unpack-bag bag" id="unpack-bag"></div>
     <div class="unpack-buttons"><button class="primary" id="unbuckle">Unbuckle the bag</button><button class="text-button light" id="unpack-help">How to play</button></div>
@@ -67,7 +70,7 @@
     <section><h3>Tablet</h3><ul><li><b>Tap</b> a keepsake for its tools; <b>double-tap</b> for a close-up.</li><li><b>Pinch</b> the table to zoom, drag the empty table to pan.</li><li>Hold a keepsake and <b>twist with a second finger</b> to turn it.</li></ul></section>
     <section><h3>Keyboard</h3><ul><li><kbd>M</kbd> magnifier (scroll over the lens for strength)</li><li><kbd>R</kbd> rotate, <kbd>F</kbd> flip, <kbd>Enter</kbd> close-up</li><li><kbd>+</kbd> <kbd>−</kbd> <kbd>0</kbd> zoom, arrows move a keepsake</li><li>On the padlock: type the code, or <kbd>↑</kbd> next <kbd>↓</kbd> back</li></ul></section>
   </div>
-  <p class="muted">Hints are optional and come one at a time. New keepsakes never push yours aside. Two things do move them: Tidy table, and the start of a new trail, when the finished trail’s keepsakes are stacked in piles (click a pile’s name to take one out). Progress saves in this browser; “Save a copy” keeps a backup or moves it to another device.</p>
+  <p class="muted">Hints are optional: under the padlock, open Hint 1, 2 or 3, or the Solution. New keepsakes never push yours aside. Only Tidy table moves them, stacking older keepsakes in piles (click a pile’s name to take one out); for the last lock, every postcard and map comes back out. Progress saves in this browser; “Save a copy” keeps a backup or moves it to another device.</p>
   <button class="primary" id="begin" autofocus>Back to the table</button></div></dialog>
 
 <dialog id="viewer" aria-labelledby="viewer-title"><h2 id="viewer-title" class="sr-only"></h2><div id="viewer-scroll"><div id="viewer-art"></div><div id="viewer-side" hidden></div></div>
@@ -97,7 +100,7 @@
   <p id="fb-result" role="status"></p>
   <div class="actions"><button type="submit" class="primary" id="fb-send">Send</button></div></form></dialog>
 
-<dialog id="restart-dialog" aria-labelledby="restart-title"><div class="intro-body"><h2 id="restart-title">Start the game again?</h2><p>This clears this playtest’s progress and notes in this browser. A saved copy is kept separately.</p><div class="actions"><button data-close>Keep playing</button><button class="primary" id="restart-confirm">Start again</button></div></div></dialog>
+<dialog id="restart-dialog" aria-labelledby="restart-title"><div class="intro-body"><h2 id="restart-title">Start the game again?</h2><p>This clears this playtest’s progress and notes in this browser. A saved copy is kept separately.</p><div class="actions"><button class="rust" data-close autofocus>Keep playing</button><button id="restart-confirm">Start again</button></div></div></dialog>
 <dialog id="save-dialog" aria-labelledby="save-title"><div class="dialog-top"><h2 id="save-title">Your saved game</h2><button data-close>Close</button></div><div class="intro-body"><p id="save-instructions"></p><label class="sr-only" for="save-text">Saved game text</label><textarea id="save-text" spellcheck="false"></textarea><p id="save-result" role="status"></p><div class="actions"><button id="select-save">Select all text</button><button id="download-save">Download file</button><button id="choose-save-file">Choose a file</button><button id="load-save-text" class="primary">Load saved game</button></div></div></dialog>
 
 <section id="certificate" class="certificate" aria-hidden="true"><div class="cert-frame"><svg class="cert-emblem" viewBox="0 0 512 512" aria-hidden="true"><circle cx="256" cy="256" r="230" fill="none" stroke="#B56A2A" stroke-width="18"/><path d="M86 322q170 55 340 0" fill="none" stroke="#B56A2A" stroke-width="16"/><path d="M125 306h260l-24 30H149z" fill="#B56A2A"/><path d="M253 134v169M253 143l-89 92h89zM264 148l87 84h-87z" fill="none" stroke="#193B35" stroke-width="14" stroke-linejoin="round"/><path d="M165 238q-55-15-72 25 30-5 46 7l-32 24 54-7q23-18 39-16" fill="#193B35"/></svg>

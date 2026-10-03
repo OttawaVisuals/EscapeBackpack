@@ -353,7 +353,7 @@
       buildDial(length, letters, !!lock.pending);
       $('lock-ask').textContent = lock.pending ? 'This lock is still being built: its combination is being set. Your progress is saved in this browser, so you can carry on from here when it’s ready.'
         : ''; // the wheels show what kind of code it is
-      $('lock-form').querySelector('button[type=submit]').disabled = !!lock.pending; $('hint-next').hidden = !!lock.pending;
+      $('lock-form').querySelector('button[type=submit]').disabled = !!lock.pending; $('hints').hidden = !!lock.pending;
     }
     $('lock-message').textContent = ''; $('lock-message').className = ''; renderHints(); renderAttempts();
     if (done) renderComplete();
@@ -452,11 +452,29 @@
     const start = Math.max(0, dialWheels().indexOf(document.activeElement));
     text.slice(0, dialVals.length - start).forEach((c, k) => setDial(start + k, c));
   });
+  /* Hints: a row of folds (Hint 1, 2, 3, Solution), each opened and closed on its own. Which
+     are open is only on this screen; the count kept for the result is the furthest one opened. */
+  let hintsStage = null; const hintsOpen = new Set();
   function renderHints() {
-    $('hints').replaceChildren(); if (state.stage >= G.locks.length) return;
-    const shown = state.hints[state.stage];
-    G.locks[state.stage].hints.slice(0, shown).forEach((text, i) => { const p = document.createElement('p'); p.className = 'hint'; const b = document.createElement('b'); b.textContent = (i === 3 ? 'Solution' : 'Hint ' + (i + 1)) + ' · '; p.append(b, text); $('hints').append(p); });
-    $('hint-next').textContent = shown === 0 ? 'Need a hint?' : shown === 3 ? 'Reveal the combination' : shown === 4 ? 'All hints shown' : 'Another hint'; $('hint-next').disabled = shown === 4;
+    if (state.stage >= G.locks.length) { $('hints').replaceChildren(); hintsStage = null; return; }
+    if (hintsStage !== state.stage) { hintsOpen.clear(); hintsStage = state.stage; }
+    const labels = ['Hint 1', 'Hint 2', 'Hint 3', 'Solution'], row = document.createElement('div'); row.className = 'hint-tabs';
+    const texts = G.locks[state.stage].hints.map((text, i) => {
+      const p = document.createElement('p'); p.className = 'hint'; p.id = `hint-${i}`; p.hidden = !hintsOpen.has(i);
+      const b = document.createElement('b'); b.textContent = labels[i] + ' · '; p.append(b, text); return p;
+    });
+    labels.forEach((label, i) => {
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.className = i === 3 ? 'solution' : '';
+      b.setAttribute('aria-expanded', String(hintsOpen.has(i))); b.setAttribute('aria-controls', `hint-${i}`);
+      b.onclick = () => {
+        const open = !hintsOpen.has(i); if (open) hintsOpen.add(i); else hintsOpen.delete(i);
+        texts[i].hidden = !open; b.setAttribute('aria-expanded', String(open));
+        if (open && state.hints[state.stage] < i + 1) { state.hints[state.stage] = i + 1; save(); }
+        if (open) texts[i].scrollIntoView({ block: 'nearest', behavior: reduceMotion() ? 'auto' : 'smooth' });
+      };
+      row.append(b);
+    });
+    $('hints').replaceChildren(row, ...texts);
   }
   function openViewer(id) {
     hideTools(); viewerId = id; select(id);
@@ -568,7 +586,6 @@
   }
   function hideBanner() { clearTimeout(bannerTimer); $('unlock-banner').hidden = true; }
   $('banner-close').onclick = hideBanner;
-  $('hint-next').onclick = () => { if (state.stage >= G.locks.length) return; state.hints[state.stage] = Math.min(4, state.hints[state.stage] + 1); renderHints(); save(); $('hints').lastElementChild?.scrollIntoView({ block: 'nearest', behavior: reduceMotion() ? 'auto' : 'smooth' }); };
   $('notes').value = state.notes; $('notes').oninput = () => { state.notes = $('notes').value; save(); };
   $('viewer-compare').onchange = () => { compareId = $('viewer-compare').value; renderViewer(); };
   // Double-click the side prop to swap places, so Flip and Rotate act on it.
@@ -579,6 +596,13 @@
   document.querySelectorAll('[data-close]').forEach(button => button.onclick = () => button.closest('dialog').close());
   $('review-table').onclick = () => $('table-scroll').scrollIntoView({ block: 'center' });
   $('restart').onclick = () => $('restart-dialog').showModal();
+  // On laptops the save, load, restart and feedback controls sit in the top bar (Game menu).
+  const closeGame = () => { $('game-menu').hidden = true; $('game-btn').setAttribute('aria-expanded', 'false'); };
+  $('game-btn').onclick = e => { e.stopPropagation(); const open = $('game-menu').hidden; $('game-menu').hidden = !open; $('game-btn').setAttribute('aria-expanded', String(open)); if (open) $('game-menu').querySelector('button').focus(); };
+  document.addEventListener('pointerdown', e => { if (!$('game-menu').hidden && !e.target.closest('.game-wrap')) closeGame(); });
+  $('game-menu').addEventListener('keydown', e => { if (e.key === 'Escape') { closeGame(); $('game-btn').focus(); } });
+  for (const [menu, target] of [['menu-export', 'export-save'], ['menu-import', 'import-save'], ['menu-restart', 'restart'], ['feedback-top', 'open-feedback']])
+    $(menu).addEventListener('click', () => { closeGame(); $(target).click(); });
   $('restart-confirm').onclick = () => { state = G.fresh(); selected = null; $('notes').value = ''; $('restart-dialog').close(); buildTable(); renderProgress(); renderPins(); save(); openUnpack(); };
   function openSave(mode) {
     const exporting = mode === 'export';
