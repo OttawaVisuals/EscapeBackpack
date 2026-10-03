@@ -2,7 +2,7 @@
 
 ## Session — 2026-10-02 — Review of Claude Design's online edition (Claude Code)
 
-**Task/status:** The user asked for a review of Claude Design's work on the Norse online game (uncommitted, files dated 2 Oct 17:34, mixed into the same files as Part 6's piles below), then said "fix 1-4". Done. Committed at the user's request (2 Oct 2026), not pushed or published: design repo `f830d6e`, site repo `a1d1d51`. Left out: Codex's root `index.html` change and `Hiking_Trip/Digital/`; `escapepack-rooms` is not a git repo. Recorded as `DG-12` (Open) in `Norse_Brainstorm.html`.
+**Task/status:** The user asked for a review of Claude Design's work on the Norse online game (uncommitted, files dated 2 Oct 17:34, mixed into the same files as Part 6's piles below), then said "fix 1-4". Done. Committed, pushed and published at the user's request (2 Oct 2026): design repo `f830d6e` (+ handoff `a5d8db7`), site repo `a1d1d51`. Verified live at https://escapepack.ca/play/norse/leif/ about 75 s after the push: homepage card reads "Play all four trails and the final route online."; game shows LOCK 1 OF 13, no trail row or lanes button, shelf grouped by kind, `leif-sound.js` and `leif-room.js` load, no broken images, no console errors; live `leif-data.js` has the L1 opening note and no trail notes. Not seen live: the opening screen itself (the check browser already had a save). Left out: Codex's root `index.html` change and `Hiking_Trip/Digital/`; `escapepack-rooms` is not a git repo. Recorded as `DG-12` (Open) in `Norse_Brainstorm.html`.
 
 **What Claude Design added:** see `DG-12`: new title and opening letter, padlock wheels, lock banner with ratings, tried codes, pinned notes, zoom and tablet gestures, ending with result, certificate and feedback (Formspree), sound (`leif-sound.js`), Play together (`leif-room.js` plus the `escapepack-rooms` Worker folder, not a git repo), lock 6 = 104. Site repo: `tools/build_leif.cjs` and `README.md` updated to package the new files.
 
@@ -28,9 +28,14 @@ Site copy rebuilt with `node tools/build_leif.cjs`.
 5. `leg` removed from every lock, `legs`/`legAt`/`legOf`/`STORY.chapters` removed; props renamed to their printed titles; "Small pouch"; nudges, messages and hints rewritten. Kept: "Aud's Treasure Museum ticket" (printed), "Harald's horn" (lock 11's subject).
 Tests: 40/40 (lanes test and trail-stack test removed; new tests for Tidy by age, no stacking on open, `bringBack`, and no Viking or trail in names and lock text). Browser at `?lock=8`: masthead LOCK 8 OF 13, no trail row, map titles on the table, shelf groups Postcards/Maps/Tickets & papers/Objects; at `?lock=12`: Tidy made Cards/Maps/Papers piles, 253 brought cards and maps back out, masthead THE FINAL ROUTE, card "The final route"; no console errors. Site copy rebuilt.
 
-**Open:** the new lock order (`ST-06`); deploy Play together or leave it hidden (`DG-12`).
+**Open (the user will pick these up later):**
+- `ST-06`: the difficulty order of locks and releases; the live game still releases one trail at a time.
+- `DG-12`: deploy Play together (`escapepack-rooms`, `npx wrangler deploy`, then set `<meta name="rooms-server">` in `Leif.html` and rebuild) or leave it hidden.
+- `escapepack-rooms` (next to this repo) is not a git repository, so the Worker code is not backed up.
+- Codex's root `index.html` change and `Hiking_Trip/Digital/` are still uncommitted here.
+- Minor (`DG-12`): Ctrl+P prints only the certificate; on a phone the table leaves large empty areas.
 
-**Next action:** User sketches the difficulty order for `ST-06` (which lock releases which postcards and props); then the online chain is re-sequenced in `leif-data.js`.
+**Next action:** User sketches the difficulty order for `ST-06` (which lock releases which postcards and props); then the online chain is re-sequenced in `leif-data.js` and rebuilt with `node tools/build_leif.cjs` in escapepack-site.
 
 ## Session — 2026-10-01 — Full game online, part 1: Aud's leg (Claude Code)
 
