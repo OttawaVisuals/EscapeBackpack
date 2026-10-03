@@ -66,81 +66,81 @@
   const coinIds = COINS.map((_, i) => 'coin' + (i + 1));
   COINS.forEach((art, i) => { items[coinIds[i]] = { name: 'Coin', kind: 'Coin', faces: [`./assets/Coin_${art}.svg`], round: true, noSnap: true, ...slot(coinIds[i]) }; });
   const locks = [
-    { nudge: 'Liv sent her bag with a postcard, two luggage tags and a museum ticket. Start with her postcard.', name: 'Main compartment', pocket: 'main', answer: '1021', releases: ['L2', 'L3'], message: 'Inside are two more postcards from Liv.', hints: [
+    { nudge: 'Liv sent her bag with a postcard, two luggage tags and a museum ticket.', name: 'Main compartment', pocket: 'main', answer: '1021', releases: ['L2', 'L3'], message: 'Inside are two more postcards from Liv.', hints: [
       'Look at both luggage tags and both sides of the first postcard.',
       'Each tag has a street number. The postcard is from the first stop of Liv’s journey. Which tag matches that place?',
       'Use the Vinland tag’s street number first, followed by the Rouen tag’s street number.',
       'The combination is 1021.'
     ] },
-    { nudge: 'Two more postcards from Liv. Read them side by side.', name: 'Lower front pocket', pocket: 'lowerFront', answer: '1576', releases: ['LD', 'map'], message: 'A postcard from Greenland and a map of the Western Lands were tucked inside.', hints: [
+    { nudge: 'Two more postcards from Liv.', name: 'Lower front pocket', pocket: 'lowerFront', answer: '1576', releases: ['LD', 'map'], message: 'A postcard from Greenland and a map of the Western Lands were tucked inside.', hints: [
       'Read the two new postcards. What do they both say about the sky?',
       'Try bringing the two illustrated skies together on the table. You can rotate and move the cards.',
       'Put Battle Harbour above Baffin Island, both picture-side up. Rotate Battle Harbour twice so it is upside down, then move it until its top edge meets Baffin Island’s top edge. Use the magnifier on the join.',
       'The joined cloud fragments read 1576.'
     ] },
-    { nudge: 'A postcard from Greenland and a map of the Western Lands. Every little detail counts.', name: 'Small pouch', pocket: 'rolloPouch', answer: '3212', releases: ['R2', 'rolloMap', 'rouenTicket'], message: 'A postcard from Rouen, a map of the Granted Lands and a museum ticket.', hints: [
+    { nudge: 'A postcard from Greenland and a map of the Western Lands.', name: 'Small pouch', pocket: 'rolloPouch', answer: '3212', releases: ['R2', 'rolloMap', 'rouenTicket'], message: 'A postcard from Rouen, a map of the Granted Lands and a museum ticket.', hints: [
       'Inspect every detail on the Brattahlíð postcard, including the small print. Keep the sea chart and museum ticket nearby.',
       '“Series F, No. 1” points to a square on the chart. What animal is there?',
       'The animal is a bear. Spell its name using the visitor index on the back of the museum ticket, taking one digit per letter.',
       'B → 3, E → 2, A → 1, R → 2. The combination is 3212.'
     ] },
-    { nudge: 'The Granted Lands map, a postcard from Rouen and a museum ticket. See what they have in common.', name: 'Lower left pocket', pocket: 'lowerLeft', answer: '1486', releases: ['R1', 'R6', 'RD'], message: 'Three more postcards.', hints: [
+    { nudge: 'A postcard from Rouen, a map of the Granted Lands and a museum ticket.', name: 'Lower left pocket', pocket: 'lowerLeft', answer: '1486', releases: ['R1', 'R6', 'RD'], message: 'Three more postcards.', hints: [
       'Read the Rouen postcard next to the back of the Rouen museum ticket. Some of Liv’s words have a partner on the ticket.',
       'The ticket pairs everyday Saxon words (numbered) with their Norman partners (lettered). A matched pair gives a letter and a number: a square on the Granted Lands map.',
       'Liv mentions fighting, people, poultry and an inn, in that order. For each, match the pair, find its square on the map, and count the squares to the drawing for that word.',
       'Fight 1, people 4, poultry 8, inn 6. The combination is 1486.'
     ] },
-    { nudge: 'Three more postcards. Look closely at their pictures.', name: 'Lower right pocket', pocket: 'lowerRight', answer: '562', releases: ['R3', 'R4', 'R5', 'ruler'], message: 'Three more postcards, and Liv’s architect’s ruler.', hints: [
+    { nudge: 'Three more postcards.', name: 'Lower right pocket', pocket: 'lowerRight', answer: '562', releases: ['R3', 'R4', 'R5', 'ruler'], message: 'Three more postcards, and Liv’s architect’s ruler.', hints: [
       'Look closely at the pictures on the three new postcards. Each message mentions something small in passing.',
       'Count the Viking boats at Walcheren, the wild boars in Roumare Forest and the crossbow bolts at Châlus. Use the magnifier: some hide well. Read Roumare’s message again before you settle on its number.',
       'The Fun Facts on the backs date each place. Put the counts in date order: Walcheren, then Roumare, then Châlus. Liv thinks there were twice as many boars as she saw.',
       '5 boats, 3 boars doubled to 6, 2 bolts. The combination is 562.'
     ] },
     // Lock 6 (PZ-14): measured on Rollo's map with the ruler's 1:125 face. Code confirmed 2 Oct 2026.
-    { nudge: 'Three more postcards and Liv’s ruler. Her drawings only make sense at the right scale.', name: 'Large pouch', pocket: 'largePouch', answer: '104', releases: ['A2', 'audMap', 'audTicket'], message: 'A postcard from Iceland, a map of the Island Settlement and a museum ticket.', hints: [
+    { nudge: 'Three more postcards and Liv’s architect’s ruler.', name: 'Large pouch', pocket: 'largePouch', answer: '104', releases: ['A2', 'audMap', 'audTicket'], message: 'A postcard from Iceland, a map of the Island Settlement and a museum ticket.', hints: [
       'The Bayeux, Winchester and Battle postcards each end with a little picture puzzle. Read them as rebuses.',
       'Two of the rebuses point to places on the Granted Lands map; the third tells you which scale of the ruler to use.',
       'Measure between those two places on the Granted Lands map with the architect’s ruler, on its 1:125 scale.',
       'The distance measures 104 on the 1:125 scale. The combination is 104.'
     ] },
-    { nudge: 'The Island Settlement map and a ticket from a treasure museum. Liv went on a treasure hunt.', name: 'Lower front pocket, again', pocket: 'lowerFront', answer: '521', releases: ['A1', 'A3', ...coinIds, 'tally'], message: 'Two more postcards, a pouch of coins and a little tally.', hints: [
+    { nudge: 'A postcard from Iceland, a map of the Island Settlement and a museum ticket.', name: 'Lower front pocket, again', pocket: 'lowerFront', answer: '521', releases: ['A1', 'A3', ...coinIds, 'tally'], message: 'Two more postcards, a pouch of coins and a little tally.', hints: [
       'The Island Settlement map and the Treasure Museum ticket go together: the ticket gives directions, and the Hvammur card says what to count on the way.',
       'Start at the northernmost chapel on the Island Settlement map and follow the ticket’s six steps along the roads.',
       'As you go, count the bridges, the fords and the gates you cross. Keep three separate tallies, in that order.',
       '5 bridges, 2 fords, 1 gate. The combination is 521.'
     ] },
-    { nudge: 'A pouch of coins and a little tally. Not every coin belongs together.', name: 'Inside top pocket', pocket: 'insideTop', answer: 'SOLE', releases: ['AD', 'comb'], message: 'A postcard from Bjarnarhöfn and a carved comb.', hints: [
+    { nudge: 'Two more postcards, a pouch of coins and a little tally.', name: 'Inside top pocket', pocket: 'insideTop', answer: 'SOLE', releases: ['AD', 'comb'], message: 'A postcard from Bjarnarhöfn and a carved comb.', hints: [
       'Not every coin belongs to the same hoard. The front of the Treasure Museum ticket sorts them into three groups and gives their values.',
       'The Island Settlement map marks where the treasure was hidden with a rune. Find that rune on the ticket: it picks one group of coins.',
       'Add up the values of the coins in that group, set the total on the tally’s wheels, then turn the tally upside down.',
       '5 + 100 + 3,600 = 3705, which reads SOLE upside down.'
     ] },
-    { nudge: 'A postcard from Bjarnarhöfn and a carved comb. Liv’s souvenirs are rarely just what they seem.', name: 'Large pouch, once more', pocket: 'largePouch', answer: 'BOOK', releases: ['H4', 'H5', 'haraldMap', 'ravenCard'], message: 'Two more postcards, a map of the Varangian Road and a card of raven flights.', hints: [
+    { nudge: 'A postcard from Bjarnarhöfn and a carved comb.', name: 'Large pouch, once more', pocket: 'largePouch', answer: 'BOOK', releases: ['H4', 'H5', 'haraldMap', 'ravenCard'], message: 'Two more postcards, a map of the Varangian Road and a card of raven flights.', hints: [
       'The comb is more than a comb. Try it on one of the postcards.',
       'Its two holes fit over the two little ring-and-dot marks on the Bjarnarhöfn card’s message side. Line them up and the comb settles in.',
       'With the comb in place, most lines are hidden, but four of its teeth are broken short. Read the first letter that shows after each short tooth, from the top down.',
       'The short teeth uncover “brother’s”, “ould”, “ongside” and “Keep”: B, O, O, K. The combination is BOOK.'
     ] },
-    { nudge: 'The Varangian Road map and a card of raven flights. Look for marks that don’t belong on a map.', name: 'Lower left pocket, again', pocket: 'lowerLeft', answer: '2648', releases: ['H2', 'H3', 'HD'], message: 'Three more postcards.', hints: [
+    { nudge: 'Two more postcards, a map of the Varangian Road and a card of raven flights.', name: 'Lower left pocket, again', pocket: 'lowerLeft', answer: '2648', releases: ['H2', 'H3', 'HD'], message: 'Three more postcards.', hints: [
       'The Varangian Road map has a few odd little marks among the places. The Hedeby postcard explains what they are.',
       'They are branch runes: the Hedeby card shows how the branches on each side pick a rune. The word the Sicily card writes in capitals tells you which columns of the map to read, and in what order.',
       'Reading the runes in columns R, A, V, E and N gives H, R, A, F, N. Follow H → R → A → F → N on the raven’s flights card and note the number on each flight.',
       '2, 6, 4 and 8. The combination is 2648.'
     ] },
-    { nudge: 'Three more postcards. What was in Harald’s horn?', name: 'Board bag', pocket: 'boardBag', answer: 'MEAD', releases: ['H1', 'board', 'osloTicket'], message: 'The Oslo postcard, a Hnefatafl board with its pieces, and a museum ticket.', hints: [
+    { nudge: 'Three more postcards.', name: 'Board bag', pocket: 'boardBag', answer: 'MEAD', releases: ['H1', 'board', 'osloTicket'], message: 'The Oslo postcard, a Hnefatafl board with its pieces, and a museum ticket.', hints: [
       'Each of the three new postcards hides one word. Together they say what was in Harald’s horn.',
       'On the Staraya Ladoga card, only a few letters sit right on the left margin: read them downwards. The Kyiv card is a riddle, and the Constantinople card ends with a picture puzzle.',
       'Staraya Ladoga spells DRINK, Kyiv’s riddle answers HONEY, and Constantinople’s pictures (sugar and yeast becoming a fizzing flask) mean FERMENTED. A fermented honey drink is…',
       'MEAD. The combination is MEAD.'
     ] },
-    { nudge: 'A Hnefatafl board and its pieces. Liv kept a note of how to set them out.', name: 'Large pouch, last time', pocket: 'largePouch', answer: '253', releases: ['H6', 'transition1', 'transition2', 'transition3', 'journal'], message: 'The last postcard, three booking confirmations and a page from Liv’s journal.', hints: [
+    { nudge: 'The Oslo postcard, a Hnefatafl board with its pieces, and a museum ticket.', name: 'Large pouch, last time', pocket: 'largePouch', answer: '253', releases: ['H6', 'transition1', 'transition2', 'transition3', 'journal'], message: 'The last postcard, three booking confirmations and a page from Liv’s journal.', hints: [
       'The back of the Varangian Road map is Liv’s note of a Hnefatafl starting position. Set the pieces out on the board to match it.',
       'A wet ticket ruined columns I to K of her note. The museum ticket carries them: turn it over until you can see it held up to the light, the right way round.',
       'The Oslo postcard says the king escapes in exactly three moves. The king starts on the centre square and slides like a rook, never jumping, until it reaches a corner. Count the squares of each move.',
       'F6 → H6 → H11 → K11: moves of 2, 5 and 3 squares. The combination is 253.'
     ] },
     // The final riddle (PZ-18, PZ-06): filter the decoys, order each trail, draw it on its map.
-    { nudge: 'All 22 postcards, four maps, three bookings and Liv’s journal page. Her whole year is on the table.', name: 'Inside middle pocket', pocket: 'insideMiddle', answer: '1972', releases: ['medallion'], message: 'A plane ticket, a medallion and a note from Liv.', hints: [
+    { nudge: 'The last postcard, three booking confirmations and a page from Liv’s journal.', name: 'Inside middle pocket', pocket: 'insideMiddle', answer: '1972', releases: ['medallion'], message: 'A plane ticket, a medallion and a note from Liv.', hints: [
       'Not every postcard belongs. Liv’s journal page shows the family’s marks; each real card carries one of them in its corner.',
       'Four cards carry a mark that is not in the drawings: a horned helmet or a double-sided axe. Set those four decoys aside.',
       'Sort the real cards for each map into the order Liv visited them. The booking confirmations show where one journey ended and the next began, and the journal lists journeys she made. Then use the marker to join the stops on each map in that order.',

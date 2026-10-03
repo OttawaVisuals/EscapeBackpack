@@ -352,7 +352,7 @@
       $('lock-number').textContent = `Lock ${state.stage + 1} of ${G.locks.length}`; $('lock-name').textContent = lock.name; $('lock-nudge').textContent = lock.nudge || '';
       buildDial(length, letters, !!lock.pending);
       $('lock-ask').textContent = lock.pending ? 'This lock is still being built: its combination is being set. Your progress is saved in this browser, so you can carry on from here when it’s ready.'
-        : letters ? `A word lock: turn the wheels to a ${length === 4 ? 'four' : length}-letter word hidden among Liv’s keepsakes.` : `Turn the wheels to a ${length === 3 ? 'three' : 'four'}-digit combination hidden among Liv’s keepsakes.`;
+        : ''; // the wheels show what kind of code it is
       $('lock-form').querySelector('button[type=submit]').disabled = !!lock.pending; $('hint-next').hidden = !!lock.pending;
     }
     $('lock-message').textContent = ''; $('lock-message').className = ''; renderHints(); renderAttempts();

@@ -37,6 +37,8 @@ Tests: 40/40 (lanes test and trail-stack test removed; new tests for Tidy by age
 
 **Padlock wheels (user chose option 1 of 4):** the wheel face was ambiguous (clicking its top half went back, ↑ and drag-up went forward). Each wheel now has a ▲ (next, 5 → 6) and ▼ (back) button (`.turn` in `leif.css`, built in `buildDial`); clicking the face no longer turns it; drag, scroll, typing and ↑/↓ unchanged. Tests 40/40; checked in the browser on desktop and phone width. Committed `ebe3f62` (site `4e0a33c`); live on escapepack.ca about 60 s after the push.
 
+**Backpack panel fits a laptop (user: the panel is too long; drop padding):** on a 1366×768 screen the panel needed 972 px for 704 visible. Now: the bag is small and floats beside the lock name and nudge; the "Your backpack · n of 13 open" row is hidden (the masthead and "Lock n of 13" already say it); the line "Turn the wheels to a four-digit combination…" is gone (kept only for a lock still being built); tighter spacing. Fits with no scroll at 1366×768 on locks 1 and 13. Tablet upright and phone layouts unchanged (bag beside the lock / stacked). Lock nudges (user: "Read them side by side" is already a hint) now only say what came out of the last lock; the hint halves are gone, including lock 11's "What was in Harald's horn?" (user: "let's try like this").
+
 **Next action:** User sketches the difficulty order for `ST-06` (which lock releases which postcards and props); then the online chain is re-sequenced in `leif-data.js` and rebuilt with `node tools/build_leif.cjs` in escapepack-site.
 
 ## Session — 2026-10-01 — Full game online, part 1: Aud's leg (Claude Code)

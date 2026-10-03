@@ -179,17 +179,18 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 304px;grid-template-areas:
 #lock-panel{border-top:1px solid var(--line);padding-top:14px}
 #lock-name{font-size:20px;margin-bottom:8px}
 .lock-nudge{font-size:14px;color:var(--ink);margin:0 0 6px}
-#lock-form{margin-top:14px}
+#lock-form{margin-top:10px}
+#lock-ask:empty{display:none}
 .lock-row{display:flex;align-items:flex-end;gap:10px}
 .open-button{height:52px;padding:0 16px;font-size:15px;flex:none;margin-bottom:2px}
 
 /* The padlock: brass body, wheels in windows. */
-.padlock{position:relative;padding-top:18px;flex:0 0 auto}
+.padlock{position:relative;padding-top:16px;flex:0 0 auto}
 .shackle{position:absolute;left:50%;top:0;width:56%;height:34px;margin-left:-28%;border:7px solid #9C9384;border-bottom:0;border-radius:30px 30px 0 0;background:none;transition:transform .45s cubic-bezier(.3,1.6,.6,1);transform-origin:85% 100%;z-index:0}
 .padlock.unlocked .shackle{transform:translateY(-12px) rotate(-12deg)}
 .dial{position:relative;z-index:1;display:flex;justify-content:center;gap:4px;padding:9px 8px;border-radius:12px;background:linear-gradient(160deg,#D8B47A,#B5874A 45%,#8C6430);border:1px solid #6B4A22;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 4px 10px rgba(30,20,10,.25)}
 .wheel-col{display:flex;flex-direction:column;align-items:center;gap:3px}
-.turn{width:36px;height:22px;padding:0;display:grid;place-items:center;border:1px solid #6B4A22;border-radius:6px;background:linear-gradient(180deg,#E6C890,#C49A5C);color:#3A2810;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+.turn{width:36px;height:19px;padding:0;display:grid;place-items:center;border:1px solid #6B4A22;border-radius:6px;background:linear-gradient(180deg,#E6C890,#C49A5C);color:#3A2810;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
 .turn svg{width:12px;height:8px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .turn:last-child svg{transform:rotate(180deg)}
 .turn:hover:not(:disabled){background:linear-gradient(180deg,#F0D6A4,#CFA668)}
@@ -428,6 +429,19 @@ body.zooming #table,body.zooming #table-size{transition:none}
 
 /* The backpack panel: bag beside the lock on wide or short layouts (see the tablet rules). */
 .pack-grid{display:block}
+/* Side panel: a small bag floats beside the lock's name and nudge, so the padlock and the
+   notebook fit without scrolling on a laptop. */
+@media(min-width:681px){
+  .pack-head{display:none}
+  .pack-art{float:right;width:100px;margin:0 0 6px 10px}
+  .pack-art .bag{max-width:none;margin:0}
+  #lock-panel{border-top:0;padding-top:0}
+  #lock-name{font-size:19px;margin-bottom:6px}
+  #lock-form{clear:both}
+  .notebook{margin-top:12px;padding-top:10px}
+  .notebook textarea{min-height:84px}
+  .session-controls{margin-top:10px}
+}
 .attempts{display:flex;flex-wrap:wrap;gap:5px;align-items:center;font-size:12px;color:var(--muted);margin:2px 0 6px}
 .attempts code{font:600 12px ui-monospace,Consolas,monospace;background:#EDE5D3;color:var(--ink);padding:2px 6px;border-radius:4px;text-decoration:line-through;text-decoration-color:rgba(154,51,36,.55)}
 .rate{display:flex;align-items:center;gap:2px;margin-top:6px;font-size:13px;color:var(--muted)}
@@ -557,6 +571,8 @@ body.zooming #table,body.zooming #table-size{transition:none}
   .backpack{border-left:0;border-top:1px solid var(--line);padding:14px 20px}
   .pack-grid{display:grid;grid-template-columns:230px minmax(0,1fr);gap:24px;align-items:start}
   .pack-lock #lock-panel{border-top:0;padding-top:0}
+  .pack-art{float:none;width:auto;margin:0}
+  .pack-head{display:flex}
   .bag{max-width:200px}
   .chapter{display:none}
   .head-actions{margin-left:auto}
