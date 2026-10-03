@@ -2,7 +2,7 @@
 
 ## Session — 2026-10-02 — Review of Claude Design's online edition (Claude Code)
 
-**Task/status:** The user asked for a review of Claude Design's work on the Norse online game (uncommitted, files dated 2 Oct 17:34, mixed into the same files as Part 6's piles below), then said "fix 1-4". Done; nothing committed or published. Recorded as `DG-12` (Open) in `Norse_Brainstorm.html`.
+**Task/status:** The user asked for a review of Claude Design's work on the Norse online game (uncommitted, files dated 2 Oct 17:34, mixed into the same files as Part 6's piles below), then said "fix 1-4". Done. Committed at the user's request (2 Oct 2026), not pushed or published: design repo `f830d6e`, site repo `a1d1d51`. Left out: Codex's root `index.html` change and `Hiking_Trip/Digital/`; `escapepack-rooms` is not a git repo. Recorded as `DG-12` (Open) in `Norse_Brainstorm.html`.
 
 **What Claude Design added:** see `DG-12`: new title and opening letter, padlock wheels, lock banner with ratings, tried codes, pinned notes, zoom and tablet gestures, ending with result, certificate and feedback (Formspree), sound (`leif-sound.js`), Play together (`leif-room.js` plus the `escapepack-rooms` Worker folder, not a git repo), lock 6 = 104. Site repo: `tools/build_leif.cjs` and `README.md` updated to package the new files.
 
