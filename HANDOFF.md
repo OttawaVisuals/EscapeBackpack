@@ -1,5 +1,37 @@
 # Project Handoff
 
+## Session — 2026-10-02 — Review of Claude Design's online edition (Claude Code)
+
+**Task/status:** The user asked for a review of Claude Design's work on the Norse online game (uncommitted, files dated 2 Oct 17:34, mixed into the same files as Part 6's piles below), then said "fix 1-4". Done; nothing committed or published. Recorded as `DG-12` (Open) in `Norse_Brainstorm.html`.
+
+**What Claude Design added:** see `DG-12`: new title and opening letter, padlock wheels, lock banner with ratings, tried codes, pinned notes, zoom and tablet gestures, ending with result, certificate and feedback (Formspree), sound (`leif-sound.js`), Play together (`leif-room.js` plus the `escapepack-rooms` Worker folder, not a git repo), lock 6 = 104. Site repo: `tools/build_leif.cjs` and `README.md` updated to package the new files.
+
+**Fixes (this session):**
+1. Recorded the work: `DG-12` in the brainstorm page and this entry. The previous entry's "Next action" (measure lock 6) is done: 104 since `3720ee7`.
+2. Site homepage card (`escapepack-site/index.html`): "One lock is still being built" → "Play all four trails and the final route online."
+3. How to play text in `Leif.html`: no longer claims the game never moves keepsakes; names Tidy and the new-trail piles.
+4. Sorting lanes (`leif-data.js` `LANES`, new `tableSize`; `leif.js` uses it in 3 places): lanes moved to a band below the 52 × 28 in table; the table is 52 × 44.4 in while the lanes are out or a card lies in them; saves keep cards in the band. Lanes test updated.
+
+Site copy rebuilt with `node tools/build_leif.cjs`.
+
+**Checks:** 41/41 Node tests. Browser (localhost, 1440 × 900) at `?lock=13`: lanes drawn below every dealt prop with no overlap; a postcard dragged to Harald slot 1 snapped, kept its slot after reload, and the table stayed tall after lanes were turned off; How to play shows the new text; no console errors. Also played lock 1 (wrong code, then 1021) and lock 13 to the ending, and checked 375 px width has no sideways scroll. Not checked: Play together against a running Worker, the feedback form's real send, printing the certificate.
+
+**Opening letter (decided with the user):** Claude Design's letter overlapped postcard L1, so `STORY.letter` now quotes L1 word for word (greeting and the puzzle line, "With love, Aunt Liv"); `leif.js` no longer appends `STORY.signature` to it. 41/41 tests; browser shows the short note on the opening screen. Site copy rebuilt.
+
+**Trail notes dropped, trails numbered (decided with the user):** `STORY.chapters` is empty; `legs` in `leif-data.js` is now "Trail 1–4" / "The final route", `SHORT` in `leif.js` "Trail 1–4" / "Final"; masthead reads "TRAIL n OF 4" or "THE FINAL ROUTE"; restart dialog "Start the game again?"; save file `raven-inheritance-save.json`; lock 3 message no longer names Leif or Rollo. Test renamed and extended (no notes; no Viking in a trail name). 41/41 tests; browser at `?lock=6` → 104: pop-up titled "Trail 3" with no note, masthead TRAIL 3 OF 4, backpack and shelf labels fit, no console errors. Site copy rebuilt.
+
+**No trails on screen (user: "remove the distinction between the trails"; plan approved with "go"):** the user also set a new direction, recorded as `ST-06`: keepsakes will arrive by difficulty with trails mixed (lock order not yet set). Built:
+1. Masthead "LOCK n OF 13" / "THE FINAL ROUTE" / "ALL 13 LOCKS OPEN"; trail row under the backpack removed (`renderTrails`, `#trails`, its CSS); pop-up card only for the final route and the end.
+2. Shelf and pinned-notes list grouped by kind (`KINDS` in `leif.js`); the groups holding the last lock's keepsakes open.
+3. Piles by age (`retired` in `leif-data.js`: arrived before the last two locks; for the last lock postcards and maps stay out); no stacking when a lock opens; new `bringBack` returns piled postcards and maps at the final route. `DG-11` marked partly superseded.
+4. Sorting lanes removed (`LANES`, `laneSnap`, `tableSize`, `state.lanes`, button, CSS, tip, room sync).
+5. `leg` removed from every lock, `legs`/`legAt`/`legOf`/`STORY.chapters` removed; props renamed to their printed titles; "Small pouch"; nudges, messages and hints rewritten. Kept: "Aud's Treasure Museum ticket" (printed), "Harald's horn" (lock 11's subject).
+Tests: 40/40 (lanes test and trail-stack test removed; new tests for Tidy by age, no stacking on open, `bringBack`, and no Viking or trail in names and lock text). Browser at `?lock=8`: masthead LOCK 8 OF 13, no trail row, map titles on the table, shelf groups Postcards/Maps/Tickets & papers/Objects; at `?lock=12`: Tidy made Cards/Maps/Papers piles, 253 brought cards and maps back out, masthead THE FINAL ROUTE, card "The final route"; no console errors. Site copy rebuilt.
+
+**Open:** the new lock order (`ST-06`); deploy Play together or leave it hidden (`DG-12`).
+
+**Next action:** User sketches the difficulty order for `ST-06` (which lock releases which postcards and props); then the online chain is re-sequenced in `leif-data.js`.
+
 ## Session — 2026-10-01 — Full game online, part 1: Aud's leg (Claude Code)
 
 **Task/status:** In progress; nothing committed or published. The user asked for the full game. Decided in chat: build every leg now and publish only once lock 6's code is set (the live site stays at lock 5). Aud's leg is done; Harald's leg and the final riddle are next.
@@ -24,6 +56,8 @@
 **Status:** committed and published at the user's request (2 Oct 2026), with lock 6 still pending. Design repo `710e408`; site repo `f21533b`, live at https://escapepack.ca/play/norse/leif/. Homepage card now reads "Play all four trails online. One lock is still being built."; site README updated. Verified live: the first five codes open, lock 6 shows the "still being built" note with the box disabled, "5 of 13 locks open", no broken images, no console errors; `?lock=13` is ignored on escapepack.ca (starts at lock 1). Three generated WebPs (ticket light face, medallion faces) were force-added because `.gitignore` ignores WebP under NorseBackpack. Not committed: Codex's root `index.html` change and its `Hiking_Trip/Digital/`.
 
 **Part 5, keepsakes shelf on the left (2 Oct 2026):** the user asked to move "Collected keepsakes" to a left column to free height for the table. The table is wide (up to 52 × 28 in), so a fixed column made it smaller on many screens (1440 × 860: 1082 → 884 px wide). `placeShelf` in `leif.js` now puts the shelf in a 200 px left column only when that gives a bigger table (1536 × 730: +17%; 1920 × 950: +8%) and keeps the bottom row otherwise and at 1000 px wide or less. Committed and published at the user's request: design repo `13c29be`, site repo `7d17318`; verified live.
+
+**Part 6, stacks for earlier trails (2 Oct 2026):** user request, proposal approved ("go"); recorded as `DG-11`. Tidy table, and the lock that starts a new trail, stack finished trails into three fanned piles (postcards, maps, paper props) with name strips; solid props go to the shelf; on the final route postcards and maps stay out. Click a name or the shelf to take one out (free spot, table grows if needed), or drag it off. Tidy packs piles and props first-fit, retrying tallest-first, on the smallest table: trail starts now use 29 in (Rollo, Aud) or 37 in (Harald). `leif-data.js`: `arrange`, `release`, `unpile`, `repack`, `retired`, saved `piles` corners. 32/32 Node tests (3 new); browser-checked Tidy at lock 7, BOOK auto-stack, name-click, drag-off, Put away, reload. Not committed.
 
 **Next action:** User measures Châlus to Saint-Clair on a 100% print of Rollo's map and sets lock 6's code; then commit and publish the full game.
 
