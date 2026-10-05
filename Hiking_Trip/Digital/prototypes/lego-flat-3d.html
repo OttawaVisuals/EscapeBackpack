@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flat Lego Puzzle</title>
+<style>
+:root{color-scheme:light;--ink:#183b35;--cream:#f7f5ef;--paper:#fffdf6;--muted:#6a756b;--amber:#e39a45;--line:#d9dcd0;--rust:#ab5033}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--cream);color:var(--ink);font:14px/1.5 "Segoe UI",Arial,sans-serif;display:flex;flex-direction:column}
+button{font:inherit;cursor:pointer;color:inherit;border:1px solid #cbd0c2;background:#fffdf5;border-radius:6px;padding:8px 12px}
+button:hover:not(:disabled){background:#eaeede;border-color:#81917b}
+button:disabled{opacity:.4;cursor:default}
+button:focus-visible{outline:3px solid #d98529;outline-offset:3px}
+button[aria-pressed=true]{background:#dbe2c9;border-color:#8d9e79}
+.primary{background:var(--ink);border-color:var(--ink);color:#fff9e8;font-weight:600}
+.primary:hover:not(:disabled){background:#356051;color:#fff}
+header{background:var(--ink);color:#fbf6e8;padding:14px 24px;border-bottom:3px solid var(--amber)}
+header .eyebrow{font-size:10px;letter-spacing:1.8px;font-weight:700;color:#c2cdbd}
+header h1{font:400 26px/1.15 Georgia,serif;margin:2px 0 0}
+main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 320px}
+#view{position:relative;min-height:320px}
+#view canvas{display:block;width:100%;height:100%;touch-action:none}
+.view-help{position:absolute;left:14px;bottom:10px;font-size:11px;color:#736e57;pointer-events:none}
+aside{padding:22px;background:#edeee3;border-left:1px solid #d7dbcc;overflow:auto;display:flex;flex-direction:column;gap:16px}
+.step-label{font-size:10px;letter-spacing:1.6px;font-weight:700;color:var(--muted)}
+#caption{font:17px/1.45 Georgia,serif;margin:4px 0 0;min-height:100px}
+.nav{display:flex;gap:8px}
+.nav button{flex:1}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.tools button{font-size:12px;padding:6px 10px}
+ol{margin:0;padding:0;list-style:none;border-top:1px solid #ccd2bf}
+ol li{display:flex;gap:10px;align-items:center;border-bottom:1px solid #d3d8c8;padding:8px 0;font-size:12px;color:#7e8a74;cursor:pointer}
+ol li .n{width:24px;height:24px;flex:none;border:1px solid #b7c1a7;border-radius:50%;display:grid;place-items:center;font:12px Georgia}
+ol li.done .n{background:#28534a;color:#fff3d6;border-color:#28534a}
+ol li.current{color:#243f32;font-weight:600}
+ol li.current .n{background:#dbe2c9;border-color:#8d9e79}
+.note{font-size:11px;color:var(--muted);margin:0}
+@media(max-width:800px){main{display:block}#view{height:60vh}aside{border-left:0;border-top:1px solid #cfd4c3;padding:16px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">HIKING BACKPACK · PROTOTYPE · 3D STEP VIEWER</div>
+  <h1>Flat brown Lego puzzle</h1>
+</header>
+<main>
+  <div id="view"><div class="view-help">Drag to turn · scroll or pinch to zoom · ← → to step</div></div>
+  <aside>
+    <div>
+      <div class="step-label" id="step-label">START</div>
+      <p id="caption"></p>
+    </div>
+    <div class="nav">
+      <button id="prev" aria-label="Previous step">◀ Back</button>
+      <button id="next" class="primary" aria-label="Next step">Next ▶</button>
+    </div>
+    <div class="tools">
+      <button id="replay">Replay step</button>
+      <button id="xray" aria-pressed="false">X-ray</button>
+      <button id="restart">Restart</button>
+    </div>
+    <ol id="steps"></ol>
+    <p class="note">Built from the Stud.io exports in <code>assets/lego-flat-step0–3.ldr</code>. Pieces are simplified boxes with studs. <a href="lego-flat-play.html">Play it</a></p>
+  </aside>
+</main>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { parseLdr, createPuzzle } from '../lego-sim.js';
+import { toMatrix4, buildPart, addLabel, createStage, createAnimator } from '../lego3d.js';
+
+const FILES = [0, 1, 2, 3].map(i => `../assets/lego-flat-step${i}.ldr`);
+const CAPTIONS = [
+  ['START', 'The green tile rests on top. The red piece is sealed inside, and every orange tile is stuck.'],
+  ['PUSH 1 OF 3', 'Slide the green tile in from the right. It pushes an orange tile one stud to the left.'],
+  ['PUSH 2 OF 3', 'Pull the green tile out and slide it in from the front, in the right-hand column. It pushes the next orange tile one stud back.'],
+  ['PUSH 3 OF 3', 'Slide the green tile in from the left. It pushes the red piece, which pushes the last orange tile. The red piece is free and drops out the front. (In person, tilt the puzzle so it slides out.)']
+];
+
+const steps = (await Promise.all(FILES.map(f => fetch(f).then(r => r.text())))).map(parseLdr);
+const puzzle = createPuzzle(steps);
+const { refs, files, tool, loose, box } = puzzle;
+const red = loose[puzzle.goal];
+const poses = steps.map(s => s.parts.map(p => toMatrix4(p.m)));
+
+// ---- Scene ----
+const view = document.getElementById('view');
+const stage = createStage(view);
+stage.centreOn((box.minX + box.maxX + 1) * 10, (box.minZ + box.maxZ + 1) * 10);
+const objects = refs.map(ref => { const o = buildPart(ref, files); o.matrixAutoUpdate = false; stage.root.add(o); return o; });
+const anim = createAnimator(objects);
+stage.onTick(now => anim.tick(now));
+addLabel(objects[red], '1', Math.min(0, ...files[refs[red].file].map(c => c.m[1])));
+const shell = refs.map((r, i) => i !== tool && !loose.includes(i) && r.m[1] <= -32);   // the two layers above the tunnel
+
+// ---- Animation script ----
+const same = (a, b) => a.elements.every((v, i) => Math.abs(v - b.elements[i]) < 0.1);
+const pushed = k => poses[k].map((m, i) => i).filter(i => i !== tool && i !== red && !same(poses[k][i], poses[k - 1][i]));
+const pos = m => new THREE.Vector3().setFromMatrixPosition(m);
+const shift = (m, v) => m.clone().setPosition(pos(m).add(v));
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const end = k => poses[k][tool];
+// Insertion direction (LDraw axes) and how far the tool travels before it touches anything.
+const INSERT = { 1: { dir: V(-1, 0, 0), free: 20, push: 20 }, 2: { dir: V(0, 0, 1), free: 40, push: 20 }, 3: { dir: V(1, 0, 0), free: 40, push: 20 } };
+const stage_ = k => shift(end(k), INSERT[k].dir.clone().multiplyScalar(-(INSERT[k].free + INSERT[k].push + (k === 3 ? 20 : 0))));
+
+function script(k) {
+  const { dir, free, push } = INSERT[k];
+  const ph = [];
+  if (k > 1) ph.push({ ms: 600, moves: { [tool]: stage_(k - 1) } });                     // pull the tool back out
+  ph.push({ ms: 1000, arc: tool, moves: { [tool]: stage_(k) } });                          // carry it to the next opening
+  ph.push({ ms: 700, moves: { [tool]: shift(stage_(k), dir.clone().multiplyScalar(free)) } });
+  const pushMoves = { [tool]: shift(stage_(k), dir.clone().multiplyScalar(free + push)) };
+  for (const i of pushed(k)) pushMoves[i] = poses[k][i];
+  if (k === 3) {
+    pushMoves[red] = shift(poses[k - 1][red], dir.clone().multiplyScalar(push));
+    ph.push({ ms: 900, moves: pushMoves });
+    ph.push({ ms: 700, moves: { [red]: shift(pushMoves[red], V(0, 0, -40)) } });          // slides out the front
+    ph.push({ ms: 450, fall: true, moves: { [red]: poses[k][red] } });                     // and drops to the table
+    ph.push({ ms: 500, moves: { [tool]: end(k) } });
+  } else ph.push({ ms: 900, moves: pushMoves });
+  return ph;
+}
+const snap = list => ({ ms: 1, moves: Object.fromEntries(list.map((m, i) => [i, m])) });
+// Backwards: the same phases in reverse order, each returning its pieces to where they were before it.
+function reverse(k) {
+  let cur = poses[k - 1].slice();
+  const back = script(k).map(p => {
+    const before = Object.fromEntries(Object.keys(p.moves).map(i => [i, cur[i]]));
+    cur = cur.slice(); for (const [i, m] of Object.entries(p.moves)) cur[i] = m;
+    return { ms: p.ms, arc: p.arc, moves: before };
+  });
+  return [...back.reverse(), snap(poses[k - 1])];
+}
+const apply = list => { anim.stop(); list.forEach((m, i) => objects[i].matrix.copy(m)); };
+
+// ---- UI ----
+let step = 0;
+const $ = id => document.getElementById(id);
+const list = $('steps');
+CAPTIONS.forEach(([label], i) => {
+  const li = document.createElement('li');
+  li.innerHTML = `<span class="n">${i}</span><span>${i ? label[0] + label.slice(1).toLowerCase() : 'Start'}</span>`;
+  li.onclick = () => go(i, false);
+  list.append(li);
+});
+function render() {
+  $('step-label').textContent = CAPTIONS[step][0];
+  $('caption').textContent = CAPTIONS[step][1];
+  $('prev').disabled = step === 0; $('next').disabled = step === CAPTIONS.length - 1; $('replay').disabled = step === 0;
+  [...list.children].forEach((li, i) => { li.className = i < step ? 'done' : i === step ? 'current' : ''; });
+}
+function go(k, animate = true) {
+  k = Math.max(0, Math.min(CAPTIONS.length - 1, k));
+  if (animate && k === step + 1) { apply(poses[step]); anim.play([...script(k), snap(poses[k])]); }
+  else if (animate && k === step - 1) { apply(poses[step]); anim.play(reverse(step)); }
+  else apply(poses[k]);
+  step = k; render();
+}
+$('next').onclick = () => go(step + 1);
+$('prev').onclick = () => go(step - 1);
+$('replay').onclick = () => { step--; go(step + 1); };
+$('restart').onclick = () => go(0, false);
+$('xray').onclick = e => {
+  const on = e.currentTarget.getAttribute('aria-pressed') !== 'true';
+  e.currentTarget.setAttribute('aria-pressed', on);
+  objects.forEach((o, i) => { if (!shell[i]) return;
+    for (const m of o.userData.materials) { m.transparent = on; m.opacity = on ? 0.12 : 1; m.depthWrite = !on; m.needsUpdate = true; }
+    o.traverse(c => { if (c.isMesh) c.castShadow = !on; });
+  });
+};
+addEventListener('keydown', e => { if (e.key === 'ArrowRight') go(step + 1); if (e.key === 'ArrowLeft') go(step - 1); });
+apply(poses[0]); render();
+window.__viewer = { go, get step() { return step; } };
+</script>
+</body>
+</html>

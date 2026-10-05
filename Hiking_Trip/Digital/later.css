@@ -1,0 +1,209 @@
+/* Locks 5–10 and the later finds: Lego, the satellite, boards, cards and papers. */
+
+/* Ten locks as a compact row of numbered chips. */
+#progress{display:grid;grid-template-columns:repeat(5,1fr);gap:8px 6px;padding:12px 0 14px;justify-items:center}
+#progress li{border:0;padding:0;display:block}
+#progress .step-number{width:30px;height:30px;font-size:12px;background:#f6f6ee}
+#progress .done .step-number{background:#28534a;color:#fff3d6;border-color:#28534a}
+#progress .current .step-number{background:#dbe2c9;border-color:#8d9e79;font-weight:700}
+.handwriting,.scribble,.scribbled-value{font-family:"Segoe Print","Bradley Hand","Comic Sans MS",cursive}
+
+/* Lego numbers */
+.lego-number{height:100%;display:grid;place-items:center;filter:drop-shadow(5px 7px 4px #52483638)}
+.lego-digit{width:100%;height:100%}
+.lego-view{height:100%;display:grid;place-items:center;padding:40px}
+.lego-view .lego-digit{width:auto;height:min(520px,70vh)}
+
+/* Coloured order stickers */
+.order-sticker{display:inline-grid;place-items:center;width:58px;height:58px;border-radius:50%;color:#fff;font:italic 26px Georgia,serif;box-shadow:0 2px 3px #0003;border:2px solid #fff8}
+.sheet-back{position:relative}
+.sheet-back .order-sticker,.agenda-back .order-sticker,.pad-back .order-sticker{position:absolute;right:26px;bottom:26px}
+.prop .order-sticker{width:34px;height:34px;font-size:15px;right:14px;bottom:14px}
+
+/* Bags of parts */
+.parts-bag{height:100%;position:relative;border-radius:10px 10px 16px 16px;background:linear-gradient(135deg,#ffffffcc,#e6ecefaa 60%,#d2dce1aa);border:2px solid #b9c6cc;box-shadow:3px 6px 6px #46504a2a;overflow:hidden}
+.parts-bag:before{content:'';position:absolute;top:12px;left:0;right:0;height:9px;border-top:3px solid #9fb2bb;border-bottom:3px solid #9fb2bb}
+.bag-label{position:absolute;top:34px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid #c9c9bf;padding:3px 12px;font:15px "Segoe Print","Comic Sans MS",cursive;color:#333;white-space:nowrap}
+.bag-bits{position:absolute;inset:78px 22px 18px;background:radial-gradient(circle at 25% 35%,#f2c53d 0 11px,transparent 12px),radial-gradient(circle at 70% 30%,#3a7bd5 0 10px,transparent 11px),radial-gradient(circle at 45% 70%,#d9442f 0 12px,transparent 13px),radial-gradient(circle at 80% 75%,#57a35b 0 9px,transparent 10px),radial-gradient(circle at 20% 80%,#555 0 8px,transparent 9px)}
+.satellite-bag .bag-bits{background:radial-gradient(circle at 25% 35%,#e1782d 0 12px,transparent 13px),radial-gradient(circle at 70% 30%,#24376b 0 13px,transparent 14px),radial-gradient(circle at 45% 70%,#8f8a45 0 12px,transparent 13px),radial-gradient(circle at 80% 75%,#222 0 10px,transparent 11px),radial-gradient(circle at 15% 75%,#ddd 0 9px,transparent 10px)}
+
+/* Neighbours workbench */
+.figure-workbench{display:grid;grid-template-columns:280px minmax(0,1fr);gap:22px;padding:22px;align-items:start}
+.figure-reference{position:sticky;top:0;background:#fffdf3;padding:18px 18px 8px;box-shadow:2px 5px 6px #6070511a;max-height:calc(95dvh - 140px);overflow:auto}
+.riddle-mini p{font-size:12px;line-height:1.45;margin:0 0 6px}
+.riddle-mini .riddle-intro{font-style:italic;margin-bottom:12px}
+.figure-stands .control-help{text-align:left}
+.stand-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.stand{background:#f8f8f1;border:1px solid #cfd5c3;border-radius:8px;padding:10px 8px;display:flex;flex-direction:column;gap:6px}
+.minifig{width:100%;max-width:130px;margin:0 auto 4px;display:block}
+.part-pick{display:flex;flex-direction:column;font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#6a756b}
+.part-pick select{font:12px "Segoe UI",sans-serif;padding:4px;border:1px solid #b8c3aa;border-radius:4px;background:#fffdf6;color:var(--ink);min-width:0;width:100%;text-transform:none;letter-spacing:0}
+.small-note{font-size:11px;color:#7b8275;margin-top:12px}
+
+/* Satellite and the ISS altitude note */
+.equation-paper{height:100%;background:#fffdf7;color:#2f3a33;padding:30px 32px;box-shadow:3px 7px 6px #655a3a25;overflow:hidden;font:17px/1.55 Georgia,serif}
+.equation-paper.back{padding:0}
+.equation-paper.back svg{width:100%;height:100%;display:block}
+.formula{font:28px "Cambria Math",Cambria,Georgia,serif;text-align:center;margin:18px 0;display:flex;align-items:center;justify-content:center;gap:10px}
+.fraction{display:inline-flex;flex-direction:column;text-align:center;font-size:24px;line-height:1.25}
+.fraction span:first-child{border-bottom:2px solid currentColor;padding:0 6px 2px}
+.fraction span:last-child{padding-top:4px}
+.formula sup{font-size:.6em;vertical-align:.7em;line-height:0}
+.formula sub{font-size:.6em;vertical-align:-.3em;line-height:0}
+.legend{margin:0 0 14px;padding-left:20px;font-size:15px}
+.equation-correction{font-style:italic;margin:0}
+.prop .equation-paper{padding:20px 22px;font-size:11px;line-height:1.45}
+.prop .formula{font-size:19px;margin:8px 0}
+.prop .fraction{font-size:16px}
+.prop .legend{font-size:10px;margin-bottom:6px}
+.scribble{font-size:44px;fill:#25282c}
+.scribble-view{height:100%;display:flex;flex-direction:column}
+.scribble-frame{flex:1;min-height:0;display:grid;place-items:center;padding:18px;overflow:auto}
+.scribble-card{height:100%;max-height:690px;max-width:100%;aspect-ratio:807/727;box-shadow:3px 7px 6px #655a3a25;touch-action:none}
+.satellite-overlay{opacity:.96}
+.satellite-overlay.movable{cursor:grab}
+.satellite-overlay.movable:focus-visible{outline:none}
+.satellite-overlay.movable:focus-visible .satellite-shape{filter:drop-shadow(0 0 6px #d98529)}
+.rotation-readout{font-size:11px;min-width:38px;text-align:center;font-variant-numeric:tabular-nums}
+.satellite-built{height:100%;display:grid;place-items:center}
+.satellite-built img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.build-view{min-height:100%;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:26px;align-items:center;padding:26px}
+.build-page img{width:100%;display:block;background:#fff;box-shadow:2px 5px 8px #6070512a}
+.build-info h3{font-size:28px;margin-bottom:10px}
+.build-progress{height:8px;border-radius:4px;background:#d3d9c6;margin:18px 0;position:relative;overflow:hidden}
+.build-progress:after{content:'';position:absolute;inset:0;width:calc(var(--done) * 100%);background:#28534a}
+.build-done{grid-column:1/-1;text-align:center}
+.build-done img{width:min(560px,90%);mix-blend-mode:multiply}
+.booklet{height:100%;background:#fff;box-shadow:3px 7px 6px #655a3a25;overflow:hidden}
+.booklet img{width:100%;height:100%;object-fit:cover;object-position:top left}
+.booklet-view{height:100%;display:flex;flex-direction:column}
+.booklet-scroll{text-align:center}
+.booklet-scroll img{width:100%;max-width:none;background:#fff;box-shadow:2px 5px 8px #6070512a}
+
+/* Push puzzles */
+.push-status{min-height:20px;text-align:center;font-size:13px;color:#7d5a3c;margin:0 0 16px}
+.side-label{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:#6a756b;min-width:46px}
+@keyframes drop{from{transform:translateY(-60px);opacity:0}to{transform:none;opacity:1}}
+
+/* Cube */
+.cube-cell{display:block;position:relative;border:3px solid;border-radius:3px;overflow:hidden;background:#f4f1e6}
+.cube-art{position:absolute;inset:0;background-size:400% 400%}
+.cube-shape{display:grid;gap:0}
+.cube-pile{height:100%;position:relative}
+.cube-pile .cube-shape{position:absolute;width:44%}
+.pile-a{left:2%;top:4%;transform:rotate(-8deg)}
+.pile-b{right:6%;top:2%;width:30%!important;transform:rotate(10deg)}
+.pile-c{left:6%;bottom:6%;width:30%!important;transform:rotate(6deg)}
+.pile-d{right:2%;bottom:10%;transform:rotate(-12deg)}
+.cube-view{height:100%;display:flex;flex-direction:column}
+.cube-bench{flex:1;display:flex;gap:40px;align-items:center;justify-content:center;padding:20px;flex-wrap:wrap}
+.cube-frame{display:grid;grid-template-columns:repeat(4,86px);grid-template-rows:repeat(4,86px);border:10px solid #6b6b66;border-radius:8px;background:#d9d6cb}
+.cube-slot{border:1px dashed #a9a69a;border-radius:0;padding:0;background:transparent;display:grid}
+.cube-slot.filled{border:0}
+.cube-slot .cube-cell{width:100%;height:100%}
+.cube-tray{display:grid;grid-template-columns:repeat(2,auto);gap:16px;min-width:300px}
+.cube-piece{padding:8px;background:#f8f8f1}
+.cube-piece.chosen{outline:3px solid #d98529;background:#fdf1df}
+.cube-piece .cube-shape{--cell:44px;width:auto;height:auto}
+.cube-piece .cube-cell{width:44px;height:44px}
+
+/* Tile boards: jigsaw and map */
+.board-view{height:100%;display:flex;flex-direction:column}
+.board-holder{flex:1;min-height:0;display:grid;place-items:center;padding:20px;overflow:auto}
+.tile-board{display:grid;gap:2px;background:#8b8a7c;padding:2px;box-shadow:3px 8px 10px #0002}
+.otter-board{width:min(720px,100%,calc((95dvh - 250px) * 4 / 3));aspect-ratio:4/3}
+.board-tile{border:0;border-radius:0;padding:0;background-repeat:no-repeat;min-height:0}
+.board-tile:hover:not(:disabled){filter:brightness(1.08)}
+.board-tile.chosen{outline:4px solid #d98529;outline-offset:-4px}
+.board-tile:disabled{opacity:1}
+.puzzle-box{height:100%;background:#2e86a6;border-radius:6px;padding:12px;box-shadow:3px 7px 6px #3a4b4a35;display:flex;flex-direction:column;gap:6px;color:#fff;font-size:12px;letter-spacing:2px;text-align:center}
+.puzzle-box-art{flex:1;background-size:cover;background-position:center;border:4px solid #fff;border-radius:3px}
+.map-wrap{position:relative;width:min(900px,100%,calc((95dvh - 250px) * 1880 / 1009))}
+.map-board{width:100%;aspect-ratio:1880/1009}
+.map-lines{position:absolute;inset:2px;width:calc(100% - 4px);height:calc(100% - 4px);pointer-events:none}
+.map-lines.drawing{pointer-events:auto;cursor:crosshair}
+.map-lines line{stroke:#e0261b;stroke-width:6;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.map-lines .pen-dot{fill:#e0261b}
+.map-stack{height:100%;position:relative}
+.map-piece{position:absolute;width:62%;height:62%;background-size:300% 300%;border:2px solid #fff;box-shadow:2px 4px 5px #0003}
+.map-piece:nth-child(1){left:2%;top:4%;transform:rotate(-6deg)}
+.map-piece:nth-child(2){left:20%;top:22%;transform:rotate(5deg)}
+.map-piece:nth-child(3){left:36%;top:34%;transform:rotate(-2deg)}
+
+/* Hockey cards */
+.hockey-card{--band:#2a4d8f;width:100%;height:100%;background:#fdfcf7;border:6px solid var(--band);border-radius:8px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;color:#222;text-align:center;box-shadow:2px 4px 6px #0002}
+.hockey-card .card-set{font-size:8px;letter-spacing:1.2px;color:#666;margin:0}
+.card-portrait{flex:1;width:100%;background:linear-gradient(180deg,#dfe8ee,#b8c9d4);border-radius:4px;display:grid;place-items:center;position:relative;overflow:hidden}
+.card-portrait:before{content:'';position:absolute;width:44%;aspect-ratio:1;border-radius:50%;background:#7c8f9c;top:16%}
+.card-portrait:after{content:'';position:absolute;width:76%;height:40%;border-radius:40% 40% 0 0;background:var(--band);bottom:0}
+.card-jersey{position:absolute;bottom:8%;z-index:1;color:#fff;font:700 22px Georgia,serif}
+.card-name{font:700 15px Georgia,serif;margin:0}
+.card-no{font:700 13px "Segoe UI",sans-serif;color:var(--band);margin:0}
+.hockey-card.back{justify-content:center;background:#f0efe6}
+.card-label{font-size:9px;letter-spacing:1.5px;color:#777;margin:8px 0 0}
+.card-born{font-size:13px;margin:0}
+.cards-view{padding:22px}
+.cards-view .control-help{text-align:center}
+.cards-grid{display:grid;grid-template-columns:repeat(5,minmax(0,170px));gap:16px;justify-content:center}
+.card-button{padding:0;border:0;background:none;aspect-ratio:5/7}
+.card-stack{height:100%;position:relative}
+.card-stack:before,.card-stack:after{content:'';position:absolute;inset:0;border-radius:8px;background:#ddd;border:6px solid #6d7a86;transform:rotate(4deg)}
+.card-stack:after{transform:rotate(-3deg);background:#eee}
+.card-stack .hockey-card{position:relative;z-index:1}
+.prop .hockey-card .card-name{font-size:17px}
+
+/* Papers */
+.notepad-paper{height:100%;background:#fffef4 repeating-linear-gradient(#0000 0 25px,#c9d6e5 25px 26px);padding:26px 26px 20px 46px;border-left:3px double #e3a29b;box-shadow:3px 7px 6px #655a3a25;color:#2b3340;overflow:hidden;position:relative}
+.notepad-paper p{font:13px/26px "Segoe Print","Comic Sans MS",cursive;margin:0}
+.notepad-paper .riddle-intro{margin-bottom:26px}
+.prop .notepad-paper{padding:14px 12px 12px 26px;background-size:auto}
+.prop .notepad-paper p{font-size:6.3px;line-height:12.5px}
+.prop .notepad-paper .riddle-intro{margin-bottom:6px}
+.notepad-paper.pad-back{background:#c8573f;border-left:0;display:grid;place-items:center}
+.pad-brand{font:700 26px Georgia,serif;letter-spacing:6px;color:#fff3e4}
+.agenda-paper{height:100%;background:#f1e6cf;padding:22px;box-shadow:3px 7px 6px #655a3a25;color:#2d3a4a;overflow:hidden;position:relative}
+.agenda-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px}
+.agenda-head strong{letter-spacing:2px;color:#2f5f8a}
+.agenda-rows{border:1px solid #8a8f8a}
+.agenda-row{display:grid;grid-template-columns:52px 1fr;border-bottom:1px solid #b8b8a8;font-size:11px;min-height:30px;align-items:center}
+.agenda-row span:first-child{border-right:1px solid #b8b8a8;padding:0 6px;color:#555;align-self:stretch;display:flex;align-items:center}
+.agenda-row .handwriting{padding:0 8px;font-size:13px}
+.agenda-notes{border:2px dashed #2f5f8a;padding:8px 10px;margin:12px 0 0;font-size:13px}
+.prop .agenda-paper{padding:12px}
+.prop .agenda-row{min-height:19px;font-size:7px;grid-template-columns:32px 1fr}
+.prop .agenda-row .handwriting{font-size:8px}
+.prop .agenda-notes{font-size:8px;padding:4px 6px;margin-top:6px}
+.prop .agenda-head{font-size:9px;margin-bottom:6px}
+.agenda-paper.agenda-back{background:#f1e6cf}
+.scribbled-back{height:100%;display:grid;place-items:center;box-shadow:3px 7px 6px #655a3a25;padding:20px}
+.scribbled-back.news-back{background:#efe5cf}
+.scribbled-back.calc-back{background:#3b4446;border-radius:18px}
+.scribbled-value{font-size:30px;color:#1f2a44;background:#fffbe6;padding:10px 18px;transform:rotate(-4deg);box-shadow:1px 2px 3px #0002;margin:0;text-align:center}
+.prop .scribbled-value{font-size:20px}
+
+/* Pouch and treasure bag */
+.pouch-art{height:100%;background:linear-gradient(160deg,#2b2e31,#16181a);border-radius:16px;position:relative;box-shadow:4px 8px 8px #0004}
+.pouch-zip{position:absolute;left:8%;right:8%;top:30%;height:4px;background:repeating-linear-gradient(90deg,#777 0 3px,#222 3px 6px)}
+.pouch-zip.two{top:62%}
+.pouch-locks{position:absolute;right:-10px;top:12%;display:flex;flex-direction:column;gap:6px}
+.mini-lock{display:grid;place-items:center;width:38px;height:30px;border-radius:5px;background:#5f6670;color:#fff;font:700 12px "Segoe UI",sans-serif;border:2px solid #333;position:relative}
+.mini-lock:before{content:'';position:absolute;top:-12px;left:8px;width:14px;height:12px;border:3px solid #9aa0a6;border-bottom:0;border-radius:8px 8px 0 0}
+.mini-lock.open{background:#3d7a52}
+.mini-lock.open:before{left:14px;top:-15px}
+.treasure-art{height:100%;background:radial-gradient(ellipse at 50% 30%,#8a1f3d,#5a1027);border-radius:40% 40% 18% 18%/30% 30% 14% 14%;position:relative;box-shadow:4px 8px 8px #0004}
+.treasure-art .mini-lock{position:absolute;left:50%;top:6%;transform:translateX(-50%)}
+.treasure-tie{position:absolute;left:30%;right:30%;top:22%;height:8px;border-radius:4px;background:#d8b25a}
+.pockets-view{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:30px}
+.pockets-view>.pouch-art{width:380px;height:220px}
+.pockets-view>.treasure-art{width:240px;height:280px}
+.pocket-list{list-style:none;padding:0;margin:0;font-size:14px}
+.pocket-list li{padding:6px 0;border-bottom:1px solid #cfd5c3}
+.pocket-list li.open{color:#3d7a52}
+
+@media(max-width:1150px){.figure-workbench{grid-template-columns:220px minmax(0,1fr)}.stand-row{gap:6px}.cards-grid{grid-template-columns:repeat(5,minmax(0,130px))}.build-view{grid-template-columns:1fr}}
+@media(max-width:849px){.figure-workbench{grid-template-columns:1fr}.figure-reference{position:static;max-height:none}.stand-row{grid-template-columns:repeat(2,minmax(0,1fr))}.cards-grid{grid-template-columns:repeat(2,minmax(0,160px))}.cube-frame{grid-template-columns:repeat(4,64px);grid-template-rows:repeat(4,64px)}}
+/* Flat Lego puzzle in 3D (lego-flat.js) */
+.lego-thumb{height:100%;filter:drop-shadow(5px 8px 5px #52483630)}.lego-thumb img{display:block;width:100%;height:100%;object-fit:contain}.lego-thumb.failed{display:grid;place-items:center;background:#7a4a32;color:#fff3e0;border-radius:8px;font-size:12px;filter:none}
+.lego-flat-view,.lego3d-view{height:100%}.lego3d-view{display:flex;flex-direction:column}.lego3d-canvas{flex:1;min-height:0;position:relative}.lego3d-canvas canvas{display:block;width:100%;height:100%;touch-action:none}.lego3d-canvas canvas:focus-visible{outline:3px solid #d98529;outline-offset:-3px}
+.lego3d-help{position:absolute;left:14px;bottom:10px;font-size:11px;color:#736e57;pointer-events:none}.lego3d-bar{display:flex;align-items:center;gap:16px;padding:12px 20px;border-top:1px solid #ccd4c2;background:#f7f7ef}.lego3d-bar button{font-size:12px}.lego3d-moves{display:flex;gap:6px}.lego3d-moves[hidden]{display:none}
+.lego3d-status{flex:1;margin:0;font:16px/1.4 Georgia,serif;color:var(--ink);min-height:23px}.lego3d-status.bump{color:#a3432c}.lego3d-status.solved{color:#28534a;font-weight:600}.lego-error{padding:40px;text-align:center;color:#a3432c}

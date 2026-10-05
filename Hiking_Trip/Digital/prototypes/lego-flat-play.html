@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flat Lego Puzzle</title>
+<link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../later.css">
+<style>
+html,body{height:100%}
+body{display:flex;flex-direction:column}
+.proto-head{background:var(--ink);color:#fbf6e8;padding:12px 24px;border-bottom:3px solid var(--amber);display:flex;align-items:baseline;gap:20px}
+.proto-head h1{font-size:24px}
+.proto-head a{color:#c6d2c5;font-size:12px;margin-left:auto}
+#puzzle{flex:1;min-height:0}
+</style>
+</head>
+<body>
+<header class="proto-head"><h1 id="title">Flat brown Lego puzzle</h1><span class="eyebrow" style="color:#c2cdbd;margin:0">PROTOTYPE · SAME CODE AS LOCK 7</span><a href="lego-flat-3d.html">Solution viewer (spoiler)</a></header>
+<div id="puzzle"></div>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+// ?puzzle=square shows the blue square puzzle instead.
+const square = new URLSearchParams(location.search).get('puzzle') === 'square';
+if (square) document.getElementById('title').textContent = document.title = 'Blue square Lego puzzle';
+const { mount } = await import(square ? '../lego-square.js' : '../lego-flat.js');
+window.__play = await mount(document.getElementById('puzzle'));
+</script>
+</body>
+</html>
