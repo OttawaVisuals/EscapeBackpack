@@ -36,6 +36,7 @@ Tests: 40/40 (lanes test and trail-stack test removed; new tests for Tidy by age
 - Minor (`DG-12`): Ctrl+P prints only the certificate; on a phone the table leaves large empty areas.
 - `Digital/assets/Raven_Postmark.png` is not in this repo: `.gitignore` skips `NorseBackpack/**/*.png`. The site repo has it; a fresh clone here needs it copied from `Art/FinalPuzzle/PostcardMarks/Symbol_Raven_HandDrawn_v1.png`.
 - Lock 11 lost its "What was in Harald's horn?" line with the other nudge hints (user: "let's try like this"); watch at the next playtest whether MEAD is still found.
+- End screen (after lock 13) still scrolls on a 1366×768 laptop (1022 px of content for 704): letter, stats, certificate name and four buttons. Checked 5 Oct 2026; not changed.
 - The raven postmark is one of the three postcard symbols (raven, longship, sun-wheel); check it doesn't steer players in the final puzzle.
 
 **Padlock wheels (user chose option 1 of 4):** the wheel face was ambiguous (clicking its top half went back, ↑ and drag-up went forward). Each wheel now has a ▲ (next, 5 → 6) and ▼ (back) button (`.turn` in `leif.css`, built in `buildDial`); clicking the face no longer turns it; drag, scroll, typing and ↑/↓ unchanged. Tests 40/40; checked in the browser on desktop and phone width. Committed `ebe3f62` (site `4e0a33c`); live on escapepack.ca about 60 s after the push.
@@ -48,7 +49,7 @@ Tests: 40/40 (lanes test and trail-stack test removed; new tests for Tidy by age
 
 **Flip animation (user request, 5 Oct 2026):** Flip (F, the Flip button, the close-up's Flip) now turns the prop over in 3D: it swings to its edge in 170 ms, the other face is drawn, and it swings open in 170 ms (`turnOver` in `leif.js`; Web Animations on the art, not the piece, so position and rotation are untouched; the piece's shadow is off while it turns). The new face is saved at once; another flip of the same prop waits until the turn ends. Reduced motion swaps at once. Checked mid-turn on the table and in the close-up; tests 40/40. Published `3846ca2` (site `7554879`), live about 90 s after the push.
 
-**Shortcut letters on buttons (user request):** small key badges (`.key`, hidden on touch screens; `aria-keyshortcuts` on the button) on the table's Magnifier (M), the prop pop-up's Zoom (↵), Rotate (R) and Flip (F), and the close-up's Magnifier (M), Rotate (R), Flip (F) and Close (Esc). The "· M magnifier" note in the table toolbar is dropped. Unlabelled: + − 0 zoom, arrows move, [ ] turn the ruler (all in How to play). Tests 40/40; checked at 1366×768.
+**Shortcut letters on buttons (user request):** small key badges (`.key`, hidden on touch screens; `aria-keyshortcuts` on the button) on the table's Magnifier (M), the prop pop-up's Zoom (↵), Rotate (R) and Flip (F), and the close-up's Magnifier (M), Rotate (R), Flip (F) and Close (Esc). The "· M magnifier" note in the table toolbar is dropped. Unlabelled: + − 0 zoom, arrows move, [ ] turn the ruler (all in How to play). Tests 40/40; checked at 1366×768. Published `131caed` (site `f13f2f1`), live about 80 s after the push.
 
 **Next action:** User sketches the difficulty order for `ST-06` (which lock releases which postcards and props); then the online chain is re-sequenced in `leif-data.js` and rebuilt with `node tools/build_leif.cjs` in escapepack-site.
 
