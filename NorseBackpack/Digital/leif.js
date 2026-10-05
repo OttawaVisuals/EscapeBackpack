@@ -75,7 +75,7 @@
     if (id && raise && !pieceState(id).pile) { elements.get(id).style.zIndex = ++z; if (id === 'AD' && state.pieces.comb?.seated && elements.get('comb')) elements.get('comb').style.zIndex = ++z; }
     $('selected-name').textContent = id ? displayName(id) : 'Your table';
     if (id) $('selected-type').textContent = `${G.items[id].kind} · ${faceName(id, pieceState(id).face)}` + (G.items[id].freeRotate ? ` · ${(Math.round(pieceState(id).rot * 10) / 10).toFixed(1)}°` : '');
-    else $('selected-type').innerHTML = 'Drag to arrange · double-click to inspect · <kbd>M</kbd> magnifier';
+    else $('selected-type').textContent = 'Drag to arrange · double-click to inspect';
     $('stow').disabled = !id;
     document.querySelectorAll('.shelf-item').forEach(el => el.setAttribute('aria-pressed', el.dataset.id === id ? 'true' : 'false'));
     placeTurnHandle();

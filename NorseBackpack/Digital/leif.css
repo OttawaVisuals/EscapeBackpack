@@ -269,6 +269,9 @@ dialog::backdrop{background:rgba(12,32,27,.72);backdrop-filter:blur(4px)}
 .prop-tools button{background:transparent;color:var(--on-dark);border:0;padding:6px 10px;font-size:13px;display:flex;align-items:center;gap:5px;border-radius:6px;white-space:nowrap}
 .prop-tools button:hover:not(:disabled){background:var(--secondary)}
 .prop-tools button:disabled{opacity:.4}
+/* Keyboard shortcut letters on the buttons that have one; hidden on touch screens. */
+.key{font:600 10px/1 ui-monospace,Consolas,monospace;color:inherit;opacity:.7;background:transparent;border:1px solid currentColor;border-bottom-width:2px;border-radius:3px;padding:2px 4px;margin-left:3px}
+@media(pointer:coarse){.key{display:none}}
 .prop-tools .icon{margin:0;width:16px;height:16px}
 .prop-tools [data-tool=move],#viewer-move{cursor:grab}
 .prop-tools button[aria-pressed=true]{background:var(--pressed);color:var(--base)}

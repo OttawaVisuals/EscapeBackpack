@@ -48,6 +48,8 @@ Tests: 40/40 (lanes test and trail-stack test removed; new tests for Tidy by age
 
 **Flip animation (user request, 5 Oct 2026):** Flip (F, the Flip button, the close-up's Flip) now turns the prop over in 3D: it swings to its edge in 170 ms, the other face is drawn, and it swings open in 170 ms (`turnOver` in `leif.js`; Web Animations on the art, not the piece, so position and rotation are untouched; the piece's shadow is off while it turns). The new face is saved at once; another flip of the same prop waits until the turn ends. Reduced motion swaps at once. Checked mid-turn on the table and in the close-up; tests 40/40. Published `3846ca2` (site `7554879`), live about 90 s after the push.
 
+**Shortcut letters on buttons (user request):** small key badges (`.key`, hidden on touch screens; `aria-keyshortcuts` on the button) on the table's Magnifier (M), the prop pop-up's Zoom (↵), Rotate (R) and Flip (F), and the close-up's Magnifier (M), Rotate (R), Flip (F) and Close (Esc). The "· M magnifier" note in the table toolbar is dropped. Unlabelled: + − 0 zoom, arrows move, [ ] turn the ruler (all in How to play). Tests 40/40; checked at 1366×768.
+
 **Next action:** User sketches the difficulty order for `ST-06` (which lock releases which postcards and props); then the online chain is re-sequenced in `leif-data.js` and rebuilt with `node tools/build_leif.cjs` in escapepack-site.
 
 ## Session — 2026-10-01 — Full game online, part 1: Aud's leg (Claude Code)
