@@ -1,6 +1,6 @@
 # Project Handoff
 
-## Session — 2026-10-02 — Review of Claude Design's online edition (Claude Code)
+## Session — 2026-10-02 to 2026-10-05 — Review of Claude Design's online edition, then polish (Claude Code)
 
 **Task/status:** The user asked for a review of Claude Design's work on the Norse online game (uncommitted, files dated 2 Oct 17:34, mixed into the same files as Part 6's piles below), then said "fix 1-4". Done. Committed, pushed and published at the user's request (2 Oct 2026): design repo `f830d6e` (+ handoff `a5d8db7`), site repo `a1d1d51`. Verified live at https://escapepack.ca/play/norse/leif/ about 75 s after the push: homepage card reads "Play all four trails and the final route online."; game shows LOCK 1 OF 13, no trail row or lanes button, shelf grouped by kind, `leif-sound.js` and `leif-room.js` load, no broken images, no console errors; live `leif-data.js` has the L1 opening note and no trail notes. Not seen live: the opening screen itself (the check browser already had a save). Left out: Codex's root `index.html` change and `Hiking_Trip/Digital/`; `escapepack-rooms` is not a git repo. Recorded as `DG-12` (Open) in `Norse_Brainstorm.html`.
 
@@ -28,17 +28,6 @@ Site copy rebuilt with `node tools/build_leif.cjs`.
 5. `leg` removed from every lock, `legs`/`legAt`/`legOf`/`STORY.chapters` removed; props renamed to their printed titles; "Small pouch"; nudges, messages and hints rewritten. Kept: "Aud's Treasure Museum ticket" (printed), "Harald's horn" (lock 11's subject).
 Tests: 40/40 (lanes test and trail-stack test removed; new tests for Tidy by age, no stacking on open, `bringBack`, and no Viking or trail in names and lock text). Browser at `?lock=8`: masthead LOCK 8 OF 13, no trail row, map titles on the table, shelf groups Postcards/Maps/Tickets & papers/Objects; at `?lock=12`: Tidy made Cards/Maps/Papers piles, 253 brought cards and maps back out, masthead THE FINAL ROUTE, card "The final route"; no console errors. Site copy rebuilt.
 
-**Open (the user will pick these up later):**
-- `ST-06`: the difficulty order of locks and releases; the live game still releases one trail at a time.
-- `DG-12`: deploy Play together (`escapepack-rooms`, `npx wrangler deploy`, then set `<meta name="rooms-server">` in `Leif.html` and rebuild) or leave it hidden.
-- `escapepack-rooms` (next to this repo) is not a git repository, so the Worker code is not backed up.
-- Codex's root `index.html` change and `Hiking_Trip/Digital/` are still uncommitted here.
-- Minor (`DG-12`): Ctrl+P prints only the certificate; on a phone the table leaves large empty areas.
-- `Digital/assets/Raven_Postmark.png` is not in this repo: `.gitignore` skips `NorseBackpack/**/*.png`. The site repo has it; a fresh clone here needs it copied from `Art/FinalPuzzle/PostcardMarks/Symbol_Raven_HandDrawn_v1.png`.
-- Lock 11 lost its "What was in Harald's horn?" line with the other nudge hints (user: "let's try like this"); watch at the next playtest whether MEAD is still found.
-- End screen (after lock 13) still scrolls on a 1366×768 laptop (1022 px of content for 704): letter, stats, certificate name and four buttons. Checked 5 Oct 2026; not changed.
-- The raven postmark is one of the three postcard symbols (raven, longship, sun-wheel); check it doesn't steer players in the final puzzle.
-
 **Padlock wheels (user chose option 1 of 4):** the wheel face was ambiguous (clicking its top half went back, ↑ and drag-up went forward). Each wheel now has a ▲ (next, 5 → 6) and ▼ (back) button (`.turn` in `leif.css`, built in `buildDial`); clicking the face no longer turns it; drag, scroll, typing and ↑/↓ unchanged. Tests 40/40; checked in the browser on desktop and phone width. Committed `ebe3f62` (site `4e0a33c`); live on escapepack.ca about 60 s after the push.
 
 **Backpack panel fits a laptop (user: the panel is too long; drop padding):** on a 1366×768 screen the panel needed 972 px for 704 visible. Now: the bag is small and floats beside the lock name and nudge; the "Your backpack · n of 13 open" row is hidden (the masthead and "Lock n of 13" already say it); the line "Turn the wheels to a four-digit combination…" is gone (kept only for a lock still being built); tighter spacing. Fits with no scroll at 1366×768 on locks 1 and 13. Tablet upright and phone layouts unchanged (bag beside the lock / stacked). Lock nudges (user: "Read them side by side" is already a hint) now only say what came out of the last lock; the hint halves are gone, including lock 11's "What was in Harald's horn?" (user: "let's try like this").
@@ -50,6 +39,21 @@ Tests: 40/40 (lanes test and trail-stack test removed; new tests for Tidy by age
 **Flip animation (user request, 5 Oct 2026):** Flip (F, the Flip button, the close-up's Flip) now turns the prop over in 3D: it swings to its edge in 170 ms, the other face is drawn, and it swings open in 170 ms (`turnOver` in `leif.js`; Web Animations on the art, not the piece, so position and rotation are untouched; the piece's shadow is off while it turns). The new face is saved at once; another flip of the same prop waits until the turn ends. Reduced motion swaps at once. Checked mid-turn on the table and in the close-up; tests 40/40. Published `3846ca2` (site `7554879`), live about 90 s after the push.
 
 **Shortcut letters on buttons (user request):** small key badges (`.key`, hidden on touch screens; `aria-keyshortcuts` on the button) on the table's Magnifier (M), the prop pop-up's Zoom (↵), Rotate (R) and Flip (F), and the close-up's Magnifier (M), Rotate (R), Flip (F) and Close (Esc). The "· M magnifier" note in the table toolbar is dropped. Unlabelled: + − 0 zoom, arrows move, [ ] turn the ruler (all in How to play). Tests 40/40; checked at 1366×768. Published `131caed` (site `f13f2f1`), live about 80 s after the push.
+
+**Session summary (closed 5 Oct 2026):** reviewed and fixed Claude Design's online edition; removed every on-screen trail distinction; then polished the live game: padlock ▲/▼ buttons, a backpack panel that fits a laptop, lock lines without hints, a Game menu and Feedback button in the top bar, hint folds, a rust "Keep playing" button, the raven postmark, a 3D flip animation and shortcut badges. Everything below is published on escapepack.ca and checked live; both repos are clean apart from Codex's work.
+
+**To decide later (user):**
+1. `ST-06`: the difficulty order: which lock releases which postcards and props (trails mixed). The live game still releases one trail at a time.
+2. `DG-12`: Play together: deploy `escapepack-rooms` (`npx wrangler deploy`, then set `<meta name="rooms-server">` in `Leif.html` and rebuild) or leave it hidden.
+3. Lock 11 lost "What was in Harald's horn?" with the other nudge hints (user: "let's try like this"): keep it out if playtesters still find MEAD, otherwise restore it.
+4. The raven postmark on the opening letter is one of the three postcard symbols (raven, longship, sun-wheel): keep it if it doesn't steer players in the final puzzle, otherwise swap to `Icons/raven.svg`.
+5. Codex's root `index.html` change and `Hiking_Trip/Digital/`: commit or discard (uncommitted here).
+
+**To do later (no decision needed):**
+- Back up `escapepack-rooms` (next to this repo): it is not a git repository.
+- `Digital/assets/Raven_Postmark.png` is not in this repo (`.gitignore` skips `NorseBackpack/**/*.png`); the site repo has it. A fresh clone needs it copied from `Art/FinalPuzzle/PostcardMarks/Symbol_Raven_HandDrawn_v1.png`, or the ignore rule needs an exception.
+- End screen (after lock 13) scrolls on a 1366×768 laptop (1022 px of content for 704).
+- Ctrl+P prints only the certificate; on a phone the table leaves large empty areas.
 
 **Next action:** User sketches the difficulty order for `ST-06` (which lock releases which postcards and props); then the online chain is re-sequenced in `leif-data.js` and rebuilt with `node tools/build_leif.cjs` in escapepack-site.
 
