@@ -90,11 +90,27 @@
   }
   // Picked up off its pile: it stays where it is and the pile closes up.
   function lift(id) { if (!G.unpile(state, id)) return; positionAll(); elements.get(id).style.zIndex = ++z; }
+  /* Flipping turns the prop over: it swings to its edge, the other face is drawn, and it swings
+     back open. The new face is saved at once; only the drawing waits. Reduced motion swaps at once. */
+  const flipping = new Set();
+  function turnOver(id, node, swap) {
+    if (!node?.animate || reduceMotion()) { swap(); return; }
+    flipping.add(id); node.closest('.piece')?.classList.add('flipping');
+    const half = (from, to, easing) => ({ keyframes: [{ transform: `perspective(1600px) rotateY(${from}deg)` }, { transform: `perspective(1600px) rotateY(${to}deg)` }], options: { duration: 170, easing } });
+    const out = half(0, 90, 'ease-in'), back = half(-90, 0, 'ease-out');
+    node.animate(out.keyframes, out.options).finished.then(() => {
+      const fresh = swap() || node; return fresh.animate(back.keyframes, back.options).finished;
+    }).catch(() => {}).finally(() => { flipping.delete(id); elements.get(id)?.classList.remove('flipping'); });
+  }
   function flip(id) {
-    if (!id || !(G.items[id].faces?.length > 1)) return;
+    if (!id || !(G.items[id].faces?.length > 1) || flipping.has(id)) return;
     const p = pieceState(id); p.face = (p.face + 1) % G.items[id].faces.length; if (id === 'comb') p.seated = false;
-    elements.get(id).replaceChildren(artwork(id, p.face)); position(id); trySeat(id); select(id, false); save(); sound('paper');
-    if ($('viewer').open) { renderViewer(); doneTip('flip'); setTimeout(() => tip('magnifier', $('viewer-magnify'), 'Small print? Turn on the magnifier (M) and move it over the card. Scroll over the lens to change its strength.'), 300); }
+    select(id, false); save(); sound('paper');
+    const redraw = () => { elements.get(id).replaceChildren(artwork(id, p.face)); position(id); trySeat(id); return elements.get(id).firstElementChild; };
+    if ($('viewer').open) {
+      redraw(); turnOver(id, $('viewer-art'), () => { renderViewer(); });
+      doneTip('flip'); setTimeout(() => tip('magnifier', $('viewer-magnify'), 'Small print? Turn on the magnifier (M) and move it over the card. Scroll over the lens to change its strength.'), 650);
+    } else turnOver(id, elements.get(id).firstElementChild, redraw);
   }
   function rotate(id) { if (!id) return; if (pieceState(id).pile) pullOut(id); const p = pieceState(id); p.rot = (p.rot + 90) % 360; if (id === 'comb') p.seated = false; constrain(id); position(id); trySeat(id); select(id, false); save(); if ($('viewer').open) renderViewer(); }
   // Try to settle Aud's comb after the comb or AD has been put down, turned or flipped.

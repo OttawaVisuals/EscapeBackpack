@@ -100,6 +100,7 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 304px;grid-template-areas:
 /* Piles of older keepsakes. Each card's name sits on the strip that shows below the card on top
    of it, when the table is zoomed in enough to read it; a tag above the pile always works. */
 .piece.piled{box-shadow:0 1px 3px rgba(0,0,0,.55)}
+.piece.flipping{box-shadow:none;transition:none}
 #table.readable-strips .piece.piled::after{content:attr(data-name);position:absolute;left:0;right:0;bottom:0;height:40px;padding:0 14px;background:rgba(25,59,53,.92);color:var(--on-dark);font:600 27px/40px var(--sans);text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:0 0 2px 2px;cursor:pointer}
 #table.readable-strips .piece.piled:hover::after{background:var(--secondary)}
 .pile-tag{position:absolute;transform-origin:0 0;z-index:1;display:flex;align-items:center;gap:5px;white-space:nowrap;font:600 12px var(--sans);padding:3px 8px 3px 7px;border-radius:14px;background:var(--panel);color:var(--ink);border:1px solid var(--accent);box-shadow:0 3px 10px rgba(0,0,0,.4)}
