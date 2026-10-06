@@ -1,5 +1,100 @@
 # Project Handoff
 
+## 2026-10-05: Hiking online — 3D Lego push puzzles and Norse-style look (Claude Code)
+- **Status:** Done, committed, pushed and published at the user's request. Live at https://escapepack.ca/play/hiking/ (unlisted playtest). Design repo: `48da6ea` (first commit of `Hiking_Trip/Digital/`, settling the Norse handoff's "commit or discard" item for that folder) and `5315986`, both pushed. Site: `087f4f1` (3D puzzles) and `a6b8ef8` (new look), both pushed. This handoff, the root `index.html` and `AGENTS.md` edits below are not committed (the first two also hold other sessions' changes).
+- **Decisions (all in `Hiking_Trip/Digital/?design=1`):** DG-H21 flat puzzle rules; DG-H22 3D flat replaces the 2D one; DG-H23 square puzzle rules (tile and bridge drag each other, every loose piece moves one stud, may stick out); DG-H24 Norse-style look in the Hiking brand (masthead, felt table, cover-art opening, padlock wheels, hint chips, grouped shelf, zoom, full screen); DG-H14 marked superseded. Open: DG-H25 (four more Lego items to model: cube, Lego numbers, satellite, figures/minifigs, with export instructions); DG-H19 updated.
+- **How the 3D pipeline works:** the user exports each puzzle from Stud.io as LDraw, one file per solution step (`assets/lego-<name>-step0…n.ldr`). `lego-sim.js` turns the parts into a stud grid, works out the tool, the loose pieces and the goal from what moves between files, and applies the rules (limits, sideways slides, hand pushes). `lego-puzzle.js` is the shared view and table picture; `lego-flat.js` / `lego-square.js` hold only settings. Saves are lists of moves (`push.<name>.actions`). `lego.test.mjs` checks every export for overlaps, replays the exported solution and searches for shortcuts. Three.js 0.160 and the fonts load from jsdelivr / Google Fonts.
+- **Checks:** `node --test Hiking_Trip/Digital/game.test.cjs Hiking_Trip/Digital/lego.test.mjs` 24/24. Browser (local and live): both puzzles solved, saves restored, padlock wrong/right codes, hint chips, zoom, Game menu, opening screen; no console errors. Site build script copies the Lego modules, checks module imports and the new brand markup. Not checked: phone/touch layout, offline use, full screen in a real window.
+- **Next:** User sends the Stud.io exports listed in DG-H25 (cube first, then the four numbers), with a note on any rule the files cannot show.
+
+## 2026-10-05: approved Space luggage tag and project HTML synchronized (Codex)
+- **Status:** Sibling Space-Exploration's PP-008 now records the decided tag: coloured stars on front, exact welcome and original telescope V1 on back. HTML design board rebuilt from records; graphite V2 retained as an unselected alternative.
+- **Files:** This handoff; sibling PP-008/handoff, rebuilt ignored `site/`, verification screenshot `output/qa/luggage-tag-board.png`. Unrelated user changes preserved.
+- **Checks:** 38 records validated; in-app browser over local HTTP confirms decided tag, correct face assignments, exact note, both images loaded, original V1 selected and no console warnings/errors. No physical print or playtest.
+- **Preview/next:** `http://127.0.0.1:8734/Space-Exploration/site/index.html#props/PP-008`; confirm tag dimensions and QR placement before two-sided print preparation. Direct Python HTTP server used because `preview_start` is unavailable. No commit, push or publication.
+
+## 2026-10-05: original Space telescope retained (Codex)
+- **Status:** Designer selected the original V1 for the luggage-tag back. Sibling Space's AS-008 points to V1; PP-008 marks the finer graphite experiment superseded. Alternatives preserved.
+- **Files/checks:** Records and handoffs only; validation in Space handoff. No image or HTML changes.
+- **Next:** Confirm tag dimensions and QR placement for a two-sided print. No commit, push or publication.
+
+## 2026-10-05: Space graphite telescope preview (Codex)
+- **Status:** Produced sibling Space's AS-008 v2 with finer graphite strokes, preserving note wording and the retained telescope. Exact 1:5 stroke ratio remains approximate and unmeasured.
+- **Files/checks:** New v2 image and retained intermediate; Space records/handoff and this handoff updated. Full-screen visual review; validation in Space handoff. No HTML changes.
+- **Next:** Review v2 and confirm final print size for stroke calibration. No commit, push or publication.
+
+## 2026-10-05: Space telescope line weights (Codex)
+- **Status:** Recorded the retained telescope and user-specified 0.5/0.1 mm writing/drawing target in sibling Space's PP-008; AS-008 notes pending refinement.
+- **Files/checks:** Both handoffs and sibling records; no artwork changed. Validation in Space handoff.
+- **Next:** Confirm physical tag size before refining and measuring drawing strokes. No commit, push or publication.
+
+## 2026-10-05: Space luggage-tag welcome artwork (Codex)
+- **Status:** Implemented approved star/front and handwritten-note/back arrangement in sibling Space-Exploration. New AS-008 shows exact user note and vintage telescope in selected style 2.
+- **Files:** This handoff; sibling image, AS-008, PP-008, PZ-002, AS-002 and handoff. Existing image names and unrelated changes preserved.
+- **Checks:** Full-resolution visual/text review; sibling handoff records validation and print gaps. No HTML changed.
+- **Next:** Review the reverse artwork; confirm tag dimensions and QR placement before two-sided print testing. No commit, push or publication.
+
+## 2026-10-05: Space luggage-tag clue review (Codex)
+- **Status:** Confirmed sibling Space's PZ-002 visual clue: count the three coloured star groups and match the lock wheel colours. No written clue finalized; lock colour order unresolved.
+- **Files/checks:** Handoffs only; source-record review. No artwork or HTML changes.
+- **Next:** Discuss a subtle pointer in the welcome before creating its handwritten front. No commit, push or publication.
+
+## 2026-10-05: existing Space handwriting review (Codex)
+- **Status:** Reviewed sibling Space-Exploration's uncle notes and artwork. Selected style exists as AS-007's sample; luggage-tag welcome text is drafted, Galileo note unwritten, reward-ticket signature predates selection.
+- **Files/checks:** Handoffs only; searched records and listed assets. No artwork or HTML changed.
+- **Next:** Propose using the selected handwriting for the luggage-tag welcome. No commit, push or publication.
+
+## 2026-10-05: Space handwriting selected (Codex)
+- **Status:** Designer chose option 2, Engineer's notebook. Choice recorded in sibling Space-Exploration's PR-007; AS-007 now records the selection.
+- **Files:** This handoff; sibling PR-007, AS-007 and handoff. No artwork or HTML changes.
+- **Checks:** Space record check recorded in its handoff. Existing unrelated edits preserved.
+- **Next:** Apply the selected handwriting to the next approved uncle note or diagram. No commit, push or publication.
+
+## 2026-10-05: Space handwriting and sketch examples (Codex)
+- **Status:** Generated three comparison samples on one sheet in sibling Space-Exploration. AS-007 records the exact prompt, image and limitations. No style selected.
+- **Files:** This handoff; sibling Space's comparison image, AS-007 and handoff. Existing changes preserved.
+- **Checks:** Screen visual review completed; Space handoff records limitations and validation. No HTML changes or publication.
+- **Next:** Designer selects or adjusts the handwriting before developing a prop-specific sketch.
+
+## 2026-10-05: Space Exploration style discussion (Codex)
+- **Status:** Reviewed the active sibling `../Space-Exploration/` records. Recorded the designer's explicit neat technical handwriting and frequent hand-drawn sketch preferences there as PR-007; proposed a notebook direction in chat.
+- **Files:** This handoff; Space's new PR-007 and handoff. No Aurora or artwork edits. Existing unrelated changes preserved.
+- **Checks:** Source-record review; Space record validation result is in its handoff. No HTML or image changes requiring visual checks.
+- **Next:** Review a handwriting/sketch sample before selecting the detailed Space style. No commit, push or publication.
+
+## 2026-10-05: documentation closeout (Codex)
+- **Status:** Requested document synchronization completed; chat ready to archive. Root index now links all six current medallion packages and the revised Canada/Aurora comparison. README links the file list; original Aurora visual guide has a Patch & medallion section and corrected sidebar badge. Existing Norse/Hiking design notes remain current.
+- **Checks:** Document links and active records checked; root index and both Aurora guide sections reviewed over local HTTP; all 29 new section links/images return 200; images load, identity appears in print content, and no browser console warnings/errors. Earlier digital geometry checks still apply; no physical print or actual printer-profile slice.
+- **Next:** Print the thin back trial with the intended printer/material and inspect S/B/K, then test the full medallion. No commit, push or publication.
+
+
+## 2026-10-05: Canada leaf and Aurora patch corrected (Codex)
+**Task/status:** User rejected Canada's first leaf and supplied the correct Aurora maple-leaf/orbit patch, then explicitly chose it for public branding too. Revised v2 STL packages are in sibling Canada-Exploration and Space-Station-Aurora assets/medallion directories. The shared back remains identical. Both full models and trials pass digital mesh/volume checks; physical printing remains untested.
+**Changed here:** New tools/revised_medallion_fronts.py and tools/render_revised_medallions.py; comparison output/medallions/Revised_Aurora_Canada_v2.png. Old Aurora Brand icon/banner and Images/StationAuroraPatch entry points synchronized with active project; previous assets archived. Shared brand/generate.py now uses the corrected patch SVG; kit GUIDE records revised fronts.
+**Evidence:** Canada retains train/tracks/rim exactly outside the leaf region. Aurora's front and public badge follow the supplied JPEG; vector outlines avoid a font dependency. Both previews, corrected badge and public banner visually checked; ZIP integrity and active-project record validation pass. No website publication.
+**Next:** Physically test the back trial and revised front relief using the actual slicer/printer/filament. No commit or push.
+
+
+## 2026-10-05: Aurora, Hockey and Canada medallions (Codex)
+
+**Task/status:** User requested three more medallions and selected Aurora's station symbol, Hockey's puck/road badge and Canada's maple leaf/train. All three v1 one-piece STLs, thin back trials and print packages are built in the sibling repositories `../Space-Station-Aurora/`, `../Hockey-Expedition/` and `../Canada-Exploration/`, under `assets/medallion/`. Each project's records and handoff contain the design and files. No physical print is claimed.
+
+**Method/files:** Existing SVG identities informed Aurora/Hockey; Canada uses native vector geometry. New shared front source: `tools/themed_medallion_fronts.py`. Self-contained snapshots and builders live in each project's package. No ImageGen was used. The existing Space/Norse/Hiking assets were preserved. Shared-kit GUIDE.md records the expanded family.
+
+**Checks:** All six exported meshes pass closure, winding, connectivity, non-degenerate facets and volume checks. Each back SVG is byte-identical to the approved Space back. All previews visually reviewed; all ZIPs pass integrity checks. Record checks: Aurora 60, Hockey 19, Canada 19, no problems. No printer-profile slice, physical print, commit, push or publication.
+
+**Next action:** Print a full-size thin back trial using the intended printer/material and inspect S/B/K before printing complete medallions. Check front solar-grid grooves, road/puck separation and train details in the actual slicer and print.
+
+## 2026-10-05: Norse and Hiking medallions with approved shared back (Codex)
+
+**Task/status:** Recorded the designer's approval of the Space digital medallion in `../Space-Exploration/records/assets/AS-006-space-medallion-printable-model.md` and reused that exact back for Norse v3 and Hiking v1. Both full models and 1.2 mm thin back trials are built; physical print testing remains pending.
+
+**Files/design:** Norse outputs and print ZIP are under `NorseBackpack/Props/Medallion/`; its raven front and top-side groove are retained from v2, whose files/package remain available. The existing build entry point now targets v3. Hiking outputs and ZIP are under `Hiking_Trip/Props/Medallion/`, with the user-selected mountains, winding trail and pine trees; exact ImageGen prompt/reference saved beside its source PNG. Shared CAD module: `Tools/medallion_cad.py`. Durable design and links are recorded in Norse's existing medallion section and the Hiking keepsake section of the root `index.html`; shared guidance is in `../backpack-kit/GUIDE.md`.
+
+**Checks:** Both complete STLs and both trials pass exported-mesh closure, consistent winding, one-solid connectivity, non-degenerate facets and positive volume; volumes agree with polygon layers. Norse's extracted v2/v3 front profiles have zero symmetric difference. Space, Norse and Hiking back SVGs are byte-identical. Previews visually inspected; corrected a preview compositing bug that hid Hiking's trail although the geometry contained it. ZIP integrity checked. Local HTTP browser reviewed the updated HTML and loaded previews; Norse console has no errors. Space record validation passed (35 records). No actual printer-profile slicing or physical printing was done.
+
+**Next action:** Print one full-size thin back trial using the actual printer/filament settings and inspect S/B/K before printing complete medallions. Previously reported poor letters have an unconfirmed print version/profile; the new layout is not recorded as a proven printing fix. Existing unrelated root-index and Hiking Digital work is preserved. No commit, push or publication.
+
 ## Session — 2026-10-02 to 2026-10-05 — Review of Claude Design's online edition, then polish (Claude Code)
 
 **Task/status:** The user asked for a review of Claude Design's work on the Norse online game (uncommitted, files dated 2 Oct 17:34, mixed into the same files as Part 6's piles below), then said "fix 1-4". Done. Committed, pushed and published at the user's request (2 Oct 2026): design repo `f830d6e` (+ handoff `a5d8db7`), site repo `a1d1d51`. Verified live at https://escapepack.ca/play/norse/leif/ about 75 s after the push: homepage card reads "Play all four trails and the final route online."; game shows LOCK 1 OF 13, no trail row or lanes button, shelf grouped by kind, `leif-sound.js` and `leif-room.js` load, no broken images, no console errors; live `leif-data.js` has the L1 opening note and no trail notes. Not seen live: the opening screen itself (the check browser already had a save). Left out: Codex's root `index.html` change and `Hiking_Trip/Digital/`; `escapepack-rooms` is not a git repo. Recorded as `DG-12` (Open) in `Norse_Brainstorm.html`.
