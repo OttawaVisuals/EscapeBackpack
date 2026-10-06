@@ -36,6 +36,7 @@
 .stand-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
 .stand{background:#f8f8f1;border:1px solid #cfd5c3;border-radius:8px;padding:10px 8px;display:flex;flex-direction:column;gap:6px}
 .minifig{width:100%;max-width:130px;margin:0 auto 4px;display:block}
+.stand-scene{height:250px;border-radius:8px;overflow:hidden;margin:0 0 12px;background:#102b25}.has-3d .stand .minifig{display:none}
 .part-pick{display:flex;flex-direction:column;font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#6a756b}
 .part-pick select{font:12px "Segoe UI",sans-serif;padding:4px;border:1px solid #b8c3aa;border-radius:4px;background:#fffdf6;color:var(--ink);min-width:0;width:100%;text-transform:none;letter-spacing:0}
 .small-note{font-size:11px;color:#7b8275;margin-top:12px}
@@ -74,6 +75,14 @@
 .build-progress:after{content:'';position:absolute;inset:0;width:calc(var(--done) * 100%);background:#28534a}
 .build-done{grid-column:1/-1;text-align:center}
 .build-done img{width:min(560px,90%);mix-blend-mode:multiply}
+/* 3D satellite build (lego-satellite.js): instruction page beside the model, progress along the bottom. */
+.build-view.build-3d{height:100%;min-height:0;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);grid-template-rows:minmax(0,1fr) auto;align-items:stretch;gap:18px;padding:20px}
+.build-3d .build-page{display:flex;align-items:center;min-height:0}.build-3d .build-page img{max-height:100%;object-fit:contain}
+.build-3d .build-stage{border-radius:8px;overflow:hidden;min-height:320px;background:#102b25}
+.build-3d .build-info{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) 220px auto;align-items:center;gap:22px}
+.build-3d .build-info h3{font-size:22px;margin:0 0 4px}.build-3d .build-info .eyebrow{margin:0 0 4px}.build-3d .build-info .muted{margin:0}.build-3d .build-progress{margin:0}
+.build-3d.built .build-page{display:none}.build-3d.built .build-stage{grid-column:1/-1}.build-3d.no-3d .build-stage{display:grid;place-items:center;background:#f7f7ef}
+.satellite-built.rendered img{mix-blend-mode:normal}.satellite-photo{filter:drop-shadow(4px 7px 5px #3a2f1f55)}
 .booklet{height:100%;background:#fff;box-shadow:3px 7px 6px #655a3a25;overflow:hidden}
 .booklet img{width:100%;height:100%;object-fit:cover;object-position:top left}
 .booklet-view{height:100%;display:flex;flex-direction:column}
@@ -200,7 +209,7 @@
 .pocket-list li{padding:6px 0;border-bottom:1px solid #cfd5c3}
 .pocket-list li.open{color:#3d7a52}
 
-@media(max-width:1150px){.figure-workbench{grid-template-columns:220px minmax(0,1fr)}.stand-row{gap:6px}.cards-grid{grid-template-columns:repeat(5,minmax(0,130px))}.build-view{grid-template-columns:1fr}}
+@media(max-width:1150px){.build-view.build-3d{grid-template-columns:1fr;grid-template-rows:auto 360px auto;height:auto}.build-3d .build-info{grid-column:1;grid-template-columns:1fr}.figure-workbench{grid-template-columns:220px minmax(0,1fr)}.stand-row{gap:6px}.cards-grid{grid-template-columns:repeat(5,minmax(0,130px))}.build-view{grid-template-columns:1fr}}
 @media(max-width:849px){.figure-workbench{grid-template-columns:1fr}.figure-reference{position:static;max-height:none}.stand-row{grid-template-columns:repeat(2,minmax(0,1fr))}.cards-grid{grid-template-columns:repeat(2,minmax(0,160px))}.cube-frame{grid-template-columns:repeat(4,64px);grid-template-rows:repeat(4,64px)}}
 /* Flat Lego puzzle in 3D (lego-flat.js) */
 .lego-thumb{height:100%;filter:drop-shadow(5px 8px 5px #52483630)}.lego-thumb img{display:block;width:100%;height:100%;object-fit:contain}.lego-thumb.failed{display:grid;place-items:center;background:#7a4a32;color:#fff3e0;border-radius:8px;font-size:12px;filter:none}

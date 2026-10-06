@@ -38,7 +38,7 @@ Not a hard rule, but this is the split that works and it saves rediscovering it 
 
 - `index.html` — local landing page linking the projects and design guides.
 - `Hiking_Trip/` — completed hiking escape-game materials.
-- `Hiking_Trip/Digital/` — the Hiking online playtest (published by `escapepack-site/tools/build_hiking.cjs` to `/play/hiking/`). Its design record is the same page opened with `?design=1` (DG-H ids). Lock 7's Lego push puzzles are 3D, built from the designer's Stud.io LDraw exports in `assets/` (see DG-H21–H25 for the pipeline and how to send a new model); run `node --test Hiking_Trip/Digital/game.test.cjs Hiking_Trip/Digital/lego.test.mjs` after changes.
+- `Hiking_Trip/Digital/` — the Hiking online playtest (published by `escapepack-site/tools/build_hiking.cjs` to `/play/hiking/`). Its design record is the same page opened with `?design=1` (DG-H ids). Lock 7's Lego push puzzles are 3D, built from the designer's Stud.io LDraw exports in `assets/` (see DG-H21–H25 for the pipeline and how to send a new model); the satellite and minifigs use real part shapes packed from the Stud.io install by `tools/pack-lego.mjs` (DG-H26–H27; repack after a new export); run `node --test Hiking_Trip/Digital/game.test.cjs Hiking_Trip/Digital/lego.test.mjs` after changes.
 - `Lego/` — Lego backpack materials.
 - `NorseBackpack/` — Norse-themed concept and brainstorming materials.
 - `NorseBackpack/Norse_Brainstorm.html` — the single source of truth for the Norse game: story, postcard system, puzzles, open questions, options, props, design spec and design guide, as tabs in one page.

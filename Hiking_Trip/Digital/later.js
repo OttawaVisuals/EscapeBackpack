@@ -51,37 +51,47 @@
     if (face === 'stars') s.append(svg('path', { d: 'M70 54l1.5 3 3 .4-2.2 2 .6 3-2.9-1.5-2.9 1.5.6-3-2.2-2 3-.4z', fill: '#2e5fb5' }));
     if (fig.hair) {
       s.append(svg('path', { d: 'M38 46q0-26 22-26t22 26q-6-12-22-12t-22 12z', fill: hairColour[fig.hair] }));
-      if (fig.hair === 'black') s.append(svg('path', { d: 'M38 46q-4 30 4 44h-6q-6-20 2-44zM82 46q4 30-4 44h6q6-20-2-44z', fill: hairColour.black }), svg('rect', { x: 39, y: 33, width: 42, height: 5, rx: 2, fill: '#c94f3a' }));
+      if (fig.hair === 'black') s.append(svg('path', { d: 'M38 46q-4 30 4 44h-6q-6-20 2-44zM82 46q4 30-4 44h6q6-20-2-44z', fill: hairColour.black }));
       if (fig.hair === 'orange') s.append(svg('circle', { cx: 78, cy: 24, r: 9, fill: hairColour.orange }));
     } else s.append(svg('path', { d: 'M38 46q0-26 22-26t22 26', fill: 'none', stroke: '#8c8a80', 'stroke-dasharray': '4 3' }));
+    if (face === 'plain') s.append(svg('rect', { x: 39, y: 33, width: 42, height: 5, rx: 2, fill: '#8a5a32' }));   // the headband is printed on this head
     if (fig.hobbies) s.append(svg('text', { x: 60, y: 200, 'text-anchor': 'middle', 'font-size': 12, fill: '#3d4a3a', 'font-family': 'Segoe UI, sans-serif' }, `holding: ${G.parts.hobbies.options.find(([v]) => v === fig.hobbies)[1].toLowerCase()}`));
     if (fig.pets) s.append(svg('ellipse', { cx: 100, cy: 150, rx: 13, ry: 8, fill: petColour[fig.pets] }), svg('circle', { cx: 110, cy: 143, r: 6, fill: petColour[fig.pets] }));
     return s;
   }
+  // 3D figures (lego-minifigs.js), loaded on first use; the drawings above stay as the fallback.
+  const legoMinifigs = () => import('./lego-minifigs.js');
   function workbench(state, ctx) {
     const view = el('div', 'figure-workbench'), side = el('aside', 'figure-reference'), main = el('section', 'figure-stands');
     if (have(state, 'notepad')) { side.append(el('p', 'eyebrow', 'YOUR NOTEPAD')); const list = el('div', 'riddle-mini'); G.riddle.forEach((line, i) => list.append(el('p', i ? '' : 'riddle-intro', line))); side.append(list); }
     else side.append(el('p', 'eyebrow', 'LEGO PARTS'), el('p', 'muted', 'Five stands and the bags of parts you have found. Put the parts together however you like.'));
     const bags = G.partOrder.filter(b => have(state, b)), missing = G.partOrder.filter(b => !have(state, b));
     main.append(el('p', 'control-help', bags.length < 6 ? `Bags found: ${bags.length} of 6. More parts may turn up later.` : 'All six bags are here. Choose a part for each stand; a part already on another stand moves over.'));
-    const row = el('div', 'stand-row');
+    const scene = el('div', 'stand-scene lego3d-canvas'), row = el('div', 'stand-row'), selects = [];
+    scene.append(el('div', 'lego3d-help', 'Drag a figure to turn it'));
+    let model = null;
     state.figures.forEach((fig, i) => {
       const stand = el('div', 'stand'); stand.append(minifig(fig));
+      selects[i] = {};
       for (const b of bags) {
         const label = el('label', 'part-pick'), select = el('select'); label.append(el('span', '', G.parts[b].label), select);
         select.append(new Option('—', ''));
         for (const [value, text] of G.parts[b].options) select.append(new Option(text, value, false, fig[b] === value));
         select.addEventListener('change', () => {
-          state.figures.forEach((other, j) => { if (j !== i && other[b] === select.value) delete other[b]; });
+          const moved = [];
+          state.figures.forEach((other, j) => { if (j !== i && select.value && other[b] === select.value) { delete other[b]; selects[j][b].value = ''; moved.push(j); } });
           if (select.value) fig[b] = select.value; else delete fig[b];
-          ctx.save(); ctx.refresh();
+          ctx.save();
+          if (model) [i, ...moved].forEach(j => model.update(j)); else ctx.refresh();
         });
+        selects[i][b] = select;
         stand.append(label);
       }
       row.append(stand);
     });
-    main.append(row);
+    main.append(scene, row);
     if (missing.length) main.append(el('p', 'small-note', `Not found yet: ${missing.map(b => `“${b[0].toUpperCase() + b.slice(1)}”`).join(', ')}.`));
+    legoMinifigs().then(m => m.mount(scene, { figures: state.figures })).then(v => { model = v; view.classList.add('has-3d'); }, err => { console.error(err); scene.remove(); });
     view.append(side, main); return view;
   }
 
@@ -108,6 +118,27 @@
     for (const [x, y] of Object.values(rings)) g.append(svg('circle', { cx: x, cy: y, r: 50, fill: 'none', stroke: '#1e2227', 'stroke-width': 14 }), svg('circle', { cx: x, cy: y, r: 43, fill: 'none', stroke: '#4f565e', 'stroke-width': 2 }));
     return g;
   }
+  // The 3D model seen from above (lego-satellite.js), placed so its four magnifier lenses sit on the rings' solution
+  // positions: the best rotation, scale and shift over every way of matching lenses to rings. Cached once rendered.
+  let topCache;
+  function satelliteTop() {
+    topCache ??= legoSatellite().then(m => m.topView()).then(({ url, size, lenses }) => {
+      const targets = [rings.S, rings.plus, rings.X, rings.I];
+      let best = null;
+      for (const order of permutations([0, 1, 2, 3])) {
+        const w = order.map(i => targets[i]), n = lenses.length;
+        const zc = lenses.reduce((a, p) => [a[0] + p[0] / n, a[1] + p[1] / n], [0, 0]), wc = w.reduce((a, p) => [a[0] + p[0] / n, a[1] + p[1] / n], [0, 0]);
+        let re = 0, im = 0, den = 0;
+        lenses.forEach((p, i) => { const ax = p[0] - zc[0], ay = p[1] - zc[1], bx = w[i][0] - wc[0], by = w[i][1] - wc[1]; re += bx * ax + by * ay; im += by * ax - bx * ay; den += ax * ax + ay * ay; });
+        const a = [re / den, im / den], b = [wc[0] - (a[0] * zc[0] - a[1] * zc[1]), wc[1] - (a[1] * zc[0] + a[0] * zc[1])];
+        const err = lenses.reduce((e, p, i) => e + Math.hypot(a[0] * p[0] - a[1] * p[1] + b[0] - w[i][0], a[1] * p[0] + a[0] * p[1] + b[1] - w[i][1]), 0);
+        if (!best || err < best.err) best = { a, b, err };
+      }
+      return { url, size, ...best };
+    });
+    return topCache.then(({ url, size, a, b }) => svg('image', { href: url, width: size, height: size, class: 'satellite-shape satellite-photo', transform: `matrix(${a[0]} ${a[1]} ${-a[1]} ${a[0]} ${b[0]} ${b[1]})` }));
+  }
+  const permutations = list => list.length < 2 ? [list] : list.flatMap((x, i) => permutations([...list.slice(0, i), ...list.slice(i + 1)]).map(rest => [x, ...rest]));
   // The back of the ISS note: the scribbles from 3. ISS Formula.docx, positioned as on the printed card.
   const scribbles = [
     [45, ['A', 48], ['F', 105], ['T', 160], ['E', 285], ['-', 330], ['3', 380], ['&', 440], ['#', 488], ['8', 560], ['q', 600]],
@@ -126,7 +157,8 @@
     const sat = state.satellite;
     if (sat.on && sat.built >= G.satellitePages) {
       const g = svg('g', { transform: `translate(${sat.x} ${sat.y}) rotate(${sat.rot} 470 400)`, class: interactive ? 'satellite-overlay movable' : 'satellite-overlay' });
-      g.append(satelliteShape()); s.append(g);
+      s.append(g);
+      satelliteTop().then(top => g.append(top), () => g.append(satelliteShape()));
       if (interactive) {
         g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button'); g.setAttribute('aria-label', 'Lego satellite. Drag, or use the arrow keys, to move it.');
         g.addEventListener('pointerdown', event => {
@@ -163,22 +195,45 @@
     const frame = el('div', 'scribble-frame'); frame.append(scribbleCard(state, true, ctx));
     view.append(tools, frame); return view;
   }
+  // 3D satellite (lego-satellite.js), loaded on first use; the photo and the page images remain the fallback.
+  const legoSatellite = () => import('./lego-satellite.js');
   function satelliteArt(state) {
-    if (state.satellite.built >= G.satellitePages) { const wrap = el('div', 'satellite-built'); wrap.append(image('satellite-model.jpg', 'The finished Lego satellite')); return wrap; }
-    const b = el('div', 'parts-bag satellite-bag'); b.append(el('span', 'bag-label', 'Satellite'), el('span', 'bag-bits')); return b;
+    if (state.satellite.built < G.satellitePages) { const b = el('div', 'parts-bag satellite-bag'); b.append(el('span', 'bag-label', 'Satellite'), el('span', 'bag-bits')); return b; }
+    const wrap = el('div', 'satellite-built lego-thumb'), img = image('satellite-model.jpg', 'The finished Lego satellite');
+    wrap.append(img);
+    legoSatellite().then(m => m.picture()).then(url => { img.src = url; wrap.classList.add('rendered'); }, err => console.error(err));
+    return wrap;
   }
   function buildView(state, ctx) {
-    const sat = state.satellite, view = el('div', 'build-view');
-    if (sat.built >= G.satellitePages) {
-      const done = el('div', 'build-done'); done.append(image('satellite-model.jpg', 'The finished Lego satellite'), el('h3', '', 'Your satellite is built.'), el('p', 'muted', 'It’s on your table. You can set it on a flat card like the real model.'));
-      view.append(done); return view;
-    }
-    const page = sat.built + 2, info = el('div', 'build-info'), pic = el('div', 'build-page');
-    pic.append(image(`sat-${String(page).padStart(2, '0')}.jpg`, `Satellite instructions, page ${page}`));
-    info.append(el('p', 'eyebrow', `PAGE ${page} OF 11`), el('h3', '', sat.built ? 'Keep building.' : 'Build the satellite.'), el('p', 'muted', 'Follow the instructions one page at a time.'));
-    const progress = el('div', 'build-progress'); progress.style.setProperty('--done', sat.built / G.satellitePages); info.append(progress);
-    info.append(button(`Add the pieces on page ${page}`, () => { sat.built++; ctx.save(); ctx.redraw(); ctx.refresh(); }, 'primary'));
-    view.append(pic, info); return view;
+    const sat = state.satellite, view = el('div', 'build-view build-3d'), stageBox = el('div', 'build-stage lego3d-canvas'), pic = el('div', 'build-page'), info = el('div', 'build-info');
+    const eyebrow = el('p', 'eyebrow'), title = el('h3'), note = el('p', 'muted'), progress = el('div', 'build-progress'), add = button('', () => {}, 'primary');
+    stageBox.append(el('div', 'lego3d-help', 'Drag to turn · scroll to zoom'));
+    const words = el('div', 'build-words'); words.append(eyebrow, title, note); info.append(words, progress, add);
+    view.append(pic, stageBox, info);
+    let model = null;
+    const show = () => {
+      const done = sat.built >= G.satellitePages, page = sat.built + 2;
+      progress.style.setProperty('--done', sat.built / G.satellitePages);
+      view.classList.toggle('built', done);
+      if (done) {
+        pic.replaceChildren(); eyebrow.textContent = 'ALL 11 PAGES'; title.textContent = 'Your satellite is built.';
+        note.textContent = 'It’s on your table. You can set it on a flat card like the real model.'; add.hidden = true; return;
+      }
+      pic.replaceChildren(image(`sat-${String(page).padStart(2, '0')}.jpg`, `Satellite instructions, page ${page}`));
+      eyebrow.textContent = `PAGE ${page} OF 11`; title.textContent = sat.built ? 'Keep building.' : 'Build the satellite.';
+      note.textContent = 'Follow the instructions one page at a time.'; add.textContent = `Add the pieces on page ${page}`;
+    };
+    add.addEventListener('click', () => {
+      if (sat.built >= G.satellitePages) return;
+      model?.add(sat.built);
+      sat.built++; ctx.save(); ctx.redraw(); show();
+    });
+    legoSatellite().then(m => m.mount(stageBox, { built: sat.built })).then(v => { model = v; }, err => {
+      console.error(err); view.classList.add('no-3d');
+      stageBox.replaceChildren(el('p', 'lego-error', 'The 3D model could not load. Check the internet connection; the instructions still work.'));
+    });
+    show();
+    return view;
   }
   function instructionsView() {
     let page = 1; const view = el('div', 'booklet-view'), tools = el('div', 'document-tools'), scroll = el('div', 'document-scroll booklet-scroll'), pic = image('sat-01.jpg', 'Satellite instructions, page 1'), label = el('span', '', '1 / 11');

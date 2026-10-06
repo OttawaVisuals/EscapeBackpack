@@ -141,8 +141,8 @@
     hobbies: { label: 'Holding', options: [['guitar', 'Guitar'], ['stick', 'Hockey stick'], ['brush', 'Paintbrush'], ['camera', 'Camera'], ['flippers', 'Flippers']] },
     jobs: { label: 'Outfit', options: [['coat', 'Doctor’s coat'], ['vest', 'Engineer’s safety vest'], ['ranger', 'Park ranger shirt'], ['suit', 'Astronaut suit'], ['chef', 'Chef’s jacket']] },
     pets: { label: 'Pet', options: [['frog', 'Frog'], ['cat', 'Cat'], ['bird', 'Bird'], ['dog', 'Dog'], ['rat', 'Rat']] },
-    faces: { label: 'Face', options: [['beard', 'Beard'], ['scar', 'Scar on the left eyebrow'], ['plain', 'Big smile'], ['mark', 'Birth mark'], ['stars', 'Starry face tattoo']] },
-    hair: { label: 'Hair', options: [['grey', 'Grey hair'], ['blue', 'Blue hair'], ['black', 'Black hair and headband'], ['blonde', 'Blonde hair'], ['orange', 'Orange hair']] },
+    faces: { label: 'Face', options: [['beard', 'Beard'], ['scar', 'Scar on the left eyebrow'], ['plain', 'Big smile and headband'], ['mark', 'Birth mark'], ['stars', 'Starry face tattoo']] },
+    hair: { label: 'Hair', options: [['grey', 'Grey hair'], ['blue', 'Blue hair'], ['black', 'Black hair'], ['blonde', 'Blonde hair'], ['orange', 'Orange hair']] },
     names: { label: 'Name tile', options: [['DICK', 'DICK'], ['BART', 'BART'], ['JUNE', 'JUNE'], ['RICH', 'RICH'], ['MADY', 'MADY']] }
   };
   const partOrder = ['names', 'hair', 'faces', 'jobs', 'hobbies', 'pets'];

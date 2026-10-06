@@ -103,14 +103,14 @@ test('lock 8: the neighbours riddle has one solution, and the doctor is DICK', (
   const opts = bag => G.parts[bag].options.map(([v]) => v), names = opts('names');
   const n = name => names.indexOf(name), w = (list, v) => list.indexOf(v), solutions = [];
   for (const job of perms(['doctor', 'engineer', 'ranger', 'astronaut', 'chef'])) for (const face of perms(opts('faces'))) {
-    if (face[n('RICH')] !== 'mark' || face[n('BART')] !== 'scar' || face[w(job, 'engineer')] !== 'scar' || face[w(job, 'chef')] !== 'stars' || face[n('MADY')] !== 'stars') continue;
+    // The headband is printed on the big-smile head (DG-H27), so the headband clues are about that face.
+    if (face[n('RICH')] !== 'mark' || face[n('BART')] !== 'scar' || face[w(job, 'engineer')] !== 'scar' || face[w(job, 'chef')] !== 'stars' || face[n('MADY')] !== 'stars' || face[n('JUNE')] !== 'plain') continue;
     for (const hair of perms(opts('hair'))) {
-      // June wears the headband, which comes with the black hair.
-      if (['grey', 'black', 'blonde'].includes(hair[n('MADY')]) || ['grey', 'black', 'blonde'].includes(hair[n('BART')]) || hair[n('DICK')] !== 'grey' || hair[w(job, 'astronaut')] !== 'blonde' || hair[n('JUNE')] !== 'black') continue;
+      if (['grey', 'black', 'blonde'].includes(hair[n('MADY')]) || ['grey', 'black', 'blonde'].includes(hair[n('BART')]) || hair[n('DICK')] !== 'grey' || hair[w(job, 'astronaut')] !== 'blonde' || hair[w(face, 'plain')] !== 'black') continue;
       for (const pet of perms(opts('pets'))) {
         if (pet[w(hair, 'orange')] !== 'rat' || pet[w(job, 'astronaut')] !== 'dog' || pet[w(job, 'doctor')] !== 'frog' || pet[w(job, 'ranger')] !== 'bird') continue;
         for (const hobby of perms(opts('hobbies'))) {
-          if (hobby[w(job, 'ranger')] !== 'brush' || hair[w(hobby, 'camera')] !== 'blonde' || hobby[w(face, 'mark')] !== 'camera' || face[w(hobby, 'guitar')] !== 'beard' || hobby[w(hair, 'grey')] !== 'guitar' || hobby[w(job, 'engineer')] !== 'stick' || hobby[n('JUNE')] !== 'brush' || pet[w(hobby, 'stick')] !== 'cat') continue;
+          if (hobby[w(job, 'ranger')] !== 'brush' || hair[w(hobby, 'camera')] !== 'blonde' || hobby[w(face, 'mark')] !== 'camera' || face[w(hobby, 'guitar')] !== 'beard' || hobby[w(hair, 'grey')] !== 'guitar' || hobby[w(job, 'engineer')] !== 'stick' || hobby[w(face, 'plain')] !== 'brush' || pet[w(hobby, 'stick')] !== 'cat') continue;
           solutions.push(names[job.indexOf('doctor')]);
         }
       }

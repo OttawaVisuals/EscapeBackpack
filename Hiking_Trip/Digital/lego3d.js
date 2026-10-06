@@ -71,7 +71,7 @@ export function createScene(floor = 'table') {
   sun.position.set(-160, 320, 220); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0005;
   Object.assign(sun.shadow.camera, { left: -200, right: 200, top: 200, bottom: -200, near: 10, far: 900 });
   scene.add(sun);
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(1600, 1600),
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(5000, 5000),
     floor === 'table' ? new THREE.MeshStandardMaterial({ color: 0x28534a, roughness: 0.95 }) : new THREE.ShadowMaterial({ opacity: 0.22 }));
   ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
   const root = new THREE.Group(); root.rotation.x = Math.PI; scene.add(root);

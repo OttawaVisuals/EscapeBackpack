@@ -1,5 +1,26 @@
 # Project Handoff
 
+## 2026-10-05: Space full Galileo note illustrated (Codex)
+- **Status:** Designer put all four observations on the uncle note. Sibling Space's AS-009 is a full handwritten draft with Galilean optics drawing; PP-007 holds the complete text. Q-007 answered, Galileo card requirement removed from PZ-001, original answer unchanged. Artwork/wording remain candidate for review.
+- **Files/checks:** Sibling image/asset record and related prop/puzzle/question records, rebuilt design HTML, both handoffs. Source dates/optics verified; full image text/drawing reviewed; 40 records valid; HTTP board layout and image loading checked, no console warnings/errors. No physical print/playtest.
+- **Next:** Review note draft before selecting print dimensions and testing with map/magnifier. No commit, push or publication.
+
+## 2026-10-05: Space Galileo note and optics proposal (Codex)
+- **Status:** Captured the user's handwritten-note/lens-diagram direction in sibling Space's PP-007. Q-007 tracks the pending choice of note-only dates versus the card/note split. No new artwork or finalized wording.
+- **Files/checks:** Sibling records and rebuilt HTML, both handoffs. Institutional history/optics research; 39 records valid; HTTP browser visual check and no console warnings/errors. Existing dates remain recorded with their precision gaps explained in PP-007.
+- **Next:** Resolve Q-007 and agree note text before artwork. No commit, push or publication.
+
+## 2026-10-05: next Space puzzle reviewed (Codex)
+- **Status:** Confirmed sibling Space's next intended puzzle is PZ-001, Galileo's sky map. No puzzle or artwork edits.
+- **Files/checks:** Handoffs only; source-record review confirms existing map and unfinished card/note. Physical magnifier readability remains untested.
+- **Next:** Discuss the Galileo card and uncle note together. No commit, push or publication.
+
+## 2026-10-05: Hiking online — 3D satellite and minifigs from real Lego parts (Claude Code)
+- **Status:** Satellite (DG-H26) and lock 8 minifigs (DG-H27) done; committed, pushed and published at the user's request on 2026-10-06 (design repo and escapepack-site, see git log). 2026-10-06: user answered DG-H27's two questions; the headband moved from the Hair label to the Face label ("Big smile and headband" / "Black hair"), riddle test updated (still one solution), `game-data.js` v=9, `later.js` v=11. Then fixed the blonde hair floating one brick up (packer now prefers the LDraw library over Stud.io's UnOfficial copies; see DG-H27) and added a content hash to the pack geometry link.
+- **What changed:** New `Hiking_Trip/Digital/tools/pack-lego.mjs` packs a Stud.io export with real part shapes, Stud.io prints and minifig hand positions, from the Stud.io install on this PC (`C:\Program Files\Studio 2.0\ldraw`, `%LOCALAPPDATA%\Stud.io\CustomParts`). New `lego-model.js` (draws a pack), `lego-satellite.js` (3D build page by page, table picture, top view for the lock 5 overlay), `lego-minifigs.js` + `lego-minifigs-data.js` (3D strip above the five stands). `later.js`/`later.css` (v=10) use them; the drawings and photo stay as fallbacks. `lego3d.js` table plane enlarged. Assets: `lego-satellite.ldr`, `lego-minifigs.ldr` (user exports), `lego-*.pack.json/.bin`, `lego-tex-*.png`. Dev pages: `prototypes/lego-pack-view.html?pack=…`, `prototypes/lego-satellite-check.html`. `lego.test.mjs` +3 tests. Design record: DG-H12 note, DG-H25 updated, DG-H26, DG-H27. `AGENTS.md` map line. Site repo: `escapepack-site/tools/build_hiking.cjs` file list gains the four new scripts; `play/hiking/` rebuilt with it. `C:\EscapeBackpack\.claude\launch.json` gained a `hiking-3d` server on port 8752 (another chat held 8741).
+- **Checks:** tests 27/27 (after the label change too). Browser at 1366 × 850 and narrow: satellite build pages 4–11, telescope move, finished view, table picture, overlay lenses on + S I X (fit error 4–11 card units); minifigs solved row, swaps, empty slots, turning; no console errors. `build_hiking.cjs` run for publishing.
+- **Next:** User playtests the satellite and minifigs on the live page (DG-H19 playtest question still open).
+
 ## 2026-10-05: Hiking online — 3D Lego push puzzles and Norse-style look (Claude Code)
 - **Status:** Done, committed, pushed and published at the user's request. Live at https://escapepack.ca/play/hiking/ (unlisted playtest). Design repo: `48da6ea` (first commit of `Hiking_Trip/Digital/`, settling the Norse handoff's "commit or discard" item for that folder) and `5315986`, both pushed. Site: `087f4f1` (3D puzzles) and `a6b8ef8` (new look), both pushed. This handoff, the root `index.html` and `AGENTS.md` edits below are not committed (the first two also hold other sessions' changes).
 - **Decisions (all in `Hiking_Trip/Digital/?design=1`):** DG-H21 flat puzzle rules; DG-H22 3D flat replaces the 2D one; DG-H23 square puzzle rules (tile and bridge drag each other, every loose piece moves one stud, may stick out); DG-H24 Norse-style look in the Hiking brand (masthead, felt table, cover-art opening, padlock wheels, hint chips, grouped shelf, zoom, full screen); DG-H14 marked superseded. Open: DG-H25 (four more Lego items to model: cube, Lego numbers, satellite, figures/minifigs, with export instructions); DG-H19 updated.

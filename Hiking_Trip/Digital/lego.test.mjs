@@ -127,3 +127,51 @@ test('saved actions replay to the same state; junk and blocked actions are skipp
   assert.ok(!square.solved(square.replay(['in:back:0:-3', 'deeper', 'shift:+1'])));
   assert.ok(square.solved(square.replay(['hand:0:-1,0', 'in:back:-1:-3', 'shift:+1'])));
 });
+
+// Real-part packs (tools/pack-lego.mjs, lego-model.js). Repack after a new export:
+//   node Hiking_Trip/Digital/tools/pack-lego.mjs Hiking_Trip/Digital/assets/lego-<name>.ldr <name>
+const pack = name => JSON.parse(readFileSync(new URL(`assets/lego-${name}.pack.json`, import.meta.url), 'utf8'));
+
+test('packs: every part the model uses is packed, with its prints on disk', () => {
+  for (const name of ['satellite', 'minifigs']) {
+    const p = pack(name), bytes = readFileSync(new URL(`assets/${p.bin.split('?')[0]}`, import.meta.url)).length;
+    for (const refs of Object.values(p.files)) for (const r of refs) assert.ok(p.files[r.file] || p.parts[r.file], `${name}: ${r.file} not packed`);
+    for (const [file, part] of Object.entries(p.parts)) {
+      assert.ok(part.tris.length, `${name}: ${file} has no triangles`);
+      for (const [, off, len] of part.tris) assert.ok((off + len) * 4 <= bytes, `${name}: ${file} outside the geometry file`);
+    }
+    for (const t of p.textures) assert.ok(readFileSync(new URL(`assets/${t}`, import.meta.url)).length > 0, t);
+  }
+});
+
+test('satellite: the export has the booklet’s 15 steps (10 main, 5 for the telescope) and four magnifier rings', () => {
+  const p = pack('satellite'), steps = refs => [...new Set(refs.map(r => r.step))].sort((a, b) => a - b);
+  assert.deepEqual(steps(p.files[p.main]), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);      // lego-satellite.js PAGES maps these to pages 2–11
+  assert.deepEqual(steps(p.files.telescope), [0, 1, 2, 3, 4]);
+  assert.equal(p.files[p.main].filter(r => r.file === '10830p01.dat').length, 4);
+});
+
+test('minifigs: every exported part is in one bag, and each name base has a full figure next to it', async () => {
+  const { BAG, SOLVED, NAME_FILES } = await import('./lego-minifigs-data.js');
+  const G = (await import('node:module')).createRequire(import.meta.url)('./game-data.js');
+  const p = pack('minifigs'), refs = p.files[p.main];
+  const bases = refs.filter(r => NAME_FILES[r.file]);
+  assert.deepEqual(bases.map(r => NAME_FILES[r.file]).sort(), Object.keys(SOLVED).sort());
+  const count = {};
+  for (const r of refs) {
+    if (NAME_FILES[r.file]) continue;
+    const bags = Object.keys(BAG).filter(b => BAG[b].includes(r.file));
+    assert.equal(bags.length, 1, `${r.file} should be in exactly one bag`);
+    const near = bases.reduce((a, b) => Math.abs(b.m[0] - r.m[0]) < Math.abs(a.m[0] - r.m[0]) ? b : a);
+    const key = NAME_FILES[near.file] + ':' + bags[0]; count[key] = (count[key] || 0) + 1;
+  }
+  for (const name of Object.keys(SOLVED)) for (const bag of Object.keys(BAG)) assert.ok(count[`${name}:${bag}`], `${name} has no ${bag} part`);
+  // SOLVED uses every option of every bag once, and matches the lock 8 answer (the doctor is DICK).
+  for (const bag of Object.keys(BAG)) assert.deepEqual(Object.values(SOLVED).map(f => f[bag]).sort(), G.parts[bag].options.map(([v]) => v).sort(), bag);
+  assert.deepEqual(SOLVED.DICK, { jobs: 'coat', faces: 'beard', hair: 'grey', hobbies: 'guitar', pets: 'frog' });
+  // Every torso has two hands for held items: posed torsos in the export, the chef's in the pack.
+  for (const r of refs.filter(r => r.file.includes('973'))) {
+    const hands = p.files[r.file] ? p.files[r.file].filter(k => k.file === '3820.dat') : p.parts[r.file].hands;
+    assert.equal(hands?.length, 2, r.file);
+  }
+});

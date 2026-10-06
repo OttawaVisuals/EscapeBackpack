@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Satellite Build Check</title>
+  <!-- Development check for lego-satellite.js: build view, table picture and top view. Not linked from the game. -->
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+  <style>body { margin: 0; background: #e3e6d7; font: 14px system-ui; } #view { height: 460px; position: relative; } #view canvas { width: 100%; height: 100%; display: block; } .row { display: flex; gap: 10px; padding: 10px; align-items: center; } img { width: 300px; background: #fffdf7; border: 1px solid #ccc; }</style>
+</head>
+<body>
+  <div id="view"></div>
+  <div class="row"><button id="add">Add page</button><span id="page"></span></div>
+  <div class="row"><img id="pic" alt=""><img id="top" alt=""><pre id="lenses"></pre></div>
+  <script type="module">
+    import { mount, picture, topView, PAGES } from '../lego-satellite.js';
+    const built = +(new URLSearchParams(location.search).get('built') ?? 0);
+    let page = built;
+    const view = await mount(document.getElementById('view'), { built });
+    const label = () => document.getElementById('page').textContent = `${page} of ${PAGES.length} pages added`;
+    document.getElementById('add').onclick = () => { if (page < PAGES.length) view.add(page++); label(); };
+    label();
+    document.getElementById('pic').src = await picture();
+    const t = await topView(); document.getElementById('top').src = t.url;
+    document.getElementById('lenses').textContent = JSON.stringify(t.lenses.map(p => p.map(Math.round))) + ' px/LDU ' + t.pxPerLdu.toFixed(2);
+  </script>
+</body>
+</html>

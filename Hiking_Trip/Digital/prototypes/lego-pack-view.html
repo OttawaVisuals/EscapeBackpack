@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lego Pack Viewer</title>
+  <!-- Development check for tools/pack-lego.mjs output: ?pack=satellite or ?pack=minifigs. Not linked from the game. -->
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+  <style>html, body { margin: 0; height: 100%; background: #102b25; color: #f4ebd5; font: 14px system-ui; } #view { position: fixed; inset: 0; } #info { position: fixed; left: 12px; top: 8px; }</style>
+</head>
+<body>
+  <div id="view"></div><p id="info">Loading…</p>
+  <script type="module">
+    import * as THREE from 'three';
+    import { createStage } from '../lego3d.js';
+    import { loadPack, boundsOf } from '../lego-model.js';
+    const name = new URLSearchParams(location.search).get('pack') || 'satellite';
+    const pack = await loadPack(`../assets/lego-${name}.pack.json`);
+    const stage = createStage(document.getElementById('view'));
+    stage.controls.maxDistance = 3000; stage.controls.minDistance = 20;
+    const model = new THREE.Group();
+    for (const ref of pack.main) model.add(pack.build(ref));
+    stage.root.add(model);
+    const box = boundsOf(model), c = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3()).length();
+    stage.root.position.x -= c.x; stage.root.position.z -= c.z; stage.root.position.y -= box.min.y;
+    stage.controls.target.set(0, size * 0.12, 0); stage.camera.position.set(size * 0.35, size * 0.55, size * 0.75); stage.controls.update();
+    window.stage = stage; window.pack = pack;
+    document.getElementById('info').textContent = `${pack.json.source}: ${Object.keys(pack.json.parts).length} parts`;
+  </script>
+</body>
+</html>
