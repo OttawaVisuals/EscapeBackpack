@@ -65,14 +65,14 @@ export function addLabel(object, text, y, { x = 0, z = 0, turn = Math.PI } = {})
 // floor: 'table' draws a wooden-coloured floor; 'shadow' draws only the shadow (for transparent stills).
 export function createScene(floor = 'table') {
   const scene = new THREE.Scene();
-  if (floor === 'table') scene.background = new THREE.Color(0xe6dfca);
+  if (floor === 'table') scene.background = new THREE.Color(0x102b25);           // the game's table edge and felt (styles.css)
   scene.add(new THREE.HemisphereLight(0xfffbef, 0x8a7d62, 1.6));
   const sun = new THREE.DirectionalLight(0xffffff, 2.2);
   sun.position.set(-160, 320, 220); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0005;
   Object.assign(sun.shadow.camera, { left: -200, right: 200, top: 200, bottom: -200, near: 10, far: 900 });
   scene.add(sun);
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(1600, 1600),
-    floor === 'table' ? new THREE.MeshStandardMaterial({ color: 0xd9ccaa, roughness: 0.9 }) : new THREE.ShadowMaterial({ opacity: 0.22 }));
+    floor === 'table' ? new THREE.MeshStandardMaterial({ color: 0x28534a, roughness: 0.95 }) : new THREE.ShadowMaterial({ opacity: 0.22 }));
   ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
   const root = new THREE.Group(); root.rotation.x = Math.PI; scene.add(root);
   return { scene, root, centreOn: (x, z) => root.position.set(-x, 0, z) };   // put LDraw point (x, z) at the origin

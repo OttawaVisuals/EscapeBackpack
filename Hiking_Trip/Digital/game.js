@@ -2,7 +2,7 @@
 (() => {
   const G = window.HikingGame, C = window.HikingClues, L = window.HikingLater, $ = id => document.getElementById(id);
   const KEY = 'escape-backpack.hiking-opening.v1', NS = 'http://www.w3.org/2000/svg';
-  let state = G.fresh(), hadSave = false, scale = 1, selected = 'bottle', inspected = null, z = 2, toastTimer;
+  let state = G.fresh(), hadSave = false, scale = 1, zoom = 1, selected = 'bottle', inspected = null, z = 2, toastTimer;
   let anchor = null, draft = null, wordDown = null, wordMoved = false, savedFocused = null;
   try { const raw = localStorage.getItem(KEY); if (raw) { state = G.restore(JSON.parse(raw)); hadSave = true; } } catch (_) { /* Keep fresh state and show storage status on the next save. */ }
   function save() {
@@ -70,7 +70,8 @@
     node.style.left = p.x + 'px'; node.style.top = p.y + 'px'; node.style.transform = `rotate(${p.rot}deg)`; node.hidden = p.stowed;
   }
   function fit() {
-    const frame = $('table-frame'), table = G.tableSize(state.stage); scale = Math.min((frame.clientWidth - 18) / table.w, (frame.clientHeight - 32) / table.h);
+    const frame = $('table-frame'), table = G.tableSize(state.stage); scale = zoom * Math.min((frame.clientWidth - 18) / table.w, (frame.clientHeight - 32) / table.h);
+    frame.classList.toggle('zoomed', zoom > 1); $('zoom-out').disabled = zoom <= 1; $('zoom-in').disabled = zoom >= 4; $('zoom-fit').disabled = zoom === 1;
     $('table').style.width = table.w + 'px'; $('table').style.height = table.h + 'px';
     $('table').style.transform = `scale(${scale})`; $('table-fit').style.width = `${table.w * scale}px`; $('table-fit').style.height = `${table.h * scale}px`;
   }
@@ -84,8 +85,28 @@
     $('flip').innerHTML = (id === 'bottle' ? 'Turn' : 'Flip') + ' <kbd>F</kbd>';
     document.querySelectorAll('.shelf-item').forEach(node => node.setAttribute('aria-pressed', String(node.dataset.id === id)));
   }
+  const SHELF_GROUPS = [
+    ['Notes & papers', ['note', 'sheet', 'grandparents', 'newspaper', 'iss', 'periodic', 'equation', 'instructions', 'notepad', 'agenda', 'cards', 'map']],
+    ['Lego', ['blue0', 'orange4', 'brown1', 'red3', 'flat', 'square', 'cube', 'satellite']],
+    ['Bags of Lego parts', ['hobbies', 'jobs', 'pets', 'faces', 'hair', 'names']]
+  ];
+  const shelfGroup = id => (SHELF_GROUPS.find(([, ids]) => ids.includes(id)) || ['Things'])[0];
+  const shelfOpen = new Set(); let shelfStage = null;
+  function drawShelf(entries) {
+    if (shelfStage !== state.stage) { shelfOpen.clear(); for (const id of state.stage ? G.locks[state.stage - 1].releases : ['bottle']) shelfOpen.add(shelfGroup(id)); shelfStage = state.stage; }
+    const groups = new Map([...SHELF_GROUPS.map(([name]) => [name, []]), ['Things', []]]);
+    for (const [id, node] of entries) groups.get(shelfGroup(id)).push(node);
+    $('shelf').replaceChildren();
+    for (const [name, nodes] of groups) {
+      if (!nodes.length) continue;
+      const open = shelfOpen.has(name), group = el('div', 'shelf-group'), toggle = button('', () => { open ? shelfOpen.delete(name) : shelfOpen.add(name); drawShelf(entries); }, 'group-toggle');
+      toggle.setAttribute('aria-expanded', String(open)); toggle.setAttribute('aria-label', `${name}: ${nodes.length}`);
+      toggle.append(el('span', 'chev', '›'), el('span', '', name), el('span', 'n', String(nodes.length)));
+      group.append(toggle); if (open) group.append(...nodes); $('shelf').append(group);
+    }
+  }
   function drawTable() {
-    $('pieces').replaceChildren(); $('shelf').replaceChildren();
+    $('pieces').replaceChildren(); const shelfEntries = [];
     for (const id of G.available(state.stage, state.found)) {
       const item = G.items[id], p = piece(id), node = el('div', 'prop');
       node.dataset.id = id; node.tabIndex = 0; node.setAttribute('role', 'button'); node.setAttribute('aria-label', `${nameOf(id)}. Enter to inspect; F to turn; R to rotate; arrow keys to move.`);
@@ -107,8 +128,9 @@
       const shelf = button('', () => { piece(id).stowed = false; drawTable(); select(id); save(); }, 'shelf-item' + (p.stowed ? ' stowed' : ''));
       shelf.dataset.id = id;
       shelf.append(el('span', 'shelf-icon', icons[id] || (item.bag ? '⁘' : '▦')));
-      const label = el('span', '', nameOf(id)); label.append(el('small', '', p.stowed ? 'Put away · click to bring back' : 'On the table')); shelf.append(label); $('shelf').append(shelf);
+      const label = el('span', '', nameOf(id)); label.append(el('small', '', p.stowed ? 'Put away · click to bring back' : 'On the table')); shelf.append(label); shelfEntries.push([id, shelf]);
     }
+    drawShelf(shelfEntries);
     $('item-count').textContent = String(G.available(state.stage, state.found).length).padStart(2, '0');
     if (!G.available(state.stage, state.found).includes(selected) || (selected && piece(selected).stowed)) selected = null;
     select(selected, false); fit();
@@ -239,8 +261,75 @@
     const rules = el('div', 'sudoku-rules'); rules.innerHTML = '<p>Fill the grid with numbers from <b>1 to 4</b>.</p><p>Each column, each row and each of the four 2×2 blocks contains each number exactly once.</p><p class="small">Click an empty cell and type. Backspace erases a guess. Printed numbers stay fixed.</p>';
     row.append(sudoku, rules); section.append(row); page.append(section); workbench.append(reference, page); $('inspector-content').append(workbench); showLines();
   }
+  /* The padlock's wheels: digits or letters. Each wheel has a ▲ (next: 5 → 6) and a ▼ (back) button; dragging up
+     or scrolling also turns it. With the keyboard, type the character (focus moves on) or use ↑ ↓; ← → move between wheels. */
+  const DIGITS = '0123456789', LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let dialChars = DIGITS, dialVals = [], dialStage = null;
+  const dialWheels = () => [...$('dial').querySelectorAll('.wheel')];
+  function buildDial(length, letters) {
+    dialChars = letters ? LETTERS : DIGITS; dialVals = Array(length).fill(0);
+    $('dial').setAttribute('aria-label', `${letters ? 'Letter' : 'Number'} wheels: ${length}`);
+    $('dial').replaceChildren(...dialVals.map((_, i) => {
+      const w = button('', () => {}, 'wheel'); w.type = 'button';
+      w.setAttribute('role', 'spinbutton'); w.setAttribute('aria-label', `Wheel ${i + 1} of ${length}`);
+      w.append(el('span', 'prev'), el('span', 'cur'), el('span', 'next')); w.firstChild.setAttribute('aria-hidden', 'true'); w.lastChild.setAttribute('aria-hidden', 'true');
+      wireWheel(w, i);
+      const turnButton = (d, label) => {
+        const b = button('', () => { turnWheel(i, d); w.focus({ preventScroll: true }); }, 'turn'); b.type = 'button'; b.tabIndex = -1;
+        b.setAttribute('aria-label', `Wheel ${i + 1}: ${label}`); b.innerHTML = '<svg viewBox="0 0 12 8" aria-hidden="true"><path d="M1 7 6 2l5 5"/></svg>'; return b;
+      };
+      const col = el('div', 'wheel-col'); col.append(turnButton(1, 'next'), w, turnButton(-1, 'back')); return col;
+    }));
+    dialVals.forEach((_, i) => paintWheel(i));
+  }
+  function paintWheel(i, dir) {
+    const w = dialWheels()[i], n = dialChars.length, v = dialVals[i];
+    w.querySelector('.prev').textContent = dialChars[(v + n - 1) % n]; w.querySelector('.cur').textContent = dialChars[v]; w.querySelector('.next').textContent = dialChars[(v + 1) % n];
+    w.setAttribute('aria-valuenow', v); w.setAttribute('aria-valuemin', 0); w.setAttribute('aria-valuemax', n - 1); w.setAttribute('aria-valuetext', dialChars[v]);
+    if (dir) { w.style.setProperty('--dir', dir > 0 ? '10px' : '-10px'); w.classList.remove('spin'); void w.offsetWidth; w.classList.add('spin'); }
+    $('combination').value = dialVals.map(k => dialChars[k]).join('');
+  }
+  function turnWheel(i, d) {
+    const n = dialChars.length; dialVals[i] = ((dialVals[i] + d) % n + n) % n; paintWheel(i, d);
+    if ($('lock-message').className === 'error') { $('lock-message').textContent = ''; $('lock-message').className = ''; }
+  }
+  function setDial(i, ch) { const k = dialChars.indexOf(ch.toUpperCase()); if (k < 0) return false; dialVals[i] = k; paintWheel(i, 1); return true; }
+  function wireWheel(w, i) {
+    let drag = null;
+    w.addEventListener('pointerdown', e => { if (e.button !== 0) return; try { w.setPointerCapture(e.pointerId); } catch (_) { /* pointer gone */ } drag = { last: e.clientY }; });
+    w.addEventListener('pointermove', e => { if (!drag) return; const dy = e.clientY - drag.last; if (Math.abs(dy) >= 14) { turnWheel(i, dy < 0 ? 1 : -1); drag.last = e.clientY; } });
+    w.addEventListener('pointerup', () => { drag = null; }); w.addEventListener('pointercancel', () => { drag = null; });
+    w.addEventListener('wheel', e => { e.preventDefault(); turnWheel(i, e.deltaY > 0 ? 1 : -1); }, { passive: false });
+    w.addEventListener('keydown', e => {
+      const wheels = dialWheels();
+      if (e.key === 'ArrowUp') { e.preventDefault(); turnWheel(i, 1); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); turnWheel(i, -1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); wheels[i + 1]?.focus(); }
+      else if (e.key === 'ArrowLeft' || e.key === 'Backspace') { e.preventDefault(); wheels[i - 1]?.focus(); }
+      else if (e.key === 'Enter') { e.preventDefault(); $('lock-form').requestSubmit(); }
+      else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && setDial(i, e.key)) { e.preventDefault(); (wheels[i + 1] || $('lock-form').querySelector('[type=submit]')).focus(); }
+    });
+  }
+  // Hints: Hint 1, 2, 3 and Solution open independently; the save keeps the furthest one opened.
+  let hintsStage = null; const hintsOpen = new Set();
+  function drawHints() {
+    if (state.stage >= G.locks.length) { $('hints').replaceChildren(); hintsStage = null; return; }
+    if (hintsStage !== state.stage) { hintsOpen.clear(); hintsStage = state.stage; }
+    const labels = ['Hint 1', 'Hint 2', 'Hint 3', 'Solution'], row = el('div', 'hint-tabs');
+    const texts = G.locks[state.stage].hints.map((text, i) => { const p = el('p', 'hint'); p.id = `hint-${i}`; p.hidden = !hintsOpen.has(i); p.append(el('b', '', `${labels[i]} · `), text); return p; });
+    labels.forEach((label, i) => {
+      const b = button(label, () => {
+        const open = !hintsOpen.has(i); if (open) hintsOpen.add(i); else hintsOpen.delete(i);
+        texts[i].hidden = !open; b.setAttribute('aria-expanded', String(open));
+        if (open && state.hints[state.stage] < i + 1) { state.hints[state.stage] = i + 1; save(); }
+      }, i === 3 ? 'solution' : '');
+      b.type = 'button'; b.setAttribute('aria-expanded', String(hintsOpen.has(i))); b.setAttribute('aria-controls', `hint-${i}`); row.append(b);
+    });
+    $('hints').replaceChildren(row, ...texts);
+  }
   function drawProgress() {
     $('progress-count').textContent = `${state.stage} / ${G.locks.length}`;
+    $('chapter').textContent = state.stage >= G.locks.length ? 'ALL LOCKS OPEN' : `LOCK ${state.stage + 1} OF ${G.locks.length}`;
     if ($('progress').children.length !== G.locks.length) {
       $('progress').replaceChildren();
       G.locks.forEach((lock, i) => { const row = el('li'), label = el('span', 'sr-only', lock.name); label.append(el('small', '', 'Locked')); row.append(el('span', 'step-number', i + 1), label); $('progress').append(row); });
@@ -255,16 +344,19 @@
       const lock = G.locks[state.stage]; $('lock-number').textContent = `LOCK ${String(state.stage + 1).padStart(2, '0')}`; $('lock-name').textContent = lock.name;
       $('lock-prompt').textContent = lock.prompt;
       $('combination-label').textContent = `${lock.answer.length === 4 ? 'FOUR' : 'THREE'}-${lock.letters ? 'LETTER' : 'DIGIT'} COMBINATION`;
-      $('combination').inputMode = lock.letters ? 'text' : 'numeric'; $('combination').maxLength = lock.answer.length;
-      $('combination').pattern = lock.letters ? `[A-Z]{${lock.answer.length}}` : `[0-9]{${lock.answer.length}}`; $('combination').placeholder = '·'.repeat(lock.answer.length); $('combination').classList.toggle('word-code', !!lock.letters);
-      $('hints').replaceChildren();
-      lock.hints.slice(0, state.hints[state.stage]).forEach((hint, i) => { const node = el('div', 'hint'); node.append(el('small', '', i === 3 ? 'SOLUTION' : `HINT ${i + 1}`), document.createTextNode(hint)); $('hints').append(node); });
-      $('hint-next').hidden = state.hints[state.stage] >= 4; $('hint-next').textContent = state.hints[state.stage] === 3 ? 'Reveal solution' : state.hints[state.stage] ? 'Show another hint' : 'Need a hint?';
+      if (dialStage !== state.stage) { buildDial(lock.answer.length, !!lock.letters); dialStage = state.stage; $('padlock').classList.remove('unlocked', 'wrong'); }
     }
+    drawHints();
   }
-  $('lock-form').addEventListener('submit', event => {
-    event.preventDefault(); const value = $('combination').value;
-    if (!G.unlock(state, value)) { $('lock-message').textContent = 'Still locked. Take another look at your clues.'; $('lock-message').className = 'error'; $('combination').select(); return; }
+  let opening = false;
+  $('lock-form').addEventListener('submit', async event => {
+    event.preventDefault(); if (opening) return; const value = $('combination').value;
+    if (!G.unlock(state, value)) {
+      $('lock-message').textContent = 'Still locked. Take another look at your clues.'; $('lock-message').className = 'error';
+      const pad = $('padlock'); pad.classList.remove('wrong'); void pad.offsetWidth; pad.classList.add('wrong'); return;
+    }
+    opening = true; $('padlock').classList.add('unlocked'); $('lock-message').className = ''; $('lock-message').textContent = 'Click! The lock springs open.';
+    await new Promise(r => setTimeout(r, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 420)); opening = false;
     const opened = G.locks[state.stage - 1];
     const tidied = state.tidied;
     $('combination').value = ''; $('lock-message').textContent = ''; $('lock-message').className = ''; selected = opened.selected; drawTable(); drawProgress(); save();
@@ -273,8 +365,6 @@
     $('arrival-title').textContent = opened.title; $('arrival-text').textContent = opened.message;
     $('arrival-close').textContent = state.stage < G.locks.length ? 'Explore the new clues →' : 'Back to the table →'; $('arrival').showModal();
   });
-  $('combination').addEventListener('input', () => { $('combination').value = G.normalizeAnswer(state.stage, $('combination').value); });
-  $('hint-next').addEventListener('click', () => { if (state.stage < G.locks.length && state.hints[state.stage] < 4) state.hints[state.stage]++; drawProgress(); save(); });
   $('notes').value = state.notes; $('notes').addEventListener('input', () => { state.notes = $('notes').value; save(); });
   $('inspect').addEventListener('click', () => selected && inspect(selected));
   $('flip').addEventListener('click', () => turn(selected)); $('rotate').addEventListener('click', rotate);
@@ -282,11 +372,21 @@
   $('tidy').addEventListener('click', () => {
     G.layout(state); selected = null; drawTable(); save(); toast('Table tidied. Everything is back on the table and your puzzle work is kept.');
   });
+  const setZoom = z => { zoom = Math.max(1, Math.min(4, Math.round(z * 100) / 100)); fit(); };
+  $('zoom-in').addEventListener('click', () => setZoom(zoom * 1.25)); $('zoom-out').addEventListener('click', () => setZoom(zoom / 1.25)); $('zoom-fit').addEventListener('click', () => setZoom(1));
+  $('fullscreen').addEventListener('click', () => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen?.().catch(() => toast('Full screen is not available here.')); });
+  document.addEventListener('fullscreenchange', () => { $('fullscreen').textContent = document.fullscreenElement ? 'Exit full screen' : 'Full screen'; });
   $('inspect-flip').addEventListener('click', () => turn(inspected)); $('close-inspector').addEventListener('click', closeInspector);
+  // Game menu in the masthead (save or load a copy, start again).
+  const closeMenu = () => { $('game-menu').hidden = true; $('game-btn').setAttribute('aria-expanded', 'false'); };
+  $('game-btn').addEventListener('click', e => { e.stopPropagation(); const open = $('game-menu').hidden; $('game-menu').hidden = !open; $('game-btn').setAttribute('aria-expanded', String(open)); });
+  $('game-menu').addEventListener('click', closeMenu);
+  document.addEventListener('click', e => { if (!e.target.closest('.menu-wrap')) closeMenu(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('game-menu').hidden) { closeMenu(); $('game-btn').focus(); } });
   $('how-to').addEventListener('click', () => $('intro').showModal()); $('begin').addEventListener('click', () => { $('intro').close(); save(); });
   $('arrival-close').addEventListener('click', () => $('arrival').close());
   $('restart').addEventListener('click', () => $('restart-dialog').showModal());
-  $('restart-confirm').addEventListener('click', () => { state = G.fresh(); selected = 'bottle'; $('notes').value = ''; $('combination').value = ''; $('lock-message').textContent = ''; $('restart-dialog').close(); drawTable(); drawProgress(); save(); $('intro').showModal(); });
+  $('restart-confirm').addEventListener('click', () => { state = G.fresh(); selected = 'bottle'; $('notes').value = ''; $('combination').value = ''; $('lock-message').textContent = ''; $('restart-dialog').close(); dialStage = null; drawTable(); drawProgress(); save(); $('intro').showModal(); });
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
   $('save-copy').addEventListener('click', () => { $('save-text').value = JSON.stringify(state, null, 2); $('save-result').textContent = ''; $('save-dialog').showModal(); });
   $('select-save').addEventListener('click', () => { $('save-text').focus(); $('save-text').select(); $('save-result').textContent = 'Press Ctrl+C (or ⌘C) to copy. Keep the text in a file or note.'; });
@@ -295,7 +395,7 @@
     a.href = url; a.download = 'hiking-backpack-save.json'; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); $('save-result').textContent = 'Download requested. If no file appears, use Select text to keep a copy.';
   });
   function loadText(text) {
-    try { if (text.length > 100000) throw new Error('This save is too large.'); const incoming = G.restore(JSON.parse(text)); state = incoming; selected = 'bottle'; $('notes').value = state.notes; $('combination').value = ''; $('lock-message').textContent = ''; drawTable(); drawProgress(); save(); $('save-dialog').close(); toast('Your Hiking game is restored.'); }
+    try { if (text.length > 100000) throw new Error('This save is too large.'); const incoming = G.restore(JSON.parse(text)); state = incoming; selected = 'bottle'; $('notes').value = state.notes; $('combination').value = ''; $('lock-message').textContent = ''; dialStage = null; drawTable(); drawProgress(); save(); $('save-dialog').close(); toast('Your Hiking game is restored.'); }
     catch (_) { $('save-result').textContent = 'Could not load this copy. Choose a valid Hiking opening save.'; }
   }
   $('load-text').addEventListener('click', () => loadText($('save-text').value));
@@ -303,11 +403,14 @@
   $('save-file').addEventListener('change', async () => { const file = $('save-file').files[0]; if (!file) return; if (file.size > 100000) { $('save-result').textContent = 'This save file is too large.'; return; } try { loadText(await file.text()); } catch (_) { $('save-result').textContent = 'Could not read this file.'; } });
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && $('inspector').open && (anchor || wordDown)) { event.preventDefault(); anchor = draft = wordDown = null; showLines(); $('word-status').textContent = 'Selection cancelled.'; return; }
-    if (/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName) || event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.defaultPrevented || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName) || event.ctrlKey || event.metaKey || event.altKey) return;
     if (document.querySelector('dialog[open]')) { if ($('inspector').open && event.key.toLowerCase() === 'f') { event.preventDefault(); turn(inspected); } return; }
     if (event.key.toLowerCase() === 'f') { event.preventDefault(); turn(selected); }
     if (event.key.toLowerCase() === 'r') { event.preventDefault(); rotate(); }
     if (event.key === 'Enter' && document.activeElement?.classList.contains('prop')) { event.preventDefault(); inspect(selected); }
+    if (event.key === '+' || event.key === '=') { event.preventDefault(); setZoom(zoom * 1.25); }
+    if (event.key === '-') { event.preventDefault(); setZoom(zoom / 1.25); }
+    if (event.key === '0') { event.preventDefault(); setZoom(1); }
   });
   new ResizeObserver(fit).observe($('table-frame'));
   drawTable(); drawProgress();
