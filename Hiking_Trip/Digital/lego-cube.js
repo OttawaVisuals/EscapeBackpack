@@ -17,14 +17,57 @@ const CLASH = 18;            // a piece that overlaps another stands this far of
 let loading;
 const load = () => loading ??= loadPack(new URL('assets/lego-cube.pack.json', import.meta.url).href);
 
-// One piece in LDraw space, centred on its 4 × 4 plate and half way through its thickness (it is 40 LDU, tiles on -y).
-function buildPiece(pack, id) {
+// One piece in LDraw space, centred on its 4 × 4 plate and half way through its thickness (it is 40 LDU, tiles on -y),
+// with its share of the marker marks.
+function buildPiece(pack, id, G) {
   const refs = pack.files[FILES[id]], plate = refs.find(r => r.file === '3031.dat').m;
   const inner = new THREE.Group(); for (const r of refs) inner.add(pack.build(r));
   inner.position.set(-plate[0], 20, -plate[2]);
-  const g = new THREE.Group(); g.add(inner); g.userData.id = id;
+  const g = new THREE.Group(); g.add(inner, marks(G, id)); g.userData.id = id;
   return g;
 }
+
+// Black marker “5 + 3” round the sides of the solved cube (game-data.js cubeMarks, DG-H33), drawn as one band over the
+// four side faces (front, right, back, left). Each 40 × 40 square of a side face is drawn on the piece that owns that cell
+// in the solved cube (its tiles, or the end of an edge cell), so the marks travel with the pieces: loose pieces show
+// fragments, and each symbol, sitting on a corner, reads whole only on the finished cube.
+const NORMALS = [[0, 0, -1], [1, 0, 0], [0, 0, 1], [-1, 0, 0]];
+let band;
+function bandInk(G) {
+  if (band) return band;
+  const canvas = document.createElement('canvas'); canvas.width = 2048; canvas.height = 512;
+  const ctx = canvas.getContext('2d'), face = 512;
+  Object.assign(ctx, { strokeStyle: '#161616', lineWidth: G.cubePen * face, lineCap: 'round', lineJoin: 'round' });
+  for (const mark of G.cubeMarks) for (const shift of [0, -4]) {         // a symbol on the left|front corner also wraps to x = 0
+    const left = (mark.corner + 1 - mark.width / 2 + shift) * face;
+    for (const line of mark.strokes) {
+      ctx.beginPath(); line.forEach(([x, y], i) => ctx[i ? 'lineTo' : 'moveTo'](left + x * mark.width * face, y * face)); ctx.stroke();
+    }
+  }
+  const map = new THREE.CanvasTexture(canvas); map.colorSpace = THREE.SRGBColorSpace; map.anisotropy = 4;
+  return band = new THREE.MeshStandardMaterial({ map, transparent: true, roughness: 0.55, side: THREE.DoubleSide, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+}
+function marks(G, id) {
+  const owner = new Map();
+  for (const [other, at] of Object.entries(G.cubeSolved)) for (const c of G.pieceCells(other, ...at)) owner.set(c, other);
+  const back = placement(G, G.cubeSolved[id]).invert(), v = new THREE.Vector3(), up = new THREE.Vector3(0, -1, 0), pos = [], uv = [];   // LDraw up is -y
+  NORMALS.forEach((normal, face) => {
+    const n = new THREE.Vector3(...normal), right = n.clone().negate().cross(up);
+    for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) {
+      const centre = right.clone().multiplyScalar(40 * (j - 1.5)).addScaledVector(up, 40 * (1.5 - i)).addScaledVector(n, 60);
+      if (owner.get(centre.toArray().map(x => Math.round(x / 40 + 1.5)).join(',')) !== id) continue;
+      for (const [a, b] of [[-1, -1], [1, -1], [1, 1], [-1, -1], [1, 1], [-1, 1]]) {
+        v.copy(centre).addScaledVector(n, 20.3).addScaledVector(right, 20 * a).addScaledVector(up, 20 * b);
+        uv.push((face + v.dot(right) / 160 + 0.5) / 4, v.dot(up) / 160 + 0.5); v.applyMatrix4(back); pos.push(v.x, v.y, v.z);
+      }
+    }
+  });
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  const mesh = new THREE.Mesh(geo, bandInk(G)); mesh.renderOrder = 1;
+  return mesh;
+}
+
 // Where a placed piece sits in the cube (LDraw space, cube centred on the origin).
 function placement(G, [face, turn, flip], out = 0) {
   const r = G.cubeTurn(face, turn, flip), n = [[0, 0, -1], [1, 0, 0], [0, 0, 1], [-1, 0, 0], [0, -1, 0], [0, 1, 0]][face], d = 60 + out;
@@ -39,12 +82,13 @@ export function picture(G, cube, size = 360) {
     const pack = await load(), { scene, root } = createScene('shadow');
     let cam;
     if (solved) {
-      for (const id of IDS) { const p = buildPiece(pack, id); p.matrixAutoUpdate = false; p.matrix.copy(placement(G, cube[id])); root.add(p); }
+      for (const id of IDS) { const p = buildPiece(pack, id, G); p.matrixAutoUpdate = false; p.matrix.copy(placement(G, cube[id])); root.add(p); }
       root.position.y = 80;
+      const turn = new THREE.Group(); turn.rotation.y = -Math.PI / 2; turn.add(root); scene.add(turn);   // the “5” corner (right|back) faces the camera
       cam = new THREE.PerspectiveCamera(24, 1, 1, 5000); cam.position.set(330, 420, 560); cam.lookAt(0, 70, 0);
     } else {
       const heap = { red: [-95, -80, 0.3, 0], blue: [90, -95, 1.4, 0], green: [-10, 25, 2.6, 46], pink: [-110, 105, 0.9, 0], orange: [110, 85, 2.1, 0], purple: [15, -150, 3.6, 0] };
-      for (const [id, [x, z, yaw, y]] of Object.entries(heap)) { const p = buildPiece(pack, id); p.position.set(x, -20 - y, z); p.rotation.y = yaw; if (y) p.rotation.z = 0.08; root.add(p); }
+      for (const [id, [x, z, yaw, y]] of Object.entries(heap)) { const p = buildPiece(pack, id, G); p.position.set(x, -20 - y, z); p.rotation.y = yaw; if (y) p.rotation.z = 0.08; root.add(p); }
       cam = new THREE.PerspectiveCamera(24, 1, 1, 5000); cam.position.set(0, 820, 560); cam.lookAt(0, 0, -10);
     }
     await pack.ready();
@@ -71,10 +115,10 @@ export async function mount(container, { cube, G, bar = container, onChange = ()
   inside.add(shell, outline);
   const glow = new THREE.Mesh(new THREE.PlaneGeometry(156, 156), new THREE.MeshBasicMaterial({ color: 0xe39a45, transparent: true, opacity: 0.45, side: THREE.DoubleSide, depthWrite: false }));
   glow.visible = false; inside.add(glow);
-  const aim = new THREE.Quaternion().setFromEuler(new THREE.Euler(0.42, -0.62, 0));   // the cube's turn (front, right and top show)
+  const aim = new THREE.Quaternion().setFromEuler(new THREE.Euler(-0.18, -0.62, 0));   // the cube's turn: front and right face the camera, top in view
   spin.quaternion.copy(aim);
 
-  const pieces = Object.fromEntries(IDS.map(id => [id, buildPiece(pack, id)]));
+  const pieces = Object.fromEntries(IDS.map(id => [id, buildPiece(pack, id, G)]));
   const ring = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(166, 46, 166)), new THREE.LineBasicMaterial({ color: 0xe39a45 }));
   let selected = null, held = null, turning = null;
 

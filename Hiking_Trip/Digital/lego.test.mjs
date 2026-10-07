@@ -225,7 +225,7 @@ test('cube: each piece’s cells match the flat export, centred on its 4 × 4 pl
   }
 });
 
-test('cube: the assembled export snaps to the solved cube, every piece tiles out', async () => {
+test('cube: the assembled export snaps to the solved cube (cubeSolved), every piece tiles out', async () => {
   const G = (await import('node:module')).createRequire(import.meta.url)('./game-data.js');
   const files = cubeExport('lego-cube'), main = files['escape_backpack_lego_cube'];
   const at = ref => { const c = files[ref.file].find(r => r.file === '3031.dat').p, m = ref.m; return [0, 1, 2].map(i => ref.p[i] + m[i * 3] * c[0] + m[i * 3 + 1] * -20 + m[i * 3 + 2] * c[2]); };
@@ -238,4 +238,5 @@ test('cube: the assembled export snaps to the solved cube, every piece tiles out
     assert.equal(fit.length, 1, ref.file); G.placeCube(state, CUBE_IDS[ref.file], face, ...fit[0]);
   });
   assert.deepEqual(G.cubeStatus(state), { placed: 6, clashes: [], inside: [], solved: true });
+  assert.deepEqual(state.cube, G.cubeSolved, 'game-data.js cubeSolved is the export, so the marks land as designed');
 });

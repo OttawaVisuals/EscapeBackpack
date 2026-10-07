@@ -110,6 +110,31 @@ test('lock 7: the six cube pieces close one way only, tiles out; clashes and ins
   assert.ok(G.cubeStatus(state).clashes.length > 0, 'three pieces at random leave some corner claimed twice');
   assert.equal(G.placeCube(state, 'red', null), true); assert.equal(state.cube.red, undefined);
 });
+test('lock 7: each marker symbol on the cube is split over pieces, so it reads only once the cube is built', () => {
+  const owner = new Map(); for (const [id, at] of Object.entries(G.cubeSolved)) for (const c of G.pieceCells(id, ...at)) owner.set(c, id);
+  const normal = [[0, 0, -1], [1, 0, 0], [0, 0, 1], [-1, 0, 0]];
+  const cellAt = (face, row, col) => {   // seen from outside, up is LDraw -y
+    const n = normal[face], right = [n[2], 0, -n[0]].map(v => -v), p = [0, 1, 2].map(k => right[k] * 40 * (col - 1.5) + (k === 1 ? -40 * (1.5 - row) : 0) + n[k] * 60);
+    return owner.get(p.map(x => Math.round(x / 40 + 1.5)).join(','));
+  };
+  for (const mark of G.cubeMarks) {
+    const ink = {}; let total = 0;
+    for (const line of mark.strokes) for (let k = 0; k < line.length - 1; k++) for (let t = 0; t < 1; t += 0.05) {
+      const gx = line[k][0] + (line[k + 1][0] - line[k][0]) * t, gy = line[k][1] + (line[k + 1][1] - line[k][1]) * t;
+      for (let dx = -0.06; dx <= 0.06; dx += 0.02) for (let dy = -0.06; dy <= 0.06; dy += 0.02) {
+        const x = mark.corner + 1 - mark.width / 2 + (gx + dx) * mark.width, y = gy + dy;   // x in faces round the band
+        if (dx * dx + dy * dy > G.cubePen ** 2 / 4 || y < 0 || y >= 1) continue;
+        const face = (Math.floor(x) + 4) % 4, id = cellAt(face, Math.floor(y * 4), Math.floor((x - Math.floor(x)) * 4));
+        ink[id] = (ink[id] || 0) + 1; total++;
+      }
+    }
+    const shares = Object.values(ink).map(v => v / total).sort((a, b) => b - a);
+    assert.ok(shares[0] < 0.56, `${mark.text}: no piece holds most of it (${shares.map(v => v.toFixed(2))})`);
+    assert.ok(shares[1] > 0.3, `${mark.text}: a second piece holds a good part`);
+  }
+  assert.deepEqual(G.cubeMarks.map(m => m.text), ['5', '+', '3']); assert.deepEqual(G.cubeMarks.map(m => m.corner), [1, 2, 3], 'read in order turning the cube left');
+});
+
 test('lock 8: the neighbours riddle has one solution, and the doctor is DICK', () => {
   const perms = list => list.length < 2 ? [list] : list.flatMap((x, i) => perms([...list.slice(0, i), ...list.slice(i + 1)]).map(p => [x, ...p]));
   const opts = bag => G.parts[bag].options.map(([v]) => v), names = opts('names');

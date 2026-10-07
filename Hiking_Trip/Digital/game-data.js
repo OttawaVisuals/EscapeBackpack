@@ -165,6 +165,19 @@
     purple: ['..#.', '###.', '.###', '.#.#']
   };
   const cubeFaces = ['front', 'right', 'back', 'left', 'top', 'bottom'];
+  // The solved cube as the designer exported it (assets/lego-cube.ldr; red on top), [face, turn, flip] per piece.
+  const cubeSolved = { red: [4, 1, 0], blue: [0, 1, 0], green: [5, 1, 0], pink: [2, 1, 0], orange: [3, 3, 0], purple: [1, 3, 0] };
+  // Black marker “5 + 3” round the sides of the solved cube (DG-H33). Each symbol sits on a vertical corner, half on each
+  // side face, so it is split over two or three pieces and reads only once the cube is built (game.test.cjs checks the
+  // split). corner c lies between side faces c and c + 1 (front, right, back, left), so turning the cube left reads
+  // 5, +, 3. Strokes are lines through points in the symbol's box (0–1, y down); width is in faces; pen is 0.12 of a face.
+  const arc = (cx, cy, r, from, to, n = 24) => Array.from({ length: n + 1 }, (_, i) => { const a = (from + (to - from) * i / n) * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; });
+  const cubeMarks = [
+    { text: '5', corner: 1, width: 1.3, strokes: [[[0.84, 0.12], [0.22, 0.12], [0.19, 0.46]], arc(0.47, 0.64, 0.31, -150, 150)] },
+    { text: '+', corner: 2, width: 1, strokes: [[[0.5, 0.1], [0.5, 0.9]], [[0.1, 0.5], [0.9, 0.5]]] },
+    { text: '3', corner: 3, width: 1.3, strokes: [[[0.2, 0.15], ...arc(0.47, 0.31, 0.21, -150, 90).slice(1)], arc(0.47, 0.69, 0.23, -90, 150)] }
+  ];
+  const cubePen = 0.12;
   // Jigsaw: twelve tiles (4 × 3); map: nine tiles (3 × 3). board[position] = tile number.
   const boards = { otter: { cols: 4, rows: 3, start: [7, 2, 10, 4, 0, 9, 5, 11, 1, 6, 3, 8] }, map: { cols: 3, rows: 3, start: [5, 8, 1, 6, 3, 0, 7, 2, 4] } };
   const satellitePages = 10; // Instruction pages 2–11 hold the 15 steps.
@@ -357,7 +370,7 @@
     });
     return state;
   }
-  const api = { grid, givens, items, stickers, locks, values, hockey, parts, partOrder, riddle, cubePieces, cubeFaces, boards, satellitePages,
+  const api = { grid, givens, items, stickers, locks, values, hockey, parts, partOrder, riddle, cubePieces, cubeFaces, cubeSolved, cubeMarks, cubePen, boards, satellitePages,
     available, tableSize, fresh, restore, validLine, sameLine, markLine, unlock, discover, place, layout, box, overlaps, cubeTurn, pieceCells, placeCube, cubeStatus, normalizeAnswer, calculate };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.HikingGame = api;
