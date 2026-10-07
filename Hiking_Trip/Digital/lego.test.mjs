@@ -133,7 +133,7 @@ test('saved actions replay to the same state; junk and blocked actions are skipp
 const pack = name => JSON.parse(readFileSync(new URL(`assets/lego-${name}.pack.json`, import.meta.url), 'utf8'));
 
 test('packs: every part the model uses is packed, with its prints on disk', () => {
-  for (const name of ['satellite', 'minifigs']) {
+  for (const name of ['satellite', 'minifigs', 'numbers']) {
     const p = pack(name), bytes = readFileSync(new URL(`assets/${p.bin.split('?')[0]}`, import.meta.url)).length;
     for (const refs of Object.values(p.files)) for (const r of refs) assert.ok(p.files[r.file] || p.parts[r.file], `${name}: ${r.file} not packed`);
     for (const [file, part] of Object.entries(p.parts)) {
@@ -187,4 +187,10 @@ test('minifigs workbench: every row holds its bag’s five parts, and no column 
     const who = ROWS.filter((_, r) => r % 2 === set).map(bag => owner(bag, ORDER[bag][k]));
     assert.equal(new Set(who).size, who.length, `column ${k} (rows ${set ? 'shifted' : 'unshifted'}): ${who}`);
   }
+});
+
+test('numbers: one pack holds the four exported numbers', () => {
+  const p = pack('numbers');
+  assert.deepEqual(Object.keys(p.models).sort(), ['lego-number0', 'lego-number1', 'lego-number3', 'lego-number4']);   // lego-numbers.js MODELS
+  for (const m of Object.values(p.models)) assert.ok(p.files[m].length > 5, m);
 });

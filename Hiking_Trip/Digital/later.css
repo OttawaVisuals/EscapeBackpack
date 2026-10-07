@@ -13,6 +13,8 @@
 .lego-digit{width:100%;height:100%}
 .lego-view{height:100%;display:grid;place-items:center;padding:40px}
 .lego-view .lego-digit{width:auto;height:min(520px,70vh)}
+.lego-number.rendered{filter:none}.lego-number img{width:100%;height:100%;object-fit:contain;display:block}
+.lego-view.rendered{padding:0;display:block}.lego-number-stage{height:100%;min-height:420px}
 
 /* Coloured order stickers */
 .order-sticker{display:inline-grid;place-items:center;width:58px;height:58px;border-radius:50%;color:#fff;font:italic 26px Georgia,serif;box-shadow:0 2px 3px #0003;border:2px solid #fff8}

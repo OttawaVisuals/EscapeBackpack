@@ -106,6 +106,48 @@ export async function topView(size = 1024) {
   return { url, size, lenses, pxPerLdu: size / span };
 }
 
+// ---- The bag of pieces on the table before the build: every part of the export lying loose (DG-H29) ----
+// Each part keeps its built orientation (so plates lie flat), turned about the vertical by a fixed amount, resting on
+// the table; parts go down in loose rows in a fixed jumbled order, with a little fixed jitter. Cached once rendered.
+let bagShot;
+export function bagPicture(size = 360) {
+  return bagShot ??= (async () => {
+    const pack = await load(), { scene, root } = createScene('shadow');
+    const refs = [...pack.main.filter(r => r.file !== TELESCOPE), ...pack.files[TELESCOPE]];
+    const items = refs.map((ref, k) => {
+      const part = pack.build(ref); part.matrix.setPosition(0, 0, 0);
+      const holder = new THREE.Group(); holder.add(part); holder.rotation.y = (k * 2.39996) % (2 * Math.PI);
+      holder.updateMatrixWorld(true);
+      const b = new THREE.Box3();
+      holder.traverse(c => { if (c.isMesh) { c.geometry.boundingBox ?? c.geometry.computeBoundingBox(); b.union(c.geometry.boundingBox.clone().applyMatrix4(c.matrixWorld)); } });
+      const c = b.getCenter(new THREE.Vector3()), s = b.getSize(new THREE.Vector3());
+      return { holder, offset: new THREE.Vector3(-c.x, -b.max.y, -c.z), w: s.x, d: s.z, k };
+    });
+    const width = Math.sqrt(items.reduce((a, i) => a + (i.w + 4) * (i.d + 4), 0)) * 1.2;
+    let x = 0, z = 0, row = 0;
+    for (const i of [...items].sort((a, b) => (a.k * 7919) % 97 - (b.k * 7919) % 97)) {    // a fixed jumble, not sorted by size
+      if (x + i.w > width && x > 0) { x = 0; z += row + 4; row = 0; }
+      const jx = ((i.k * 37) % 7) - 3, jz = ((i.k * 53) % 7) - 3;
+      i.holder.position.set(x + i.w / 2 + jx, 0, z + i.d / 2 + jz).add(i.offset);
+      root.add(i.holder);
+      x += i.w + 4; row = Math.max(row, i.d);
+    }
+    root.position.set(-width / 2, 0, (z + row) / 2);                     // centred, so the shadows stay in the light's range
+    root.updateMatrixWorld(true);
+    // Orthographic, from above at an angle, framed on the pile.
+    const tilt = THREE.MathUtils.degToRad(62), cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 4000);
+    const box = new THREE.Box3(); root.traverse(o => { if (o.isMesh && o.parent !== scene) box.expandByObject(o); });
+    const mid = box.getCenter(new THREE.Vector3());
+    cam.position.set(mid.x, mid.y + 1000 * Math.sin(tilt), mid.z + 1000 * Math.cos(tilt)); cam.lookAt(mid); cam.updateMatrixWorld();
+    const v = new THREE.Vector3(), lo = new THREE.Vector2(1e9, 1e9), hi = new THREE.Vector2(-1e9, -1e9);
+    for (const px of [box.min.x, box.max.x]) for (const py of [box.min.y, box.max.y]) for (const pz of [box.min.z, box.max.z]) { v.set(px, py, pz).applyMatrix4(cam.matrixWorldInverse); lo.min(v); hi.max(v); }
+    const half = Math.max(hi.x - lo.x, hi.y - lo.y) / 2 * 1.05, mx = (lo.x + hi.x) / 2, my = (lo.y + hi.y) / 2;
+    Object.assign(cam, { left: mx - half, right: mx + half, top: my + half, bottom: my - half }); cam.updateProjectionMatrix();
+    await pack.ready();
+    return renderStill(scene, cam, size);
+  })();
+}
+
 // ---- Build view: the model so far; add(page) animates the parts of the next page into place ----
 export async function mount(container, { built = 0 } = {}) {
   const pack = await load();

@@ -215,7 +215,16 @@
   // 3D satellite (lego-satellite.js), loaded on first use; the photo and the page images remain the fallback.
   const legoSatellite = () => import('./lego-satellite.js');
   function satelliteArt(state) {
-    if (state.satellite.built < G.satellitePages) { const b = el('div', 'parts-bag satellite-bag'); b.append(el('span', 'bag-label', 'Satellite'), el('span', 'bag-bits')); return b; }
+    if (state.satellite.built < G.satellitePages) {
+      // A clear bag of the real pieces, as for the minifig bags (DG-H29); the drawn dots stay until the render is ready.
+      const b = el('div', 'parts-bag satellite-bag'), bits = el('span', 'bag-bits');
+      b.append(el('span', 'bag-label', 'Satellite'), bits);
+      legoSatellite().then(m => m.bagPicture()).then(url => {
+        const img = new Image(); img.src = url; img.alt = ''; img.className = 'bag-render'; img.draggable = false;
+        bits.replaceWith(img); b.classList.add('rendered');
+      }, () => {});
+      return b;
+    }
     const wrap = el('div', 'satellite-built lego-thumb'), img = image('satellite-model.jpg', 'The finished Lego satellite');
     wrap.append(img);
     legoSatellite().then(m => m.picture()).then(url => { img.src = url; wrap.classList.add('rendered'); }, err => console.error(err));
@@ -457,9 +466,24 @@
     view.append(tools, scroll); requestAnimationFrame(fit); return view;
   }
 
-  const legoIds = Object.keys(legoColours);
+  // The four numbers in 3D (lego-numbers.js, DG-H30); the drawn digits stay as the fallback.
+  const legoIds = Object.keys(legoColours), legoNumbers = () => import('./lego-numbers.js');
+  function numberArt(id) {
+    const wrap = el('div', 'lego-number'), digit = legoDigit(id); wrap.append(digit);
+    legoNumbers().then(m => m.picture(id)).then(url => {
+      const img = new Image(); img.src = url; img.alt = G.items[id].name; img.draggable = false; digit.replaceWith(img); wrap.classList.add('rendered');
+    }, () => {});
+    return wrap;
+  }
+  function numberView(id) {
+    const view = el('div', 'lego-view'), stage = el('div', 'lego-number-stage lego3d-canvas'), digit = legoDigit(id);
+    view.append(digit);
+    legoNumbers().then(m => { view.replaceChildren(stage); stage.append(el('div', 'lego3d-help', 'Drag to turn · scroll to zoom')); return m.mount(stage, id); })
+      .then(() => view.classList.add('rendered'), err => { console.error(err); view.replaceChildren(digit); });
+    return view;
+  }
   function art(id, face, state) {
-    if (legoIds.includes(id)) { const wrap = el('div', 'lego-number'); wrap.append(legoDigit(id)); return wrap; }
+    if (legoIds.includes(id)) return numberArt(id);
     if (G.items[id].bag) return bag(id);
     if (id === 'flat' || id === 'square') return legoThumb(id, state);
     if (id === 'instructions') { const b = el('div', 'booklet'); b.append(image('sat-01.jpg', 'Cover of the satellite instructions')); return b; }
@@ -475,7 +499,7 @@
     if (id === 'map') return mapArt();
   }
   function inspect(id, face, state, ctx) {
-    if (legoIds.includes(id)) { const view = el('div', 'lego-view'); view.append(legoDigit(id)); return view; }
+    if (legoIds.includes(id)) return numberView(id);
     if (G.items[id].bag) return workbench(state, ctx);
     if (id === 'flat' || id === 'square') return legoView(id, state, ctx);
     if (id === 'instructions') return instructionsView();

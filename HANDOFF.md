@@ -5,7 +5,9 @@
 - **What changed:** `lego-minifigs.js` workbench rewritten: loose parts in rows by bag, drag onto five stands, turn arrows, hover names; `lego-minifigs-data.js` gains ROWS/ORDER; `later.js` (v=12) hides the lists behind "Use lists instead" and drops the "Not found yet" line; `later.css` (v=11). `lego.test.mjs` +1 test (no column lines up a solved neighbour). Design record DG-H28.
 - **Checks:** tests 28/28. Browser at 1366 × 850, three and six bags: drag on, swap, drag off, lists ↔ 3D, turning, hover; no console errors.
 - **2026-10-07 addition:** DG-H29 rendered bags of Lego (clear bag, real parts inside): `lego-minifigs.js` bagPicture, `later.js` bag() (v=13), `later.css` (v=12). Another session has uncommitted satellite drag-and-drop work in `lego-satellite.js` (not mine; left untouched).
-- **Next:** Playtest the live workbench, bags and satellite drag mode (touch and keyboard untested).
+- **2026-10-07 later (published):** satellite parts bag rendered too (DG-H29 note): `lego-satellite.js` bagPicture (all 45 pieces in a fixed jumble), `later.js` satelliteArt (v=14). Checked: syntax, tests 28/28, browser at lock 4 (bag renders on the table, no console errors).
+- **2026-10-07 (committed and published at the user's request):** the four Lego numbers in 3D (DG-H30): `lego-numbers.js`, `assets/lego-number*.ldr`, `assets/lego-numbers.pack.*`, packer takes several exports; `later.js` v=15, `later.css` v=13; site build list gains `lego-numbers.js`. Tests and browser checked.
+- **Next:** User confirms the 4's orientation (turned round, DG-H30); last 3D item: the cube (step exports + rules), DG-H25.
 
 ## 2026-10-06: Hiking online — drag-and-drop satellite build (Claude Code)
 - **Status:** The satellite build already added each booklet page's parts as you went; now an optional "Drag the pieces myself" checkbox (remembered in localStorage `satellite-drag`) puts the page's parts on the table and the player drags each onto its glowing outline. Same-kind parts are interchangeable; "Place them for me" drops the rest. Committed and published 2026-10-07 with the lock 8 workbench (user's choice); noted in DG-H26.

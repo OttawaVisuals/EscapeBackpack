@@ -180,9 +180,18 @@ function parseModel(text) {
   return { files, main };
 }
 
-const [input, name] = process.argv.slice(2);
-if (!input || !name) { console.error('usage: node pack-lego.mjs <export.ldr> <name>'); process.exit(1); }
-const model = parseModel(readFileSync(input, 'utf8'));
+// Several exports can share one pack (the four Lego numbers): each one's main model is filed under its own file name
+// (exports from Stud.io often share the same model name), and json.models lists them.
+const args = process.argv.slice(2), name = args.pop(), inputs = args;
+if (!inputs.length || !name) { console.error('usage: node pack-lego.mjs <export.ldr> [<export2.ldr> …] <name>'); process.exit(1); }
+const input = inputs.join(', ');
+const model = { files: {}, main: null, models: {} };
+for (const path of inputs) {
+  const one = parseModel(readFileSync(path, 'utf8')), key = basename(path).replace(/\.ldr$/i, '').toLowerCase();
+  const rename = f => f === one.main && inputs.length > 1 ? key : f;
+  for (const [f, refs] of Object.entries(one.files)) model.files[rename(f)] = refs.map(r => ({ ...r, file: rename(r.file) }));
+  model.models[key] = rename(one.main); model.main ??= rename(one.main);
+}
 const used = new Set(), codes = new Set();
 for (const refs of Object.values(model.files)) for (const r of refs) { if (!model.files[r.file]) used.add(r.file); codes.add(r.color); }
 
@@ -209,7 +218,7 @@ for (const c of Object.keys(colourTable)) colourTable['e' + c] = { value: colour
 
 // The geometry link carries its content hash, so browsers fetch it again after a repack.
 const bin = Buffer.from(new Float32Array(floats).buffer), binHash = createHash('sha1').update(bin).digest('hex').slice(0, 10);
-const json = { source: basename(input), main: model.main, files: model.files, parts, colours: colourTable, textures, bin: `lego-${name}.pack.bin?v=${binHash}` };
+const json = { source: inputs.map(p => basename(p)).join(', '), main: model.main, models: model.models, files: model.files, parts, colours: colourTable, textures, bin: `lego-${name}.pack.bin?v=${binHash}` };
 writeFileSync(new URL(`lego-${name}.pack.json`, OUT), JSON.stringify(json));
 writeFileSync(new URL(`lego-${name}.pack.bin`, OUT), bin);
 console.log(`${name}: ${used.size} parts, ${Math.round(triangles)} triangles, ${textures.length} textures, ${(floats.length * 4 / 1e6).toFixed(2)} MB geometry`);
