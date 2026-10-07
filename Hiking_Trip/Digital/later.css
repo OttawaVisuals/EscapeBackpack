@@ -107,26 +107,7 @@
 @keyframes drop{from{transform:translateY(-60px);opacity:0}to{transform:none;opacity:1}}
 
 /* Cube */
-.cube-cell{display:block;position:relative;border:3px solid;border-radius:3px;overflow:hidden;background:#f4f1e6}
-.cube-art{position:absolute;inset:0;background-size:400% 400%}
-.cube-shape{display:grid;gap:0}
-.cube-pile{height:100%;position:relative}
-.cube-pile .cube-shape{position:absolute;width:44%}
-.pile-a{left:2%;top:4%;transform:rotate(-8deg)}
-.pile-b{right:6%;top:2%;width:30%!important;transform:rotate(10deg)}
-.pile-c{left:6%;bottom:6%;width:30%!important;transform:rotate(6deg)}
-.pile-d{right:2%;bottom:10%;transform:rotate(-12deg)}
-.cube-view{height:100%;display:flex;flex-direction:column}
-.cube-bench{flex:1;display:flex;gap:40px;align-items:center;justify-content:center;padding:20px;flex-wrap:wrap}
-.cube-frame{display:grid;grid-template-columns:repeat(4,86px);grid-template-rows:repeat(4,86px);border:10px solid #6b6b66;border-radius:8px;background:#d9d6cb}
-.cube-slot{border:1px dashed #a9a69a;border-radius:0;padding:0;background:transparent;display:grid}
-.cube-slot.filled{border:0}
-.cube-slot .cube-cell{width:100%;height:100%}
-.cube-tray{display:grid;grid-template-columns:repeat(2,auto);gap:16px;min-width:300px}
-.cube-piece{padding:8px;background:#f8f8f1}
-.cube-piece.chosen{outline:3px solid #d98529;background:#fdf1df}
-.cube-piece .cube-shape{--cell:44px;width:auto;height:auto}
-.cube-piece .cube-cell{width:44px;height:44px}
+.cube-3d .lego3d-bar{flex-wrap:wrap;row-gap:8px}.cube-3d .lego3d-status{flex-basis:100%}.cube-tools{display:flex;flex-wrap:wrap;gap:8px 18px}.cube-group{display:flex;align-items:center;gap:5px}.cube-group>span{font-size:12px;color:#5b6157;margin-right:2px}.cube-group select{font-size:12px;padding:3px 4px}.cube-group button{min-width:30px}
 
 /* Tile boards: jigsaw and map */
 .board-view{height:100%;display:flex;flex-direction:column}
@@ -222,7 +203,7 @@
 .pocket-list li.open{color:#3d7a52}
 
 @media(max-width:1150px){.build-view.build-3d{grid-template-columns:1fr;grid-template-rows:auto 360px auto;height:auto}.build-3d .build-info{grid-column:1;grid-template-columns:1fr}.figure-workbench{grid-template-columns:220px minmax(0,1fr)}.stand-row{gap:6px}.cards-grid{grid-template-columns:repeat(5,minmax(0,130px))}.build-view{grid-template-columns:1fr}}
-@media(max-width:849px){.figure-workbench{grid-template-columns:1fr}.figure-reference{position:static;max-height:none}.stand-row{grid-template-columns:repeat(2,minmax(0,1fr))}.cards-grid{grid-template-columns:repeat(2,minmax(0,160px))}.cube-frame{grid-template-columns:repeat(4,64px);grid-template-rows:repeat(4,64px)}}
+@media(max-width:849px){.figure-workbench{grid-template-columns:1fr}.figure-reference{position:static;max-height:none}.stand-row{grid-template-columns:repeat(2,minmax(0,1fr))}.cards-grid{grid-template-columns:repeat(2,minmax(0,160px))}}
 /* Flat Lego puzzle in 3D (lego-flat.js) */
 .lego-thumb{height:100%;filter:drop-shadow(5px 8px 5px #52483630)}.lego-thumb img{display:block;width:100%;height:100%;object-fit:contain}.lego-thumb.failed{display:grid;place-items:center;background:#7a4a32;color:#fff3e0;border-radius:8px;font-size:12px;filter:none}
 .lego-flat-view,.lego3d-view{height:100%}.lego3d-view{display:flex;flex-direction:column}.lego3d-canvas{flex:1;min-height:0;position:relative}.lego3d-canvas canvas{display:block;width:100%;height:100%;touch-action:none}.lego3d-canvas canvas:focus-visible{outline:3px solid #d98529;outline-offset:-3px}

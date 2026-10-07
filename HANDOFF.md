@@ -1,5 +1,11 @@
 # Project Handoff
 
+## 2026-10-07: Hiking online — lock 7 cube in 3D (Claude Code)
+- **Status:** Done (DG-H31); committed, pushed and published 2026-10-07 at the user's request. Open: DG-H32, how the finished cube gives the 8 of 518 (user says "read off the outside"; nothing obvious in the files).
+- **What changed:** user exports copied to `Hiking_Trip/Digital/assets/lego-cube.ldr` (assembled) and `lego-cube-flat.ldr` (laid flat), packed as `assets/lego-cube.pack.*`. `game-data.js` (v=10): six-piece cube rules (`cubePieces`, `cubeFaces`, `cubeTurn`, `pieceCells`, `placeCube`, `cubeStatus`), old four-piece frame removed, restore updated. New `lego-cube.js` (drag onto faces, turn the cube, ⟲ ⟳ Flip, clashes stand off, table picture). `later.js` (v=16) cubeArt/cubeView replace the 2D frame; `later.css` (v=14). Tests: `game.test.cjs` (one solution, tiles out) and `lego.test.mjs` +2 (pieces match the flat export; the assembled export is the solved cube). `index.html` DG-H14 note, DG-H25 item 1, DG-H31, DG-H32. `escapepack-site/tools/build_hiking.cjs` gains `lego-cube.js`. `AGENTS.md` map line.
+- **Checks:** tests 31/31. Browser at 750 × 914, lock 3 save: heap and finished-cube table pictures, drag onto a face, cube turning buttons, all six on → solved and zoomed in, flip and clash; no console errors. Touch dragging not tested.
+- **Next:** User explains how the cube shows the 8 (DG-H32), then update lock 7's hints.
+
 ## 2026-10-06/07: Hiking online — lock 8 drag-and-drop workbench and rendered bags (Claude Code)
 - **Status:** Done (DG-H28, DG-H29); committed, pushed and published 2026-10-07 at the user's request, together with the satellite session's drag-and-drop build (user's choice). Follows the published 3D satellite/minifigs (design `66b763d`, site `a68aea9`).
 - **What changed:** `lego-minifigs.js` workbench rewritten: loose parts in rows by bag, drag onto five stands, turn arrows, hover names; `lego-minifigs-data.js` gains ROWS/ORDER; `later.js` (v=12) hides the lists behind "Use lists instead" and drops the "Not found yet" line; `later.css` (v=11). `lego.test.mjs` +1 test (no column lines up a solved neighbour). Design record DG-H28.

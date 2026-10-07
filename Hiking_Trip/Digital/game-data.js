@@ -37,7 +37,7 @@
     calculator: { name: 'Pocket calculator', kind: 'For working things out', w: 260, h: 375, x: 1740, y: 720, faces: 2, origin: 'FROM THE MAIN COMPARTMENT' },
     instructions: { name: 'Satellite instructions', kind: 'A Lego building booklet', w: 330, h: 255, faces: 1, origin: 'FROM THE MAIN COMPARTMENT' },
     equation: { name: 'How high is the ISS?', kind: 'A note with an equation', w: 400, h: 360, faces: 2, origin: 'FROM THE MAIN COMPARTMENT' },
-    cube: { name: 'Lego cube pieces', kind: 'Four loose Lego pieces', w: 220, h: 220, faces: 1, origin: 'FROM THE MAIN COMPARTMENT' },
+    cube: { name: 'Lego cube pieces', kind: 'Six flat Lego pieces', w: 220, h: 220, faces: 1, origin: 'FROM THE MAIN COMPARTMENT' },
     jobs: { name: 'Bag of Lego parts', kind: 'Labelled “Jobs”', w: 170, h: 190, faces: 1, origin: 'FROM THE MAIN COMPARTMENT', bag: 'jobs' },
     pouch: { name: 'Locked pouch', kind: 'Four zipped pockets, four locks', w: 380, h: 220, faces: 1, origin: 'FROM THE MAIN COMPARTMENT' },
     treasure: { name: 'Treasure bag', kind: 'A velvet bag with its own lock', w: 240, h: 280, faces: 1, origin: 'FROM THE MAIN COMPARTMENT' },
@@ -151,15 +151,20 @@
     'Rich is the only one with a visible birth mark on their face.', 'The engineer is the only one who has a scar on their left eyebrow.', 'The person with orange hair keeps a rat as a pet.', 'The park ranger is the only one who enjoys painting.', 'Mady does not have grey, black, or blonde hair.', 'Whoever loves photography has blonde hair.', 'Bart is the one who has the scar.', 'The astronaut is the one who owns the dog.', 'The chef is the one who has a starry face tattoo.', 'The person with the birth mark loves photography.', 'Bart does not have grey, black, or blonde hair.', 'Whoever enjoys music has a beard.', 'June is the one wearing a headband.', 'The doctor is the one who keeps the frog as a pet.', 'The person with grey hair is the one who enjoys music.', 'The astronaut has blonde hair.', 'The engineer’s favourite sport is hockey.', 'The park ranger is the one who keeps the bird.', 'Whoever enjoys painting is the one wearing the headband.', 'Mady is the only one with a face tattoo.', 'The person with the headband has black hair.', 'Whoever plays hockey is the one who owns the cat.', 'Dick has grey hair.'
   ];
   // Lock 7: the square and flat Lego puzzles are 3D (lego-square.js, lego-flat.js; DG-H21, DG-H23). Each save is the
-  // list of moves made (lego-sim.js `act`), replayed when the puzzle is shown. The cube is a four-piece frame.
+  // list of moves made (lego-sim.js `act`), replayed when the puzzle is shown. The cube is six pieces (lego-cube.js, DG-H31).
   const legoAction = /^(in:(left|right|front|back):-?\d{1,3}:-?\d{1,3}|deeper|out|shift:[+-]1|hand:\d{1,2}:-?[01],-?[01])$/;
-  // Cube: a 4 × 4 frame filled by four L-shaped pieces. Cells are [row, column] in the solved frame.
+  // Cube (DG-H31): six flat pieces, each a 4 × 4 grid of 2 × 2-stud cells one cell thick, from the designer's Stud.io
+  // export (assets/lego-cube-flat.ldr). Rows run along the piece's LDraw z, columns along x, seen from the tiled side.
+  // They close into a hollow 4 × 4 × 4 cube; each piece covers one face, sharing the edge and corner cells.
   const cubePieces = {
-    a: [[0, 0], [0, 1], [0, 2], [1, 2]],
-    b: [[0, 3], [1, 3], [2, 3], [2, 2]],
-    c: [[1, 0], [1, 1], [2, 0], [3, 0]],
-    d: [[2, 1], [3, 1], [3, 2], [3, 3]]
+    red: ['#.#.', '###.', '.##.', '##..'],
+    blue: ['..#.', '.##.', '####', '#...'],
+    green: ['..#.', '####', '###.', '#.#.'],
+    pink: ['#.##', '###.', '###.', '#.#.'],
+    orange: ['.#..', '.###', '####', '.#..'],
+    purple: ['..#.', '###.', '.###', '.#.#']
   };
+  const cubeFaces = ['front', 'right', 'back', 'left', 'top', 'bottom'];
   // Jigsaw: twelve tiles (4 × 3); map: nine tiles (3 × 3). board[position] = tile number.
   const boards = { otter: { cols: 4, rows: 3, start: [7, 2, 10, 4, 0, 9, 5, 11, 1, 6, 3, 8] }, map: { cols: 3, rows: 3, start: [5, 8, 1, 6, 3, 0, 7, 2, 4] } };
   const satellitePages = 10; // Instruction pages 2–11 hold the 15 steps.
@@ -239,19 +244,44 @@
     else if (state.lines.length < 120) state.lines.push([...line]);
     return true;
   }
-  // Cube: the cells a piece covers when its top-left corner sits at [row, col] after `rot` quarter turns clockwise.
-  function pieceCells(id, row, col, rot) {
-    let cells = cubePieces[id].map(([r, c]) => [r, c]);
-    for (let i = 0; i < rot; i++) cells = cells.map(([r, c]) => [c, -r]);
-    const r0 = Math.min(...cells.map(([r]) => r)), c0 = Math.min(...cells.map(([, c]) => c));
-    return cells.map(([r, c]) => [r - r0 + row, c - c0 + col]);
+  // Cube geometry, in LDraw axes (y points down; the front is -z). A piece lies with its tiles on local -y.
+  // cubeTurn(face, turn, flip) is the 3 × 3 rotation (rows) taking the piece's frame to its place: flip turns it over
+  // (about local x) so the tiles face in, then a base turn puts the tiles on the face, then `turn` quarter turns about it.
+  const faceNormal = [[0, 0, -1], [1, 0, 0], [0, 0, 1], [-1, 0, 0], [0, -1, 0], [0, 1, 0]];
+  const faceBase = [[[1, 0, 0], [0, 0, -1], [0, 1, 0]], [[0, -1, 0], [1, 0, 0], [0, 0, 1]], [[1, 0, 0], [0, 0, 1], [0, -1, 0]],
+    [[0, 1, 0], [-1, 0, 0], [0, 0, 1]], [[1, 0, 0], [0, 1, 0], [0, 0, 1]], [[1, 0, 0], [0, -1, 0], [0, 0, -1]]];
+  const mul = (a, b) => a.map(row => [0, 1, 2].map(j => row[0] * b[0][j] + row[1] * b[1][j] + row[2] * b[2][j]));
+  function cubeTurn(face, turn, flip) {
+    const n = faceNormal[face], quarter = [0, 1, 2].map(i => [0, 1, 2].map(j => n[i] * n[j] + [[0, -n[2], n[1]], [n[2], 0, -n[0]], [-n[1], n[0], 0]][i][j]));
+    let r = mul(faceBase[face], flip ? [[1, 0, 0], [0, -1, 0], [0, 0, -1]] : [[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
+    for (let t = 0; t < turn; t++) r = mul(quarter, r);
+    return r;
   }
-  function placeCube(state, id, row, col, rot) {
-    const cells = pieceCells(id, row, col, rot);
-    if (!cells.every(([r, c]) => integer(r, 0, 3) && integer(c, 0, 3))) return 'That piece would stick out of the frame.';
-    const used = Object.entries(state.cube).filter(([other]) => other !== id).flatMap(([other, [r, c, t]]) => pieceCells(other, r, c, t));
-    if (cells.some(([r, c]) => used.some(([ur, uc]) => ur === r && uc === c))) return 'Another piece is already there.';
-    state.cube[id] = [row, col, rot]; return '';
+  // The cube cells ('x,y,z', each 0–3) a piece covers at [face, turn, flip].
+  function pieceCells(id, face, turn, flip) {
+    const r = cubeTurn(face, turn, flip), n = faceNormal[face], axis = n.findIndex(v => v !== 0), out = [];
+    cubePieces[id].forEach((row, i) => [...row].forEach((cell, j) => {
+      if (cell !== '#') return;
+      const local = [2 * j - 3, 0, 2 * i - 3], v = r.map(rr => (rr[0] * local[0] + rr[1] * local[1] + rr[2] * local[2] + 3) / 2);
+      v[axis] = n[axis] > 0 ? 3 : 0; out.push(v.join(','));
+    }));
+    return out;
+  }
+  // Put a piece on a face (a piece already there goes back to the table), or take it off with face = null.
+  function placeCube(state, id, face, turn = 0, flip = 0) {
+    if (!cubePieces[id]) return false;
+    if (face === null) { delete state.cube[id]; return true; }
+    if (!integer(face, 0, 5) || !integer(turn, 0, 3) || !integer(flip, 0, 1)) return false;
+    for (const [other, [f]] of Object.entries(state.cube)) if (other !== id && f === face) delete state.cube[other];
+    state.cube[id] = [face, turn, flip]; return true;
+  }
+  // Which placed pieces overlap another, and whether the cube is whole: all six on, no overlaps, tiles out.
+  function cubeStatus(state) {
+    const owners = new Map();
+    for (const [id, p] of Object.entries(state.cube)) for (const c of pieceCells(id, ...p)) owners.set(c, [...(owners.get(c) || []), id]);
+    const clashes = [...new Set([...owners.values()].filter(o => o.length > 1).flat())];
+    const placed = Object.keys(state.cube).length, inside = Object.entries(state.cube).filter(([, p]) => p[2]).map(([id]) => id);
+    return { placed, clashes, inside, solved: placed === 6 && !clashes.length && !inside.length };
   }
   function unlock(state, answer) {
     if (state.stage >= locks.length || String(answer).trim().toUpperCase() !== locks[state.stage].answer) return false;
@@ -314,9 +344,10 @@
       const list = raw.push?.[which]?.actions;
       if (state.stage >= min && Array.isArray(list)) state.push[which] = { actions: list.slice(0, 200).filter(a => typeof a === 'string' && legoAction.test(a)) };
     }
+    // Saves from the four-piece 2D cube use other piece names, so they start afresh.
     if (state.stage >= 3 && raw.cube && typeof raw.cube === 'object') for (const id of Object.keys(cubePieces)) {
       const p = raw.cube[id];
-      if (Array.isArray(p) && p.length === 3 && p.every(n => integer(n, 0, 3))) placeCube(state, id, ...p);
+      if (Array.isArray(p) && p.length === 3 && !Object.values(state.cube).some(([f]) => f === p[0])) placeCube(state, id, ...p);
     }
     const have = available(state.stage, state.found);
     if (Array.isArray(raw.figures)) state.figures = state.figures.map((_, i) => {
@@ -326,8 +357,8 @@
     });
     return state;
   }
-  const api = { grid, givens, items, stickers, locks, values, hockey, parts, partOrder, riddle, cubePieces, boards, satellitePages,
-    available, tableSize, fresh, restore, validLine, sameLine, markLine, unlock, discover, place, layout, box, overlaps, pieceCells, placeCube, normalizeAnswer, calculate };
+  const api = { grid, givens, items, stickers, locks, values, hockey, parts, partOrder, riddle, cubePieces, cubeFaces, boards, satellitePages,
+    available, tableSize, fresh, restore, validLine, sameLine, markLine, unlock, discover, place, layout, box, overlaps, cubeTurn, pieceCells, placeCube, cubeStatus, normalizeAnswer, calculate };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.HikingGame = api;
 })(typeof window !== 'undefined' ? window : globalThis);

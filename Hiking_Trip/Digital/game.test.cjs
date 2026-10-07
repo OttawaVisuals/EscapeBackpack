@@ -86,18 +86,30 @@ test('lock 7: both Lego push puzzles are 3D; their rules are tested in lego.test
   assert.deepEqual(G.fresh().push, { square: { actions: [] }, flat: { actions: [] } });
 });
 
-test('lock 7: the four cube pieces fill the frame exactly once, and placement is checked', () => {
+test('lock 7: the six cube pieces close one way only, tiles out; clashes and inside-out pieces are reported', () => {
+  const ids = Object.keys(G.cubePieces), cells = ids.map(id => G.cubePieces[id].join('').split('#').length - 1);
+  assert.equal(cells.reduce((a, b) => a + b), 56, 'the shell of a 4 × 4 × 4 cube');
+  // Every way to put the six pieces on the six faces: 24 (each turn of the whole cube) with tiles out, and the same 24
+  // turned inside out. Turning a piece in place is a proper turn, so nothing else fits.
+  let out = 0, inside = 0;
+  const memo = new Map(), cellsAt = (...k) => memo.get(k.join()) || memo.set(k.join(), G.pieceCells(...k)).get(k.join());
+  const used = new Set(), place = (face, left, flips) => {
+    if (face === 6) { if (flips === 0) out++; else if (flips === 6) inside++; else assert.fail('mixed flips'); return; }
+    for (const id of left) for (let t = 0; t < 4; t++) for (let f = 0; f < 2; f++) {
+      const c = cellsAt(id, face, t, f); if (c.some(x => used.has(x))) continue;
+      c.forEach(x => used.add(x)); place(face + 1, left.filter(x => x !== id), flips + f); c.forEach(x => used.delete(x));
+    }
+  };
+  place(0, ids, 0);
+  assert.equal(out, 24); assert.equal(inside, 24);
   const state = playTo(3);
-  const corner = id => { const cells = G.cubePieces[id]; return [Math.min(...cells.map(([r]) => r)), Math.min(...cells.map(([, c]) => c))]; };
-  for (const id of Object.keys(G.cubePieces)) assert.equal(G.placeCube(state, id, ...corner(id), 0), '', id);
-  const covered = Object.entries(state.cube).flatMap(([id, [r, c, t]]) => G.pieceCells(id, r, c, t).map(([a, b]) => a * 4 + b));
-  assert.deepEqual(covered.sort((a, b) => a - b), [...Array(16).keys()]);
-  const other = G.fresh(); other.stage = 3;
-  assert.match(G.placeCube(other, 'a', 3, 3, 0), /stick out/);
-  assert.equal(G.placeCube(other, 'a', 0, 0, 0), '');
-  assert.match(G.placeCube(other, 'c', 0, 0, 0), /already there/);
+  assert.equal(G.placeCube(state, 'red', 0, 0, 0), true); assert.equal(G.placeCube(state, 'red', 6, 0, 0), false); assert.equal(G.placeCube(state, 'nope', 0, 0, 0), false);
+  assert.equal(G.placeCube(state, 'blue', 0, 1, 1), true); assert.deepEqual(Object.keys(state.cube), ['blue'], 'a piece already on that face goes back');
+  assert.deepEqual(G.cubeStatus(state), { placed: 1, clashes: [], inside: ['blue'], solved: false });
+  G.placeCube(state, 'red', 1, 0, 0); G.placeCube(state, 'green', 4, 0, 0);
+  assert.ok(G.cubeStatus(state).clashes.length > 0, 'three pieces at random leave some corner claimed twice');
+  assert.equal(G.placeCube(state, 'red', null), true); assert.equal(state.cube.red, undefined);
 });
-
 test('lock 8: the neighbours riddle has one solution, and the doctor is DICK', () => {
   const perms = list => list.length < 2 ? [list] : list.flatMap((x, i) => perms([...list.slice(0, i), ...list.slice(i + 1)]).map(p => [x, ...p]));
   const opts = bag => G.parts[bag].options.map(([v]) => v), names = opts('names');
@@ -150,10 +162,10 @@ test('bad saves cannot overwrite givens, leak future props or inject unbounded w
   assert.deepEqual(restored.sudoku, G.givens); assert.deepEqual(restored.hints, Array(10).fill(0)); assert.equal(restored.lines.length,1);
   assert.equal(restored.pieces.unknown,undefined); assert.equal(restored.pieces.note.x,302); assert.equal(restored.pieces.note.y,0); assert.equal(restored.pieces.note.rot,0); assert.equal(restored.pieces.note.face,0);
   raw.stage=0; assert.deepEqual(G.restore(raw).lines,[]); assert.equal(G.restore(raw).pieces.note,undefined);
-  const late = { ...G.fresh(), stage: 4, otter: [0, 0, 1], map: 'x', mapLines: [[0, 0, 5000, 1]], satellite: { built: 99, x: 1e9, y: 'a', rot: 7 }, push: { square: { actions: ['in:back:0:-3'] } }, cube: { a: [9, 9, 0], b: [0, 2, 0] }, figures: [{ names: 'DICK', hobbies: 'guitar', pets: 'frog' }], found: ['newspaper', 'note'] };
+  const late = { ...G.fresh(), stage: 4, otter: [0, 0, 1], map: 'x', mapLines: [[0, 0, 5000, 1]], satellite: { built: 99, x: 1e9, y: 'a', rot: 7 }, push: { square: { actions: ['in:back:0:-3'] } }, cube: { red: [9, 0, 0], blue: [2, 3, 1], green: [2, 0, 0], a: [0, 0, 0] }, figures: [{ names: 'DICK', hobbies: 'guitar', pets: 'frog' }], found: ['newspaper', 'note'] };
   const r = G.restore(late);
   assert.deepEqual(r.otter, G.boards.otter.start); assert.deepEqual(r.mapLines, []); assert.deepEqual(r.satellite, { built: 0, on: false, x: 600, y: 60, rot: 35 });
-  assert.deepEqual(r.push.square, { actions: [] }, 'the square puzzle arrives at lock 6'); assert.deepEqual(r.cube, { b: [0, 2, 0] });
+  assert.deepEqual(r.push.square, { actions: [] }, 'the square puzzle arrives at lock 6'); assert.deepEqual(r.cube, { blue: [2, 3, 1] }, 'bad, doubled and old four-piece cube saves are dropped');
   assert.deepEqual(r.figures[0], { hobbies: 'guitar', pets: 'frog' }, 'name tiles arrive at lock 7'); assert.deepEqual(r.found, ['newspaper']);
   const lego = (which, actions, stage = 6) => G.restore({ ...G.fresh(), stage, push: { [which]: { actions } } }).push[which];
   assert.deepEqual(lego('flat', ['in:right:0:-3', '<img onerror=x>', 7, 'in:up:1:1', 'out', 'shift:+2', 'hand:0:1,0', 'deeper']), { actions: ['in:right:0:-3', 'out', 'hand:0:1,0', 'deeper'] });

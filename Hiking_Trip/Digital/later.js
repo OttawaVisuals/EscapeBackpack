@@ -302,52 +302,21 @@
     return view;
   }
 
-  /* ---------- Cube pieces (lock 7) ---------- */
-  const cubeColours = { a: '#c43a2f', b: '#2f6fbf', c: '#3d9a4f', d: '#e0a12c' };
-  const cubePicture = dataUri('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 280"><rect width="280" height="280" fill="#f4f1e6"/><g fill="#e2dccb">' + Array.from({ length: 16 }, (_, i) => `<circle cx="${35 + (i % 4) * 70}" cy="${35 + Math.floor(i / 4) * 70}" r="13"/>`).join('') + '</g><g font-family="Arial Black,Arial,sans-serif" font-weight="900" fill="#1d2a3a" text-anchor="middle"><text x="72" y="222" font-size="205">5</text><text x="140" y="172" font-size="70">+</text><text x="208" y="222" font-size="205">3</text></g></svg>');
-  // A cell of a turned piece at local [r, c] shows the picture slice of the same cell in the solved frame, turned with the piece.
-  function cubeCell(id, r, c, rot) {
-    const cell = el('span', 'cube-cell'), art = el('span', 'cube-art'), local = G.pieceCells(id, 0, 0, rot);
-    const [sr, sc] = G.cubePieces[id][local.findIndex(([lr, lc]) => lr === r && lc === c)];
-    art.style.backgroundImage = cubePicture; art.style.backgroundPosition = `${sc * 100 / 3}% ${sr * 100 / 3}%`; art.style.transform = `rotate(${rot * 90}deg)`;
-    cell.style.borderColor = cubeColours[id]; cell.append(art); return cell;
+  /* ---------- Cube (lock 7): six pieces in 3D, loaded on first use (lego-cube.js, DG-H31) ---------- */
+  const legoCube = () => import('./lego-cube.js');
+  function cubeArt(state) {
+    const wrap = el('div', 'lego-thumb'), img = document.createElement('img');
+    img.alt = ''; img.draggable = false; wrap.append(img);
+    legoCube().then(m => m.picture(G, state.cube)).then(url => { img.src = url; })
+      .catch(() => { wrap.classList.add('failed'); wrap.textContent = G.items.cube.name; });
+    return wrap;
   }
-  function pieceShape(id, rot) {
-    const cells = G.pieceCells(id, 0, 0, rot), rows = Math.max(...cells.map(([r]) => r)) + 1, cols = Math.max(...cells.map(([, c]) => c)) + 1, shape = el('span', 'cube-shape');
-    shape.style.gridTemplateColumns = `repeat(${cols}, var(--cell, 1fr))`; shape.style.gridTemplateRows = `repeat(${rows}, var(--cell, 1fr))`; shape.style.aspectRatio = `${cols} / ${rows}`;
-    for (const [r, c] of cells) { const cell = cubeCell(id, r, c, rot); cell.style.gridRow = r + 1; cell.style.gridColumn = c + 1; shape.append(cell); }
-    return shape;
-  }
-  function cubePile() { const pile = el('div', 'cube-pile'); for (const [id, rot] of [['a', 1], ['b', 0], ['c', 3], ['d', 2]]) { const p = pieceShape(id, rot); p.classList.add(`pile-${id}`); pile.append(p); } return pile; }
   function cubeView(state, ctx) {
-    const view = el('div', 'cube-view'), tray = el('div', 'cube-tray'), frame = el('div', 'cube-frame'), status = el('p', 'push-status'); status.setAttribute('role', 'status');
-    const turns = { a: 1, b: 0, c: 3, d: 2 }; let chosen = null;
-    function draw() {
-      tray.replaceChildren(); frame.replaceChildren();
-      for (const id of Object.keys(G.cubePieces)) {
-        if (state.cube[id]) continue;
-        const b = el('button', 'cube-piece' + (chosen === id ? ' chosen' : '')); b.type = 'button'; b.setAttribute('aria-label', `Piece ${'abcd'.indexOf(id) + 1}${chosen === id ? ', picked up' : ''}`);
-        b.append(pieceShape(id, turns[id])); b.addEventListener('click', () => { chosen = chosen === id ? null : id; status.textContent = chosen ? 'Click a square in the frame to set the piece’s top-left corner there. Turn it first if you like.' : ''; draw(); }); tray.append(b);
-      }
-      const filled = {};
-      for (const [id, [r, c, rot]] of Object.entries(state.cube)) G.pieceCells(id, r, c, rot).forEach(([cr, cc]) => { filled[cr * 4 + cc] = [id, cr - r, cc - c, rot]; });
-      for (let i = 0; i < 16; i++) {
-        const r = Math.floor(i / 4), c = i % 4, slot = el('button', 'cube-slot'); slot.type = 'button'; slot.setAttribute('aria-label', `Frame row ${r + 1}, column ${c + 1}${filled[i] ? ', filled' : ''}`);
-        if (filled[i]) { const [id, lr, lc, rot] = filled[i]; slot.append(cubeCell(id, lr, lc, rot)); slot.classList.add('filled'); }
-        slot.addEventListener('click', () => {
-          if (filled[i] && !chosen) { const id = filled[i][0]; turns[id] = state.cube[id][2]; delete state.cube[id]; chosen = id; status.textContent = 'Piece picked up.'; ctx.save(); draw(); return; }
-          if (!chosen) { status.textContent = 'Pick a piece first.'; return; }
-          const problem = G.placeCube(state, chosen, r, c, turns[chosen]);
-          if (problem) { status.textContent = problem; return; }
-          status.textContent = Object.keys(state.cube).length === 4 ? 'All four pieces are in the frame.' : 'Piece placed.'; chosen = null; ctx.save(); draw();
-        });
-        frame.append(slot);
-      }
-      rotateButton.disabled = !chosen;
-    }
-    const rotateButton = button('Turn piece ↻', () => { if (chosen) { turns[chosen] = (turns[chosen] + 1) % 4; draw(); } });
-    const tools = el('div', 'document-tools'); tools.append(rotateButton, el('span', 'zoom-instruction', 'Pick a piece, turn it, then click the frame · click a placed piece to lift it'));
-    const bench = el('div', 'cube-bench'); bench.append(frame, tray); view.append(tools, bench, status); draw(); return view;
+    const view = el('div', 'lego3d-view cube-3d'), canvasBox = el('div', 'lego3d-canvas'), bar = el('div', 'lego3d-bar');
+    bar.append(el('p', 'lego3d-status', 'Loading…')); view.append(canvasBox, bar);
+    legoCube().then(m => m.mount(canvasBox, { cube: state.cube, G, bar, onChange: () => ctx.save() }))
+      .catch(err => { console.error(err); view.replaceChildren(el('p', 'lego-error', 'The 3D puzzle could not load. Check the internet connection, then close and reopen it.')); });
+    return view;
   }
 
   /* ---------- Tile boards: jigsaw (lock 6) and map (lock 9) ---------- */
@@ -488,7 +457,7 @@
     if (id === 'flat' || id === 'square') return legoThumb(id, state);
     if (id === 'instructions') { const b = el('div', 'booklet'); b.append(image('sat-01.jpg', 'Cover of the satellite instructions')); return b; }
     if (id === 'equation') { if (!face) return equationFront(); const wrap = el('div', 'equation-paper back'); wrap.append(scribbleCard(state, false)); return wrap; }
-    if (id === 'cube') return cubePile();
+    if (id === 'cube') return cubeArt(state);
     if (id === 'pouch') return pouchArt(state);
     if (id === 'treasure') return treasureArt(state);
     if (id === 'satellite') return satelliteArt(state);

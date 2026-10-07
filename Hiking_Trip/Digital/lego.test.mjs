@@ -194,3 +194,48 @@ test('numbers: one pack holds the four exported numbers', () => {
   assert.deepEqual(Object.keys(p.models).sort(), ['lego-number0', 'lego-number1', 'lego-number3', 'lego-number4']);   // lego-numbers.js MODELS
   for (const m of Object.values(p.models)) assert.ok(p.files[m].length > 5, m);
 });
+
+// Cube (DG-H31): the six pieces in game-data.js come from the flat export, and the assembled export is the solution.
+const CUBE_SIZE = { '3022.dat': [2, 2], '3031.dat': [4, 4], '3020.dat': [4, 2], '3001.dat': [4, 2], '3003.dat': [2, 2], '3002.dat': [3, 2], '3004.dat': [2, 1], '3066.dat': [4, 1], '87079.dat': [4, 2], '3068b.dat': [2, 2] };
+const cubeExport = name => {
+  const files = {}; let cur;
+  for (const line of readFileSync(new URL(`assets/${name}.ldr`, import.meta.url), 'utf8').split(/\r?\n/)) {
+    const t = line.trim().split(/\s+/);
+    if (t[0] === '0' && t[1] === 'FILE') files[cur = t.slice(2).join(' ').toLowerCase()] = [];
+    else if (t[0] === '1') files[cur].push({ p: t.slice(2, 5).map(Number), m: t.slice(5, 14).map(Number), file: t.slice(14).join(' ').toLowerCase() });
+  }
+  return files;
+};
+const CUBE_IDS = { red_piece: 'red', bue_piece: 'blue', green_piece: 'green', pink_piece: 'pink', orange_piece: 'orange', purple_piece: 'purple' };   // lego-cube.js FILES
+
+test('cube: each piece’s cells match the flat export, centred on its 4 × 4 plate', async () => {
+  const G = (await import('node:module')).createRequire(import.meta.url)('./game-data.js');
+  const files = cubeExport('lego-cube-flat');
+  for (const [file, id] of Object.entries(CUBE_IDS)) {
+    const refs = files[file], centre = refs.find(r => r.file === '3031.dat').p, grid = Array.from({ length: 4 }, () => Array(4).fill('.'));
+    for (const r of refs) {
+      assert.ok(CUBE_SIZE[r.file], r.file);
+      let [w, d] = CUBE_SIZE[r.file]; if (Math.abs(r.m[0]) < 0.5) [w, d] = [d, w];
+      for (let i = 0; i < w; i++) for (let j = 0; j < d; j++) {
+        const x = r.p[0] - w * 10 + 10 + i * 20, z = r.p[2] - d * 10 + 10 + j * 20;
+        grid[Math.floor((z - centre[2] + 80) / 40)][Math.floor((x - centre[0] + 80) / 40)] = '#';
+      }
+    }
+    assert.deepEqual(grid.map(row => row.join('')), G.cubePieces[id], id);
+  }
+});
+
+test('cube: the assembled export snaps to the solved cube, every piece tiles out', async () => {
+  const G = (await import('node:module')).createRequire(import.meta.url)('./game-data.js');
+  const files = cubeExport('lego-cube'), main = files['escape_backpack_lego_cube'];
+  const at = ref => { const c = files[ref.file].find(r => r.file === '3031.dat').p, m = ref.m; return [0, 1, 2].map(i => ref.p[i] + m[i * 3] * c[0] + m[i * 3 + 1] * -20 + m[i * 3 + 2] * c[2]); };
+  const centres = main.map(at), mid = [0, 1, 2].map(i => centres.reduce((s, c) => s + c[i], 0) / 6);
+  const state = { cube: {} };
+  main.forEach((ref, k) => {
+    const d = centres[k].map((v, i) => v - mid[i]), axis = d.map(Math.abs).indexOf(Math.max(...d.map(Math.abs)));
+    const face = [[3, 1], [4, 5], [0, 2]][axis][d[axis] > 0 ? 1 : 0], r = [0, 1, 2].map(i => ref.m.slice(i * 3, i * 3 + 3).map(Math.round));
+    const fit = [0, 1, 2, 3].flatMap(t => [0, 1].map(f => [t, f])).filter(([t, f]) => JSON.stringify(G.cubeTurn(face, t, f)) === JSON.stringify(r));
+    assert.equal(fit.length, 1, ref.file); G.placeCube(state, CUBE_IDS[ref.file], face, ...fit[0]);
+  });
+  assert.deepEqual(G.cubeStatus(state), { placed: 6, clashes: [], inside: [], solved: true });
+});
