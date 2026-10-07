@@ -20,3 +20,12 @@ export const SOLVED = {
 };
 // The custom name bases (Stud.io custom parts “Dick_Name” … on a 3 × 4 tile, 88646).
 export const NAME_FILES = { 'm72907a53_20251025_031040.dat': 'DICK', 'm72907a53_20251025_062604.dat': 'MADY', 'm72907a53_20251025_062553.dat': 'JUNE', 'm72907a53_20251025_062613.dat': 'RICH', 'm72907a53_20251025_062623.dat': 'BART' };
+// Loose parts on the workbench (DG-H28): one row per bag, from the stands towards the player; tall parts sit at the
+// back so they hide nothing.
+export const ROWS = ['jobs', 'pets', 'hobbies', 'hair', 'faces', 'names'];
+// Each row has its own order, and every other row is shifted half a place, so no column lines up a solved neighbour.
+export const ORDER = {
+  jobs: ['suit', 'coat', 'chef', 'vest', 'ranger'], pets: ['cat', 'rat', 'frog', 'bird', 'dog'],
+  hobbies: ['brush', 'flippers', 'stick', 'guitar', 'camera'], hair: ['grey', 'blonde', 'blue', 'orange', 'black'],
+  faces: ['stars', 'scar', 'mark', 'plain', 'beard'], names: ['MADY', 'JUNE', 'RICH', 'DICK', 'BART']
+};

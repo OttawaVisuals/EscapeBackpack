@@ -1,5 +1,17 @@
 # Project Handoff
 
+## 2026-10-06/07: Hiking online — lock 8 drag-and-drop workbench and rendered bags (Claude Code)
+- **Status:** Done (DG-H28, DG-H29); committed, pushed and published 2026-10-07 at the user's request, together with the satellite session's drag-and-drop build (user's choice). Follows the published 3D satellite/minifigs (design `66b763d`, site `a68aea9`).
+- **What changed:** `lego-minifigs.js` workbench rewritten: loose parts in rows by bag, drag onto five stands, turn arrows, hover names; `lego-minifigs-data.js` gains ROWS/ORDER; `later.js` (v=12) hides the lists behind "Use lists instead" and drops the "Not found yet" line; `later.css` (v=11). `lego.test.mjs` +1 test (no column lines up a solved neighbour). Design record DG-H28.
+- **Checks:** tests 28/28. Browser at 1366 × 850, three and six bags: drag on, swap, drag off, lists ↔ 3D, turning, hover; no console errors.
+- **2026-10-07 addition:** DG-H29 rendered bags of Lego (clear bag, real parts inside): `lego-minifigs.js` bagPicture, `later.js` bag() (v=13), `later.css` (v=12). Another session has uncommitted satellite drag-and-drop work in `lego-satellite.js` (not mine; left untouched).
+- **Next:** Playtest the live workbench, bags and satellite drag mode (touch and keyboard untested).
+
+## 2026-10-06: Hiking online — drag-and-drop satellite build (Claude Code)
+- **Status:** The satellite build already added each booklet page's parts as you went; now an optional "Drag the pieces myself" checkbox (remembered in localStorage `satellite-drag`) puts the page's parts on the table and the player drags each onto its glowing outline. Same-kind parts are interchangeable; "Place them for me" drops the rest. Committed and published 2026-10-07 with the lock 8 workbench (user's choice); noted in DG-H26.
+- **Files/checks:** `Hiking_Trip/Digital/lego-satellite.js` (manual mode in `mount`), `later.js` (`buildView`), `later.css`, `index.html` (cache versions). Tests 27/27. Browser: dragged a plate, placed the rest, toggled off, dragged the telescope onto the satellite (page 8); no console errors. Touch and keyboard drag not tested. Design record (DG-H26) not yet updated.
+- **Next:** Playtest dragging on a phone.
+
 ## 2026-10-05: Space full Galileo note illustrated (Codex)
 - **Status:** Designer put all four observations on the uncle note. Sibling Space's AS-009 is a full handwritten draft with Galilean optics drawing; PP-007 holds the complete text. Q-007 answered, Galileo card requirement removed from PZ-001, original answer unchanged. Artwork/wording remain candidate for review.
 - **Files/checks:** Sibling image/asset record and related prop/puzzle/question records, rebuilt design HTML, both handoffs. Source dates/optics verified; full image text/drawing reviewed; 40 records valid; HTTP board layout and image loading checked, no console warnings/errors. No physical print/playtest.

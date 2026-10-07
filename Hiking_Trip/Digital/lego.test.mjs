@@ -175,3 +175,16 @@ test('minifigs: every exported part is in one bag, and each name base has a full
     assert.equal(hands?.length, 2, r.file);
   }
 });
+
+test('minifigs workbench: every row holds its bag’s five parts, and no column lines up a solved neighbour', async () => {
+  const { ROWS, ORDER, SOLVED } = await import('./lego-minifigs-data.js');
+  const G = (await import('node:module')).createRequire(import.meta.url)('./game-data.js');
+  assert.deepEqual([...ROWS].sort(), [...G.partOrder].sort());
+  for (const bag of ROWS) assert.deepEqual([...ORDER[bag]].sort(), G.parts[bag].options.map(([v]) => v).sort(), bag);
+  // Rows alternate between two sets of columns (lego-minifigs.js shifts every other row); check each set.
+  const owner = (bag, v) => bag === 'names' ? v : Object.keys(SOLVED).find(n => SOLVED[n][bag] === v);
+  for (const set of [0, 1]) for (let k = 0; k < 5; k++) {
+    const who = ROWS.filter((_, r) => r % 2 === set).map(bag => owner(bag, ORDER[bag][k]));
+    assert.equal(new Set(who).size, who.length, `column ${k} (rows ${set ? 'shifted' : 'unshifted'}): ${who}`);
+  }
+});

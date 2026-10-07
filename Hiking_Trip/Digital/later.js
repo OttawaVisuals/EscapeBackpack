@@ -27,7 +27,16 @@
   function sticker(numeral, colour) { const s = el('span', 'order-sticker', numeral); s.style.background = colour; return s; }
 
   /* ---------- Bags of Lego parts and the neighbours workbench (lock 8) ---------- */
-  function bag(id) { const b = el('div', 'parts-bag'); b.append(el('span', 'bag-label', G.items[id].bag[0].toUpperCase() + G.items[id].bag.slice(1)), el('span', 'bag-bits')); return b; }
+  // A clear bag with its label; the drawn dots give way to a render of the real parts inside (lego-minifigs.js, DG-H29).
+  function bag(id) {
+    const name = G.items[id].bag, b = el('div', 'parts-bag'), bits = el('span', 'bag-bits');
+    b.append(el('span', 'bag-label', name[0].toUpperCase() + name.slice(1)), bits);
+    legoMinifigs().then(m => m.bagPicture(name)).then(url => {
+      const img = new Image(); img.src = url; img.alt = ''; img.className = 'bag-render'; img.draggable = false;
+      bits.replaceWith(img); b.classList.add('rendered');
+    }, () => {});
+    return b;
+  }
   const hairColour = { grey: '#a9a9a6', blue: '#2d55c8', black: '#26272b', blonde: '#f2d36b', orange: '#e2702a' };
   const outfitColour = { coat: '#f4f4ef', vest: '#ec7a26', ranger: '#78936a', suit: '#e9edf2', chef: '#fbfbf7' };
   const petColour = { frog: '#3e9a48', cat: '#222', bird: '#c9b48c', dog: '#8b8f93', rat: '#4a4a4a' };
@@ -66,10 +75,11 @@
     if (have(state, 'notepad')) { side.append(el('p', 'eyebrow', 'YOUR NOTEPAD')); const list = el('div', 'riddle-mini'); G.riddle.forEach((line, i) => list.append(el('p', i ? '' : 'riddle-intro', line))); side.append(list); }
     else side.append(el('p', 'eyebrow', 'LEGO PARTS'), el('p', 'muted', 'Five stands and the bags of parts you have found. Put the parts together however you like.'));
     const bags = G.partOrder.filter(b => have(state, b)), missing = G.partOrder.filter(b => !have(state, b));
-    main.append(el('p', 'control-help', bags.length < 6 ? `Bags found: ${bags.length} of 6. More parts may turn up later.` : 'All six bags are here. Choose a part for each stand; a part already on another stand moves over.'));
+    const help = el('p', 'control-help', bags.length < 6 ? `Bags found: ${bags.length} of 6. More parts may turn up later.` : 'All six bags are here. Choose a part for each stand; a part already on another stand moves over.');
     const scene = el('div', 'stand-scene lego3d-canvas'), row = el('div', 'stand-row'), selects = [];
-    scene.append(el('div', 'lego3d-help', 'Drag a figure to turn it'));
+    scene.append(el('div', 'lego3d-help', 'Drag a part onto a stand · drag it off to put it back'));
     let model = null;
+    const syncLists = () => state.figures.forEach((fig, i) => { for (const b of bags) selects[i][b].value = fig[b] || ''; });
     state.figures.forEach((fig, i) => {
       const stand = el('div', 'stand'); stand.append(minifig(fig));
       selects[i] = {};
@@ -89,9 +99,16 @@
       }
       row.append(stand);
     });
-    main.append(scene, row);
-    if (missing.length) main.append(el('p', 'small-note', `Not found yet: ${missing.map(b => `“${b[0].toUpperCase() + b.slice(1)}”`).join(', ')}.`));
-    legoMinifigs().then(m => m.mount(scene, { figures: state.figures })).then(v => { model = v; view.classList.add('has-3d'); }, err => { console.error(err); scene.remove(); });
+    // 3D (DG-H28): loose parts dragged onto the stands; the lists stay behind a button for keyboard players.
+    const listsButton = button('Use lists instead', () => { const show = row.hidden; row.hidden = !show; listsButton.textContent = show ? 'Hide the lists' : 'Use lists instead'; });
+    listsButton.hidden = true;
+    main.append(help, scene, listsButton, row);
+    const bagLabels = Object.fromEntries(bags.map(b => [b, b[0].toUpperCase() + b.slice(1)]));
+    const partNames = Object.fromEntries(bags.map(b => [b, Object.fromEntries(G.parts[b].options)]));
+    legoMinifigs().then(m => m.mount(scene, { figures: state.figures, bags, labels: bagLabels, names: partNames, onChange: () => { ctx.save(); syncLists(); } })).then(v => {
+      model = v; view.classList.add('has-3d'); row.hidden = true; listsButton.hidden = false;
+      help.textContent = `${help.textContent.split('.')[0]}. Drag the parts from the table onto the stands.`;
+    }, err => { console.error(err); scene.remove(); });
     view.append(side, main); return view;
   }
 
@@ -207,28 +224,44 @@
   function buildView(state, ctx) {
     const sat = state.satellite, view = el('div', 'build-view build-3d'), stageBox = el('div', 'build-stage lego3d-canvas'), pic = el('div', 'build-page'), info = el('div', 'build-info');
     const eyebrow = el('p', 'eyebrow'), title = el('h3'), note = el('p', 'muted'), progress = el('div', 'build-progress'), add = button('', () => {}, 'primary');
-    stageBox.append(el('div', 'lego3d-help', 'Drag to turn · scroll to zoom'));
-    const words = el('div', 'build-words'); words.append(eyebrow, title, note); info.append(words, progress, add);
+    const help = el('div', 'lego3d-help', 'Drag to turn · scroll to zoom'); stageBox.append(help);
+    // Option: drag the pieces onto their outlines instead of letting the button drop them in. Remembered in this browser.
+    const mode = el('label', 'build-mode'), drag = el('input'); drag.type = 'checkbox';
+    try { drag.checked = localStorage.getItem('satellite-drag') === '1'; } catch { /* storage blocked: stays off */ }
+    mode.append(drag, el('span', '', 'Drag the pieces myself'));
+    const words = el('div', 'build-words'); words.append(eyebrow, title, note, mode); info.append(words, progress, add);
     view.append(pic, stageBox, info);
     let model = null;
+    const finishPage = () => { sat.built++; ctx.save(); ctx.redraw(); show(); };
+    const startDrag = () => {
+      if (!model || !drag.checked || sat.built >= G.satellitePages) return;
+      help.textContent = 'Drag a piece onto its glowing outline · drag the table to turn · scroll to zoom';
+      model.manual.start(sat.built, { onProgress: (n, total) => { note.textContent = n ? `Placed ${n} of ${total}. Keep going.` : `Drag the ${total} piece${total > 1 ? 's' : ''} on the table onto the glowing outlines.`; }, onDone: finishPage });
+    };
     const show = () => {
       const done = sat.built >= G.satellitePages, page = sat.built + 2;
       progress.style.setProperty('--done', sat.built / G.satellitePages);
       view.classList.toggle('built', done);
       if (done) {
         pic.replaceChildren(); eyebrow.textContent = 'ALL 11 PAGES'; title.textContent = 'Your satellite is built.';
-        note.textContent = 'It’s on your table. You can set it on a flat card like the real model.'; add.hidden = true; return;
+        note.textContent = 'It’s on your table. You can set it on a flat card like the real model.'; add.hidden = mode.hidden = true; return;
       }
       pic.replaceChildren(image(`sat-${String(page).padStart(2, '0')}.jpg`, `Satellite instructions, page ${page}`));
       eyebrow.textContent = `PAGE ${page} OF 11`; title.textContent = sat.built ? 'Keep building.' : 'Build the satellite.';
-      note.textContent = 'Follow the instructions one page at a time.'; add.textContent = `Add the pieces on page ${page}`;
+      if (drag.checked) { note.textContent = 'Drag the pieces on the table onto the glowing outlines.'; add.textContent = 'Place them for me'; }
+      else { note.textContent = 'Follow the instructions one page at a time.'; add.textContent = `Add the pieces on page ${page}`; help.textContent = 'Drag to turn · scroll to zoom'; }
+      startDrag();
     };
     add.addEventListener('click', () => {
       if (sat.built >= G.satellitePages) return;
-      model?.add(sat.built);
-      sat.built++; ctx.save(); ctx.redraw(); show();
+      if (drag.checked && model) { model.manual.solve(); return; }   // drops what is left in place, then onDone moves to the next page
+      model?.add(sat.built); finishPage();
     });
-    legoSatellite().then(m => m.mount(stageBox, { built: sat.built })).then(v => { model = v; }, err => {
+    drag.addEventListener('change', () => {
+      try { localStorage.setItem('satellite-drag', drag.checked ? '1' : '0'); } catch { /* ignore */ }
+      model?.manual.cancel(sat.built); show();
+    });
+    legoSatellite().then(m => m.mount(stageBox, { built: sat.built })).then(v => { model = v; startDrag(); }, err => {
       console.error(err); view.classList.add('no-3d');
       stageBox.replaceChildren(el('p', 'lego-error', 'The 3D model could not load. Check the internet connection; the instructions still work.'));
     });

@@ -129,7 +129,134 @@ export async function mount(container, { built = 0 } = {}) {
       return k < 1;
     });
   });
+  // ---- Drag and drop: the page's parts wait on the table in front; the player drops each on its outline ----
+  // A piece has a `slot` (where it belongs: matrices and an outline) and a `center` (where it is now, LDraw space).
+  // Pieces of the same part and colour are interchangeable, so a piece snaps to any free outline of its kind.
+  const el = stage.renderer.domElement, raycaster = new THREE.Raycaster(), T = new THREE.Matrix4();
+  let session = null;
+  const pageParts = page => {
+    const before = shownSteps(page), after = shownSteps(page + 1), t = model.telescope, list = [];
+    for (const o of model.objects) if (after.main.has(o.userData.step) && !before.main.has(o.userData.step)) list.push({ obj: o });
+    for (const k of t.group.children) if (after.tele.has(k.userData.teleStep) && !before.tele.has(k.userData.teleStep)) list.push({ obj: k, inTelescope: true });
+    if (after.fixed && !before.fixed) list.push({ obj: t.group, fix: true });
+    return list;
+  };
+  function place(p, slot = p.slot, center = p.center) {         // put the piece's object at `center`, turned as `slot` says
+    T.makeTranslation(center.x - slot.c0.x, center.y - slot.c0.y, center.z - slot.c0.z);
+    p.obj.matrix.copy(slot.Pinv).multiply(T).multiply(slot.P).multiply(slot.toL);
+  }
+  const rayLd = e => {                                           // the pointer's ray in LDraw space
+    const r = el.getBoundingClientRect();
+    raycaster.setFromCamera(new THREE.Vector2((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height * 2 - 1)), stage.camera);
+    stage.root.updateWorldMatrix(true, false);
+    return raycaster.ray.clone().applyMatrix4(stage.root.matrixWorld.clone().invert());
+  };
+  const onPlane = (ray, y) => {                                  // where the ray meets the horizontal plane at LDraw height y
+    const t = ray.direction.y > 1e-4 ? (y - ray.origin.y) / ray.direction.y : -1;
+    return t > 0 ? ray.at(t, new THREE.Vector3()) : null;
+  };
+  const glow = (kind = null) => { for (const p of session.pieces) { const g = p.slot.ghost; g.visible = !p.placed; g.material.opacity = kind && p.key === kind ? 1 : kind ? 0.2 : 0.6; } };
+  function startManual(page, { onProgress, onDone }) {
+    cancelManual(); showState(model, page);
+    const t = model.telescope, pieces = pageParts(page), frame = model.buildBox;
+    const ghostMat = new THREE.LineBasicMaterial({ color: 0xffc24a, transparent: true, depthTest: false });
+    let x = frame.min.x, z = frame.min.z - 30, rowDepth = 0;
+    const rowMax = frame.min.x + Math.max(frame.max.x - frame.min.x, 240);
+    for (const p of pieces) {
+      p.key = (p.obj.userData.ref?.file || '') + ':' + (p.obj.userData.ref?.color ?? '');
+      p.home = p.obj.matrix.clone(); p.obj.visible = true;
+      const toL = p.fix ? t.fixed.clone() : p.obj.matrix.clone(), P = p.inTelescope ? t.group.matrix.clone() : new THREE.Matrix4();
+      p.slot = { toL, P, Pinv: P.clone().invert() };
+      p.obj.matrix.copy(toL); const box = ldrawBox(p.obj, stage.root), size = box.getSize(new THREE.Vector3());
+      Object.assign(p.slot, { c0: box.getCenter(new THREE.Vector3()), size });
+      const ghost = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(size.x + 2, size.y + 2, size.z + 2)), ghostMat.clone());
+      ghost.position.copy(p.slot.c0); ghost.renderOrder = 10; stage.root.add(ghost); p.slot.ghost = ghost;
+      if (p.fix) {                                               // the telescope waits where it was built, beside the satellite
+        p.center = p.slot.c0.clone().add(new THREE.Vector3().setFromMatrixPosition(t.beside).sub(new THREE.Vector3().setFromMatrixPosition(t.fixed)));
+      } else {                                                   // a tray of parts in front of the model, resting on the table
+        if (x > frame.min.x && x + size.x > rowMax) { x = frame.min.x; z -= rowDepth + 18; rowDepth = 0; }
+        p.center = new THREE.Vector3(x + size.x / 2, -size.y / 2, z - size.z / 2);
+        x += size.x + 18; rowDepth = Math.max(rowDepth, size.z);
+      }
+      p.restY = p.center.y; p.obj.userData.piece = p; place(p);
+    }
+    const tray = new THREE.Box3(); pieces.forEach(p => tray.union(ldrawBox(p.obj, stage.root)));
+    session = { pieces, onProgress, onDone, drag: null };
+    glow();
+    // Pull the camera back so the tray and the model are both in view.
+    const all = frame.clone().union(tray), c = stage.root.localToWorld(all.getCenter(new THREE.Vector3())), s = all.getSize(new THREE.Vector3());
+    const dir = stage.camera.position.clone().sub(stage.controls.target).normalize(), dist = Math.max(stage.camera.position.distanceTo(stage.controls.target), Math.max(s.x, s.z) * 1.45);
+    stage.controls.target.set(c.x, 10, c.z); stage.camera.position.copy(stage.controls.target).addScaledVector(dir, dist); stage.controls.update();
+    el.addEventListener('pointerdown', down, { capture: true }); el.addEventListener('pointermove', hover);
+    el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+    onProgress?.(0, pieces.length);
+  }
+  function endSession(reset) {
+    if (!session) return;
+    el.removeEventListener('pointerdown', down, { capture: true }); el.removeEventListener('pointermove', hover);
+    el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up); el.style.cursor = '';
+    for (const p of session.pieces) { p.slot.ghost.removeFromParent(); p.slot.ghost.geometry.dispose(); p.slot.ghost.material.dispose(); delete p.obj.userData.piece; if (reset) p.obj.matrix.copy(p.home); }
+    session = null;
+  }
+  const cancelManual = () => endSession(true);
+  const pick = e => {
+    const r = el.getBoundingClientRect();
+    raycaster.setFromCamera(new THREE.Vector2((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height * 2 - 1)), stage.camera);
+    for (const h of raycaster.intersectObjects(session.pieces.filter(p => !p.placed).map(p => p.obj), true)) {
+      for (let o = h.object; o; o = o.parent) if (o.userData.piece) return o.userData.piece;
+    }
+    return null;
+  };
+  function hover(e) {
+    if (!session) return;
+    const d = session.drag;
+    if (!d) { el.style.cursor = pick(e) ? 'grab' : ''; return; }
+    const ray = rayLd(e), p = d.piece;
+    let best = null, bd = Infinity;                              // a free outline of the same kind that the pointer is over
+    for (const q of session.pieces) if (!q.placed && q.key === p.key) {
+      const r = Math.max(24, Math.max(q.slot.size.x, q.slot.size.y, q.slot.size.z) * 0.55), dist = ray.distanceToPoint(q.slot.c0);
+      if (dist < r && dist < bd) { best = q.slot; bd = dist; }
+    }
+    d.over = best;
+    if (best) { place(p, best, best.c0); return; }
+    const at = onPlane(ray, p.restY);
+    if (at) { p.center.set(at.x + d.off.x, p.restY - 12, at.z + d.off.z); place(p); }
+  }
+  function down(e) {
+    if (!session || session.drag || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    const p = pick(e); if (!p) return;
+    e.stopImmediatePropagation(); el.setPointerCapture(e.pointerId);
+    const at = onPlane(rayLd(e), p.center.y) ?? p.center;
+    session.drag = { piece: p, over: null, off: new THREE.Vector3(p.center.x - at.x, 0, p.center.z - at.z) };
+    el.style.cursor = 'grabbing'; glow(p.key); hover(e);
+  }
+  function up(e) {
+    const d = session?.drag; if (!d) return;
+    session.drag = null; el.style.cursor = ''; if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+    const p = d.piece;
+    if (d.over) {
+      const owner = session.pieces.find(q => q.slot === d.over);
+      if (owner !== p) { owner.slot = p.slot; place(owner); }    // the piece that owned this outline takes over the one just left
+      p.slot = d.over; p.placed = true; p.center.copy(d.over.c0); place(p);
+    } else { p.center.y = p.restY; place(p); }
+    glow();
+    const placed = session.pieces.filter(q => q.placed).length, { onProgress, onDone, pieces } = session;
+    onProgress?.(placed, pieces.length);
+    if (placed === pieces.length) { endSession(false); setTimeout(() => onDone?.(), 350); }
+  }
+  // Drops every piece still on the table into place (the button for people who would rather not drag).
+  function solveManual() {
+    if (!session) return;
+    const now = performance.now(); let delay = 0;
+    for (const p of session.pieces) if (!p.placed) {
+      p.placed = true; p.center.copy(p.slot.c0); place(p);
+      tweens.push({ obj: p.obj, to: p.obj.matrix.clone(), start: now + delay, ms: 420, dx: 0, dy: -70, dz: 0 }); delay += 110;
+    }
+    const { onDone } = session; endSession(false); onDone?.();
+  }
+
   function add(page) {
+    cancelManual(); showState(model, page);
     const before = shownSteps(page), after = shownSteps(page + 1), now = performance.now();
     let delay = 0;
     const drop = obj => { const to = obj.matrix.clone(); obj.visible = true; if (!reduce) tweens.push({ obj, to, start: now + delay, ms: 420, dx: 0, dy: -70, dz: 0 }); delay += 110; };
@@ -142,5 +269,5 @@ export async function mount(container, { built = 0 } = {}) {
       if (!reduce) tweens.push({ obj: t.group, to: t.fixed.clone(), start: now, ms: 700, dx: from.x - to.x, dy: from.y - to.y, dz: from.z - to.z });
     }
   }
-  return { add, dispose: stage.dispose };
+  return { add, dispose: stage.dispose, manual: { start: startManual, cancel: page => { if (session) { cancelManual(); showState(model, page); } }, solve: solveManual } };
 }

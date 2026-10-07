@@ -25,6 +25,11 @@
 .parts-bag:before{content:'';position:absolute;top:12px;left:0;right:0;height:9px;border-top:3px solid #9fb2bb;border-bottom:3px solid #9fb2bb}
 .bag-label{position:absolute;top:34px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid #c9c9bf;padding:3px 12px;font:15px "Segoe Print","Comic Sans MS",cursive;color:#333;white-space:nowrap}
 .bag-bits{position:absolute;inset:78px 22px 18px;background:radial-gradient(circle at 25% 35%,#f2c53d 0 11px,transparent 12px),radial-gradient(circle at 70% 30%,#3a7bd5 0 10px,transparent 11px),radial-gradient(circle at 45% 70%,#d9442f 0 12px,transparent 13px),radial-gradient(circle at 80% 75%,#57a35b 0 9px,transparent 10px),radial-gradient(circle at 20% 80%,#555 0 8px,transparent 9px)}
+/* Rendered bags (DG-H29): clear plastic over the felt, the parts' render inside, a sheen on top. */
+.parts-bag.rendered{background:linear-gradient(160deg,#ffffff3d,#e8eef22e 55%,#d5dee44d);border:1.5px solid #ffffffa0;box-shadow:3px 6px 8px #1d2b2440,inset 0 0 14px #ffffff40}
+.parts-bag .bag-render{position:absolute;left:6px;right:6px;top:58px;bottom:8px;width:calc(100% - 12px);height:calc(100% - 66px);object-fit:contain;filter:saturate(.92) brightness(1.03)}
+.parts-bag.rendered:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(118deg,transparent 22%,#ffffff40 30%,transparent 38%),linear-gradient(118deg,transparent 58%,#ffffff2a 63%,transparent 69%),linear-gradient(180deg,transparent 80%,#ffffff26)}
+.parts-bag.rendered .bag-label{z-index:1;box-shadow:0 1px 2px #0002}
 .satellite-bag .bag-bits{background:radial-gradient(circle at 25% 35%,#e1782d 0 12px,transparent 13px),radial-gradient(circle at 70% 30%,#24376b 0 13px,transparent 14px),radial-gradient(circle at 45% 70%,#8f8a45 0 12px,transparent 13px),radial-gradient(circle at 80% 75%,#222 0 10px,transparent 11px),radial-gradient(circle at 15% 75%,#ddd 0 9px,transparent 10px)}
 
 /* Neighbours workbench */
@@ -37,6 +42,10 @@
 .stand{background:#f8f8f1;border:1px solid #cfd5c3;border-radius:8px;padding:10px 8px;display:flex;flex-direction:column;gap:6px}
 .minifig{width:100%;max-width:130px;margin:0 auto 4px;display:block}
 .stand-scene{height:250px;border-radius:8px;overflow:hidden;margin:0 0 12px;background:#102b25}.has-3d .stand .minifig{display:none}
+.has-3d .stand-scene{height:min(600px,calc(95dvh - 250px));min-height:420px}.stand-row[hidden]{display:none}.figure-stands>button{margin:0 0 12px}
+.lego-tip{position:absolute;pointer-events:none;background:var(--paper);color:var(--ink);font-size:12px;padding:3px 8px;border-radius:4px;box-shadow:0 2px 6px #0006;white-space:nowrap}
+.lego-turns{position:absolute;inset:0;pointer-events:none}.lego-turns>div{position:absolute;transform:translate(-50%,2px);display:flex;gap:3px;pointer-events:auto}
+.lego-turns button{padding:1px 7px;font-size:13px;line-height:1.4;background:#f4ebd5d9;border-radius:5px}
 .part-pick{display:flex;flex-direction:column;font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#6a756b}
 .part-pick select{font:12px "Segoe UI",sans-serif;padding:4px;border:1px solid #b8c3aa;border-radius:4px;background:#fffdf6;color:var(--ink);min-width:0;width:100%;text-transform:none;letter-spacing:0}
 .small-note{font-size:11px;color:#7b8275;margin-top:12px}
@@ -81,6 +90,7 @@
 .build-3d .build-stage{border-radius:8px;overflow:hidden;min-height:320px;background:#102b25}
 .build-3d .build-info{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) 220px auto;align-items:center;gap:22px}
 .build-3d .build-info h3{font-size:22px;margin:0 0 4px}.build-3d .build-info .eyebrow{margin:0 0 4px}.build-3d .build-info .muted{margin:0}.build-3d .build-progress{margin:0}
+.build-mode{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;cursor:pointer}.build-mode input{width:16px;height:16px;accent-color:#28534a}
 .build-3d.built .build-page{display:none}.build-3d.built .build-stage{grid-column:1/-1}.build-3d.no-3d .build-stage{display:grid;place-items:center;background:#f7f7ef}
 .satellite-built.rendered img{mix-blend-mode:normal}.satellite-photo{filter:drop-shadow(4px 7px 5px #3a2f1f55)}
 .booklet{height:100%;background:#fff;box-shadow:3px 7px 6px #655a3a25;overflow:hidden}
