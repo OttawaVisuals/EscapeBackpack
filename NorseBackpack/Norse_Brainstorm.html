@@ -1544,7 +1544,7 @@ would give up for nothing.</p>
 <section id="puzzles" class="view" hidden><div class="good"><strong>Approved update, 22 September 2026:</strong> coin values total 3705 and rotate to SOLE; HRAFN selects four flight digits, 2648, for a lock directly on the board pouch. The scale and cryptex are superseded. <a href="#" data-view="approved-updates">Full specifications, visual and postcard changes</a>. Older options below retain their historical status.</div>
 <div class="sectionhead"><div><div class="eyebrow">Every decided puzzle, its clues and its lock</div><h2>Puzzles &amp; locks</h2></div><span class="tag" id="puzzlecount"></span></div>
 <p class="lede">One place for every puzzle that has been worked out: the lock it feeds, the code it produces, and links straight to the props and postcards that carry its clues. Status pills say how settled each one is &mdash; <span class="pill">decided</span>, <span class="pill cand">partly decided</span>, <span class="pill open">open</span>. Every entry carries the open-question IDs it is tracked under; the full reasoning and anything still unresolved lives in <a href="#" data-view="questions">Open questions</a>, which stays the single backlog.</p>
-<p class="small muted" style="margin:0 0 22px">There is no decided lock order across the whole game. Container structure is deliberately unfrozen (<a href="#" data-view="questions" data-anchor="q-ST-01"><code>ST-01</code></a>), so several chains end in &ldquo;open&rdquo; &mdash; the puzzle is settled, what it physically opens is not.</p>
+<p class="small muted" style="margin:0 0 22px"><strong>Lock order decided 7 Oct 2026</strong> (<code>Q-005</code>, <code>ST-06</code>): 13 locks, numbered 1&ndash;13 in solve order. The number matches the longship sticker on each lock (<code>PP-046</code>) and the hint page. Lock types: 4-digit on 1, 2, 5, 7, 12, 13; 3-digit on 6, 8, 9, 11; 4-letter on 3, 4, 10. Puzzle IDs below are the record IDs (<code>PZ-001</code>&ndash;<code>PZ-013</code>); the older <code>PZ-xx</code>/<code>PC-xx</code> IDs still link to Open questions.</p>
 <details class="designsection" id="clue-standard" style="padding:18px 22px">
 <summary style="font-family:Cinzel,Georgia,serif;font-size:19px;cursor:pointer">The standard every puzzle here is held to</summary>
 <p class="small muted" style="margin:10px 0 0">Moved here from the Design spec, 17 Sept 2026 &mdash; it is a rule for writing puzzles, so it belongs with the puzzles.</p>
@@ -1593,7 +1593,11 @@ would give up for nothing.</p>
 </div>
 
 </details>
-<div class="sectionhead"><div><div class="eyebrow">Chains</div><h2>How the locks link up</h2></div></div>
+<div class="sectionhead"><div><div class="eyebrow">Chain</div><h2>How the locks link up</h2></div></div>
+<div class="lockflow" id="lockchain"></div>
+<details><summary>Superseded chains (before 7 Oct 2026)</summary>
+<p class="small muted">Kept for history. These show the per-trail chains and the playtest-1 swap; none of them is the current order.</p>
+
 <div class="lockflow"><div class="lf-title">Leif&rsquo;s three-lock opening (<code>PZ-13</code>) &mdash; order swapped after playtest 1, 27 Sept 2026</div>
 <div class="lf-node">Postcard L1<span class="lf-sub">luggage tags, given at the start</span></div><div class="lf-arrow">&rarr;</div>
 <div class="lf-node lock">Lock 1<br><code>1021</code></div><div class="lf-arrow">&rarr;</div>
@@ -1626,9 +1630,10 @@ would give up for nothing.</p>
 <div class="lf-node lock">Final lock<br><code>1972</code></div><div class="lf-arrow">&rarr;</div>
 <div class="lf-node">Last container<span class="lf-sub">plane ticket + closing line</span></div>
 </div>
+</details>
 <div class="sectionhead"><div><div class="eyebrow">Reference</div><h2>Everything at a glance</h2></div></div>
 <div id="locktable"></div>
-<div class="sectionhead"><div><div class="eyebrow">Full mechanisms, grouped by trail</div><h2>Puzzle by puzzle</h2></div></div>
+<div class="sectionhead"><div><div class="eyebrow">Full mechanisms, in lock order</div><h2>Puzzle by puzzle</h2></div></div>
 <div id="puzzlecards"></div>
 <div class="designsection" id="puzzle-ideas">
 <div class="eyebrow">Parked</div>
@@ -3926,11 +3931,27 @@ if(document.fonts&&document.fonts.load)document.fonts.load('10px NYCD').then(ren
 </main>
 <script src="TravelMap/vendor/leaflet.js"></script><script src="TravelMap/vendor/land.js"></script><script src="TravelMap/stops.js"></script><script>
 const TRAILS={leif:{name:'Leif Erikson',color:'#216580'},rollo:{name:'Rollo &amp; descendants',color:'#a2562d'},aud:{name:'Aud the Deep-Minded',color:'#6d528b'},harald:{name:'Harald Hardrada',color:'#467444'},final:{name:'Endgame',color:'#8a6d2f'}};
+/* Props by record ID (records/props). Postcards are keyed by card code; ALL22 = every postcard. */
+const PROPS={
+'PP-023':['Luggage tags A &amp; B','questions','q-PR-01'],'PP-024':['Viking Museum of Brattahlíð ticket','questions','q-PZ-12'],
+'PP-025':['Architect’s scale ruler','questions','q-PC-15'],'PP-026':['Treasure tally (four-wheel counter)','design','prop-hoard'],
+'PP-027':['Magnifier','design',null],'PP-028':['Aud’s comb','design','prop-comb'],
+'PP-029':['Leif’s trail map','questions','q-PR-13'],'PP-030':['Aud’s trail map','questions','q-PZ-17'],
+'PP-031':['Aud’s Treasure Museum ticket','questions','q-PZ-17'],'PP-032':['Rollo’s trail map','questions','q-PR-11'],
+'PP-033':['Musée Ducal de Rouen ticket','questions','q-PZ-15'],'PP-034':['Harald’s trail map','design','prop-runes'],
+'PP-035':['Hnefatafl board and pieces','design','prop-hnefatafl'],'PP-036':['Hnefatafl Museum ticket, Oslo','build',null],
+'PP-037':['The coin hoard','design','prop-hoard'],'PP-038':['The raven’s flights card','approved-updates','approved-perches'],
+'PP-039':['Transition tickets','',null],'PP-040':['Liv’s journal','',null],'PP-041':['Family logo and crest note','',null],
+'PP-042':['Wet-erase marker','',null],'PP-043':['Plane ticket and letter','build',null],'PP-044':['Adventure medallion','',null],
+'ALL22':['All 22 postcards','postcards',null]};
+/* Where a prop first reaches the players: 'start' or the lock number that releases it. */
+const START_ITEMS=['L1','PP-023','PP-024','PP-042'];
+function propSource(id){if(START_ITEMS.includes(id))return 'in bag';const p=puzzles.find(x=>x.gives.includes(id));return p?'lock '+p.n:'';}
+function itemLink(id){return PROPS[id]?propLink(PROPS[id]):cardLink(id);}
+function itemList(ids,withSource,sep){if(!ids.length)return '&mdash;';return ids.map(id=>{const src=withSource&&id!=='ALL22'?propSource(id):'';return itemLink(id)+(src?` <span class="small muted">(${src})</span>`:'');}).join(sep);}
 const puzzles=[
-{key:'opening',refs:['PZ-13','PC-01'],trail:'leif',state:'decided',status:'Decided',title:'The opening puzzle',verb:'Read &amp; order',
-code:'1021',lock:'Four-digit padlock on the bag itself',
-props:[['Luggage tags A &amp; B','questions','q-PR-01']],cards:['L1'],
-releases:'Postcards L2 and L3, together (changed 27 Sept 2026 after playtest 1; was LD + Leif’s map + the museum ticket)',
+{key:'opening',n:1,id:'PZ-001',refs:['PZ-13','PC-01'],trail:'leif',state:'decided',status:'Decided · untested',title:'The opening puzzle',verb:'Read &amp; order',
+code:'1021',lock:'4-digit',needs:['L1','PP-023'],gives:['L2','L3','PP-027','PP-025','PP-026'],
 brief:'Two luggage tags on the bag carry four digits between them. The first postcard says which pair comes first.',
 input:'The first postcard, which is from L’Anse aux Meadows, and the two luggage tags attached to the backpack. Each tag has a printed “If found, please return to” line that Liv never filled in properly — instead she hand-wrote the address of a hotel she stayed at, and the street number is the only number on the tag.',
 action:'Match the place named on the postcard to the tag whose hotel address is in that place. That tag’s street number is the first half of the code; the other tag’s street number is the second half.',
@@ -3940,10 +3961,8 @@ why:'The data is in plain sight on both tags; the only hidden thing is which tag
 hints:['Everything you need is already outside the bag.','Both tags carry a hand-written address. Only one of them is in a place you have seen before.','The postcard names L’Anse aux Meadows. That tag goes first.'],
 risk:'Supersedes the earlier <code>0734</code> mechanism. The underlined <code>07</code> already printed on card L1 now has no job — see <code>PC-02</code>. A print-ready PDF exists (<code>output/pdf/Luggage_Tag_Inserts_Print.pdf</code>); purchase and physical assembly onto real luggage tags is not confirmed done.<div class="prop-preview"><figure><img src="Props/_Renders/Luggage_Tag_Inserts_Sheet.png" alt="Luggage tag inserts, print sheet"><figcaption>Print sheet</figcaption></figure></div>'},
 
-{key:'topedge',refs:['PC-06','PC-13','PZ-13'],trail:'leif',state:'decided',status:'Decided · read with the magnifier',title:'The joined top edge',verb:'Join &amp; magnify',
-code:'1576',lock:'Four-digit padlock',
-props:[['Magnifier','design',null]],cards:['L2','L3'],
-releases:'<b>Since 7 Oct 2026 (<code>ST-06</code>):</b> lock 2; releases decoy postcard AD and Aud’s comb. <s>Postcard LD and Leif’s trail map (27 Sept – 7 Oct 2026, playtest 1).</s> <s>The fourth container — contents still undesigned.</s>',
+{key:'topedge',n:2,id:'PZ-002',refs:['PC-06','PC-13','PZ-13'],trail:'leif',state:'decided',status:'Decided · untested',title:'The joined top edge',verb:'Join &amp; magnify',
+code:'1576',lock:'4-digit',needs:['L2','L3','PP-027'],gives:['AD','PP-028'],
 brief:'Laid together, postcards L2 and L3’s top edges join into a four-digit code, read with the magnifier.',
 input:'Postcards L2 and L3, both in hand once lock 1 has opened (lock 2 until 27 Sept 2026).',
 action:'Lay card L2 against card L3, rotated 180°, so their top edges meet. The cloud fragments printed across the two edges align into four digits; read them with the magnifier. <b>Changed 7 Oct 2026 (user):</b> holding the cards up to the light is not needed, the magnifier is enough. <s>Hold card L2 face to card L3, rotated 180° against it, up to a light source.</s>',
@@ -3953,10 +3972,8 @@ why:'Gives Leif’s trail a third lock from its own cards without adding a fourt
 hints:['Not written yet.'],
 risk:'<s><b>No destination yet</b> — the fourth container’s contents are undesigned. <b>No in-fiction nudge yet</b> to try holding two cards together at all.</s> Both resolved 27 Sept 2026 (see release and clue). <b>Playtest 1:</b> the digits read too small; the 1.4× artwork enlargement is built and digitally aligned. Physical legibility on the final printed stock still needs retesting. Also the third “line two papers up” gesture in the bag, alongside the hnefatafl offset — worth not adding a fourth.'},
 
-{key:'comb',refs:['PR-19','PZ-17','PC-18'],trail:'aud',state:'partial',status:'Mechanism decided · comb modelled, test print pending',title:'The comb grille',verb:'Overlay &amp; read',
-code:'BOOK',lock:'Four-letter word lock (one of the three owned, PR-27)',
-props:[['The comb','design','prop-comb']],cards:['AD'],
-releases:'<b>Since 7 Oct 2026 (<code>ST-06</code>):</b> lock 3; releases postcards H2, H3 and HD. <s>H4, H5, Harald’s map and the raven’s flights card — entry to Harald’s leg (step 9 of PC-18)</s>',
+{key:'comb',n:3,id:'PZ-003',refs:['PR-19','PZ-17','PC-18'],trail:'aud',state:'decided',status:'Decided · untested',title:'The comb grille',verb:'Overlay &amp; read',
+code:'BOOK',lock:'4-letter',needs:['AD','PP-028'],gives:['H2','H3','HD'],
 brief:'Aud’s comb, laid upright on the decoy card’s message, covers every line except the four its broken teeth leave open.',
 input:'The comb and decoy postcard AD (Bjarnarhöfn), both released by lock 2 (1576) since 7 Oct 2026 (<code>ST-06</code>); <s>both released by SOLE</s>.',
 action:'Sit the comb’s two end ring-and-dots over the two printed on AD, handle in the left margin, teeth across the message. One tooth covers each line. Read the first letter showing on each line that is not covered.',
@@ -3966,10 +3983,8 @@ why:'Gives the comb a job as an instrument rather than a keepsake, and gives the
 hints:['The two ring-and-dots on the card match the two on the comb.','Line the comb up so its holes sit over the printed dots — handle on the left, teeth over the writing.','Some teeth are broken. Read the first letter you can see on each line they leave open, from top to bottom.'],
 risk:'Test print pending: the seven intact teeth are 52 mm long and 2.2 mm wide, and the marks sit 4.5 mm from the card edge, so trimming must be accurate. The comb is generated from AD’s printed layout by Props/Comb/build_comb.py — any change to AD’s back needs a comb rebuild.'},
 
-{key:'mead',refs:['PZ-20'],trail:'harald',state:'decided',status:'Decided and built, 17 Sept 2026',title:'What’s in the horn',verb:'Riddle &amp; combine',
-code:'MEAD',lock:'Owned four-letter word lock',
-props:[['Owned four-letter word lock','design',null]],cards:['H2','H3','HD'],
-releases:'<b>Since 7 Oct 2026 (<code>ST-06</code>):</b> lock 4; releases decoy postcard LD and Leif’s map. <s>H1, hnefatafl board and pieces, Oslo hnefatafl museum ticket (step 11 of <code>PC-18</code>)</s>',
+{key:'mead',n:4,id:'PZ-004',refs:['PZ-20'],trail:'harald',state:'decided',status:'Decided · untested',title:'What’s in the horn',verb:'Riddle &amp; combine',
+code:'MEAD',lock:'4-letter',needs:['H2','H3','HD'],gives:['LD','PP-029'],
 brief:'Three postcards each hide one attribute word behind a different riddle technique; only one drink fits all three.',
 input:'Postcard H3 (Kyiv), postcard H2 (Staraya Ladoga) and postcard HD (Constantinople) — HD stops being a pure decoy and takes on this leg’s third lock, closing the “Constantinople still needs one assigned” gap in the <a href="#" data-view="final-riddle">Final riddle tab</a>.',
 action:'Solve each card’s riddle for its one word — HONEY, DRINK, FERMENTED — using a different technique per card so no two feel the same, then combine the three attributes: the only drink that is honey, fermented and a drink is <code>MEAD</code>.',
@@ -3979,10 +3994,8 @@ why:'Closes the last open lock of Harald’s leg (<code>PZ-20</code>) without to
 hints:['Three cards, three words, one drink.','What do you get when honey ferments?','Each card hides its word a different way — read one, count one, look at one.'],
 risk:'All three cards built, front and back, 17 Sept 2026 — see the Postcard system tab gallery for PDFs. H3’s Fun Fact was swapped from an early bees/honey draft to the Oleg-of-Novgorod/Constantinople fact, since a Fun Fact repeating the riddle’s own answer would break <code>PC-12</code>. <b>29 Sept icon review:</b> HD’s three small squares do not clearly read as sugar cubes. A <a href="Postcards/HD_Fermentation_Sketch.svg" target="_blank" rel="noopener">rough yeast + airlock jar + hourglass sketch</a> was a first alternative. Of the four <a href="Postcards/HD_Reaction_Icon_Options.svg" target="_blank" rel="noopener">chemical reaction icons</a>, the user chose <b>A, the fizzing flask</b>. After reviewing four <a href="Postcards/HD_Sugar_Icon_Options.svg" target="_blank" rel="noopener">sugar icon options</a>, the user supplied a spoon holding three cubes and asked for small sugar dots on the cubes. The <a href="Postcards/HD_Sugar_Spoon_Dotted.svg" target="_blank" rel="noopener">dotted spoon icon</a> and <a href="Postcards/HD_Rebus_Sketch_v2.svg" target="_blank" rel="noopener">full rebus sketch</a> show that direction; that earlier layout still included an hourglass and is now superseded. An ImageGen raster reference was also made from the attached example (the printed icon is vector, redrawn from it). Exact prompt, 29 Sept 2026: <i>Use case: precise-object-edit Asset type: simple line icon for a small printed escape-game postcard. Primary request: Use the attached spoon-with-three-sugar-cubes icon as the composition reference. Keep one spoon holding three three-dimensional sugar cubes in the same arrangement, with the handle extending to the right. Add a few tiny, sparse dot marks on the visible faces of each cube to suggest sugar crystals. Preserve the clean bold outline and generous empty space. Make the line art dark ink (#263f3a), with no fill shading, no other objects, no words, no border, and no watermark. The dots should be visibly smaller than the outline and should not obscure the cube edges. Output a transparent background.</i> The print card now uses dotted sugar cubes on a spoon + yeast + a fizzing flask, with no hourglass. <b>Layout review, 29 Sept (Claude Code):</b> the spoon handle was shortened to about half so the three icons are similar widths; the packet label is now lettered in Aunt Liv&rsquo;s hand (&ldquo;Yeast&rdquo;) instead of a typeset label; the icons are spaced evenly and centred in the box. <b>Then, at the user&rsquo;s request:</b> the sugar dots are larger (0.4 &rarr; 0.63&nbsp;pt radius) so they survive printing, and the second sign is now an arrow, so the rebus reads sugar + yeast &rarr; reaction; both signs are drawn as matching 0.9&nbsp;pt strokes. Still open: at print size the dotted cubes can look like dice, which the reader test should watch for; and the &ldquo;Found this in a little shop&rdquo; lead-in, which does not describe a flask. An unprompted reader test and paper print remain to do. A bottle/glass was also considered but overlaps H2’s DRINK clue. Card order/placement within Harald’s own travel story (per <code>PC-16</code>) is still not chosen for H2, H3 or HD.'},
 
-{key:'beasts',refs:['PZ-10','PZ-12','PZ-13','PZ-18'],trail:'leif',state:'decided',status:'Decided · art finished',title:'The beasts on the chart',verb:'Identify &amp; look up',
-code:'BEAR → 3212',lock:'Four-digit padlock',
-props:[['Leif’s trail map (sea chart)','questions','q-PR-13'],['Viking Museum of Brattahlíð ticket','questions','q-PZ-12']],cards:['LD'],
-releases:'<b>Since 7 Oct 2026 (<code>ST-06</code>):</b> lock 5; releases postcard A2, Aud’s map and Aud’s Treasure Museum ticket. <s>Postcard R2, Rollo’s trail map and the Rouen museum ticket (changed 27 Sept 2026: this is now lock 3, the last of Leif’s leg)</s>',
+{key:'beasts',n:5,id:'PZ-005',refs:['PZ-10','PZ-12','PZ-13','PZ-18'],trail:'leif',state:'decided',status:'Decided · untested',title:'The beasts on the chart',verb:'Identify &amp; look up',
+code:'BEAR → 3212',lock:'4-digit',needs:['LD','PP-029','PP-024'],gives:['A2','PP-030','PP-031'],
 brief:'A hidden imprint on the decoy card points to one square of Leif’s sea chart. The unlabelled animal drawn there names the key to a lookup on the museum ticket.',
 input:'Leif’s trail map — a North Atlantic sea chart with seven animal vignettes drawn into the empty water and land — decoy postcard LD, which points into it, and the museum ticket (Viking Museum of Brattahlíð since 28 Sept 2026). The card and the map arrive together from lock 4 (MEAD) since 7 Oct 2026 (<code>ST-06</code>); <s>from the hold-to-light lock (lock 2, 27 Sept – 7 Oct 2026)</s>. The ticket is in hand from the start.',
 action:'Follow the decoy card’s imprint to one beast on the chart, identify it from how and where it is drawn, then read its four letters off the A–Z visitor index printed on the back of the ticket. Each letter gives one digit.',
@@ -3992,10 +4005,8 @@ why:'It gives Leif’s map a job on the <em>front</em>, using the geography rath
 hints:['The chart is not empty. Something is drawn where the card is pointing.','Are you certain which animal that is? Look at its pose and silhouette, not only its location.','It is a bear. Read B, E, A, R off the index on the back of the museum ticket.'],
 risk:'<b>No validator, by choice</b> — the lock is the check. <b>Bear vs. wolf confirmed legible and distinct at print size, 19 Sept 2026</b> — no longer an open risk. Artwork is print-ready (<code>output/pdf/Trail_Map_1_Leif_Print.pdf</code>).'},
 
-{key:'treasure',refs:['PZ-17'],trail:'aud',state:'decided',status:'Decided · 521 verified by hand-walk, 26 Sept 2026',title:'The treasure route',verb:'Walk &amp; count',
-code:'521',lock:'Three-digit padlock (lock 6; on the coin cache until 7 Oct 2026)',
-props:[['Aud’s laminated journey map (single portrait sheet, 140 features)','questions','q-PZ-17'],['Aud’s Treasure Museum ticket (built)','questions','q-PZ-17']],cards:['A2'],
-releases:'<b>Since 7 Oct 2026 (<code>ST-06</code>):</b> lock 6; releases postcard R2, Rollo’s map and the Rouen museum ticket. <s>The mixed coin hoard in the cave at I9, plus postcards A1 (Dögurðarnes) and A3 (Esjuberg)</s> — these now come from lock 9 (counting).',
+{key:'treasure',n:6,id:'PZ-006',refs:['PZ-17'],trail:'aud',state:'decided',status:'Decided · untested',title:'The treasure route',verb:'Walk &amp; count',
+code:'521',lock:'3-digit',needs:['A2','PP-030','PP-031'],gives:['R2','PP-032','PP-033'],
 brief:'One portrait map, symbols not to scale, carrying line/area/point symbols instead of isolated icons — the split-panel design below was shelved 17 Sept 2026 in favour of this. Players walk the drawn path network and count what the route crosses.',
 input:'Postcard A2 (Hvammur), Aud’s laminated journey map, and the Aud’s Treasure Museum ticket (six rows, one per leg, three tally columns: bridges, fords, gates).',
 action:'Walk the six legs on the real drawn network, from the northern chapel to the cave beyond the ruin at I9. At the merged leg 5, follow the road to the correct “village at a crossing” (H9, not the lookalike near H3/G3) — A2’s message gives the direction (south) and the forest detail needed to tell them apart. Tally bridges, fords and gates crossed across all six legs.',
@@ -4005,10 +4016,8 @@ why:'Turns Aud’s own map from a final-route prop into a working treasure map w
 hints:['Not written yet.'],
 risk:'<b>None — verified 26 Sept 2026.</b> The user printed a test sheet and hand-walked all six legs by hand against the ticket; 521 is confirmed. <code>Props/AudTicket/build_aud_ticket_pdf.py</code> prints the correct <code>ANSWER 5 2 1</code>. <b>Superseded design, kept for reference:</b> the earlier Dalir split-panel sheet and its plot-number-sum mechanism (code <code>467</code>) — see <code>NorseBackpack/Drafts/2026-09-17_Aud_split_panel/README.md</code>.'},
 
-{key:'wordlock',refs:['PZ-15','PR-11'],trail:'rollo',state:'partial',status:'Code decided · lock hardware open',title:'The word-lock chain',verb:'Match &amp; count',
-code:'1486',lock:'4-digit numeric combo lock — hardware not owned yet',
-props:[['Musée Ducal de Rouen ticket','questions','q-PZ-15'],['Rollo’s trail map (6 word icons, 2 now decorative)','questions','q-PR-11']],cards:['R2'],
-releases:'<b>Since 7 Oct 2026 (<code>ST-06</code>):</b> lock 7; releases postcard H1, Harald’s map, the hnefatafl board kit and the Oslo hnefatafl museum ticket. Which pocket holds it follows <code>ST-01</code>’s remap.',
+{key:'wordlock',n:7,id:'PZ-007',refs:['PZ-15','PR-11'],trail:'rollo',state:'decided',status:'Decided · untested',title:'The word-lock chain',verb:'Match &amp; count',
+code:'1486',lock:'4-digit',needs:['R2','PP-033','PP-032'],gives:['H1','PP-034','PP-035','PP-036'],
 brief:'Four English word pairs split along the Norman Conquest’s class line. The Rouen card fixes the order, the ticket turns pairs into coordinates, the map turns coordinates into a square-count.',
 input:'Postcard R2 (Rouen), the Musée Ducal de Rouen ticket, and Rollo’s trail map with its word icons.',
 action:'Read the four Saxon-register words out of the Rouen message in the order they appear. For each, find its Norman partner on the ticket — the Norman column gives a letter, the Saxon column a number, together a grid coordinate. Find that word’s icon already drawn on Rollo’s map, and count the squares between the icon and the coordinate. Four counts, one per dial of the lock.',
@@ -4018,10 +4027,8 @@ why:'Gives Rollo’s map a second job besides the final route, and makes the Con
 hints:['Not written yet.'],
 risk:'<b>No numeric lock is owned yet.</b> Until one is bought or built, this chain has no destination. Six map icons are placed by <code>ROLLO_WORDLOCK_ART</code> in <code>TravelMap/build_trail_maps_pdf.py</code>; adding them cost six secondary scenery labels to the sheet’s collision-avoidance. Hastings was already dropped for collision before this puzzle existed. The ticket and print PDF still reflect the old six-word chain and need rebuilding.'},
 
-{key:'hnefatafl',refs:['PZ-01','PZ-07','PR-08'],trail:'harald',state:'partial',status:'Code decided · lock 8 since 7 Oct 2026',title:'The king’s unfinished escape',verb:'Plan &amp; move',
-code:'253',lock:'Three-digit lock, or the throne compartment if the board is built rather than bought',
-props:[['Hnefatafl board and pieces','design','prop-hnefatafl'],['Hnefatafl Museum ticket, Oslo','build',null],['Harald’s Oslo trail map (back)','questions','q-PZ-09']],cards:['H1'],
-releases:'<b>Since 7 Oct 2026 (<code>ST-06</code>):</b> lock 8; releases postcards R1, R6 and RD.',
+{key:'hnefatafl',n:8,id:'PZ-008',refs:['PZ-01','PZ-07','PR-08'],trail:'harald',state:'decided',status:'Decided · untested',title:'The king’s unfinished escape',verb:'Plan &amp; move',
+code:'253',lock:'3-digit',needs:['H1','PP-035','PP-036','PP-034'],gives:['R1','R6','RD'],
 brief:'Rebuild the board your aunt sketched on the back of a map, then finish the game she left set up.',
 input:'The 11 × 11 board and pieces, the Hnefatafl Museum ticket with the rules, Harald’s Oslo map whose back carries the setup, and postcard H1 which sets the task.',
 action:'Recover the setup from two papers, place the fixed pieces, then take the king from the throne to any corner in exactly three straight-line moves. Count how far he travels on each leg.',
@@ -4031,10 +4038,8 @@ why:'The strongest physical centrepiece in the set, the only puzzle that can rel
 hints:['The board is eleven columns wide. Count what you can actually see.','Something was lying on the ink. It is still in the bag, and it is the right shape.','Work backward from a corner that is still reachable.','F6 → H6 → H11 → K11 — then measure each leg.'],
 risk:'<b>Composited, 19 Sept 2026.</b> Harald’s map sheet (<code>Trail_Map_4_Harald_{Print,ANSWER}.pdf</code>) is now two pages, one physical object: page 1 the rune-cipher front, page 2 the board-setup panel (stain, pieces, Liv’s margin note) reusing <code>build_board_setup_pdf.py</code>’s own drawing code and the shared paper/ink palette, centred on the same letter page and background tone as the front. Print both sides and laminate — no separate insert to align by hand. The old 7 × 7 solution (<code>231</code>) is fully superseded — not a fallback. A bought board in another size means rebuilding both the layout and its uniqueness proof (<code>PR-08</code>). <b>Still untested:</b> whether the offset reads through the ticket stock while the smear still hides the original (<code>PR-09</code>), and whether the front’s printed reference grid or this back page’s own ink ghosts through the laminate at real stock weight. This is also the third “line two papers up” gesture in the bag.'},
 
-{key:'counting',refs:['PZ-19','PZ-18'],trail:'rollo',state:'decided',status:'Decided',title:'Counting in the illustration',verb:'Count &amp; order',
-code:'562',lock:'Three-digit lock',
-props:[['None — counted directly on the three fronts','',null]],cards:['R1','R6','RD'],
-releases:'<b>Since 7 Oct 2026 (<code>ST-06</code>):</b> lock 9; releases postcards A1 and A3 and the mixed coin hoard.',
+{key:'counting',n:9,id:'PZ-009',refs:['PZ-19','PZ-18'],trail:'rollo',state:'decided',status:'Decided · untested',title:'Counting in the illustration',verb:'Count &amp; order',
+code:'562',lock:'3-digit',needs:['R1','R6','RD'],gives:['A1','A3','PP-037'],
 brief:'Three Rollo-trail fronts each hide a count of one repeated object. Their Fun Facts fix the order.',
 input:'Postcards R1 (Châlus), R6 (Roumare Forest) and the decoy RD (Walcheren). Nothing else.',
 action:'Count the repeated object on each front. Read each card’s typed Fun Fact for its date, put the three in chronological order, and read the counts in that order.',
@@ -4046,6 +4051,8 @@ risk:'Walcheren and Roumare rest on weak history — <code>stops.js</code> rates
 
 {
  "key": "hoard",
+ "n": 10,
+ "id": "PZ-010",
  "refs": [
   "PZ-03",
   "PZ-17",
@@ -4053,24 +4060,25 @@ risk:'Walcheren and Roumare rest on weak history — <code>stops.js</code> rates
   "PR-25"
  ],
  "trail": "aud",
- "state": "partial",
- "status": "Tally approved · coins and display need proof",
+ "state": "decided",
+ "status": "Decided · untested",
  "title": "The hoard and treasure tally",
  "verb": "Sort, add &amp; flip",
  "code": "SOLE",
- "lock": "Dedicated four-letter lock; check dial letters",
- "props": [
-  [
-   "Mixed coins, value key and treasure tally",
-   "design",
-   "prop-hoard"
-  ]
- ],
- "cards": [
+ "lock": "4-letter",
+ "needs": [
   "A1",
-  "A3"
+  "A3",
+  "PP-037",
+  "PP-026",
+  "PP-030",
+  "PP-031"
  ],
- "releases": "<b>Since 7 Oct 2026 (<code>ST-06</code>):</b> lock 10; releases postcards R3, R4 and R5. <s>Decoy card AD and Aud’s comb (step 8 of PC-18). Updated 25 Sept 2026; the reviewed flow sent SOLE straight to Harald with the comb optional.</s>",
+ "gives": [
+  "R3",
+  "R4",
+  "R5"
+ ],
  "brief": "Sort three real-history coin piles, convert the Viking pile's values, add to 3705, and turn the total upside down to find a word.",
  "input": "Loose mixed hoard of 12 coins (dirham, denier, Norse), the museum ticket’s Coin Room key, the three icon marks on Aud’s map, A1/A3, calculator or four-wheel tally.",
  "action": "Sort the loose coins by face against the ticket’s Coin Room. The fehu rune beside the treasure cave on Aud’s map matches the ticket’s Norse group; add those three coins’ values ($5 + $100 + $3,600 = 3705) and rotate the entire tally 180 degrees.",
@@ -4086,10 +4094,8 @@ risk:'Walcheren and Roumare rest on weak history — <code>stops.js</code> rates
  "risk": "Display choice remains open (PR-24). Check SOLE on the actual rotated display. Decoy marks (camel at G1, fleur-de-lis at C4) give a wrong route a wrong pile: 980 or 1320, neither a word."
 },
 
-{key:'rebus',refs:['PZ-14','PC-15'],trail:'rollo',state:'partial',status:'Candidate · cards built, code not measured',title:'The rebus distance',verb:'Decode &amp; measure',
-code:'<span class="pill open">Open</span> — not yet measured',lock:'Numeric lock, digit count unknown',
-props:[['Architect’s scale ruler','questions','q-PC-15'],['Rollo’s trail map (crossbow bolt + treaty scroll icons)','questions','q-PR-11']],cards:['R3','R4','R5'],
-releases:'<b>Since 7 Oct 2026 (<code>ST-06</code>):</b> lock 11; releases postcards H4 and H5 and the raven’s flights card.',
+{key:'rebus',n:11,id:'PZ-011',refs:['PZ-14','PC-15'],trail:'rollo',state:'decided',status:'Decided · untested',title:'The rebus distance',verb:'Decode &amp; measure',
+code:'104',lock:'3-digit',needs:['R3','R4','R5','PP-025','PP-032'],gives:['H4','H5','PP-038'],
 brief:'The Bayeux card explains why Liv’s postcards start carrying tapestry-style drawings — and carries the first rebus itself. Winchester carries the second. Battle names which ruler scale to use.',
 input:'Rollo’s Bayeux, Winchester and Battle postcards (all built), his trail map with its story icons, and the architect’s scale ruler already in the kit.',
 action:'Read each card’s rebus as a word or phrase, find the map icons the first two name, set the ruler to the scale the third names, and measure the distance between the two points.',
@@ -4101,35 +4107,33 @@ risk:'<b>Tight reading.</b> The code 104 needs the distance read to 0.1&nbsp;m, 
 
 {
  "key": "runes",
+ "n": 12,
+ "id": "PZ-012",
  "refs": [
   "PZ-02",
   "PZ-09",
   "PR-26"
  ],
  "trail": "harald",
- "state": "partial",
- "status": "Five-perch conversion approved · path-only card on the luggage-tag sheet, test print pending",
+ "state": "decided",
+ "status": "Decided · untested",
  "title": "Branch runes and the raven’s flights",
  "verb": "Decode &amp; follow",
  "code": "2648",
- "lock": "Four-digit lock on the pouch holding H6, the transition tickets and the journal (since 7 Oct 2026; was the board-kit pouch)",
- "props": [
-  [
-   "Corrected Harald map and H4/H5",
-   "design",
-   "prop-runes"
-  ],
-  [
-   "The raven’s flights card",
-   "approved-updates",
-   "approved-perches"
-  ]
- ],
- "cards": [
+ "lock": "4-digit",
+ "needs": [
   "H4",
-  "H5"
+  "H5",
+  "PP-034",
+  "PP-038",
+  "PP-027"
  ],
- "releases": "<b>Since 7 Oct 2026 (<code>ST-06</code>):</b> lock 12; releases postcard H6, the transition tickets and the journal. <s>H1, hnefatafl board, 16 dark pieces, 6 light pieces, king, museum ticket and fixed-piece challenge rules.</s>",
+ "gives": [
+  "H6",
+  "PP-039",
+  "PP-040",
+  "PP-041"
+ ],
  "brief": "Decode five letters, then use them as five perches to read four flight digits.",
  "input": "H4/H5 and the player-only perch card (from lock 11) and the corrected Harald map (from lock 7, with the board kit), since 7 Oct 2026. <s>All available before the board lock.</s>",
  "action": "Use RAVEN to select map columns; H4 decodes HRAFN. Follow the direct connections H→R→A→F→N and read one digit per flight in that order.",
@@ -4145,10 +4149,8 @@ risk:'<b>Tight reading.</b> The code 104 needs the distance read to 0.1&nbsp;m, 
  "risk": "Use the corrected map: the original E7 decoy creates a second answer (fixed in the production map 29 Sept 2026: decoy now at I7). H4/H5 remain unchanged. Perch artwork needs player-only print-size proof; comparison image contains the solution and must not be packed. Former cryptex and key are superseded."
 },
 
-{key:'finalroute',refs:['PZ-06','PZ-08','PZ-18'],trail:'final',state:'partial',status:'Decided in principle · 4 of 4 maps built',title:'The route hidden in plain sight',verb:'Connect &amp; recognize',
-code:'1972',lock:'Four-digit padlock on the last container',
-props:[['Four laminated trail maps and a wet-erase marker','questions','q-PZ-06']],cards:['all 22'],
-releases:'The last container — plane ticket and closing line',
+{key:'finalroute',n:13,id:'PZ-013',refs:['PZ-06','PZ-08','PZ-18'],trail:'final',state:'decided',status:'Decided · untested',title:'The route hidden in plain sight',verb:'Connect &amp; recognize',
+code:'1972',lock:'4-digit',needs:['ALL22','PP-029','PP-032','PP-030','PP-034','PP-042','PP-041','PP-039','PP-024','PP-031','PP-033','PP-036'],gives:['PP-043','PP-044'],
 brief:'Twenty-two cards, four of them decoys. Filter, sort, trace, and read the four shapes as four digits.',
 input:'All 22 postcards (18 real stops plus one decoy per trail), four laminated letter maps, a wet-erase marker, and the note in the final bundle carrying the family logo and crest.',
 action:'Use the crest/logo filter to drop the four decoys. Sort the rest by stamp series to find which trail each belongs to, lay each trail’s cards beside its map in reconstructed order, then draw the legs straight onto the laminated map. Each completed trail traces one digit.',
@@ -4158,10 +4160,8 @@ why:'The cards work first as story and individual clues, then return as the fina
 hints:['The stamps are not decoration — they say which journey a card belongs to.','Four of these cards do not belong to any journey. Something in the last bundle says which.','Work one map at a time, with that trail’s cards laid out beside it.'],
 risk:'<b>Shapes not proofed at true print size</b> — the family <b>9</b> is the riskiest. A traced shape reads the same forwards and backwards, and 3-stop trails barely constrain the drawing. <code>1972</code> reads as a year, which self-checks but invites year-guessing. Harald’s <b>2</b> currently reads as a zigzag, which weakens the self-check.'},
 
-{key:'reveal',refs:['ST-05'],trail:'final',state:'decided',status:'Decided',title:'See you in Norway',verb:'Personal reveal',
-code:'—',lock:'None — this is what the last lock released',
-props:[['Fictional plane ticket and letter','build',null]],cards:[],
-releases:'Nothing — this is the ending',
+{key:'reveal',n:null,id:'ST-006',refs:['ST-05'],trail:'final',state:'decided',status:'Decided',title:'See you in Norway',verb:'Personal reveal',
+code:'—',lock:'none',needs:['PP-043','PP-044'],gives:[],
 brief:'The mystery was an invitation.',
 input:'The now-open final container.',
 action:'Read the personal letter. Optionally scan the invitation to see the aunt’s last message and an illustration of the dig.',
@@ -4205,43 +4205,46 @@ function propLink(p){const [label,view,anchor]=p;if(!view)return label;return `<
 function stateClass(s){return s==='decided'?'':s==='partial'?'cand':'open';}
 function stateLabel(p){return `<span class="pill ${stateClass(p.state)}">${p.status}</span>`;}
 
-/* --- summary table --- */
+/* --- summary table, in lock order --- */
+function codeCell(p){return /^</.test(p.code)?p.code:`<code>${p.code}</code>`;}
 function renderLockTable(){
-  const rows=puzzles.map(p=>`<tr id="row-${p.key}">
+  const rows=puzzles.filter(p=>p.n).map(p=>`<tr id="row-${p.key}">
+<td><strong>${p.n}</strong><br><span class="small muted">${p.id}</span></td>
 <td><a href="#" data-view="puzzles" data-anchor="pz-${p.key}">${p.title}</a><br><span class="small muted">${TRAILS[p.trail].name}</span></td>
-<td>${/^</.test(p.code)?p.code:`<code>${p.code}</code>`}</td>
+<td>${codeCell(p)}</td>
 <td>${p.lock}</td>
-<td>${p.props.map(propLink).join('<br>')}</td>
-<td>${p.cards.length?p.cards.map(cardLink).join(', '):'&mdash;'}</td>
-<td>${p.releases}</td>
+<td>${itemList(p.needs,true,'<br>')}</td>
+<td>${itemList(p.gives,false,'<br>')}</td>
 <td>${stateLabel(p)}<br><span class="small muted">${p.refs.map(refLink).join(' ')}</span></td></tr>`).join('');
-  document.getElementById('locktable').innerHTML=`<table><thead><tr><th>Puzzle</th><th>Code</th><th>Lock</th><th>Props</th><th>Postcards</th><th>Releases</th><th>Status &amp; IDs</th></tr></thead><tbody>${rows}</tbody></table>`;
+  document.getElementById('locktable').innerHTML=`<table><thead><tr><th>Lock #</th><th>Puzzle</th><th>Code</th><th>Lock type</th><th>Needs (where it comes from)</th><th>Releases</th><th>Status &amp; older IDs</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-/* --- one detail card per puzzle, grouped by trail --- */
+/* --- the 13-lock chain, generated from the same data --- */
+function renderLockChain(){
+  const nodes=[`<div class="lf-node">In the bag at the start<span class="lf-sub">${itemList(START_ITEMS,false,', ')}</span></div>`];
+  puzzles.filter(p=>p.n).forEach(p=>{
+    nodes.push(`<div class="lf-node lock">Lock ${p.n}<br>${codeCell(p)}<span class="lf-sub" style="color:#dfe7da">${p.lock}</span></div>`);
+    nodes.push(`<div class="lf-node">${itemList(p.gives,false,', ')}</div>`);
+  });
+  document.getElementById('lockchain').innerHTML='<div class="lf-title">Release order &mdash; decided 7 Oct 2026 (<code>Q-005</code>)</div>'+nodes.join('<div class="lf-arrow">&rarr;</div>');
+}
+
+/* --- one detail card per puzzle, in lock order --- */
 function renderPuzzleCards(){
-  let html='';
-  for(const [tk,t] of Object.entries(TRAILS)){
-    const group=puzzles.filter(p=>p.trail===tk);
-    if(!group.length)continue;
-    html+=`<div class="trailhead"><i class="dot" style="background:${t.color}"></i><h3>${t.name}</h3><span class="trail-count">${group.length} ${group.length===1?'puzzle':'puzzles'}</span></div>`;
-    html+=group.map(p=>`<article class="puzzlecard" id="pz-${p.key}" style="--trail:${t.color}">
-<div class="pc-head"><div><div class="eyebrow">${p.verb} &middot; ${p.refs.map(refLink).join(' ')}</div><h3>${p.title}</h3></div><div class="pc-code">${/^</.test(p.code)?p.code:`<code>${p.code}</code>`}</div></div>
+  document.getElementById('puzzlecards').innerHTML=puzzles.map(p=>{const t=TRAILS[p.trail];return `<article class="puzzlecard" id="pz-${p.key}" style="--trail:${t.color}">
+<div class="pc-head"><div><div class="eyebrow">${p.n?`Lock ${p.n} &middot; ${p.id}`:'Ending'} &middot; <span style="color:${t.color}">${t.name}</span> &middot; ${p.verb}</div><h3>${p.title}</h3></div><div class="pc-code">${codeCell(p)}</div></div>
 <p class="summary">${p.brief}</p>
 <div class="pc-facts">
-<div><b>Lock</b>${p.lock}</div>
-<div><b>Props</b>${p.props.map(propLink).join(' &middot; ')}</div>
-<div><b>Postcards</b>${p.cards.length?p.cards.map(cardLink).join(' &middot; '):'&mdash;'}</div>
-<div><b>Releases</b>${p.releases}</div>
+<div><b>Lock</b>${p.n?`Lock ${p.n} &middot; ${p.lock}`:'None &mdash; opened by lock 13'}</div>
+<div><b>Needs</b>${itemList(p.needs,true,' &middot; ')}</div>
+<div><b>Releases</b>${p.gives.length?itemList(p.gives,false,' &middot; '):'Nothing &mdash; this is the ending'}</div>
 </div>
 <div class="pc-facts"><div><b>Players have</b>${p.input}</div><div><b>Players do</b>${p.action}</div></div>
 <h4>Clue on the card</h4><blockquote>${p.clue}</blockquote>
 <details><summary>Designer answer &amp; exact mechanism</summary><p>${p.solve}</p><p class="small muted"><b>Why it belongs:</b> ${p.why}</p></details>
 <details><summary>Hint ladder &amp; open risks</summary>${p.hints.length?`<ol class="hints">${p.hints.map(h=>`<li>${h}</li>`).join('')}</ol>`:'<p class="small muted">No hints written yet.</p>'}<p class="small">${p.risk}</p></details>
-<div class="pc-status">${stateLabel(p)}</div>
-</article>`).join('');
-  }
-  document.getElementById('puzzlecards').innerHTML=html;
+<div class="pc-status">${stateLabel(p)} <span class="small muted">${p.refs.map(refLink).join(' ')}</span></div>
+</article>`;}).join('');
 }
 
 /* --- ideas, not actioned yet --- */
@@ -4281,7 +4284,7 @@ document.addEventListener('click',e=>{
   e.preventDefault();
   navigate(b.dataset.view,b.dataset.anchor);
 });
-renderLockTable();renderPuzzleCards();renderIdeas();renderJourney();
+renderLockTable();renderLockChain();renderPuzzleCards();renderIdeas();renderJourney();
 
 let runeCode='';document.querySelectorAll('[data-rune]').forEach(b=>b.onclick=()=>{if(runeCode.length>=3)runeCode='';runeCode+=b.dataset.rune;document.getElementById('runeoutput').textContent='Code: '+runeCode+(runeCode.length===3?(runeCode==='582'?' · Archive unlocked.':' · Check the left-to-right order.'):'');});document.getElementById('runereset').onclick=()=>{runeCode='';document.getElementById('runeoutput').textContent='Code: —';};
 const attackers=new Set(['0,3','0,4','0,7','1,0','3,10','3,5','4,10','5,0','5,10','5,8','6,0','6,7','7,4','8,5','10,3','10,7']);
