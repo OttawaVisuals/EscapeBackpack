@@ -262,3 +262,7 @@
 .grandparents-message,.card-inside h3{font-family:var(--hand-2);font-size:24px;line-height:1.5}.card-inside h3{font-style:normal;font-size:34px}.prop .grandparents-message{font-size:12px}.prop .card-inside h3{font-size:22px}
 .figure-buttons{display:flex;gap:8px;margin:0 0 12px}.figure-buttons>button{margin:0}
 .riddle-mini p{font-family:var(--hand);font-size:13px;color:#111}.riddle-mini .riddle-intro{font-style:normal}
+/* The note's close-up as wide as the printed page (about 6 in square). */
+.note-view .note-paper{width:min(680px,100%);min-height:0;padding:36px 44px 30px;--fs:22px}
+.note-view .note-back{height:560px}
+.note-copy .signoff{font-style:normal}
