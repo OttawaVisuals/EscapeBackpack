@@ -1,0 +1,29 @@
+---
+id: Q-027
+title: The four trail maps' printer margins were wrong, and are now fixed and confirmed on the us
+type: question
+# open | answered | parked
+status: answered
+# Records this question is about, e.g. [PZ-003]
+about: []
+# Leave empty while open
+answer: Decided
+# Any related record IDs, e.g. [PZ-002, Q-004]
+links: []
+# Set to an ID when this record is replaced. It then moves to the Parked tab.
+superseded_by:
+tags: [old-PR-23]
+---
+
+Status on the old page: **Decided**
+
+**Preferred print path, decided 25 Sept 2026: the PrintTest .docx files.** The printer handles their margins better than the PDFs. `Postcards/build_print_test_docx.py` writes 11 files to `output/docx/`, `PrintTest_L1_L2.docx` to `PrintTest_H6_HD.docx`, two cards per file in deck order, covering all 22. Each file is two Letter pages: page 1 is both cards’ front art rotated to portrait and kept in the top 5.3 in of the sheet (where this printer aligns reliably), page 2 is the two backs, rotated the extra 180°, with **3 mm bleed** (padded with the paper colour) and no outer frame, mirrored from the right edge for a **long-edge (book-style) flip**, no drift shift (7 Oct 2026). **Superseded 27 Sept–7 Oct 2026:** the top-to-bottom flip, the 1.5 mm right shift and the 2 mm bleed first written here. **Since 7 Oct 2026 page 1 is the text side and page 2 the art** (the flat back uses less ink, so the sheet is flatter for the second pass; `TEXT_FIRST` in the script restores art first). Print page 1, wait about 15 min, flip the sheet long-edge, print page 2. **Printer: Canon PIXMA MG2900 series (7 Oct 2026).** It has one rear tray and no manual slot; Canon’s specs for the MG2940/MG2950 list plain paper 64–105 g/m² and Canon photo paper up to 275 g/m², so 300 gsm is past its limit. On 7 Oct two sheets of R3/R4 gave a top margin of 0.7 cm and 0.4 cm (target 0.76 cm), a feeder fault that no docx shift can cancel; feed one sheet at a time and wait about 15 min between sides. The bottom half of the sheet stays free for a second pass. Rebuild after any card change, after `python NorseBackpack/build_page_images.py` (the backs come from the gallery images). Checked 25 Sept 2026 by exporting L1+L2 (the pair already printed successfully) and A2+A3 through Word: same layout, current text. **Superseded:** the Node-built `Postcard_L1_L2_Art_Letter_Print.docx` / `_Back_4x6_Print.docx` described below; kept in `output/docx/` for reference.
+
+**The user's home printer (Canon) was leaving visibly uneven blank space around the printed trail maps.** `Hiking_Trip/Support.xlsx`'s "Info" sheet cites a Canon non-printable-area spec (top 3mm, side 3.4mm, bottom 16.7mm), but that spec undersized the side margin — the printer's real non-printable area is roughly double that on the sides. The user supplied a corrected, per-edge reading straight from their printer: **top 3.0mm, bottom 16.7mm, left 6.4mm, right 6.3mm**.
+**Fixed in `build_trail_maps_pdf.py`:** each of the four maps now uses its own true minimum plus a 0.5mm safety pad — `MARGIN_TOP = 3.5mm`, `MARGIN_BOTTOM = 17.2mm`, `MARGIN_LEFT = 6.9mm`, `MARGIN_RIGHT = 6.8mm` — rather than one shared value. This maximises the printable map area, at the cost of the border no longer looking even: thin on three sides, thick at the bottom, because that's genuinely how much clearance this printer needs there, not a stylistic choice. **Confirmed working** — the user checked the Canon print preview after this fix and it now looks right.
+**Every hand-placed page position had to move with the margin** — not just the neat line. `LEIF_ART`, `ROLLO_ART`, `ROLLO_WORDLOCK_ART` (the decorative vignette boxes), Aud's legend box, and every stored point in `aud_features.json` (Aud's 140-feature hand-drawn road/symbol layer) were all put through the same exact scale-and-shift transform the map's own projection uses, not re-placed by eye. One real regression surfaced and was fixed along the way: the smaller map area cost stop label "Dögurðarnes / Dagverðarnes" its last open slot on Aud's already-tight sheet — `Labeller.place()` gained two further-out fallback candidate positions to recover it.
+**New practice to keep:** when a printer mishandles a PDF's margins, build a `.docx` with the identical image and identical page margins as a cross-check — Word and the print driver apply their own scaling independently of the PDF, so comparing the two isolates whether a problem is in the file or in the driver. Two such docx sets now exist in `output/docx/`: `Norse_Trail_Maps_Print.docx` (all four maps, one page each, Harald's hnefatafl board-back page excluded) and a postcard pair for `L1`/`L2` matching a two-pass, paper-efficient layout (reference source: another session's scratch `scratch_art_letter.pdf` / `scratch_back_4x6.pdf`) — `Postcard_L1_L2_Art_Letter_Print.docx` is one Letter page carrying **both** cards' front art together (print first, then cut to separate them), and `Postcard_L1_L2_Back_4x6_Print.docx` is 2 pages at true 6×4in landscape size, one per card, for printing each card's text side directly onto its already-cut art piece before the final trim. This is more paper-efficient than the older per-card `_Letter_Print.pdf` two-up-same-card sheets and is the layout to follow if this gets extended to the rest of the deck. Built with the `docx` npm package via one-off Node scripts, not committed as reusable Python build scripts like the rest of the project's builders — redo the crop-and-place from scratch, or write a proper build script, if these need regenerating or extending to more cards. None of the docx files have been visually rendered before delivery — LibreOffice isn't installed in this environment, so only structural checks (page size, margins, image count/extent) were possible; open and eyeball before printing.
+
+PR
+
+### Icon style choice
