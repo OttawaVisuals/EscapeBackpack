@@ -250,3 +250,15 @@ test('The four-letter padlock wheels hold ten letters each, and both letter code
   assert.deepEqual(G.wheelLetters.map(w => w.length), [10, 10, 10, 10]);
   for (const lock of G.locks.filter(l => l.letters)) [...lock.answer].forEach((ch, i) => assert.ok(G.wheelLetters[i].includes(ch), `${lock.answer}: ${ch} on wheel ${i + 1}`));
 });
+
+test('Play time and item notes are saved, restored and sanitised; the clock reads m:ss then h:mm:ss', () => {
+  assert.equal(G.clock(0), '0:00'); assert.equal(G.clock(754000), '12:34'); assert.equal(G.clock(3723000), '1:02:03');
+  assert.equal(G.duration(20000), 'under a minute'); assert.equal(G.duration(4500000), '1 h 15 min');
+  const state = G.fresh(); state.played = 90000; state.lockTime[2] = 61000; state.itemNotes.note = 'a G?';
+  const back = G.restore(JSON.parse(JSON.stringify(state)));
+  assert.equal(back.played, 90000); assert.equal(back.lockTime[2], 61000); assert.equal(back.itemNotes.note, 'a G?');
+  const bad = G.restore({ ...JSON.parse(JSON.stringify(G.fresh())), played: -5, lockTime: ['x', 1e12], itemNotes: { note: 'x'.repeat(5000), nope: 'y', sheet: '  ' } });
+  assert.equal(bad.played, 0); assert.equal(bad.lockTime[0], 0); assert.equal(bad.lockTime[1], 1e9);
+  assert.equal(bad.itemNotes.note.length, 1000); assert.deepEqual(Object.keys(bad.itemNotes), ['note']);
+  assert.equal(G.restore(JSON.parse(JSON.stringify(G.fresh()))).played, 0, 'old saves start the clock at zero');
+});

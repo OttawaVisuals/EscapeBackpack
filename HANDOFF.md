@@ -1,5 +1,13 @@
 # Project Handoff
 
+## 2026-10-11 (night): Hiking ISS footprint, timer, Norse tools (Claude Code)
+- **Status:** user asked for consistent footprints (ISS note), a timer that pauses when the page is hidden, and the Norse features (hover tools, close-up bar, notes on items). Built and checked locally; not committed or published.
+- **Done:** ISS note back uses the same 560×520 page and zoom bar as the front (satellite controls moved into the bar); note faces equal height. Timer in the top bar (visible-and-active only, per lock, in the save and the events). Hover toolbar, close-up top bar, item notes (notebook tab "On items", pencil mark on the table), first-time tips. Details and what was not ported: DG-H37.
+- **Files:** `game.js`, `game-data.js` (`played`, `lockTime`, `itemNotes`, `clock`, `duration`), `later.js` (equation back), `later.css`, `index.html`, `game.test.cjs`.
+- **Checks:** tests 37/37; browser at 1366×768: hover toolbar and tip appear, Zoom opens the close-up, Turn over keeps 560×520 with zoom bar, note saved and listed, pencil mark on the item, timer stops while hidden and resumes. Not checked: touch (hover tools on tap), phone widths, the idle pause (5 min) itself.
+- **Decision for the user:** show the timer to players (as built) or hide it like Norse.
+- **Next:** user tries it; then rebuild the site and push.
+
 ## 2026-10-11 (evening): Hiking selection glow, compact Tidy, padlock letters (Claude Code)
 - **Status:** three tweaks from the user. Built and checked locally; not committed or published.
 - **Selected item:** amber outline and glow, scaled so it shows at table zoom.

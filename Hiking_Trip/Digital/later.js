@@ -172,17 +172,19 @@
     paper.append(el('p', 'equation-correction', 'The equation is slightly wrong and needs a small correction. I just need to build the satellite to get the right answer.'));
     return paper;
   }
+  // Both faces of the note share one page size and the same zoom bar; the back adds the satellite controls to it.
+  const EQUATION_PAGE = { w: 560, h: 520 };
   function equationBack(state, ctx) {
-    const view = el('div', 'scribble-view'), tools = el('div', 'document-tools'), sat = state.satellite, built = sat.built >= G.satellitePages;
+    const extra = [], sat = state.satellite, built = sat.built >= G.satellitePages;
     if (built) {
-      tools.append(button(sat.on ? 'Lift the satellite off' : 'Set the satellite on this side', () => { sat.on = !sat.on; ctx.save(); ctx.refresh(); }, sat.on ? '' : 'primary'));
+      extra.push(button(sat.on ? 'Lift the satellite off' : 'Set the satellite on this side', () => { sat.on = !sat.on; ctx.save(); ctx.refresh(); }, sat.on ? '' : 'primary'));
       if (sat.on) {
         const rotate = d => () => { sat.rot = (sat.rot + d + 360) % 360; ctx.save(); ctx.refresh(); };
-        tools.append(button('⟲ Turn', rotate(-5)), el('span', 'rotation-readout', `${sat.rot}°`), button('Turn ⟳', rotate(5)), el('span', 'zoom-instruction', 'Drag the satellite to move it · arrow keys nudge it'));
+        extra.push(button('⟲ Turn', rotate(-5)), el('span', 'rotation-readout', `${sat.rot}°`), button('Turn ⟳', rotate(5)));
       }
-    } else tools.append(el('span', 'zoom-instruction', 'Scribbles, and two little red marks.'));
-    const frame = el('div', 'scribble-frame'); frame.append(scribbleCard(state, true, ctx));
-    view.append(tools, frame); return view;
+    }
+    const card = el('div', 'equation-paper back'); card.append(scribbleCard(state, true, ctx));
+    return documentView(card, EQUATION_PAGE, extra);
   }
   // 3D satellite (lego-satellite.js), loaded on first use; the photo and the page images remain the fallback.
   const legoSatellite = () => import('./lego-satellite.js');
@@ -397,13 +399,13 @@
   }
 
   /* ---------- Shared document view with zoom ---------- */
-  function documentView(node, size) {
+  function documentView(node, size, extra = []) {
     const view = el('div', 'document-view'), scroll = el('div', 'document-scroll'), stage = el('div', 'document-stage'), page = el('div', 'document-page');
     page.style.width = `${size.w}px`; page.style.height = `${size.h}px`; page.append(node); stage.append(page); scroll.append(stage);
     let zoom = 1; const tools = el('div', 'document-tools'), label = el('span', '', '100%');
     const apply = value => { zoom = Math.min(3, Math.max(.25, value)); label.textContent = `${Math.round(zoom * 100)}%`; stage.style.width = `${size.w * zoom}px`; stage.style.height = `${size.h * zoom}px`; page.style.transform = `scale(${zoom})`; };
     const fit = () => apply(Math.min(1, (scroll.clientWidth - 42) / size.w, (scroll.clientHeight - 38) / size.h));
-    tools.append(el('span', 'zoom-instruction', 'Zoom to inspect · scroll to explore'), button('−', () => apply(zoom - .25)), label, button('+', () => apply(zoom + .25)), button('Fit', fit));
+    tools.append(...extra, el('span', 'zoom-instruction', 'Zoom to inspect · scroll to explore'), button('−', () => apply(zoom - .25)), label, button('+', () => apply(zoom + .25)), button('Fit', fit));
     view.append(tools, scroll); requestAnimationFrame(fit); return view;
   }
 
@@ -444,7 +446,7 @@
     if (G.items[id].bag) return workbench(state, ctx);
     if (id === 'flat' || id === 'square') return legoView(id, state, ctx);
     if (id === 'instructions') return instructionsView();
-    if (id === 'equation') return face ? equationBack(state, ctx) : documentView(equationFront(), { w: 560, h: 520 });
+    if (id === 'equation') return face ? equationBack(state, ctx) : documentView(equationFront(), EQUATION_PAGE);
     if (id === 'cube') return cubeView(state, ctx);
     if (id === 'pouch' || id === 'treasure') return pocketsView(id, state);
     if (id === 'satellite') return buildView(state, ctx);

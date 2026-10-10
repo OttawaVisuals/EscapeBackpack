@@ -320,3 +320,47 @@
 /* The selected item: an amber outline and glow, clear on the dark felt. */
 .prop.selected:after{inset:calc(-8px * var(--inv));border:calc(2.5px * var(--inv)) solid #f0a94c;border-radius:calc(8px * var(--inv));box-shadow:0 0 calc(14px * var(--inv)) calc(3px * var(--inv)) #f0a94caa}
 .prop:focus-visible:after{border-color:#ffd089}
+/* The note's back sits in the same page frame as its front. */
+.document-page>.equation-paper.back{width:100%;height:100%;padding:0;display:grid;place-items:center;background:#fffdf7}
+.document-page>.equation-paper.back .scribble-card{width:100%;height:auto;max-height:100%}
+
+/* ---- Norse-style tools: timer, hover toolbar, close-up bar, item notes, tips ---- */
+.timer{display:inline-flex;align-items:center;gap:6px;margin-right:6px;padding:3px 10px;border:1px solid #5e7c72;border-radius:20px;font:600 13px var(--sans);letter-spacing:.04em;font-variant-numeric:tabular-nums;color:var(--on-dark)}
+.timer .icon{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.timer small{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}.timer small:empty{display:none}
+.timer.paused{opacity:.65}.timer.done{border-color:var(--amber)}
+@media(max-width:849px){.timer{padding:2px 7px;font-size:12px}.timer small{display:none}}
+.icon{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.prop-tools{position:fixed;z-index:60;display:flex;align-items:center;gap:2px;padding:4px;background:var(--ink);border:1px solid var(--amber);border-radius:9px;box-shadow:0 8px 24px #0006}
+.prop-tools[hidden]{display:none}
+.prop-tools button,.prop-tools .compare{background:transparent;color:var(--on-dark);border:0;padding:6px 10px;font-size:13px;display:flex;align-items:center;gap:6px;border-radius:6px;white-space:nowrap}
+.prop-tools button:hover:not(:disabled){background:var(--forest);border:0}
+.prop-tools button:disabled{opacity:.4}
+.prop-tools button[aria-pressed=true]{background:var(--amber);color:var(--ink)}
+.prop-tools button.has-note .icon{stroke:var(--amber)}.prop-tools button.has-note[aria-pressed=true] .icon{stroke:var(--ink)}
+.prop-tools kbd{font:10px "Segoe UI",sans-serif;color:#a9bdb0;margin-left:2px;padding:1px 4px;border:1px solid #5e7c72;border-radius:4px}
+.tools-name,.viewer-title strong{color:#f3c98f;font-size:13px;font-weight:600;padding:5px 10px 5px 6px;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis}
+.viewer-bar{height:56px;display:flex;align-items:center;gap:4px;padding:0 12px;background:var(--ink);border-bottom:2px solid var(--amber);color:var(--on-dark)}
+.viewer-bar button,.viewer-bar .compare{background:transparent;color:var(--on-dark);border:0;padding:6px 10px;font-size:13px;display:flex;align-items:center;gap:6px;border-radius:6px;white-space:nowrap}
+.viewer-bar button:hover:not(:disabled){background:var(--forest)}.viewer-bar button[aria-pressed=true]{background:var(--amber);color:var(--ink)}
+.viewer-bar button.has-note .icon{stroke:var(--amber)}.viewer-bar button.has-note[aria-pressed=true] .icon{stroke:var(--ink)}
+.viewer-bar kbd{font:10px "Segoe UI",sans-serif;color:#a9bdb0;padding:1px 4px;border:1px solid #5e7c72;border-radius:4px}
+.viewer-bar select{font-size:13px;padding:3px 4px;max-width:170px;background:var(--forest);color:var(--on-dark);border:1px solid #4b6a62;border-radius:4px}
+.viewer-title{display:flex;flex-direction:column;margin-right:auto;min-width:0;line-height:1.15}.viewer-title strong{font:400 19px var(--serif);color:var(--on-dark);padding:0;max-width:420px}
+.tools-eyebrow{font-size:9px;letter-spacing:1.8px;color:var(--sage);font-weight:700}
+#inspector{position:relative}#inspector-content{height:calc(100% - 56px)}
+.viewer-note{position:absolute;right:16px;bottom:16px;z-index:5;width:min(340px,80vw);background:var(--paper);border:1px solid var(--amber);border-radius:10px;padding:10px 12px;box-shadow:0 14px 40px #0006;display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--ink)}
+.viewer-note[hidden]{display:none}
+.viewer-note textarea{min-height:110px;resize:vertical;border:1px solid #cbd0c2;border-radius:6px;padding:8px;font:19px/1.3 var(--hand);color:#111;background:#fff}
+.prop.has-note:before{content:'✎';position:absolute;right:-6px;top:-8px;z-index:3;display:grid;place-items:center;width:calc(24px * var(--inv,1));height:calc(24px * var(--inv,1));font-size:calc(14px * var(--inv,1));background:var(--amber);color:var(--ink);border-radius:50%;box-shadow:0 2px 5px #0006;pointer-events:none}
+.notebook .tabs{display:flex;gap:2px;background:#ece4cf;border-radius:8px;padding:2px;margin:6px 0 8px}
+.notebook .tabs button{flex:1;border:0;background:none;font-size:12px;padding:4px 9px;border-radius:6px;white-space:nowrap}
+.notebook .tabs button[aria-selected=true]{background:var(--paper);box-shadow:0 1px 3px #0002;font-weight:600}
+.item-note{padding:6px 0;border-bottom:1px solid var(--line)}.item-note p{margin:2px 0 0;font:14px/1.35 var(--hand);white-space:pre-wrap;color:#111}.item-note .text-button{font-weight:600}
+.tip{position:fixed;z-index:90;max-width:300px;background:var(--ink);color:var(--on-dark);border:1px solid var(--amber);border-radius:10px;padding:12px 14px;box-shadow:0 14px 40px #0006;font-size:14px;animation:banner-in .3s ease-out}
+.tip p{margin:0}.tip::before{content:'';position:absolute;left:var(--arrow,50%);top:-7px;width:12px;height:12px;margin-left:-6px;background:var(--ink);border-left:1px solid var(--amber);border-top:1px solid var(--amber);transform:rotate(45deg)}
+.tip.above::before{top:auto;bottom:-7px;transform:rotate(225deg)}
+.tip-actions{display:flex;gap:12px;align-items:center;margin-top:10px}.tip-ok{background:var(--amber);color:var(--ink);border-color:var(--amber);font-weight:600;padding:5px 12px}.tip .text-button{color:var(--on-dark)}
+body.dragging-prop #prop-tools{display:none}
+/* Both faces of the note take the same space in the close-up. */
+.note-view .note-paper,.note-view .note-back{min-height:590px;height:auto}

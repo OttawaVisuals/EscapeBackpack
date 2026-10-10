@@ -189,12 +189,15 @@
   // The table's size: the stage's, or the tight one Tidy made (state.table) until something needs the full table again.
   const tableSize = (stage, state) => { if (state?.table) return state.table; const [w, h] = sizes[Math.min(stage, sizes.length - 1)]; return { w, h }; };
   // Retain the original key/version so earlier opening saves continue.
-  const fresh = () => ({ game: 'hiking-opening', version: 1, stage: 0, pieces: {}, lines: [], sudoku: [...givens], hints: locks.map(() => 0), ratings: locks.map(() => 0), table: null, notes: '', calculator: { expression: '', result: '' },
+  const fresh = () => ({ game: 'hiking-opening', version: 1, stage: 0, pieces: {}, lines: [], sudoku: [...givens], hints: locks.map(() => 0), ratings: locks.map(() => 0), table: null, played: 0, lockTime: locks.map(() => 0), itemNotes: {}, notes: '', calculator: { expression: '', result: '' },
     found: [], satellite: { built: 0, on: false, x: 40, y: 60, rot: 35 }, otter: [...boards.otter.start], map: [...boards.map.start], mapLines: [],
     push: { square: { actions: [] }, flat: { actions: [] } }, cube: {}, figures: Array.from({ length: 5 }, () => ({})) });
   // The letters on each wheel of the four-letter padlock (Master Lock 643DWD): the letters that occur in each position of the
   // manual's list of 358 words and names (every wheel has ten). A code must be made of these.
   const wheelLetters = ['BDJLMNPRST', 'AEHILORTUY', 'ACDELNORST', 'DEHKLNRSTY'];
+  // Play time as a clock (m:ss, or h:mm:ss from an hour) and in words for a summary.
+  const clock = ms => { const s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), r = s % 60, two = n => String(n).padStart(2, '0'); return h ? `${h}:${two(m)}:${two(r)}` : `${m}:${two(r)}`; };
+  const duration = ms => { const m = Math.round(ms / 60000), h = Math.floor(m / 60); return m < 1 ? 'under a minute' : h ? `${h} h ${String(m % 60).padStart(2, '0')} min` : `${m} min`; };
   const normalizeAnswer = (stage, answer) => String(answer).trim().toUpperCase().replace(locks[stage]?.letters ? /[^A-Z]/g : /[^0-9]/g, '').slice(0, locks[stage]?.answer.length || 0);
 
   // Footprint on the table, including the caption under each prop.
@@ -348,6 +351,9 @@
     state.notes = typeof raw.notes === 'string' ? raw.notes.slice(0, 6000) : '';
     state.hints = state.hints.map((_, i) => integer(raw.hints?.[i], 0, 4) ? raw.hints[i] : 0);
     state.ratings = state.ratings.map((_, i) => integer(raw.ratings?.[i], 0, 5) ? raw.ratings[i] : 0);
+    const ms = n => Number.isFinite(n) && n >= 0 ? Math.min(n, 1e9) : 0;      // play time in ms, at most about 11 days
+    state.lockTime = state.lockTime.map((_, i) => ms(raw.lockTime?.[i])); state.played = ms(raw.played);
+    if (raw.itemNotes && typeof raw.itemNotes === 'object') for (const [id, text] of Object.entries(raw.itemNotes)) if (items[id] && typeof text === 'string' && text.trim()) state.itemNotes[id] = text.slice(0, 1000);
     for (const id of available(state.stage, state.found)) {
       const p = raw.pieces?.[id], item = items[id];
       if (!p || typeof p !== 'object') continue;
@@ -398,7 +404,7 @@
     return state;
   }
   const api = { grid, givens, items, stickers, locks, values, hockey, parts, partOrder, riddle, cubePieces, cubeFaces, cubeSolved, cubeMarks, cubePen, boards, satellitePages,
-    available, tableSize, fresh, restore, validLine, sameLine, markLine, unlock, discover, place, layout, box, overlaps, cubeTurn, pieceCells, placeCube, cubeStatus, normalizeAnswer, wheelLetters, calculate };
+    available, tableSize, fresh, restore, validLine, sameLine, markLine, unlock, discover, place, layout, box, overlaps, cubeTurn, pieceCells, placeCube, cubeStatus, normalizeAnswer, wheelLetters, clock, duration, calculate };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.HikingGame = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -141,7 +141,10 @@
       const caption = el('div', 'prop-caption'); caption.append(el('span', '', nameOf(id)));
       node.append(artwork, caption); $('pieces').append(node); constrain(id); position(id);
       node.addEventListener('pointerdown', event => startDrag(event, id, node));
-      node.addEventListener('dblclick', () => inspect(id));
+      node.addEventListener('dblclick', () => { hideTools(); inspect(id); });
+      node.addEventListener('pointerenter', e => { if (e.pointerType !== 'touch') hoverTools(id); });
+      node.addEventListener('pointerleave', () => { clearTimeout(switchTimer); hideToolsSoon(); });
+      node.addEventListener('click', () => showTools(id));
       node.addEventListener('focus', () => select(id));
       node.addEventListener('keydown', event => {
         if (event.key.startsWith('Arrow')) {
@@ -156,18 +159,18 @@
     drawShelf(shelfEntries);
     $('item-count').textContent = String(G.available(state.stage, state.found).length).padStart(2, '0');
     if (!G.available(state.stage, state.found).includes(selected) || (selected && piece(selected).stowed)) selected = null;
-    select(selected, false); fit();
+    select(selected, false); fit(); markNotes();
   }
   function startDrag(event, id, node) {
     if (event.button !== 0) return;
-    select(id); node.focus({ preventScroll: true }); node.setPointerCapture(event.pointerId);
+    select(id); hideTools(); node.focus({ preventScroll: true }); node.setPointerCapture(event.pointerId);
     const p = piece(id), start = { x: event.clientX, y: event.clientY, px: p.x, py: p.y }; let moved = false;
     function move(e) {
       const dx = (e.clientX - start.x) / scale, dy = (e.clientY - start.y) / scale;
       if (Math.abs(dx) + Math.abs(dy) < 4 && !moved) return;
-      moved = true; node.classList.add('dragging'); p.x = start.px + dx; p.y = start.py + dy; constrain(id); position(id);
+      moved = true; document.body.classList.add('dragging-prop'); node.classList.add('dragging'); p.x = start.px + dx; p.y = start.py + dy; constrain(id); position(id);
     }
-    function end(e) { node.classList.remove('dragging'); node.removeEventListener('pointermove', move); node.removeEventListener('pointerup', end); node.removeEventListener('pointercancel', end); if (node.hasPointerCapture(e.pointerId)) node.releasePointerCapture(e.pointerId); save(); }
+    function end(e) { document.body.classList.remove('dragging-prop'); node.classList.remove('dragging'); node.removeEventListener('pointermove', move); node.removeEventListener('pointerup', end); node.removeEventListener('pointercancel', end); if (node.hasPointerCapture(e.pointerId)) node.releasePointerCapture(e.pointerId); save(); }
     node.addEventListener('pointermove', move); node.addEventListener('pointerup', end); node.addEventListener('pointercancel', end);
   }
   function turn(id, direction = 1) {
@@ -209,7 +212,7 @@
   const turnLabel = (id, p) => id === 'bottle' ? 'Turn bottle ↻' : id === 'grandparents' ? (p.face ? 'Close card' : 'Open card') : p.face ? 'Show front' : 'Turn over';
   function renderInspector() {
     const id = inspected, item = G.items[id], p = piece(id); $('inspector-title').textContent = nameOf(id); $('inspector-kind').textContent = item.origin;
-    $('inspect-flip').hidden = item.faces < 2; $('inspect-flip').textContent = turnLabel(id, p);
+    $('inspect-flip').hidden = item.faces < 2; $('inspect-flip-text').textContent = turnLabel(id, p); renderItemNote();
     const choices = G.available(state.stage, state.found).filter(k => k !== id);
     if (!choices.includes(compareId)) compareId = '';
     $('inspect-compare').replaceChildren(new Option('Compare with…', ''), ...choices.map(k => new Option(nameOf(k), k))); $('inspect-compare').value = compareId;
@@ -367,7 +370,7 @@
     $('hints').replaceChildren(row, ...texts);
   }
   function drawProgress() {
-    $('progress-count').textContent = `${state.stage} / ${G.locks.length}`;
+    $('progress-count').textContent = `${state.stage} / ${G.locks.length}`; renderItemNotes();
     $('chapter').textContent = state.stage >= G.locks.length ? 'ALL LOCKS OPEN' : `LOCK ${state.stage + 1} OF ${G.locks.length}`;
     if ($('progress').children.length !== G.locks.length) {
       $('progress').replaceChildren();
@@ -378,7 +381,7 @@
       node.className = i < state.stage ? 'done' : i === state.stage ? 'current' : ''; node.title = `Lock ${i + 1} · ${G.locks[i].name} · ${status}`;
       node.querySelector('.step-number').textContent = i < state.stage ? '✓' : i + 1; node.querySelector('small').textContent = ` · ${status}`;
     });
-    $('lock-panel').hidden = state.stage >= G.locks.length; $('complete').hidden = state.stage < G.locks.length;
+    $('lock-panel').hidden = state.stage >= G.locks.length; $('complete').hidden = state.stage < G.locks.length; $('complete-time').textContent = `Your time: ${G.duration(state.played)}.`; drawTimer();
     if (state.stage < G.locks.length) {
       const lock = G.locks[state.stage]; $('lock-number').textContent = `LOCK ${String(state.stage + 1).padStart(2, '0')}`; $('lock-name').textContent = lock.name;
       $('lock-prompt').textContent = lock.prompt;
@@ -395,13 +398,14 @@
     const rate = $('rate'); rate.querySelectorAll('button').forEach(b => b.remove());
     for (let n = 1; n <= 5; n++) {
       const b = button('★', () => {
-        state.ratings[lock - 1] = n; save(); track('puzzle_rated', { lock, rating: n, hints: state.hints[lock - 1] });
+        state.ratings[lock - 1] = n; save(); track('puzzle_rated', { lock, rating: n, hints: state.hints[lock - 1], seconds: Math.round(state.lockTime[lock - 1] / 1000) });
         rate.querySelectorAll('button').forEach((x, k) => { x.classList.toggle('on', k < n); x.setAttribute('aria-pressed', String(k + 1 === n)); });
         clearTimeout(bannerTimer); bannerTimer = setTimeout(hideBanner, 2500);
       });
       b.setAttribute('aria-label', `${n} of 5`); b.setAttribute('aria-pressed', String(state.ratings[lock - 1] === n)); b.classList.toggle('on', n <= state.ratings[lock - 1]); rate.append(b);
     }
-    track('lock_opened', { lock, hints: state.hints[lock - 1] });
+    track('lock_opened', { lock, hints: state.hints[lock - 1], seconds: Math.round(state.lockTime[lock - 1] / 1000) });
+    if (lock === G.locks.length) track('game_completed', { minutes: Math.round(state.played / 60000) });
     clearTimeout(bannerTimer); bannerTimer = setTimeout(hideBanner, 16000);
   }
   function hideBanner() { clearTimeout(bannerTimer); $('unlock-banner').hidden = true; }
@@ -443,7 +447,7 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('game-menu').hidden) { closeMenu(); $('game-btn').focus(); } });
   $('how-to').addEventListener('click', () => $('intro').showModal()); $('begin').addEventListener('click', () => { $('intro').close(); save(); });
   $('restart').addEventListener('click', () => $('restart-dialog').showModal());
-  $('restart-confirm').addEventListener('click', () => { hideBanner(); state = G.fresh(); selected = 'bottle'; $('notes').value = ''; $('combination').value = ''; $('lock-message').textContent = ''; $('restart-dialog').close(); dialStage = null; drawTable(); drawProgress(); save(); $('intro').showModal(); });
+  $('restart-confirm').addEventListener('click', () => { hideBanner(); noteOpen = false; state = G.fresh(); selected = 'bottle'; $('notes').value = ''; $('combination').value = ''; $('lock-message').textContent = ''; $('restart-dialog').close(); dialStage = null; drawTable(); drawProgress(); save(); $('intro').showModal(); });
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
   $('save-copy').addEventListener('click', () => { $('save-text').value = JSON.stringify(state, null, 2); $('save-result').textContent = ''; $('save-dialog').showModal(); });
   $('select-save').addEventListener('click', () => { $('save-text').focus(); $('save-text').select(); $('save-result').textContent = 'Press Ctrl+C (or ⌘C) to copy. Keep the text in a file or note.'; });
@@ -461,7 +465,7 @@
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && $('inspector').open && (anchor || wordDown)) { event.preventDefault(); anchor = draft = wordDown = null; showLines(); $('word-status').textContent = 'Selection cancelled.'; return; }
     if (event.defaultPrevented || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName) || event.ctrlKey || event.metaKey || event.altKey) return;
-    if (document.querySelector('dialog[open]')) { if ($('inspector').open && event.key.toLowerCase() === 'f') { event.preventDefault(); turn(inspected); } return; }
+    if (document.querySelector('dialog[open]')) { if ($('inspector').open && event.key.toLowerCase() === 'f') { event.preventDefault(); turn(inspected); } if ($('inspector').open && event.key.toLowerCase() === 'n') { event.preventDefault(); setNoteOpen(!noteOpen); } return; }
     if (event.key.toLowerCase() === 'f') { event.preventDefault(); turn(selected); }
     if (event.key.toLowerCase() === 'r') { event.preventDefault(); rotate(); }
     if (event.key === 'Enter' && document.activeElement?.classList.contains('prop')) { event.preventDefault(); inspect(selected); }
@@ -469,6 +473,122 @@
     if (event.key === '-') { event.preventDefault(); setZoom(zoom / 1.25); }
     if (event.key === '0') { event.preventDefault(); setZoom(1); }
   });
+  /* ---------- Play time ----------
+     Counted only while the page is visible and someone has touched it in the last five minutes, so a game left open or in
+     another tab does not run up the clock. It stops at the last lock. Kept per lock in the save. */
+  let lastInput = Date.now(), lastTick = Date.now(), idle = false;
+  for (const type of ['pointerdown', 'keydown', 'wheel', 'pointermove']) document.addEventListener(type, () => { lastInput = Date.now(); }, { passive: true, capture: true });
+  function drawTimer() {
+    $('timer-text').textContent = G.clock(state.played);
+    const done = state.stage >= G.locks.length, paused = !done && (idle || document.visibilityState !== 'visible');
+    $('timer-state').textContent = done ? 'done' : paused ? 'paused' : ''; $('timer').classList.toggle('paused', paused); $('timer').classList.toggle('done', done);
+  }
+  function tickTimer() {
+    const now = Date.now(), dt = Math.min(now - lastTick, 5000); lastTick = now;
+    idle = now - lastInput > 300000;
+    if (document.visibilityState === 'visible' && !idle && state.stage < G.locks.length) { state.played += dt; state.lockTime[state.stage] += dt; if (++tickCount % 15 === 0) save(); }
+    drawTimer();
+  }
+  let tickCount = 0;
+  setInterval(tickTimer, 1000);
+  document.addEventListener('visibilitychange', () => { lastTick = Date.now(); if (document.visibilityState === 'hidden') save(); drawTimer(); });
+  drawTimer();
+
+  /* ---------- Hover tools: name and actions above an item on the table ---------- */
+  let toolsFor = null, toolsTimer, switchTimer;
+  const blocked = () => !!document.querySelector('dialog[open]') || document.body.classList.contains('dragging-prop');
+  function hoverTools(id) {
+    clearTimeout(switchTimer);
+    if (!toolsFor || toolsFor === id || $('prop-tools').hidden) { showTools(id); return; }
+    clearTimeout(toolsTimer); switchTimer = setTimeout(() => showTools(id), 400);
+  }
+  function showTools(id) {
+    const node = document.querySelector(`.prop[data-id="${id}"]`);
+    if (blocked() || !node || node.hidden || piece(id).stowed) return;
+    clearTimeout(toolsTimer); clearTimeout(switchTimer); toolsFor = id;
+    const t = $('prop-tools'); t.querySelector('[data-tool="flip"]').disabled = G.items[id].faces < 2;
+    $('tools-name').textContent = nameOf(id); t.setAttribute('aria-label', `${nameOf(id)}: actions`); t.hidden = false; placeTools();
+  }
+  function placeTools() {
+    if (!toolsFor) return; const node = document.querySelector(`.prop[data-id="${toolsFor}"]`); if (!node) { hideTools(); return; }
+    const t = $('prop-tools'), r = node.getBoundingClientRect(), box = $('table-frame').getBoundingClientRect(), w = t.offsetWidth, h = t.offsetHeight;
+    const x = Math.min(box.right - w - 4, Math.max(box.left + 4, r.left + r.width / 2 - w / 2));
+    let y = r.top - h - 8; if (y < box.top + 4) y = Math.min(r.bottom + 8, box.bottom - h - 4);
+    t.style.left = `${x}px`; t.style.top = `${y}px`;
+  }
+  function hideTools() { clearTimeout(toolsTimer); clearTimeout(switchTimer); toolsFor = null; $('prop-tools').hidden = true; }
+  function hideToolsSoon() { clearTimeout(toolsTimer); toolsTimer = setTimeout(hideTools, 300); }
+  $('prop-tools').addEventListener('pointerenter', () => { clearTimeout(toolsTimer); clearTimeout(switchTimer); });
+  $('prop-tools').addEventListener('pointerleave', hideToolsSoon);
+  $('prop-tools').addEventListener('click', e => {
+    const tool = e.target.closest('[data-tool]')?.dataset.tool, id = toolsFor; if (!tool || !id) return;
+    select(id);
+    if (tool === 'zoom') { hideTools(); inspect(id); }
+    if (tool === 'rotate') { rotate(); placeTools(); }
+    if (tool === 'flip') { turn(id); setTimeout(placeTools); }
+    if (tool === 'away') { hideTools(); piece(id).stowed = true; selected = null; drawTable(); save(); }
+  });
+  $('table-frame').addEventListener('scroll', placeTools); window.addEventListener('resize', placeTools);
+
+  /* ---------- Notes on items: written in a close-up, listed in the notebook, marked on the table ---------- */
+  let noteOpen = false;
+  const noteOf = id => state.itemNotes[id] || '';
+  function markNotes() { document.querySelectorAll('.prop').forEach(node => node.classList.toggle('has-note', !!noteOf(node.dataset.id).trim())); }
+  function renderItemNote() {
+    const id = inspected; $('inspect-note-btn').setAttribute('aria-pressed', String(noteOpen)); $('inspect-note').hidden = !noteOpen || !id;
+    $('inspect-note-btn').classList.toggle('has-note', !!id && !!noteOf(id).trim());
+    if (!id) return; $('inspect-note-name').textContent = nameOf(id);
+    if (document.activeElement !== $('inspect-note-text')) $('inspect-note-text').value = noteOf(id);
+  }
+  function setNoteOpen(on) { noteOpen = on; renderItemNote(); if (on) $('inspect-note-text').focus(); }
+  $('inspect-note-btn').addEventListener('click', () => setNoteOpen(!noteOpen));
+  $('inspect-note-text').addEventListener('input', () => {
+    const id = inspected, text = $('inspect-note-text').value.slice(0, 1000);
+    if (text.trim()) state.itemNotes[id] = text; else delete state.itemNotes[id];
+    $('inspect-note-btn').classList.toggle('has-note', !!text.trim()); markNotes(); renderItemNotes(); save();
+  });
+  $('inspect-note-text').addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); e.preventDefault(); setNoteOpen(false); $('inspect-note-btn').focus(); } });
+  function renderItemNotes() {
+    const ids = Object.keys(state.itemNotes).filter(id => G.items[id] && state.itemNotes[id].trim()), list = $('item-notes');
+    $('item-note-count').textContent = ids.length ? `(${ids.length})` : ''; list.replaceChildren();
+    for (const id of ids) {
+      const row = el('div', 'item-note'), open = button(nameOf(id), () => { if (G.available(state.stage, state.found).includes(id)) { if ($('inspector').open) $('inspector').close(); piece(id).stowed = false; drawTable(); inspect(id); setNoteOpen(true); } }, 'text-button');
+      row.append(open, el('p', '', state.itemNotes[id])); list.append(row);
+    }
+    $('items-intro').hidden = ids.length > 0;
+  }
+  for (const tab of ['notes', 'items']) $('tab-' + tab).addEventListener('click', () => {
+    for (const t of ['notes', 'items']) { $('tab-' + t).setAttribute('aria-selected', String(t === tab)); $('pane-' + t).hidden = t !== tab; }
+    if (tab === 'items') renderItemNotes();
+  });
+  $('inspector').addEventListener('close', () => { noteOpen = false; $('inspect-note').hidden = true; });
+
+  /* ---------- First-time tips: a short pointer at a time, each with "Got it" and "No more tips" ---------- */
+  const TIPS_KEY = 'escape-backpack.hiking-tips.v1';
+  let tipsSeen = new Set(), tipEl = null;
+  try { tipsSeen = new Set(JSON.parse(localStorage.getItem(TIPS_KEY) || '[]')); } catch (_) { /* tips just show again */ }
+  const rememberTips = () => { try { localStorage.setItem(TIPS_KEY, JSON.stringify([...tipsSeen])); } catch (_) { /* optional */ } };
+  function dropTip() { tipEl?.remove(); tipEl = null; }
+  function tip(id, anchor, text) {
+    if (tipsSeen.has('off') || tipsSeen.has(id) || tipEl || !anchor || !anchor.isConnected) return;
+    tipEl = el('div', 'tip'); tipEl.setAttribute('role', 'status'); tipEl.append(el('p', '', text));
+    const actions = el('div', 'tip-actions'); actions.append(button('Got it', () => { tipsSeen.add(id); rememberTips(); dropTip(); }, 'tip-ok'), button('No more tips', () => { tipsSeen.add('off'); rememberTips(); dropTip(); }, 'text-button'));
+    tipEl.append(actions); document.body.append(tipEl);
+    const r = anchor.getBoundingClientRect(), w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+    const x = Math.min(innerWidth - w - 8, Math.max(8, r.left + r.width / 2 - w / 2)), above = r.bottom + h + 14 > innerHeight;
+    tipEl.classList.toggle('above', above); tipEl.style.left = `${x}px`; tipEl.style.top = `${above ? Math.max(8, r.top - h - 12) : r.bottom + 12}px`;
+    tipEl.style.setProperty('--arrow', `${Math.max(14, Math.min(w - 14, r.left + r.width / 2 - x))}px`);
+  }
+  const tipsDue = () => { if (document.querySelector('dialog[open]') || tipEl) return;
+    const first = document.querySelector('.prop:not([hidden])');
+    if (first) tip('tools', first, 'Hover over an item (or tap it) for its tools, or double-click for a close-up. Drag to move it around.'); };
+  $('inspector').addEventListener('close', () => { dropTip(); setTimeout(() => { if (!document.querySelector('dialog[open]')) tip('padlock', $('dial'), 'Found a code? Turn the wheels (or type it), then press Open.'); }, 400); });
+  new MutationObserver(() => { if ($('inspector').open) setTimeout(() => tip('viewer', $('inspect-flip').hidden ? $('close-inspector') : $('inspect-flip'), 'Turn an item over, write a note on it, or compare it with another from this bar. Esc goes back to the table.'), 600); }).observe($('inspector'), { attributes: true, attributeFilter: ['open'] });
+  $('begin').addEventListener('click', () => setTimeout(tipsDue, 800));
+  if (hadSave) setTimeout(tipsDue, 1500);
+  document.addEventListener('pointerdown', e => { if (tipEl && !e.target.closest('.tip')) dropTip(); });
+  renderItemNotes(); markNotes();
+
   new ResizeObserver(fit).observe($('table-frame'));
   drawTable(); drawProgress();
   if (new URLSearchParams(location.search).get('design') === '1' && $('design-notes')) { $('design-notes').showModal(); $('design-notes').scrollTop = 0; }
