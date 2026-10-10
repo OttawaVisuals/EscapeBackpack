@@ -1,5 +1,11 @@
 {
   "name": "Norse Backpack · The Raven Inheritance",
   "beatLabel": "Trail",
-  "staleDays": 30
+  "staleDays": 30,
+  "stats": {
+    "api": "https://escapepack.ca/api",
+    "backpack": "norse",
+    "version": "2026-10-09",
+    "linear": true
+  }
 }
