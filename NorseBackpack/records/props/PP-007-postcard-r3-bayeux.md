@@ -13,6 +13,8 @@ source: print
 found_in: PZ-007
 # Physical pocket/container or location; availability remains in found_in above.
 container: Small pouch, in the main compartment (lock 9)
+after_game: return
+reset_name: Postcard: Bayeux
 # Any related record IDs, e.g. [PZ-002, Q-004]
 links: []
 # Set to an ID when this record is replaced. It then moves to the Parked tab.
@@ -55,7 +57,7 @@ In its release pouch (see found_in).
 
 ## Reset
 
-Collect all 22 cards; return each to its pouch.
+There are 22 postcards: each goes back with the lock it came from, as listed below.
 
 ## Replacement
 

@@ -19,6 +19,7 @@ lock: 3-digit
 answer: 521
 # Compartment this lock closes (shown on the Locks tab)
 container: Front right pocket
+reset_display: 000
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
 hint_title: Lock 5
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.

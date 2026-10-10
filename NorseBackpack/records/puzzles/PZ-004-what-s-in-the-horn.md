@@ -19,6 +19,7 @@ lock: 4-letter
 answer: MEAD
 # Compartment this lock closes (shown on the Locks tab)
 container: Main compartment
+reset_display: LOCK
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
 hint_title: Lock 4
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.

@@ -13,6 +13,7 @@ source: 3d-print
 found_in: PZ-013
 # Physical pocket/container or location; availability remains in found_in above.
 container: Inside lockable pocket 2 (lock 13)
+after_game: keep
 # Any related record IDs, e.g. [PZ-002, Q-004]
 links: []
 # Set to an ID when this record is replaced. It then moves to the Parked tab.
@@ -67,8 +68,9 @@ Not recorded yet.
 
 ## Reset
 
-Not recorded yet.
+None needed: the team keeps the medallion (designer, 10 Oct 2026).
 
 ## Replacement
 
-Not recorded yet.
+One new medallion for every team, since each team keeps theirs (designer, 10 Oct 2026).
+

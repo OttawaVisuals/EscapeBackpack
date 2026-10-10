@@ -19,6 +19,8 @@ lock: 4-digit
 answer: 1576
 # Compartment this lock closes (shown on the Locks tab)
 container: Locked pouch inside the front pocket
+reset_display: 0000
+container_in: PZ-001
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
 hint_title: Lock 2
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.

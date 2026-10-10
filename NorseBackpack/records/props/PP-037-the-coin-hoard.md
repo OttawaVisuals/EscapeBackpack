@@ -13,6 +13,7 @@ source: 3d-print
 found_in: PZ-005
 # Physical pocket/container or location; availability remains in found_in above.
 container: Inside lockable pocket 1 (lock 7)
+after_game: return
 # Any related record IDs, e.g. [PZ-002, Q-004]
 links: []
 # Set to an ID when this record is replaced. It then moves to the Parked tab.
@@ -268,7 +269,7 @@ Not recorded yet.
 
 ## Reset
 
-Not recorded yet.
+Put every coin back, not only the ones that made the treasure.
 
 ## Replacement
 

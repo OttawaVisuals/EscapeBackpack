@@ -7,5 +7,6 @@
     "backpack": "norse",
     "version": "2026-10-09",
     "linear": true
-  }
+  },
+  "publish_reset": true
 }

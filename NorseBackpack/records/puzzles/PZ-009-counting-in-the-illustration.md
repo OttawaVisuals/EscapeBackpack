@@ -19,6 +19,8 @@ lock: 3-digit
 answer: 562
 # Compartment this lock closes (shown on the Locks tab)
 container: Large pouch, in the main compartment
+reset_display: 000
+container_in: PZ-004
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
 hint_title: Lock 6
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.

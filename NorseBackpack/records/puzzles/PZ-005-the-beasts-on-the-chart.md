@@ -19,6 +19,7 @@ lock: 4-digit
 answer: 3212
 # Compartment this lock closes (shown on the Locks tab)
 container: Inside lockable pocket 1
+reset_display: 0000
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
 hint_title: Lock 7
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.

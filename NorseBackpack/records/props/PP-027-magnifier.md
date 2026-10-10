@@ -13,6 +13,7 @@ source: buy
 found_in: PZ-001
 # Physical pocket/container or location; availability remains in found_in above.
 container: Front pocket (lock 1)
+after_game: return
 # Any related record IDs, e.g. [PZ-002, Q-004]
 links: []
 # Set to an ID when this record is replaced. It then moves to the Parked tab.

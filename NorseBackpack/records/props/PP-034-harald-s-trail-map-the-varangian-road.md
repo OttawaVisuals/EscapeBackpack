@@ -13,6 +13,8 @@ source: print
 found_in: PZ-011
 # Physical pocket/container or location; availability remains in found_in above.
 container: Large pouch, in the main compartment (lock 10)
+after_game: return
+reset_name: Map: The Varangian Road
 # Any related record IDs, e.g. [PZ-002, Q-004]
 links: []
 # Set to an ID when this record is replaced. It then moves to the Parked tab.

@@ -19,6 +19,7 @@ lock: 4-letter
 answer: BOOK
 # Compartment this lock closes (shown on the Locks tab)
 container: Left pocket (seen from the front)
+reset_display: LOCK
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
 hint_title: Lock 3
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.
