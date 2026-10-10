@@ -316,3 +316,7 @@
 .finds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
 .finds-grid .shelf-item{min-width:0;white-space:normal}
 @media(prefers-reduced-motion:reduce){.prop.flash{animation:none;filter:drop-shadow(0 0 12px #f0a94c)}}
+
+/* The selected item: an amber outline and glow, clear on the dark felt. */
+.prop.selected:after{inset:calc(-8px * var(--inv));border:calc(2.5px * var(--inv)) solid #f0a94c;border-radius:calc(8px * var(--inv));box-shadow:0 0 calc(14px * var(--inv)) calc(3px * var(--inv)) #f0a94caa}
+.prop:focus-visible:after{border-color:#ffd089}

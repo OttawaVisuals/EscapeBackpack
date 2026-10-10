@@ -159,7 +159,7 @@ test('lock 8: the neighbours riddle has one solution, and the doctor is DICK', (
 
 test('every prop fits on the table without overlapping, at every lock and after Tidy', () => {
   const check = (state, label) => {
-    const table = G.tableSize(state.stage), ids = G.available(state.stage, state.found), boxes = ids.map(id => [id, G.box(id, state.pieces[id])]);
+    const table = G.tableSize(state.stage, state), ids = G.available(state.stage, state.found), boxes = ids.map(id => [id, G.box(id, state.pieces[id])]);
     for (const [id, b] of boxes) assert.ok(b.x >= 0 && b.y >= 0 && b.x + b.w <= table.w && b.y + b.h <= table.h, `${label}: ${id} is off the table`);
     boxes.forEach(([a, A], i) => boxes.slice(i + 1).forEach(([b, B]) => assert.ok(!G.overlaps(A, B, 0), `${label}: ${a} overlaps ${b}`)));
   };
@@ -231,4 +231,22 @@ test('Star ratings are saved and restored, and bad values are dropped', () => {
   assert.deepEqual(back.ratings, [4, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
   assert.deepEqual(G.restore({ ...JSON.parse(JSON.stringify(state)), ratings: [9, 'x', 3] }).ratings, [0, 0, 3, 0, 0, 0, 0, 0, 0, 0]);
   assert.deepEqual(G.restore({ ...JSON.parse(JSON.stringify(G.fresh())), ratings: undefined }).ratings, Array(10).fill(0));
+});
+
+test('Tidy packs the props onto a table smaller than the full one, and unlocking gives the full table back', () => {
+  const state = playTo(8, { card: true }); G.layout(state);
+  const full = G.tableSize(state.stage), tight = G.tableSize(state.stage, state);
+  assert.ok(tight.w * tight.h < full.w * full.h * 0.7, `tight ${tight.w}x${tight.h} vs full ${full.w}x${full.h}`);
+  const ids = G.available(state.stage, state.found).filter(id => !state.pieces[id].stowed);
+  const boxes = ids.map(id => G.box(id, state.pieces[id]));
+  for (const b of boxes) assert.ok(b.x >= 24 - 1 && b.y >= 24 - 1 && b.x + b.w <= tight.w - 24 + 1 && b.y + b.h <= tight.h - 24 + 1, 'padding');
+  assert.ok(Math.max(...boxes.map(b => b.x + b.w)) >= tight.w - 24 - 1, 'no spare width');
+  const next = G.unlock(state, codes[8]); assert.equal(next, true); assert.equal(state.table, null);
+  assert.deepEqual(G.restore(JSON.parse(JSON.stringify(Object.assign(G.fresh(), { table: { w: 700, h: 400 } })))).table, { w: 700, h: 400 });
+  assert.equal(G.restore({ ...JSON.parse(JSON.stringify(G.fresh())), table: { w: 9, h: 'x' } }).table, null);
+});
+
+test('The four-letter padlock wheels hold ten letters each, and both letter codes can be set', () => {
+  assert.deepEqual(G.wheelLetters.map(w => w.length), [10, 10, 10, 10]);
+  for (const lock of G.locks.filter(l => l.letters)) [...lock.answer].forEach((ch, i) => assert.ok(G.wheelLetters[i].includes(ch), `${lock.answer}: ${ch} on wheel ${i + 1}`));
 });

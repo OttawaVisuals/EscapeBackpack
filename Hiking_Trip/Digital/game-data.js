@@ -186,11 +186,15 @@
 
   const visible = (id, found = []) => !items[id].hiddenIn || found.includes(id);
   const available = (stage, found = []) => ['bottle', ...locks.slice(0, stage).flatMap(lock => lock.releases)].filter(id => visible(id, found));
-  const tableSize = stage => { const [w, h] = sizes[Math.min(stage, sizes.length - 1)]; return { w, h }; };
+  // The table's size: the stage's, or the tight one Tidy made (state.table) until something needs the full table again.
+  const tableSize = (stage, state) => { if (state?.table) return state.table; const [w, h] = sizes[Math.min(stage, sizes.length - 1)]; return { w, h }; };
   // Retain the original key/version so earlier opening saves continue.
-  const fresh = () => ({ game: 'hiking-opening', version: 1, stage: 0, pieces: {}, lines: [], sudoku: [...givens], hints: locks.map(() => 0), ratings: locks.map(() => 0), notes: '', calculator: { expression: '', result: '' },
+  const fresh = () => ({ game: 'hiking-opening', version: 1, stage: 0, pieces: {}, lines: [], sudoku: [...givens], hints: locks.map(() => 0), ratings: locks.map(() => 0), table: null, notes: '', calculator: { expression: '', result: '' },
     found: [], satellite: { built: 0, on: false, x: 40, y: 60, rot: 35 }, otter: [...boards.otter.start], map: [...boards.map.start], mapLines: [],
     push: { square: { actions: [] }, flat: { actions: [] } }, cube: {}, figures: Array.from({ length: 5 }, () => ({})) });
+  // The letters on each wheel of the four-letter padlock (Master Lock 643DWD): the letters that occur in each position of the
+  // manual's list of 358 words and names (every wheel has ten). A code must be made of these.
+  const wheelLetters = ['BDJLMNPRST', 'AEHILORTUY', 'ACDELNORST', 'DEHKLNRSTY'];
   const normalizeAnswer = (stage, answer) => String(answer).trim().toUpperCase().replace(locks[stage]?.letters ? /[^A-Z]/g : /[^0-9]/g, '').slice(0, locks[stage]?.answer.length || 0);
 
   // Footprint on the table, including the caption under each prop.
@@ -200,7 +204,7 @@
   }
   const overlaps = (a, b, gap) => a.x < b.x + b.w + gap && b.x < a.x + a.w + gap && a.y < b.y + b.h + gap && b.y < a.y + a.h + gap;
   function freeSpot(state, id, taken) {
-    const item = items[id], table = tableSize(state.stage);
+    const item = items[id], table = tableSize(state.stage, state);
     for (const gap of [30, 12]) for (let y = 30; y + item.h + 40 <= table.h; y += 15) for (let x = 30; x + item.w + 15 <= table.w; x += 15) {
       const b = { x, y, w: item.w, h: item.h + 34 };
       if (!taken.some(t => overlaps(b, t, gap))) return { x, y };
@@ -216,13 +220,32 @@
     state.pieces[id] = { x: spot ? spot.x : 30, y: spot ? spot.y : 30, rot: 0, face: 0, stowed: false };
     return true;
   }
-  // Tidy: lay every prop out again, biggest first, keeping puzzle work and faces.
+  // Tidy: pack the props on the smallest table that holds them (shelves of props, a little padding), keeping puzzle work and
+  // faces. Put-away items stay put away. The table shrinks to the packing, so the props show as large as they can.
   function layout(state) {
+    const PAD = 24, GAP = 24, FRAME = 1.75;           // the frame is about 1.75 times wider than tall
     const ids = available(state.stage, state.found), faces = Object.fromEntries(ids.map(id => [id, state.pieces[id]?.face || 0]));
-    const away = new Set(ids.filter(id => state.pieces[id]?.stowed));   // put-away items stay put away
+    const away = new Set(ids.filter(id => state.pieces[id]?.stowed)), live = ids.filter(id => !away.has(id));
+    const all = live.map(id => ({ id, w: items[id].w, h: items[id].h + 34 }));
+    const orders = [(p, q) => q.h - p.h || q.w - p.w, (p, q) => q.w - p.w || q.h - p.h, (p, q) => q.w * q.h - p.w * p.h];   // tallest, widest, biggest first
+    let best = null;
+    const widest = Math.max(0, ...all.map(x => x.w)), total = all.reduce((n, x) => n + x.w + GAP, 0);
+    for (const order of orders) {
+      const boxes = [...all].sort(order);
+      for (let W = widest; W <= Math.max(widest, total); W += 10) {
+        let x = 0, y = 0, rowH = 0, usedW = 0; const pos = {};
+        for (const box of boxes) {
+          if (x > 0 && x + box.w > W) { y += rowH + GAP; x = 0; rowH = 0; }
+          pos[box.id] = [x, y]; x += box.w + GAP; rowH = Math.max(rowH, box.h); usedW = Math.max(usedW, x - GAP);
+        }
+        const H = y + rowH, score = Math.max(usedW, FRAME * H);
+        if (!best || score < best.score - 1e-6) best = { score, pos, w: usedW, h: H };
+      }
+    }
     for (const id of ids) delete state.pieces[id];
-    for (const id of [...ids].sort((a, b) => away.has(a) - away.has(b) || items[b].h * items[b].w - items[a].h * items[a].w)) { place(state, id, true); state.pieces[id].face = faces[id]; }
-    for (const id of away) state.pieces[id].stowed = true;
+    for (const id of live) state.pieces[id] = { x: PAD + best.pos[id][0], y: PAD + best.pos[id][1], rot: 0, face: faces[id], stowed: false };
+    for (const id of away) state.pieces[id] = { x: PAD, y: PAD, rot: 0, face: faces[id], stowed: true };
+    state.table = { w: Math.max(480, Math.ceil(best.w + 2 * PAD)), h: Math.max(300, Math.ceil(best.h + 2 * PAD)) };
   }
 
   function calculate(expression) {
@@ -300,7 +323,7 @@
   }
   function unlock(state, answer) {
     if (state.stage >= locks.length || String(answer).trim().toUpperCase() !== locks[state.stage].answer) return false;
-    state.stage++;
+    state.stage++; state.table = null;
     if (state.stage === 1) state.pieces.bottle = { ...(state.pieces.bottle || {}), x: 60, y: 122, rot: 0 };
     let roomy = true;
     for (const id of locks[state.stage - 1].releases) if (visible(id, state.found)) roomy = place(state, id) && roomy;
@@ -310,7 +333,7 @@
   // Opening the thank-you card for the first time frees the clipping inside it.
   function discover(state, id) {
     if (!items[id]?.hiddenIn || state.found.includes(id) || !available(state.stage, [...state.found, id]).includes(id)) return false;
-    state.found.push(id); place(state, id); return true;
+    state.found.push(id); state.table = null; place(state, id); return true;
   }
 
   const isPerm = (list, n) => Array.isArray(list) && list.length === n && [...list].sort((a, b) => a - b).every((v, i) => v === i);
@@ -320,7 +343,8 @@
     state.stage = integer(raw.stage, 0, locks.length) ? raw.stage : 0;
     // Saves from before the clipping was hidden in the card already had it on the table.
     state.found = Array.isArray(raw.found) ? raw.found.filter(id => items[id]?.hiddenIn) : (raw.pieces?.newspaper ? ['newspaper'] : []);
-    const table = tableSize(state.stage);
+    const tight = raw.table && integer(raw.table.w, 300, 4000) && integer(raw.table.h, 200, 2500) ? { w: raw.table.w, h: raw.table.h } : null;
+    state.table = tight; const table = tableSize(state.stage, state);
     state.notes = typeof raw.notes === 'string' ? raw.notes.slice(0, 6000) : '';
     state.hints = state.hints.map((_, i) => integer(raw.hints?.[i], 0, 4) ? raw.hints[i] : 0);
     state.ratings = state.ratings.map((_, i) => integer(raw.ratings?.[i], 0, 5) ? raw.ratings[i] : 0);
@@ -374,7 +398,7 @@
     return state;
   }
   const api = { grid, givens, items, stickers, locks, values, hockey, parts, partOrder, riddle, cubePieces, cubeFaces, cubeSolved, cubeMarks, cubePen, boards, satellitePages,
-    available, tableSize, fresh, restore, validLine, sameLine, markLine, unlock, discover, place, layout, box, overlaps, cubeTurn, pieceCells, placeCube, cubeStatus, normalizeAnswer, calculate };
+    available, tableSize, fresh, restore, validLine, sameLine, markLine, unlock, discover, place, layout, box, overlaps, cubeTurn, pieceCells, placeCube, cubeStatus, normalizeAnswer, wheelLetters, calculate };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.HikingGame = api;
 })(typeof window !== 'undefined' ? window : globalThis);

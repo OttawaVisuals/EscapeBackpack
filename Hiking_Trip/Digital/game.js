@@ -61,7 +61,7 @@
     const p = piece(id), item = G.items[id], sideways = p.rot % 180 !== 0;
     const w = sideways ? item.h : item.w, h = sideways ? item.w : item.h;
     const dx = (item.w - w) / 2, dy = (item.h - h) / 2;
-    const table = G.tableSize(state.stage);
+    const table = G.tableSize(state.stage, state);
     p.x = Math.max(15 - dx, Math.min(table.w - 15 - w - dx, p.x));
     p.y = Math.max(15 - dy, Math.min(table.h - 35 - h - dy, p.y));
   }
@@ -70,10 +70,10 @@
     node.style.left = p.x + 'px'; node.style.top = p.y + 'px'; node.style.transform = `rotate(${p.rot}deg)`; node.hidden = p.stowed;
   }
   function fit() {
-    const frame = $('table-frame'), table = G.tableSize(state.stage); scale = zoom * Math.min((frame.clientWidth - 18) / table.w, (frame.clientHeight - 32) / table.h);
-    frame.classList.toggle('zoomed', zoom > 1); $('zoom-out').disabled = zoom <= 1; $('zoom-in').disabled = zoom >= 4; $('zoom-fit').disabled = zoom === 1;
+    const frame = $('table-frame'), table = G.tableSize(state.stage, state); scale = zoom * Math.min((frame.clientWidth - 18) / table.w, (frame.clientHeight - 32) / table.h);
+    $('spread').hidden = !state.table; frame.classList.toggle('zoomed', zoom > 1); $('zoom-out').disabled = zoom <= 1; $('zoom-in').disabled = zoom >= 4; $('zoom-fit').disabled = zoom === 1;
     $('table').style.width = table.w + 'px'; $('table').style.height = table.h + 'px';
-    $('table').style.transform = `scale(${scale})`; $('table-fit').style.width = `${table.w * scale}px`; $('table-fit').style.height = `${table.h * scale}px`;
+    $('table').style.setProperty('--inv', String(Math.min(6, Math.max(1, 1 / scale))));     $('table').style.transform = `scale(${scale})`; $('table-fit').style.width = `${table.w * scale}px`; $('table-fit').style.height = `${table.h * scale}px`;
   }
   function select(id, raise = true) {
     selected = id;
@@ -93,7 +93,7 @@
   const shelfGroup = id => (SHELF_GROUPS.find(([, ids]) => ids.includes(id)) || ['Things'])[0];
   let finds = [];
   // Put-away items come back with one click; "All finds" lists everything, grouped, and points at an item on the table.
-  function bringBack(id) { piece(id).stowed = false; drawTable(); select(id); flash(id); save(); }
+  function bringBack(id) { const face = piece(id).face; state.table = null; G.place(state, id); piece(id).face = face; drawTable(); select(id); flash(id); save(); }
   function flash(id) {
     const node = document.querySelector(`.prop[data-id="${id}"]`); if (!node) return;
     node.scrollIntoView({ block: 'nearest', inline: 'nearest' }); node.classList.remove('flash'); void node.offsetWidth; node.classList.add('flash');
@@ -113,7 +113,7 @@
     if (away.length) {
       tray.append(el('span', 'away-label', `Put away · ${away.length}`));
       for (const id of away) { const chip = button(findName(id), () => bringBack(id), 'away-chip'); chip.title = 'Bring back to the table'; chip.prepend(el('span', 'shelf-icon', icons[id] || (G.items[id].bag ? '⁘' : '▦'))); tray.append(chip); }
-      if (away.length > 1) tray.append(button('Bring all back', () => { for (const id of away) piece(id).stowed = false; drawTable(); select(away[0]); save(); }, 'text-button'));
+      if (away.length > 1) tray.append(button('Bring all back', () => { state.table = null; for (const id of away) { const face = piece(id).face; G.place(state, id); piece(id).face = face; } drawTable(); select(away[0]); save(); }, 'text-button'));
     } else tray.append(el('span', 'away-empty', 'Nothing put away. “Put away” on an item clears room on the table; it waits here.'));
     bar.append(tray); $('shelf').replaceChildren(bar);
     if ($('finds-dialog').open) fillFinds();
@@ -302,11 +302,11 @@
   }
   /* The padlock's wheels: digits or letters. Each wheel has a ▲ (next: 5 → 6) and a ▼ (back) button; dragging up
      or scrolling also turns it. With the keyboard, type the character (focus moves on) or use ↑ ↓; ← → move between wheels. */
-  const DIGITS = '0123456789', LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let dialChars = DIGITS, dialVals = [], dialStage = null;
+  const DIGITS = '0123456789';
+  let dialChars = [], dialVals = [], dialStage = null;
   const dialWheels = () => [...$('dial').querySelectorAll('.wheel')];
   function buildDial(length, letters) {
-    dialChars = letters ? LETTERS : DIGITS; dialVals = Array(length).fill(0);
+    dialChars = Array.from({ length }, (_, i) => letters ? G.wheelLetters[i] : DIGITS); dialVals = Array(length).fill(0);
     $('dial').setAttribute('aria-label', `${letters ? 'Letter' : 'Number'} wheels: ${length}`);
     $('dial').replaceChildren(...dialVals.map((_, i) => {
       const w = button('', () => {}, 'wheel'); w.type = 'button';
@@ -322,17 +322,17 @@
     dialVals.forEach((_, i) => paintWheel(i));
   }
   function paintWheel(i, dir) {
-    const w = dialWheels()[i], n = dialChars.length, v = dialVals[i];
-    w.querySelector('.prev').textContent = dialChars[(v + n - 1) % n]; w.querySelector('.cur').textContent = dialChars[v]; w.querySelector('.next').textContent = dialChars[(v + 1) % n];
-    w.setAttribute('aria-valuenow', v); w.setAttribute('aria-valuemin', 0); w.setAttribute('aria-valuemax', n - 1); w.setAttribute('aria-valuetext', dialChars[v]);
+    const w = dialWheels()[i], set = dialChars[i], n = set.length, v = dialVals[i];
+    w.querySelector('.prev').textContent = set[(v + n - 1) % n]; w.querySelector('.cur').textContent = set[v]; w.querySelector('.next').textContent = set[(v + 1) % n];
+    w.setAttribute('aria-valuenow', v); w.setAttribute('aria-valuemin', 0); w.setAttribute('aria-valuemax', n - 1); w.setAttribute('aria-valuetext', set[v]);
     if (dir) { w.style.setProperty('--dir', dir > 0 ? '10px' : '-10px'); w.classList.remove('spin'); void w.offsetWidth; w.classList.add('spin'); }
-    $('combination').value = dialVals.map(k => dialChars[k]).join('');
+    $('combination').value = dialVals.map((k, j) => dialChars[j][k]).join('');
   }
   function turnWheel(i, d) {
-    const n = dialChars.length; dialVals[i] = ((dialVals[i] + d) % n + n) % n; paintWheel(i, d);
+    const n = dialChars[i].length; dialVals[i] = ((dialVals[i] + d) % n + n) % n; paintWheel(i, d);
     if ($('lock-message').className === 'error') { $('lock-message').textContent = ''; $('lock-message').className = ''; }
   }
-  function setDial(i, ch) { const k = dialChars.indexOf(ch.toUpperCase()); if (k < 0) return false; dialVals[i] = k; paintWheel(i, 1); return true; }
+  function setDial(i, ch) { const k = dialChars[i].indexOf(ch.toUpperCase()); if (k < 0) return false; dialVals[i] = k; paintWheel(i, 1); return true; }
   function wireWheel(w, i) {
     let drag = null;
     w.addEventListener('pointerdown', e => { if (e.button !== 0) return; try { w.setPointerCapture(e.pointerId); } catch (_) { /* pointer gone */ } drag = { last: e.clientY }; });
@@ -426,8 +426,9 @@
   $('inspect').addEventListener('click', () => selected && inspect(selected));
   $('flip').addEventListener('click', () => turn(selected)); $('rotate').addEventListener('click', rotate);
   $('stow').addEventListener('click', () => { if (selected) { piece(selected).stowed = true; selected = null; drawTable(); save(); } });
+  $('spread').addEventListener('click', () => { state.table = null; fit(); save(); });
   $('tidy').addEventListener('click', () => {
-    G.layout(state); selected = null; drawTable(); save(); toast('Table tidied. Your puzzle work is kept, and put-away items stay put away.');
+    G.layout(state); selected = null; drawTable(); save(); toast('Table tidied: everything is packed onto the smallest table that holds it. Your puzzle work is kept, and put-away items stay put away.');
   });
   const setZoom = z => { zoom = Math.max(1, Math.min(4, Math.round(z * 100) / 100)); fit(); };
   $('zoom-in').addEventListener('click', () => setZoom(zoom * 1.25)); $('zoom-out').addEventListener('click', () => setZoom(zoom / 1.25)); $('zoom-fit').addEventListener('click', () => setZoom(1));

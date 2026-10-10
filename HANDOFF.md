@@ -1,5 +1,13 @@
 # Project Handoff
 
+## 2026-10-11 (evening): Hiking selection glow, compact Tidy, padlock letters (Claude Code)
+- **Status:** three tweaks from the user. Built and checked locally; not committed or published.
+- **Selected item:** amber outline and glow, scaled so it shows at table zoom.
+- **Tidy table:** shelf packing (three orders, best aspect for the frame) on the smallest table, 24 px padding; `state.table` holds it; "Full table" button; cleared on unlock, discover and bring-back (bring-back now finds a free spot via `place`). At lock 9 the packed table is 2537×1552 against 3400×1870.
+- **Padlock letters:** `G.wheelLetters` (ten per wheel), from the 643DWD manual's word and name list; wheels, typing and wrap-around use them. Derived, not printed in the manual: check against the real padlock (DG-H36).
+- **Checks:** tests 36/36 (new: tight table and padding, restore, wheel letters, MOON and DICK); browser at 1366×768: tidy packed, glow visible on the bottle, wheels show only the ten letters per wheel.
+- **Next:** user checks the four wheels on the padlock against the lists, then rebuild the site and push.
+
 ## 2026-10-11 (later): Hiking Lego grid and the new "Your finds" (Claude Code)
 - **Status:** user chose option B for the Lego workbench and yes to the finds idea, plus a way to bring back put-away items. Built and checked locally; not committed or published.
 - **Lego (lock 8):** no stands or see-through figures. A 3D grid: one row per bag, five columns; every part starts in a cell; dragging a part onto another in its row swaps them (also by the lists). Starting order and pairing rule are in `lego-minifigs-data.js` (new `ORDER`, `arrange`); `lego-minifigs.js` `mount` rewritten; `later.js` `workbench` (lists are a grid of selects; "Reset the grid"). The 2D figure drawings were removed. The two module imports carry `?v=2` so returning players don't get an old cached copy.
