@@ -30,7 +30,7 @@
     blue0: { name: 'Blue Lego 0', kind: 'A number built from Lego', w: 120, h: 160, faces: 1, origin: 'FROM THE FRONT COMPARTMENT' },
     hobbies: { name: 'Bag of Lego parts', kind: 'Labelled “Hobbies”', w: 170, h: 190, faces: 1, origin: 'FROM THE FRONT COMPARTMENT', bag: 'hobbies' },
     grandparents: { name: 'Card from Gran and Pops', kind: 'A thank-you card', w: 360, h: 320, x: 320, y: 555, faces: 2, origin: 'FROM THE FRONT POCKET' },
-    newspaper: { name: 'Newspaper clipping', kind: 'An article tucked in the card', w: 430, h: 620, x: 1140, y: 70, faces: 2, origin: 'FROM THE THANK-YOU CARD', hiddenIn: 'grandparents' },
+    newspaper: { name: 'Newspaper clipping', kind: 'An article tucked in the card', w: 195, h: 281, x: 1140, y: 70, faces: 2, origin: 'FROM THE THANK-YOU CARD', hiddenIn: 'grandparents' },
     flat: { name: 'Flat brown Lego puzzle', kind: 'A Lego puzzle with a green tile on top', w: 230, h: 230, faces: 1, origin: 'FROM THE FRONT POCKET' },
     iss: { name: 'A night under the stars', kind: 'A note with an ISS drawing', w: 420, h: 470, x: 1600, y: 70, faces: 1, origin: 'FROM THE MAIN COMPARTMENT' },
     periodic: { name: 'Periodic table', kind: 'Reference sheet', w: 610, h: 343, x: 1040, y: 760, faces: 1, origin: 'FROM THE MAIN COMPARTMENT' },
@@ -188,7 +188,7 @@
   const available = (stage, found = []) => ['bottle', ...locks.slice(0, stage).flatMap(lock => lock.releases)].filter(id => visible(id, found));
   const tableSize = stage => { const [w, h] = sizes[Math.min(stage, sizes.length - 1)]; return { w, h }; };
   // Retain the original key/version so earlier opening saves continue.
-  const fresh = () => ({ game: 'hiking-opening', version: 1, stage: 0, pieces: {}, lines: [], sudoku: [...givens], hints: locks.map(() => 0), notes: '', calculator: { expression: '', result: '' },
+  const fresh = () => ({ game: 'hiking-opening', version: 1, stage: 0, pieces: {}, lines: [], sudoku: [...givens], hints: locks.map(() => 0), ratings: locks.map(() => 0), notes: '', calculator: { expression: '', result: '' },
     found: [], satellite: { built: 0, on: false, x: 40, y: 60, rot: 35 }, otter: [...boards.otter.start], map: [...boards.map.start], mapLines: [],
     push: { square: { actions: [] }, flat: { actions: [] } }, cube: {}, figures: Array.from({ length: 5 }, () => ({})) });
   const normalizeAnswer = (stage, answer) => String(answer).trim().toUpperCase().replace(locks[stage]?.letters ? /[^A-Z]/g : /[^0-9]/g, '').slice(0, locks[stage]?.answer.length || 0);
@@ -219,8 +219,10 @@
   // Tidy: lay every prop out again, biggest first, keeping puzzle work and faces.
   function layout(state) {
     const ids = available(state.stage, state.found), faces = Object.fromEntries(ids.map(id => [id, state.pieces[id]?.face || 0]));
+    const away = new Set(ids.filter(id => state.pieces[id]?.stowed));   // put-away items stay put away
     for (const id of ids) delete state.pieces[id];
-    for (const id of [...ids].sort((a, b) => items[b].h * items[b].w - items[a].h * items[a].w)) { place(state, id, true); state.pieces[id].face = faces[id]; }
+    for (const id of [...ids].sort((a, b) => away.has(a) - away.has(b) || items[b].h * items[b].w - items[a].h * items[a].w)) { place(state, id, true); state.pieces[id].face = faces[id]; }
+    for (const id of away) state.pieces[id].stowed = true;
   }
 
   function calculate(expression) {
@@ -321,6 +323,7 @@
     const table = tableSize(state.stage);
     state.notes = typeof raw.notes === 'string' ? raw.notes.slice(0, 6000) : '';
     state.hints = state.hints.map((_, i) => integer(raw.hints?.[i], 0, 4) ? raw.hints[i] : 0);
+    state.ratings = state.ratings.map((_, i) => integer(raw.ratings?.[i], 0, 5) ? raw.ratings[i] : 0);
     for (const id of available(state.stage, state.found)) {
       const p = raw.pieces?.[id], item = items[id];
       if (!p || typeof p !== 'object') continue;

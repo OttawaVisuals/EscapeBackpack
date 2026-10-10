@@ -217,3 +217,18 @@ test('answer input adapts to letters, three digits and four digits', () => {
   assert.equal(G.normalizeAnswer(9,'4-1-3-0-9'), '4130');
   const state=G.fresh();state.stage=2;assert.equal(G.unlock(state,'MOONLIGHT'),false);assert.equal(G.unlock(state,'MOON'),true);
 });
+
+test('Tidy table keeps put-away items put away', () => {
+  const state = playTo(3); state.pieces.note.stowed = true; state.pieces.note.face = 1;
+  G.layout(state);
+  assert.equal(state.pieces.note.stowed, true); assert.equal(state.pieces.note.face, 1);
+  assert.equal(state.pieces.sheet.stowed, false);
+});
+
+test('Star ratings are saved and restored, and bad values are dropped', () => {
+  const state = G.fresh(); state.ratings[0] = 4;
+  const back = G.restore(JSON.parse(JSON.stringify(state)));
+  assert.deepEqual(back.ratings, [4, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  assert.deepEqual(G.restore({ ...JSON.parse(JSON.stringify(state)), ratings: [9, 'x', 3] }).ratings, [0, 0, 3, 0, 0, 0, 0, 0, 0, 0]);
+  assert.deepEqual(G.restore({ ...JSON.parse(JSON.stringify(G.fresh())), ratings: undefined }).ratings, Array(10).fill(0));
+});

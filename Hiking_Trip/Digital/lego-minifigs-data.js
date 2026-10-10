@@ -20,12 +20,23 @@ export const SOLVED = {
 };
 // The custom name bases (Stud.io custom parts “Dick_Name” … on a 3 × 4 tile, 88646).
 export const NAME_FILES = { 'm72907a53_20251025_031040.dat': 'DICK', 'm72907a53_20251025_062604.dat': 'MADY', 'm72907a53_20251025_062553.dat': 'JUNE', 'm72907a53_20251025_062613.dat': 'RICH', 'm72907a53_20251025_062623.dat': 'BART' };
-// Loose parts on the workbench (DG-H28): one row per bag, from the stands towards the player; tall parts sit at the
-// back so they hide nothing.
+// Workbench grid (DG-H35): one row per bag, five columns (one per neighbour). Every part sits in a cell from the
+// start and players swap parts within a row. This is the starting arrangement; no two rows put the same neighbour
+// in more than one column, so the start gives away at most one pairing per pair of rows.
 export const ROWS = ['jobs', 'pets', 'hobbies', 'hair', 'faces', 'names'];
-// Each row has its own order, and every other row is shifted half a place, so no column lines up a solved neighbour.
 export const ORDER = {
-  jobs: ['suit', 'coat', 'chef', 'vest', 'ranger'], pets: ['cat', 'rat', 'frog', 'bird', 'dog'],
-  hobbies: ['brush', 'flippers', 'stick', 'guitar', 'camera'], hair: ['grey', 'blonde', 'blue', 'orange', 'black'],
-  faces: ['stars', 'scar', 'mark', 'plain', 'beard'], names: ['MADY', 'JUNE', 'RICH', 'DICK', 'BART']
+  jobs: ['suit', 'coat', 'ranger', 'chef', 'vest'], pets: ['cat', 'rat', 'bird', 'frog', 'dog'],
+  hobbies: ['stick', 'camera', 'guitar', 'brush', 'flippers'], hair: ['black', 'blue', 'grey', 'orange', 'blonde'],
+  faces: ['plain', 'beard', 'scar', 'mark', 'stars'], names: ['MADY', 'JUNE', 'RICH', 'DICK', 'BART']
 };
+// Fill the grid for the bags found: a row with empty cells takes its unused parts, in starting order, so a new bag
+// arrives in its starting arrangement. `figures` is the save's five columns, changed in place.
+export function arrange(figures, bags) {
+  for (const bag of bags) {
+    const seen = new Set(), used = new Set();
+    figures.forEach(f => { if (ORDER[bag].includes(f[bag]) && !seen.has(f[bag])) { seen.add(f[bag]); used.add(f[bag]); } else delete f[bag]; });
+    const spare = ORDER[bag].filter(v => !used.has(v));
+    figures.forEach(f => { if (f[bag] === undefined) f[bag] = spare.shift(); });
+  }
+  return figures;
+}

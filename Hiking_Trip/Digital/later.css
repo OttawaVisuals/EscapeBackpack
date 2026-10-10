@@ -279,3 +279,40 @@
 .pane-body{flex:1;min-height:0;overflow:auto}
 .comparing .puzzle-workbench{padding:16px}.comparing .note-view .note-paper{width:100%}
 .comparing .document-view,.comparing .bottle-view{min-height:100%}
+
+/* Lock-open banner over the table, with the star rating. */
+.unlock-banner{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:20;display:flex;align-items:flex-start;gap:12px;width:min(620px,calc(100% - 24px));background:var(--paper);color:var(--ink);border:1px solid var(--amber);border-left:5px solid var(--amber);border-radius:8px;padding:12px 14px;box-shadow:0 10px 30px #0006;animation:banner-in .35s ease-out}
+.unlock-banner strong{display:block;font:700 12px var(--sans);letter-spacing:.12em;margin-bottom:3px}
+.unlock-banner .banner-body>span{display:block;font-size:14px}
+.unlock-banner>button{border:0;background:none;font-size:22px;line-height:1;padding:0 6px;color:var(--muted);margin-left:auto}
+.unlock-banner>button:hover:not(:disabled){background:none;color:var(--ink)}
+.unlock-banner .rate{display:flex;align-items:center;gap:2px;margin-top:8px;font-size:13px;color:var(--muted)}.unlock-banner .rate span{margin-right:6px}
+.unlock-banner .rate button{border:0;background:none;padding:0 2px;font-size:22px;line-height:1;color:#cdbf9f}.unlock-banner .rate button.on{color:var(--amber)}.unlock-banner .rate button:hover:not(:disabled){background:none;color:#c27a2b}
+@keyframes banner-in{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
+.figure-workbench.no-side{grid-template-columns:minmax(0,1fr)}
+
+/* The parts grid (DG-H35): the lists version of the 3D grid, a row per bag and a column per neighbour. */
+.part-grid{display:grid;grid-template-columns:auto repeat(5,minmax(0,1fr));gap:6px 8px;align-items:center}
+.part-grid[hidden]{display:none}
+.part-grid .part-col{font-size:11px;color:#6a756b;text-align:center}
+.part-grid .part-row{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:#6a756b}
+.part-grid select{font:12px "Segoe UI",sans-serif;padding:4px;border:1px solid #b8c3aa;border-radius:4px;background:#fffdf6;color:var(--ink);min-width:0;width:100%}
+
+/* "Your finds": a one-line bar. Put-away items wait in the tray and come back with a click; "All finds" opens the full list. */
+#shelf{display:block;overflow:visible;padding:0}
+.finds-bar{display:flex;align-items:center;gap:10px;min-height:36px}
+.all-finds{flex:none;font-size:12px;font-weight:600;padding:6px 12px;background:#efe6d0;border-color:var(--line);border-radius:16px}
+.away-tray{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0;max-height:76px;overflow:auto;padding:2px}
+.away-label{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:#75816c;margin-right:2px}
+.away-empty{font-size:12px;color:#7b8275}
+.away-chip{display:flex;align-items:center;gap:6px;font-size:12px;padding:3px 10px 3px 4px;border-style:dashed;background:var(--paper);white-space:nowrap}
+.away-chip .shelf-icon{width:20px;height:24px;font-size:14px}
+.prop.flash{animation:find-flash .55s ease-in-out 4}
+@keyframes find-flash{0%,100%{filter:none}50%{filter:drop-shadow(0 0 14px #f0a94c) drop-shadow(0 0 4px #f0a94c)}}
+#finds-dialog{width:min(980px,96vw);height:min(720px,92dvh);padding:0;border:0;border-radius:12px;overflow:hidden;background:var(--paper);color:var(--ink)}
+#finds-dialog[open]{display:flex;flex-direction:column}#finds-dialog::backdrop{background:#0d2a29aa}
+#finds-body{flex:1;overflow:auto;padding:16px 26px 26px;background:#e3e6d7}
+.finds-group h3{font:400 17px var(--serif);margin:16px 0 8px}
+.finds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.finds-grid .shelf-item{min-width:0;white-space:normal}
+@media(prefers-reduced-motion:reduce){.prop.flash{animation:none;filter:drop-shadow(0 0 12px #f0a94c)}}

@@ -176,17 +176,22 @@ test('minifigs: every exported part is in one bag, and each name base has a full
   }
 });
 
-test('minifigs workbench: every row holds its bag’s five parts, and no column lines up a solved neighbour', async () => {
-  const { ROWS, ORDER, SOLVED } = await import('./lego-minifigs-data.js');
+test('minifigs workbench: every row holds its bag’s five parts, and no two rows pair the same neighbours twice', async () => {
+  const { ROWS, ORDER, SOLVED, arrange } = await import('./lego-minifigs-data.js');
   const G = (await import('node:module')).createRequire(import.meta.url)('./game-data.js');
   assert.deepEqual([...ROWS].sort(), [...G.partOrder].sort());
   for (const bag of ROWS) assert.deepEqual([...ORDER[bag]].sort(), G.parts[bag].options.map(([v]) => v).sort(), bag);
-  // Rows alternate between two sets of columns (lego-minifigs.js shifts every other row); check each set.
   const owner = (bag, v) => bag === 'names' ? v : Object.keys(SOLVED).find(n => SOLVED[n][bag] === v);
-  for (const set of [0, 1]) for (let k = 0; k < 5; k++) {
-    const who = ROWS.filter((_, r) => r % 2 === set).map(bag => owner(bag, ORDER[bag][k]));
-    assert.equal(new Set(who).size, who.length, `column ${k} (rows ${set ? 'shifted' : 'unshifted'}): ${who}`);
+  for (const a of ROWS) for (const b of ROWS) if (a < b) {
+    const same = ORDER[a].filter((v, k) => owner(a, v) === owner(b, ORDER[b][k])).length;
+    assert.ok(same <= 1, `${a} and ${b} put the same neighbour in ${same} columns`);
   }
+  // arrange: empty grid -> starting order; a part placed twice or unknown is replaced; placed parts stay.
+  const figs = Array.from({ length: 5 }, () => ({})); arrange(figs, ['jobs']);
+  assert.deepEqual(figs.map(f => f.jobs), ORDER.jobs);
+  const messy = [{ jobs: 'chef' }, { jobs: 'chef' }, { jobs: 'x' }, {}, {}]; arrange(messy, ['jobs']);
+  assert.equal(messy[0].jobs, 'chef'); assert.deepEqual([...messy.map(f => f.jobs)].sort(), [...ORDER.jobs].sort());
+  assert.equal(figs[0].pets, undefined, 'bags not found stay empty');
 });
 
 test('numbers: one pack holds the four exported numbers', () => {

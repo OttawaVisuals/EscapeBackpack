@@ -1,5 +1,17 @@
 # Project Handoff
 
+## 2026-10-11 (later): Hiking Lego grid and the new "Your finds" (Claude Code)
+- **Status:** user chose option B for the Lego workbench and yes to the finds idea, plus a way to bring back put-away items. Built and checked locally; not committed or published.
+- **Lego (lock 8):** no stands or see-through figures. A 3D grid: one row per bag, five columns; every part starts in a cell; dragging a part onto another in its row swaps them (also by the lists). Starting order and pairing rule are in `lego-minifigs-data.js` (new `ORDER`, `arrange`); `lego-minifigs.js` `mount` rewritten; `later.js` `workbench` (lists are a grid of selects; "Reset the grid"). The 2D figure drawings were removed. The two module imports carry `?v=2` so returning players don't get an old cached copy.
+- **Your finds:** one-line bar; "All finds · n" opens a grouped window (click on-table items to flash them, put-away ones to bring them back); put-away tray beside it with one click each and "Bring all back". Bag cards are named by bag (Hobbies, Jobs…).
+- **Checks:** tests 34/34 (lego test now checks the pairing rule and `arrange`); browser at 1366×768: grid shows, a real mouse drag swapped two hobbies, list swap works, Reset enables, tray chip and finds window bring items back. Not checked: touch drag in the grid, narrow screens, nothing tells players a column is right (undecided, in DG-H35).
+- **Next:** user tries the grid and the tray; then rebuild the site and push.
+
+## 2026-10-11: Hiking tweaks: tidy, clipping size, calculator, lock-open rating (Claude Code)
+- **Status:** user's list of six tweaks. Done: (1) newspaper clipping 430×620 → 195×281 on the table (about a fifth of the puzzle sheet's area; the close-up is unchanged); (2) Tidy table no longer brings put-away items back (`layout` in `game-data.js`); (3) the Norse-style banner when a lock opens replaces the pop-up: it never blocks play and has 1–5 stars; ratings are saved (`state.ratings`, kept in save copies) and sent as `puzzle_rated` and `lock_opened` events through Zaraz (`game: hiking-online`, with the hints used); (4) calculator is now brick red instead of green; (5) the "LEGO PARTS / Five stands…" text is gone. Not done, waiting for the user's choice: the Lego workbench without stands (how a slot grid should work) and a better "Your finds" shelf.
+- **Checks:** tests 34/34 (two new: tidy keeps put-away, ratings restore); browser at 1366×768: stowed note stayed away after Tidy, banner and stars appeared at lock 5, clipping and calculator looked right. Not checked: that Zaraz receives the events on the live site; stars on a phone.
+- **Not recorded:** time per lock and wrong tries (Norse keeps them; Hiking does not yet).
+
 ## 2026-10-10 (night, 3): Hiking close-ups: Compare menu, no note beside the puzzle sheet, wider window (Claude Code)
 - **Status:** user: the Sudoku/word-search window showing the note ("Keep your note nearby") makes the clue too obvious; use a compare function (as in Norse's viewer) instead; widen the window. Not committed or published.
 - **Done:** the note panel is gone from the puzzle sheet. Every close-up has a "Compare with…" menu in its header (any item you have found) that shows it beside the open item, each pane scrolling on its own; the second pane has its own Turn and Close. The close-up window is up to 1640 × 960 (was 1200 × 890) and the puzzle sheet is centred in it.

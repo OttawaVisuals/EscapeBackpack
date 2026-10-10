@@ -83,7 +83,7 @@
     for (const key of ['inspect', 'flip', 'rotate', 'stow']) $(key).disabled = !id;
     $('flip').disabled = !id || G.items[id].faces < 2;
     $('flip').innerHTML = (id === 'bottle' ? 'Turn' : 'Flip') + ' <kbd>F</kbd>';
-    document.querySelectorAll('.shelf-item').forEach(node => node.setAttribute('aria-pressed', String(node.dataset.id === id)));
+    
   }
   const SHELF_GROUPS = [
     ['Notes & papers', ['note', 'sheet', 'grandparents', 'newspaper', 'iss', 'periodic', 'equation', 'instructions', 'notepad', 'agenda', 'cards', 'map']],
@@ -91,20 +91,46 @@
     ['Bags of Lego parts', ['hobbies', 'jobs', 'pets', 'faces', 'hair', 'names']]
   ];
   const shelfGroup = id => (SHELF_GROUPS.find(([, ids]) => ids.includes(id)) || ['Things'])[0];
-  const shelfOpen = new Set(); let shelfStage = null;
-  function drawShelf(entries) {
-    if (shelfStage !== state.stage) { shelfOpen.clear(); for (const id of state.stage ? G.locks[state.stage - 1].releases : ['bottle']) shelfOpen.add(shelfGroup(id)); shelfStage = state.stage; }
+  let finds = [];
+  // Put-away items come back with one click; "All finds" lists everything, grouped, and points at an item on the table.
+  function bringBack(id) { piece(id).stowed = false; drawTable(); select(id); flash(id); save(); }
+  function flash(id) {
+    const node = document.querySelector(`.prop[data-id="${id}"]`); if (!node) return;
+    node.scrollIntoView({ block: 'nearest', inline: 'nearest' }); node.classList.remove('flash'); void node.offsetWidth; node.classList.add('flash');
+    setTimeout(() => node.classList.remove('flash'), 2200);
+  }
+  const findName = id => G.items[id].bag ? `${nameOf(id)} · ${G.items[id].bag[0].toUpperCase()}${G.items[id].bag.slice(1)}` : nameOf(id);
+  function findCard(id, onUse) {
+    const p = piece(id), item = G.items[id], b = button('', () => onUse(id), 'shelf-item' + (p.stowed ? ' stowed' : '')); b.dataset.id = id;
+    b.append(el('span', 'shelf-icon', icons[id] || (item.bag ? '⁘' : '▦')));
+    const label = el('span', '', findName(id)); label.append(el('small', '', p.stowed ? 'Put away · click to bring back' : 'On the table · click to find it')); b.append(label); return b;
+  }
+  function drawShelf(ids) {
+    finds = ids;
+    const away = ids.filter(id => piece(id).stowed), bar = el('div', 'finds-bar');
+    bar.append(button(`All finds · ${ids.length}`, openFinds, 'all-finds'));
+    const tray = el('div', 'away-tray'); tray.setAttribute('aria-label', 'Put-away items');
+    if (away.length) {
+      tray.append(el('span', 'away-label', `Put away · ${away.length}`));
+      for (const id of away) { const chip = button(findName(id), () => bringBack(id), 'away-chip'); chip.title = 'Bring back to the table'; chip.prepend(el('span', 'shelf-icon', icons[id] || (G.items[id].bag ? '⁘' : '▦'))); tray.append(chip); }
+      if (away.length > 1) tray.append(button('Bring all back', () => { for (const id of away) piece(id).stowed = false; drawTable(); select(away[0]); save(); }, 'text-button'));
+    } else tray.append(el('span', 'away-empty', 'Nothing put away. “Put away” on an item clears room on the table; it waits here.'));
+    bar.append(tray); $('shelf').replaceChildren(bar);
+    if ($('finds-dialog').open) fillFinds();
+  }
+  function fillFinds() {
+    const body = $('finds-body'); body.replaceChildren();
     const groups = new Map([...SHELF_GROUPS.map(([name]) => [name, []]), ['Things', []]]);
-    for (const [id, node] of entries) groups.get(shelfGroup(id)).push(node);
-    $('shelf').replaceChildren();
-    for (const [name, nodes] of groups) {
-      if (!nodes.length) continue;
-      const open = shelfOpen.has(name), group = el('div', 'shelf-group'), toggle = button('', () => { open ? shelfOpen.delete(name) : shelfOpen.add(name); drawShelf(entries); }, 'group-toggle');
-      toggle.setAttribute('aria-expanded', String(open)); toggle.setAttribute('aria-label', `${name}: ${nodes.length}`);
-      toggle.append(el('span', 'chev', '›'), el('span', '', name), el('span', 'n', String(nodes.length)));
-      group.append(toggle); if (open) group.append(...nodes); $('shelf').append(group);
+    for (const id of finds) groups.get(shelfGroup(id)).push(id);
+    for (const [name, ids] of groups) {
+      if (!ids.length) continue;
+      const section = el('section', 'finds-group'), grid = el('div', 'finds-grid');
+      section.append(el('h3', '', `${name} · ${ids.length}`));
+      for (const id of ids) grid.append(findCard(id, use => { $('finds-dialog').close(); piece(use).stowed ? bringBack(use) : (select(use), flash(use)); }));
+      section.append(grid); body.append(section);
     }
   }
+  function openFinds() { fillFinds(); $('finds-dialog').showModal(); }
   function drawTable() {
     $('pieces').replaceChildren(); const shelfEntries = [];
     for (const id of G.available(state.stage, state.found)) {
@@ -125,10 +151,7 @@
           constrain(id); position(id); save();
         }
       });
-      const shelf = button('', () => { piece(id).stowed = false; drawTable(); select(id); save(); }, 'shelf-item' + (p.stowed ? ' stowed' : ''));
-      shelf.dataset.id = id;
-      shelf.append(el('span', 'shelf-icon', icons[id] || (item.bag ? '⁘' : '▦')));
-      const label = el('span', '', nameOf(id)); label.append(el('small', '', p.stowed ? 'Put away · click to bring back' : 'On the table')); shelf.append(label); shelfEntries.push([id, shelf]);
+      shelfEntries.push(id);
     }
     drawShelf(shelfEntries);
     $('item-count').textContent = String(G.available(state.stage, state.found).length).padStart(2, '0');
@@ -364,6 +387,25 @@
     }
     drawHints();
   }
+  // Opening a lock: a banner over the table (it never blocks play) with a 1–5 star rating, kept in the save and reported.
+  const track = (name, props = {}) => { try { window.zaraz?.track?.(name, { game: 'hiking-online', ...props }); } catch (_) { /* analytics never blocks play */ } };
+  let bannerTimer;
+  function showBanner(lock, title, text) {
+    $('banner-title').textContent = title; $('banner-text').textContent = text; $('unlock-banner').hidden = false;
+    const rate = $('rate'); rate.querySelectorAll('button').forEach(b => b.remove());
+    for (let n = 1; n <= 5; n++) {
+      const b = button('★', () => {
+        state.ratings[lock - 1] = n; save(); track('puzzle_rated', { lock, rating: n, hints: state.hints[lock - 1] });
+        rate.querySelectorAll('button').forEach((x, k) => { x.classList.toggle('on', k < n); x.setAttribute('aria-pressed', String(k + 1 === n)); });
+        clearTimeout(bannerTimer); bannerTimer = setTimeout(hideBanner, 2500);
+      });
+      b.setAttribute('aria-label', `${n} of 5`); b.setAttribute('aria-pressed', String(state.ratings[lock - 1] === n)); b.classList.toggle('on', n <= state.ratings[lock - 1]); rate.append(b);
+    }
+    track('lock_opened', { lock, hints: state.hints[lock - 1] });
+    clearTimeout(bannerTimer); bannerTimer = setTimeout(hideBanner, 16000);
+  }
+  function hideBanner() { clearTimeout(bannerTimer); $('unlock-banner').hidden = true; }
+  $('banner-close').addEventListener('click', hideBanner);
   let opening = false;
   $('lock-form').addEventListener('submit', async event => {
     event.preventDefault(); if (opening) return; const value = $('combination').value;
@@ -377,16 +419,15 @@
     const tidied = state.tidied;
     $('combination').value = ''; $('lock-message').textContent = ''; $('lock-message').className = ''; selected = opened.selected; drawTable(); drawProgress(); save();
     if (tidied) toast('The table was rearranged to make room for the new items.');
-    $('arrival-label').textContent = `LOCK ${state.stage} OPEN`;
-    $('arrival-title').textContent = opened.title; $('arrival-text').textContent = opened.message;
-    $('arrival-close').textContent = state.stage < G.locks.length ? 'Explore the new clues →' : 'Back to the table →'; $('arrival').showModal();
+    showBanner(state.stage, opened.title, opened.message);
   });
   $('notes').value = state.notes; $('notes').addEventListener('input', () => { state.notes = $('notes').value; save(); });
+  $('close-finds').addEventListener('click', () => $('finds-dialog').close());
   $('inspect').addEventListener('click', () => selected && inspect(selected));
   $('flip').addEventListener('click', () => turn(selected)); $('rotate').addEventListener('click', rotate);
   $('stow').addEventListener('click', () => { if (selected) { piece(selected).stowed = true; selected = null; drawTable(); save(); } });
   $('tidy').addEventListener('click', () => {
-    G.layout(state); selected = null; drawTable(); save(); toast('Table tidied. Everything is back on the table and your puzzle work is kept.');
+    G.layout(state); selected = null; drawTable(); save(); toast('Table tidied. Your puzzle work is kept, and put-away items stay put away.');
   });
   const setZoom = z => { zoom = Math.max(1, Math.min(4, Math.round(z * 100) / 100)); fit(); };
   $('zoom-in').addEventListener('click', () => setZoom(zoom * 1.25)); $('zoom-out').addEventListener('click', () => setZoom(zoom / 1.25)); $('zoom-fit').addEventListener('click', () => setZoom(1));
@@ -400,9 +441,8 @@
   document.addEventListener('click', e => { if (!e.target.closest('.menu-wrap')) closeMenu(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('game-menu').hidden) { closeMenu(); $('game-btn').focus(); } });
   $('how-to').addEventListener('click', () => $('intro').showModal()); $('begin').addEventListener('click', () => { $('intro').close(); save(); });
-  $('arrival-close').addEventListener('click', () => $('arrival').close());
   $('restart').addEventListener('click', () => $('restart-dialog').showModal());
-  $('restart-confirm').addEventListener('click', () => { state = G.fresh(); selected = 'bottle'; $('notes').value = ''; $('combination').value = ''; $('lock-message').textContent = ''; $('restart-dialog').close(); dialStage = null; drawTable(); drawProgress(); save(); $('intro').showModal(); });
+  $('restart-confirm').addEventListener('click', () => { hideBanner(); state = G.fresh(); selected = 'bottle'; $('notes').value = ''; $('combination').value = ''; $('lock-message').textContent = ''; $('restart-dialog').close(); dialStage = null; drawTable(); drawProgress(); save(); $('intro').showModal(); });
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
   $('save-copy').addEventListener('click', () => { $('save-text').value = JSON.stringify(state, null, 2); $('save-result').textContent = ''; $('save-dialog').showModal(); });
   $('select-save').addEventListener('click', () => { $('save-text').focus(); $('save-text').select(); $('save-result').textContent = 'Press Ctrl+C (or ⌘C) to copy. Keep the text in a file or note.'; });

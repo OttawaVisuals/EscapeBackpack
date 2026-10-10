@@ -37,86 +37,51 @@
     }, () => {});
     return b;
   }
-  const hairColour = { grey: '#a9a9a6', blue: '#2d55c8', black: '#26272b', blonde: '#f2d36b', orange: '#e2702a' };
-  const outfitColour = { coat: '#f4f4ef', vest: '#ec7a26', ranger: '#78936a', suit: '#e9edf2', chef: '#fbfbf7' };
-  const petColour = { frog: '#3e9a48', cat: '#222', bird: '#c9b48c', dog: '#8b8f93', rat: '#4a4a4a' };
-  function minifig(fig) {
-    const s = svg('svg', { viewBox: '0 0 120 206', class: 'minifig', 'aria-hidden': 'true' });
-    s.append(svg('rect', { x: 8, y: 160, width: 104, height: 24, rx: 4, fill: '#222' }));
-    if (fig.names) s.append(svg('text', { x: 60, y: 177, 'text-anchor': 'middle', fill: '#fff', 'font-size': 13, 'font-family': 'Segoe UI, sans-serif', 'letter-spacing': 2 }, fig.names));
-    s.append(svg('rect', { x: 40, y: 112, width: 40, height: 46, fill: '#3b4a6b' }), svg('line', { x1: 60, y1: 120, x2: 60, y2: 158, stroke: '#2b3550', 'stroke-width': 2 }));
-    s.append(svg('path', { d: 'M36 70h48l6 44H30z', fill: fig.jobs ? outfitColour[fig.jobs] : '#d8d6cc', stroke: '#8c8a80', 'stroke-width': 1.5, 'stroke-dasharray': fig.jobs ? '' : '4 3' }));
-    if (fig.jobs === 'vest') s.append(svg('rect', { x: 38, y: 92, width: 44, height: 5, fill: '#f6e04a' }));
-    if (fig.jobs === 'chef') for (const y of [80, 92, 104]) s.append(svg('circle', { cx: 54, cy: y, r: 2, fill: '#777' }), svg('circle', { cx: 66, cy: y, r: 2, fill: '#777' }));
-    if (fig.jobs === 'coat') s.append(svg('path', { d: 'M60 72v40M50 72l10 14 10-14', stroke: '#5b9bb8', 'stroke-width': 3, fill: 'none' }));
-    if (fig.jobs === 'suit') s.append(svg('circle', { cx: 52, cy: 84, r: 5, fill: '#c94f3a' }));
-    s.append(svg('circle', { cx: 60, cy: 50, r: 21, fill: '#f6cf3a', stroke: '#b8961f', 'stroke-width': 1.5 }));
-    const face = fig.faces;
-    s.append(svg('circle', { cx: 53, cy: 47, r: 2.4, fill: '#222' }), svg('circle', { cx: 67, cy: 47, r: 2.4, fill: '#222' }));
-    s.append(svg('path', { d: face === 'plain' ? 'M50 56q10 9 20 0' : 'M52 57q8 5 16 0', stroke: '#222', 'stroke-width': 2, fill: 'none' }));
-    if (face === 'beard') s.append(svg('path', { d: 'M40 52q20 34 40 0q-6 12-20 12t-20-12z', fill: '#9a9a96' }));
-    if (face === 'scar') s.append(svg('path', { d: 'M46 39l7 7M48 44l3-3', stroke: '#9b3d2a', 'stroke-width': 2 }));
-    if (face === 'mark') s.append(svg('ellipse', { cx: 71, cy: 55, rx: 4, ry: 3, fill: '#a5643f' }));
-    if (face === 'stars') s.append(svg('path', { d: 'M70 54l1.5 3 3 .4-2.2 2 .6 3-2.9-1.5-2.9 1.5.6-3-2.2-2 3-.4z', fill: '#2e5fb5' }));
-    if (fig.hair) {
-      s.append(svg('path', { d: 'M38 46q0-26 22-26t22 26q-6-12-22-12t-22 12z', fill: hairColour[fig.hair] }));
-      if (fig.hair === 'black') s.append(svg('path', { d: 'M38 46q-4 30 4 44h-6q-6-20 2-44zM82 46q4 30-4 44h6q6-20-2-44z', fill: hairColour.black }));
-      if (fig.hair === 'orange') s.append(svg('circle', { cx: 78, cy: 24, r: 9, fill: hairColour.orange }));
-    } else s.append(svg('path', { d: 'M38 46q0-26 22-26t22 26', fill: 'none', stroke: '#8c8a80', 'stroke-dasharray': '4 3' }));
-    if (face === 'plain') s.append(svg('rect', { x: 39, y: 33, width: 42, height: 5, rx: 2, fill: '#8a5a32' }));   // the headband is printed on this head
-    if (fig.hobbies) s.append(svg('text', { x: 60, y: 200, 'text-anchor': 'middle', 'font-size': 12, fill: '#3d4a3a', 'font-family': 'Segoe UI, sans-serif' }, `holding: ${G.parts.hobbies.options.find(([v]) => v === fig.hobbies)[1].toLowerCase()}`));
-    if (fig.pets) s.append(svg('ellipse', { cx: 100, cy: 150, rx: 13, ry: 8, fill: petColour[fig.pets] }), svg('circle', { cx: 110, cy: 143, r: 6, fill: petColour[fig.pets] }));
-    return s;
-  }
-  // 3D figures (lego-minifigs.js), loaded on first use; the drawings above stay as the fallback.
-  const legoMinifigs = () => import('./lego-minifigs.js');
+  // 3D parts (lego-minifigs.js), loaded on first use; the lists below work without them.
+  const legoMinifigs = () => import('./lego-minifigs.js?v=2');
+  const legoData = () => import('./lego-minifigs-data.js?v=2');
+  // The parts sit in a grid, one row per bag and one column per neighbour; players swap parts within a row (DG-H35).
   function workbench(state, ctx) {
     const view = el('div', 'figure-workbench'), side = el('aside', 'figure-reference'), main = el('section', 'figure-stands');
     if (have(state, 'notepad')) { side.append(el('p', 'eyebrow', 'YOUR NOTEPAD')); const list = el('div', 'riddle-mini'); G.riddle.forEach((line, i) => list.append(el('p', i ? '' : 'riddle-intro', line))); side.append(list); }
-    else side.append(el('p', 'eyebrow', 'LEGO PARTS'), el('p', 'muted', 'Five stands and the bags of parts you have found. Put the parts together however you like.'));
-    const bags = G.partOrder.filter(b => have(state, b)), missing = G.partOrder.filter(b => !have(state, b));
-    const help = el('p', 'control-help', bags.length < 6 ? `Bags found: ${bags.length} of 6. More parts may turn up later.` : 'All six bags are here. Choose a part for each stand; a part already on another stand moves over.');
-    const scene = el('div', 'stand-scene lego3d-canvas'), row = el('div', 'stand-row'), selects = [];
-    scene.append(el('div', 'lego3d-help', 'Drag a part onto a stand · drag it off to put it back'));
-    let model = null;
-    const syncLists = () => state.figures.forEach((fig, i) => { for (const b of bags) selects[i][b].value = fig[b] || ''; });
-    state.figures.forEach((fig, i) => {
-      const stand = el('div', 'stand'); stand.append(minifig(fig));
-      selects[i] = {};
-      for (const b of bags) {
-        const label = el('label', 'part-pick'), select = el('select'); label.append(el('span', '', G.parts[b].label), select);
-        select.append(new Option('—', ''));
+    const bags = G.partOrder.filter(b => have(state, b));
+    const help = el('p', 'control-help', bags.length < 6 ? `Bags found: ${bags.length} of 6. More parts may turn up later.` : 'All six bags are here. Drag a part onto another in its row to swap them.');
+    const scene = el('div', 'stand-scene lego3d-canvas'), grid = el('div', 'part-grid'), selects = {};
+    let model = null, D = null;
+    const syncLists = () => { for (const b of bags) state.figures.forEach((fig, i) => { selects[b][i].value = fig[b] || ''; }); };
+    const atStart = () => !!D && bags.every(b => state.figures.every((fig, i) => fig[b] === D.ORDER[b][i]));
+    const refreshReset = () => { resetButton.disabled = atStart() || !D; };
+    grid.append(el('span'), ...state.figures.map((_, i) => el('b', 'part-col', `Column ${i + 1}`)));
+    for (const b of bags) {
+      grid.append(el('span', 'part-row', G.parts[b].label)); selects[b] = [];
+      state.figures.forEach((fig, i) => {
+        const select = el('select'); select.setAttribute('aria-label', `${G.parts[b].label}, column ${i + 1}`);
         for (const [value, text] of G.parts[b].options) select.append(new Option(text, value, false, fig[b] === value));
         select.addEventListener('change', () => {
-          const moved = []; resetButton.disabled = false;
-          state.figures.forEach((other, j) => { if (j !== i && select.value && other[b] === select.value) { delete other[b]; selects[j][b].value = ''; moved.push(j); } });
-          if (select.value) fig[b] = select.value; else delete fig[b];
-          ctx.save();
-          if (model) [i, ...moved].forEach(j => model.update(j)); else ctx.refresh();
+          if (!select.value) return;
+          const j = state.figures.findIndex(f => f[b] === select.value);
+          if (j >= 0 && j !== i) state.figures[j][b] = fig[b];       // swap with the column that had it
+          fig[b] = select.value; ctx.save(); syncLists(); refreshReset(); model?.update();
         });
-        selects[i][b] = select;
-        stand.append(label);
-      }
-      row.append(stand);
-    });
-    // 3D (DG-H28): loose parts dragged onto the stands; the lists stay behind a button for keyboard players.
-    const listsButton = button('Use lists instead', () => { const show = row.hidden; row.hidden = !show; listsButton.textContent = show ? 'Hide the lists' : 'Use lists instead'; });
+        selects[b][i] = select; grid.append(select);
+      });
+    }
+    // 3D: drag parts onto each other; the lists stay behind a button for keyboard players.
+    const listsButton = button('Use lists instead', () => { const show = grid.hidden; grid.hidden = !show; listsButton.textContent = show ? 'Hide the lists' : 'Use lists instead'; });
     listsButton.hidden = true;
-    const placed = () => state.figures.some(fig => Object.keys(fig).length);
-    const resetButton = button('Reset all figures', () => {
-      state.figures.forEach(fig => { for (const k of Object.keys(fig)) delete fig[k]; });
-      ctx.save(); syncLists(); resetButton.disabled = true;
-      if (model) state.figures.forEach((_, j) => model.update(j)); else ctx.refresh();
+    const resetButton = button('Reset the grid', () => {
+      for (const fig of state.figures) for (const b of bags) delete fig[b];
+      D.arrange(state.figures, bags); ctx.save(); syncLists(); refreshReset(); model?.update();
     }, 'reset-figures');
-    resetButton.disabled = !placed();
-    main.append(help, scene, el('div', 'figure-buttons'), row); main.querySelector('.figure-buttons').append(listsButton, resetButton);
+    resetButton.disabled = true;
+    main.append(help, scene, el('div', 'figure-buttons'), grid); main.querySelector('.figure-buttons').append(listsButton, resetButton);
     const bagLabels = Object.fromEntries(bags.map(b => [b, b[0].toUpperCase() + b.slice(1)]));
     const partNames = Object.fromEntries(bags.map(b => [b, Object.fromEntries(G.parts[b].options)]));
-    legoMinifigs().then(m => m.mount(scene, { figures: state.figures, bags, labels: bagLabels, names: partNames, onChange: () => { ctx.save(); syncLists(); resetButton.disabled = !placed(); } })).then(v => {
-      model = v; view.classList.add('has-3d'); row.hidden = true; listsButton.hidden = false;
-      help.textContent = `${help.textContent.split('.')[0]}. Drag the parts from the table onto the stands.`;
+    legoData().then(d => { D = d; d.arrange(state.figures, bags); ctx.save(); syncLists(); refreshReset(); });
+    legoMinifigs().then(m => m.mount(scene, { figures: state.figures, bags, labels: bagLabels, names: partNames, onChange: () => { ctx.save(); syncLists(); refreshReset(); } })).then(v => {
+      model = v; view.classList.add('has-3d'); grid.hidden = true; listsButton.hidden = false;
     }, err => { console.error(err); scene.remove(); });
-    view.append(side, main); return view;
+    view.classList.toggle('no-side', !side.children.length); view.append(...(side.children.length ? [side] : []), main); return view;
   }
 
   /* ---------- Satellite (locks 4–5) ---------- */
