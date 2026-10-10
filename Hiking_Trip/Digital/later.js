@@ -88,7 +88,7 @@
         select.append(new Option('—', ''));
         for (const [value, text] of G.parts[b].options) select.append(new Option(text, value, false, fig[b] === value));
         select.addEventListener('change', () => {
-          const moved = [];
+          const moved = []; resetButton.disabled = false;
           state.figures.forEach((other, j) => { if (j !== i && select.value && other[b] === select.value) { delete other[b]; selects[j][b].value = ''; moved.push(j); } });
           if (select.value) fig[b] = select.value; else delete fig[b];
           ctx.save();
@@ -102,10 +102,17 @@
     // 3D (DG-H28): loose parts dragged onto the stands; the lists stay behind a button for keyboard players.
     const listsButton = button('Use lists instead', () => { const show = row.hidden; row.hidden = !show; listsButton.textContent = show ? 'Hide the lists' : 'Use lists instead'; });
     listsButton.hidden = true;
-    main.append(help, scene, listsButton, row);
+    const placed = () => state.figures.some(fig => Object.keys(fig).length);
+    const resetButton = button('Reset all figures', () => {
+      state.figures.forEach(fig => { for (const k of Object.keys(fig)) delete fig[k]; });
+      ctx.save(); syncLists(); resetButton.disabled = true;
+      if (model) state.figures.forEach((_, j) => model.update(j)); else ctx.refresh();
+    }, 'reset-figures');
+    resetButton.disabled = !placed();
+    main.append(help, scene, el('div', 'figure-buttons'), row); main.querySelector('.figure-buttons').append(listsButton, resetButton);
     const bagLabels = Object.fromEntries(bags.map(b => [b, b[0].toUpperCase() + b.slice(1)]));
     const partNames = Object.fromEntries(bags.map(b => [b, Object.fromEntries(G.parts[b].options)]));
-    legoMinifigs().then(m => m.mount(scene, { figures: state.figures, bags, labels: bagLabels, names: partNames, onChange: () => { ctx.save(); syncLists(); } })).then(v => {
+    legoMinifigs().then(m => m.mount(scene, { figures: state.figures, bags, labels: bagLabels, names: partNames, onChange: () => { ctx.save(); syncLists(); resetButton.disabled = !placed(); } })).then(v => {
       model = v; view.classList.add('has-3d'); row.hidden = true; listsButton.hidden = false;
       help.textContent = `${help.textContent.split('.')[0]}. Drag the parts from the table onto the stands.`;
     }, err => { console.error(err); scene.remove(); });

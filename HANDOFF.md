@@ -1,5 +1,12 @@
 # Project Handoff
 
+## 2026-10-10 (night, 2): Hiking notes match the printables; reset for the Lego figures (Claude Code)
+- **Status:** user asked why the notes differ from the printable documents and to reuse them, and for a reset button on the Lego character pieces. Not committed or published.
+- **Finding:** every printed note uses Architects Daughter (the dog card also Caveat); the game used Georgia and Segoe Print. Now loaded from Google Fonts and applied to: Hello me note (white page, blue ruled lines, bold underlined key words, as in `1. Word Search Note.docx`), ISS note (plain white), ISS formula page, neighbours notepad and riddle list, agenda handwriting, dog card letter. The newspaper stays Georgia and the Sudoku page is unchanged. Not checked: ISS note and notepad at table size, dog card.
+- **Reset:** "Reset all figures" button next to "Use lists instead" on the parts workbench (`later.js` `workbench`); clears every figure's parts, updates the 3D stands and the lists, disabled when nothing is placed. Checked with a test save: parts removed, save cleared, button disables.
+- **Files:** `Hiking_Trip/Digital/later.css`, `later.js`, `index.html` (font link, versions).
+- **Next:** user looks at the notes; then rebuild the site (`node tools/build_hiking.cjs` in `escapepack-site`) and push.
+
 ## 2026-10-10 (night): Hiking lock 1 bottle in 3D, compact side panel (Claude Code)
 - **Status:** user review of the Hiking digital game: (1) bottle close-up is 3D, people turn it round; (2) removed the hint-like "Look a little closer" text; (3) side panel as compact as Norse. Not committed or published.
 - **Files:** `Hiking_Trip/Digital/bottle3d.js` (new), `game.js` (bottle branch of `renderInspector`, `turn`), `later.css` (bottle and panel rules), `index.html` (versions, DG-H34); `escapepack-site/tools/build_hiking.cjs` packages `bottle3d.js`.
