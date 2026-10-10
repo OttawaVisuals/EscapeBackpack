@@ -1,5 +1,12 @@
 # Project Handoff
 
+## 2026-10-10 (night, 3): Hiking close-ups: Compare menu, no note beside the puzzle sheet, wider window (Claude Code)
+- **Status:** user: the Sudoku/word-search window showing the note ("Keep your note nearby") makes the clue too obvious; use a compare function (as in Norse's viewer) instead; widen the window. Not committed or published.
+- **Done:** the note panel is gone from the puzzle sheet. Every close-up has a "Compare with…" menu in its header (any item you have found) that shows it beside the open item, each pane scrolling on its own; the second pane has its own Turn and Close. The close-up window is up to 1640 × 960 (was 1200 × 890) and the puzzle sheet is centred in it.
+- **Files:** `Hiking_Trip/Digital/game.js` (`viewFor`, `renderInspector`, `buildPuzzles`), `later.css`, `index.html`.
+- **Checks:** sheet beside the note in the browser at 1366×768 (both usable, markings layer present); no-compare view has no panes or reference note; `node --test` 32/32. Not checked: compare with 3D items (cube, satellite, figures), touch, narrow screens.
+- **Next:** user tries Compare with a few items; then rebuild the site and push.
+
 ## 2026-10-10 (night, 2): Hiking notes match the printables; reset for the Lego figures (Claude Code)
 - **Status:** user asked why the notes differ from the printable documents and to reuse them, and for a reset button on the Lego character pieces. Not committed or published.
 - **Finding:** every printed note uses Architects Daughter (the dog card also Caveat); the game used Georgia and Segoe Print. Now loaded from Google Fonts and applied to: Hello me note (white page, blue ruled lines, bold underlined key words, as in `1. Word Search Note.docx`), ISS note (plain white), ISS formula page, neighbours notepad and riddle list, agenda handwriting, dog card letter. The newspaper stays Georgia and the Sudoku page is unchanged. Not checked: ISS note and notepad at table size, dog card.

@@ -3,7 +3,7 @@
   const G = window.HikingGame, C = window.HikingClues, L = window.HikingLater, $ = id => document.getElementById(id);
   const KEY = 'escape-backpack.hiking-opening.v1', NS = 'http://www.w3.org/2000/svg';
   let state = G.fresh(), hadSave = false, scale = 1, zoom = 1, selected = 'bottle', inspected = null, z = 2, toastTimer;
-  let bottle3d = null, bottleLoad = 0, anchor = null, draft = null, wordDown = null, wordMoved = false, savedFocused = null;
+  let compareId = '', bottle3d = null, bottleLoad = 0, anchor = null, draft = null, wordDown = null, wordMoved = false, savedFocused = null;
   try { const raw = localStorage.getItem(KEY); if (raw) { state = G.restore(JSON.parse(raw)); hadSave = true; } } catch (_) { /* Keep fresh state and show storage status on the next save. */ }
   function save() {
     delete state.tidied;
@@ -151,7 +151,7 @@
     if (!id || G.items[id].faces < 2) return; const p = piece(id); p.face = (p.face + direction + G.items[id].faces) % G.items[id].faces;
     if (id === 'bottle' && inspected === id && bottle3d) { bottle3d.to(p.face); drawTable(); save(); return; }
     const freed = id === 'grandparents' && p.face === 1 && G.discover(state, 'newspaper'), tidied = state.tidied;
-    drawTable(); if (inspected === id) renderInspector(); save();
+    drawTable(); if (inspected === id || compareId === id) renderInspector(); save();
     if (freed) toast(`${tidied ? 'The table was rearranged to make room. ' : ''}A newspaper clipping was tucked inside the card. It’s on your table now.`);
   }
   function rotate() { if (!selected) return; const p = piece(selected); p.rot = (p.rot + 90) % 360; constrain(selected); position(selected); save(); }
@@ -161,27 +161,42 @@
   }
   function closeInspector() { $('inspector').close(); }
   function dropBottle() { bottleLoad++; bottle3d?.dispose(); bottle3d = null; }
-  $('inspector').addEventListener('close', () => { if ($('inspector').open) return; dropBottle(); inspected = null; anchor = draft = wordDown = null; drawTable(); savedFocused?.isConnected && savedFocused.focus({ preventScroll: true }); });
-  function renderInspector() {
-    const id = inspected, item = G.items[id], p = piece(id); $('inspector-title').textContent = nameOf(id); $('inspector-kind').textContent = item.origin;
-    $('inspect-flip').hidden = item.faces < 2;
-    $('inspect-flip').textContent = id === 'bottle' ? 'Turn bottle ↻' : id === 'grandparents' ? (p.face ? 'Close card' : 'Open card') : p.face ? 'Show front' : 'Turn over';
-    dropBottle(); $('inspector-content').replaceChildren();
+  $('inspector').addEventListener('close', () => { if ($('inspector').open) return; dropBottle(); inspected = null; compareId = ''; anchor = draft = wordDown = null; drawTable(); savedFocused?.isConnected && savedFocused.focus({ preventScroll: true }); });
+  // The close-up of one item. A second item can sit beside it (the Compare menu), each in its own pane.
+  function viewFor(id) {
+    const p = piece(id);
     if (id === 'bottle') {
       const view = el('div', 'bottle-view'), stage = el('div', 'bottle3d'), controls = el('div', 'turn-controls');
       const prev = button('←', () => turn(id, -1)); prev.setAttribute('aria-label', 'Turn left');
       const next = button('→', () => turn(id)); next.setAttribute('aria-label', 'Turn right');
-      stage.append(el('p', 'bottle3d-status', 'Loading…')); controls.append(prev, el('span', '', 'Drag to turn'), next); view.append(stage, controls); $('inspector-content').append(view);
+      stage.append(el('p', 'bottle3d-status', 'Loading…')); controls.append(prev, el('span', '', 'Drag to turn'), next); view.append(stage, controls);
       bottle3d = null; const mine = id + (++bottleLoad);
       import('./bottle3d.js').then(m => m.mount(stage, { stickers: G.stickers, face: p.face, onFace: f => { if (piece(id).face !== f) { piece(id).face = f; save(); } } }))
-        .then(h => { if (inspected === id && stage.isConnected && mine === id + bottleLoad) bottle3d = h; else h.dispose(); })
+        .then(h => { if ((inspected === id || compareId === id) && stage.isConnected && mine === id + bottleLoad) bottle3d = h; else h.dispose(); })
         .catch(err => { console.error(err); stage.replaceChildren(el('p', 'bottle3d-status', 'The 3D bottle could not load. Check the internet connection, then close and reopen it.')); });
-    } else if (id === 'note') { const view = el('div', 'note-view'); view.append(note(p.face)); $('inspector-content').append(view); }
-    else if (id === 'sheet') {
-      if (p.face) { const view = el('div', 'paper-back-view'); view.append(sheet(true)); $('inspector-content').append(view); }
-      else buildPuzzles();
-    } else if (L.ids.includes(id)) $('inspector-content').append(L.inspect(id, p.face, state, { save, toast, refresh: renderInspector, redraw: drawTable }));
-    else $('inspector-content').append(C.inspect(id, p.face, state, save));
+      return view;
+    }
+    if (id === 'note') { const view = el('div', 'note-view'); view.append(note(p.face)); return view; }
+    if (id === 'sheet') {
+      if (p.face) { const view = el('div', 'paper-back-view'); view.append(sheet(true)); return view; }
+      return buildPuzzles();
+    }
+    return L.ids.includes(id) ? L.inspect(id, p.face, state, { save, toast, refresh: renderInspector, redraw: drawTable }) : C.inspect(id, p.face, state, save);
+  }
+  const turnLabel = (id, p) => id === 'bottle' ? 'Turn bottle ↻' : id === 'grandparents' ? (p.face ? 'Close card' : 'Open card') : p.face ? 'Show front' : 'Turn over';
+  function renderInspector() {
+    const id = inspected, item = G.items[id], p = piece(id); $('inspector-title').textContent = nameOf(id); $('inspector-kind').textContent = item.origin;
+    $('inspect-flip').hidden = item.faces < 2; $('inspect-flip').textContent = turnLabel(id, p);
+    const choices = G.available(state.stage, state.found).filter(k => k !== id);
+    if (!choices.includes(compareId)) compareId = '';
+    $('inspect-compare').replaceChildren(new Option('Compare with…', ''), ...choices.map(k => new Option(nameOf(k), k))); $('inspect-compare').value = compareId;
+    dropBottle(); const host = $('inspector-content'); host.replaceChildren(); host.classList.toggle('comparing', !!compareId);
+    if (!compareId) { host.append(viewFor(id)); return; }
+    const pane = (key, node, extra) => { const box = el('section', 'inspector-pane'), bar = el('header', 'pane-bar'); bar.append(el('strong', '', nameOf(key)), ...extra); box.append(bar, el('div', 'pane-body')); box.lastChild.append(node); return box; };
+    const other = piece(compareId), tools = [];
+    if (G.items[compareId].faces > 1) tools.push(button(turnLabel(compareId, other), () => turn(compareId)));
+    tools.push(button('Close ×', () => { compareId = ''; renderInspector(); }, 'pane-close'));
+    host.append(pane(id, viewFor(id), []), pane(compareId, viewFor(compareId), tools));
   }
   function wordPoint(event, board) {
     const box = board.getBoundingClientRect();
@@ -201,8 +216,7 @@
   }
   function buildPuzzles() {
     anchor = draft = wordDown = null;
-    const workbench = el('div', 'puzzle-workbench'), reference = el('aside', 'reference-note');
-    reference.append(el('p', 'eyebrow', 'KEEP YOUR NOTE NEARBY'), note());
+    const workbench = el('div', 'puzzle-workbench');
     const page = el('section', 'puzzle-page'); page.append(el('h3', '', 'Today’s Word Search'), el('p', 'control-help', 'Drag from first to last letter, or click the two ends. Markings can go in any direction.'));
     const board = el('div', 'word-board'); board.id = 'word-board'; board.setAttribute('aria-label', 'Word search, 15 rows and 16 columns. Use arrow keys to move, Enter to select each end.');
     const cells = el('div', 'word-cells');
@@ -261,7 +275,7 @@
       sudoku.append(input);
     });
     const rules = el('div', 'sudoku-rules'); rules.innerHTML = '<p>Fill the grid with numbers from <b>1 to 4</b>.</p><p>Each column, each row and each of the four 2×2 blocks contains each number exactly once.</p><p class="small">Click an empty cell and type. Backspace erases a guess. Printed numbers stay fixed.</p>';
-    row.append(sudoku, rules); section.append(row); page.append(section); workbench.append(reference, page); $('inspector-content').append(workbench); showLines();
+    row.append(sudoku, rules); section.append(row); page.append(section); workbench.append(page); setTimeout(showLines); return workbench;
   }
   /* The padlock's wheels: digits or letters. Each wheel has a ▲ (next: 5 → 6) and a ▼ (back) button; dragging up
      or scrolling also turns it. With the keyboard, type the character (focus moves on) or use ↑ ↓; ← → move between wheels. */
@@ -378,7 +392,7 @@
   $('zoom-in').addEventListener('click', () => setZoom(zoom * 1.25)); $('zoom-out').addEventListener('click', () => setZoom(zoom / 1.25)); $('zoom-fit').addEventListener('click', () => setZoom(1));
   $('fullscreen').addEventListener('click', () => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen?.().catch(() => toast('Full screen is not available here.')); });
   document.addEventListener('fullscreenchange', () => { $('fullscreen').textContent = document.fullscreenElement ? 'Exit full screen' : 'Full screen'; });
-  $('inspect-flip').addEventListener('click', () => turn(inspected)); $('close-inspector').addEventListener('click', closeInspector);
+  $('inspect-flip').addEventListener('click', () => turn(inspected)); $('inspect-compare').addEventListener('change', () => { compareId = $('inspect-compare').value; renderInspector(); }); $('close-inspector').addEventListener('click', closeInspector);
   // Game menu in the masthead (save or load a copy, start again).
   const closeMenu = () => { $('game-menu').hidden = true; $('game-btn').setAttribute('aria-expanded', 'false'); };
   $('game-btn').addEventListener('click', e => { e.stopPropagation(); const open = $('game-menu').hidden; $('game-menu').hidden = !open; $('game-btn').setAttribute('aria-expanded', String(open)); });
