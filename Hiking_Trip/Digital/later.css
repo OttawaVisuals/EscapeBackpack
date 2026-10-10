@@ -209,3 +209,25 @@
 .lego-flat-view,.lego3d-view{height:100%}.lego3d-view{display:flex;flex-direction:column}.lego3d-canvas{flex:1;min-height:0;position:relative}.lego3d-canvas canvas{display:block;width:100%;height:100%;touch-action:none}.lego3d-canvas canvas:focus-visible{outline:3px solid #d98529;outline-offset:-3px}
 .lego3d-help{position:absolute;left:14px;bottom:10px;font-size:11px;color:var(--on-dark-muted);opacity:.8;pointer-events:none}.lego3d-bar{display:flex;align-items:center;gap:16px;padding:12px 20px;border-top:1px solid #ccd4c2;background:#f7f7ef}.lego3d-bar button{font-size:12px}.lego3d-moves{display:flex;gap:6px}.lego3d-moves[hidden]{display:none}
 .lego3d-status{flex:1;margin:0;font:16px/1.4 Georgia,serif;color:var(--ink);min-height:23px}.lego3d-status.bump{color:#a3432c}.lego3d-status.solved{color:#28534a;font-weight:600}.lego-error{padding:40px;text-align:center;color:#a3432c}
+
+/* The bottle close-up is a 3D model: drag to turn it. */
+.bottle-view{flex-direction:column;gap:0;padding:0;min-height:100%;height:100%;align-items:stretch;justify-content:stretch}
+.bottle3d{flex:1;min-height:0;position:relative;background:radial-gradient(ellipse at 50% 40%,#f3f1e4,#d8dccb 75%)}
+.bottle3d-canvas{display:block;width:100%;height:100%;outline:none}
+.bottle3d-status{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:#6d7866;font-size:13px}
+.bottle-view .turn-controls{flex:none;justify-content:center;margin:0;padding:12px;background:#f7f7ef;border-top:1px solid #ccd4c2}
+.bottle-view .turn-controls span{min-width:110px;letter-spacing:1px;font-size:11px;color:#6d7866}
+
+/* Side panel as compact as the Norse one: small bag beside the lock name, no progress row, notebook in view. */
+@media(min-width:850px){
+  .bag-heading,#progress{display:none}
+  .bag-illustration{float:right;width:150px;height:177px;margin:0 0 -88px -72px;transform:scale(.52);transform-origin:top right}
+  #lock-panel{clear:none}
+  #lock-panel h2{font-size:21px;margin-bottom:6px}
+  #lock-prompt{margin-bottom:10px;min-height:0}
+  #lock-form{clear:both}
+  #lock-message{margin:6px 0 2px;min-height:0}
+  .backpack{padding:16px 22px}
+  .notebook{margin-top:12px}
+  .notebook textarea{min-height:84px}
+}

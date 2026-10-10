@@ -3,7 +3,7 @@
   const G = window.HikingGame, C = window.HikingClues, L = window.HikingLater, $ = id => document.getElementById(id);
   const KEY = 'escape-backpack.hiking-opening.v1', NS = 'http://www.w3.org/2000/svg';
   let state = G.fresh(), hadSave = false, scale = 1, zoom = 1, selected = 'bottle', inspected = null, z = 2, toastTimer;
-  let anchor = null, draft = null, wordDown = null, wordMoved = false, savedFocused = null;
+  let bottle3d = null, bottleLoad = 0, anchor = null, draft = null, wordDown = null, wordMoved = false, savedFocused = null;
   try { const raw = localStorage.getItem(KEY); if (raw) { state = G.restore(JSON.parse(raw)); hadSave = true; } } catch (_) { /* Keep fresh state and show storage status on the next save. */ }
   function save() {
     delete state.tidied;
@@ -149,6 +149,7 @@
   }
   function turn(id, direction = 1) {
     if (!id || G.items[id].faces < 2) return; const p = piece(id); p.face = (p.face + direction + G.items[id].faces) % G.items[id].faces;
+    if (id === 'bottle' && inspected === id && bottle3d) { bottle3d.to(p.face); drawTable(); save(); return; }
     const freed = id === 'grandparents' && p.face === 1 && G.discover(state, 'newspaper'), tidied = state.tidied;
     drawTable(); if (inspected === id) renderInspector(); save();
     if (freed) toast(`${tidied ? 'The table was rearranged to make room. ' : ''}A newspaper clipping was tucked inside the card. It’s on your table now.`);
@@ -159,21 +160,22 @@
     savedFocused = document.activeElement; inspected = id; select(id); anchor = draft = null; renderInspector(); $('inspector').showModal();
   }
   function closeInspector() { $('inspector').close(); }
-  $('inspector').addEventListener('close', () => { if ($('inspector').open) return; inspected = null; anchor = draft = wordDown = null; drawTable(); savedFocused?.isConnected && savedFocused.focus({ preventScroll: true }); });
+  function dropBottle() { bottleLoad++; bottle3d?.dispose(); bottle3d = null; }
+  $('inspector').addEventListener('close', () => { if ($('inspector').open) return; dropBottle(); inspected = null; anchor = draft = wordDown = null; drawTable(); savedFocused?.isConnected && savedFocused.focus({ preventScroll: true }); });
   function renderInspector() {
     const id = inspected, item = G.items[id], p = piece(id); $('inspector-title').textContent = nameOf(id); $('inspector-kind').textContent = item.origin;
     $('inspect-flip').hidden = item.faces < 2;
     $('inspect-flip').textContent = id === 'bottle' ? 'Turn bottle ↻' : id === 'grandparents' ? (p.face ? 'Close card' : 'Open card') : p.face ? 'Show front' : 'Turn over';
-    $('inspector-content').replaceChildren();
+    dropBottle(); $('inspector-content').replaceChildren();
     if (id === 'bottle') {
-      const view = el('div', 'bottle-view'), display = el('div', 'bottle-display'); display.append(bottle(p.face));
-      const info = el('div', 'bottle-information'); info.append(el('p', 'eyebrow', 'LOOK A LITTLE CLOSER'), el('h3', '', 'Something familiar.'));
-      info.append(el('p', '', 'The bottle has a different animal sticker on each side. Turn it to see them all.'));
-      const detail = el('div', 'bottle-detail'), image = new Image(); image.src = G.stickers[p.face]; image.alt = 'Close-up of the original animal sticker'; detail.append(image); info.append(detail, el('p', 'sticker-caption', 'Sticker close-up'));
-      const controls = el('div', 'turn-controls');
-      const prev = button('←', () => turn(id, -1)); prev.setAttribute('aria-label', 'Previous side');
-      const next = button('→', () => turn(id)); next.setAttribute('aria-label', 'Next side');
-      controls.append(prev, el('span', '', `${p.face + 1} / 3`), next); info.append(controls); view.append(display, info); $('inspector-content').append(view);
+      const view = el('div', 'bottle-view'), stage = el('div', 'bottle3d'), controls = el('div', 'turn-controls');
+      const prev = button('←', () => turn(id, -1)); prev.setAttribute('aria-label', 'Turn left');
+      const next = button('→', () => turn(id)); next.setAttribute('aria-label', 'Turn right');
+      stage.append(el('p', 'bottle3d-status', 'Loading…')); controls.append(prev, el('span', '', 'Drag to turn'), next); view.append(stage, controls); $('inspector-content').append(view);
+      bottle3d = null; const mine = id + (++bottleLoad);
+      import('./bottle3d.js').then(m => m.mount(stage, { stickers: G.stickers, face: p.face, onFace: f => { if (piece(id).face !== f) { piece(id).face = f; save(); } } }))
+        .then(h => { if (inspected === id && stage.isConnected && mine === id + bottleLoad) bottle3d = h; else h.dispose(); })
+        .catch(err => { console.error(err); stage.replaceChildren(el('p', 'bottle3d-status', 'The 3D bottle could not load. Check the internet connection, then close and reopen it.')); });
     } else if (id === 'note') { const view = el('div', 'note-view'); view.append(note(p.face)); $('inspector-content').append(view); }
     else if (id === 'sheet') {
       if (p.face) { const view = el('div', 'paper-back-view'); view.append(sheet(true)); $('inspector-content').append(view); }

@@ -1,5 +1,11 @@
 # Project Handoff
 
+## 2026-10-10 (night): Hiking lock 1 bottle in 3D, compact side panel (Claude Code)
+- **Status:** user review of the Hiking digital game: (1) bottle close-up is 3D, people turn it round; (2) removed the hint-like "Look a little closer" text; (3) side panel as compact as Norse. Not committed or published.
+- **Files:** `Hiking_Trip/Digital/bottle3d.js` (new), `game.js` (bottle branch of `renderInspector`, `turn`), `later.css` (bottle and panel rules), `index.html` (versions, DG-H34); `escapepack-site/tools/build_hiking.cjs` packages `bottle3d.js`.
+- **Checks:** browser over local HTTP at 1366x768: 3D bottle loads, → turns to the dinosaur and the table bottle follows, panel has no scroll, no console errors; `node --test` 32/32. Not checked: touch drag, phone width, the live site.
+- **Next:** user tries the bottle, then run `node tools/build_hiking.cjs` in `escapepack-site` and push if happy.
+
 ## 2026-10-10 (evening): Norse reset checklist page (Claude Code)
 - **Status:** built from the records and tested locally; **not committed or pushed** (waiting for the user). Earlier today the stats/game-code work was pushed and the Norse hint page was listed on `/help/`.
 - **Designer decisions (chat, 10 Oct):** the team keeps the medallion (one new per team: PP-044 Replacement); number locks are left on 0s, the three letter locks on LOCK; codes are shown on the reset page.
