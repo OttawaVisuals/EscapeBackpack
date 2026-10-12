@@ -77,7 +77,6 @@ def draw_back_card(c, x=0, y=0):
     c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.7)
-    c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)
 
     left, right = 20, W - 20
     # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
@@ -114,7 +113,7 @@ def draw_back_card(c, x=0, y=0):
     c.drawString(msg_left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
-    # divider and the postmark, above the address box. See postcard_marks.py.
+    # divider and the postmark, above the Fun Fact box. See postcard_marks.py.
     draw_mark(c, "L1")
 
     # The agreed route stamp, shown at approximately 20 x 24 mm.
@@ -144,38 +143,26 @@ def draw_back_card(c, x=0, y=0):
     for offset in (-7, -2, 3, 8):
         c.line(postmark_x + 23, postmark_y + offset, right, postmark_y + offset)
 
-    # Address — moved up into the dead strip left of the stamp, so the Fun Fact block below can
-    # nearly double. The longest address line is 78pt in a 150pt-wide panel, so the block was
-    # never using its right half; the stamp now overlaps that unused corner, as it would on a
-    # real card. Ruled lines stop short of the stamp rather than running under it.
+    # No address (playtest 1, 11 Oct 2026): the cards were never posted -- they are Liv's
+    # souvenirs -- so the TO box and its four ruled lines are gone. The Fun Fact box moves up
+    # into the freed space, stopping just below the stamp.
     address_x = divider + 17
     box_right = right + 5
-    rule_right = 278
-    c.setStrokeColor(RULE)
-    c.setLineWidth(0.6)
-    c.rect(divider + 11, 126, box_right - (divider + 11), 62, fill=0, stroke=1)
 
-    address_y = 166
-    c.setFillColor(HexColor("#59635D"))
-    c.setFont("Helvetica-Bold", 5.8)
-    c.drawString(address_x, address_y + 12, "TO")
+    # Souvenir note (playtest 1, 11 Oct 2026): players read the empty address as "why were
+    # these never sent?". Wording chosen in chat ("Short"). The message column is already full,
+    # so it sits as a handwritten P.S. where the address used to be, and this card's Fun Fact
+    # box starts lower than the other 21.
     c.setFillColor(INK)
-    c.setFont("NothingYouCouldDo", 8.6)
-    address_lines = [
-        "John Ericson",
-        "24 Longship Way",
-        "Ottawa ON  K1L 1S1",
-        "Canada",
-    ]
-    for index, line in enumerate(address_lines):
-        line_y = address_y - index * 13
-        c.drawString(address_x, line_y, line)
-        c.setStrokeColor(HexColor("#C0B291"))
-        c.setLineWidth(0.4)
-        c.line(address_x, line_y - 3, rule_right, line_y - 3)
+    ps_y = 146
+    for line in wrap_text("P.S. These postcards were never sent: they're my souvenirs, one from every stop.",
+                          "NothingYouCouldDo", 9, box_right - address_x - 2):
+        c.setFont("NothingYouCouldDo", 9)
+        c.drawString(address_x - 4, ps_y, line)
+        ps_y -= 10.2
 
-    # Fun Fact — typed, real trivia, stacked under the address.
-    funfact_top, funfact_bottom = 120, 31
+    # Fun Fact — typed, real trivia, under the stamp.
+    funfact_top, funfact_bottom = ps_y + 2, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
     c.rect(divider + 11, funfact_bottom, box_right - (divider + 11), funfact_top - funfact_bottom, fill=0, stroke=1)

@@ -60,3 +60,6 @@ Kept as a note rather than deleted silently, because the argument it made — th
 - **Counting in the illustration.** Boats, birds, windows. Trivial on its own — only ship it with a non-obvious ordering rule attached.
 
 **Artwork consequence of the size change.** Done for cards L1–L3: the illustration sources and generated fronts are 1500 × 1050 px (10:7), reframed without aspect distortion. The remaining production change is in `build_postcard_collection.py`, where `SIZE` and `PAGE` must change together before cards L2/L3 and the full collection PDF are rebuilt.
+
+
+**11 Oct 2026 (playtest 1 feedback, built same day):** **address removed from all 22 cards.** Players asked why addressed cards were never sent. The cards are now Liv's souvenirs, never posted: no TO box, no recipient. The Fun Fact box moves up into the freed space (top at 146 pt, was 120). Postcard L1 carries a handwritten P.S.: “These postcards were never sent: they’re my souvenirs, one from every stop.” (wording chosen in chat). The format row “addressed and stamped like a real postcard” and the recipient row in the table above are **superseded** by this; stamp and place-only postmark stay. Built in all 22 `Postcards/build_postcard_*_pdf.py`.

@@ -73,7 +73,6 @@ def draw_back_card(c, x=0, y=0):
     c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.7)
-    c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)
 
     left, right = 20, W - 20
     # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
@@ -116,7 +115,7 @@ def draw_back_card(c, x=0, y=0):
     c.drawString(msg_left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
-    # divider and the postmark, above the address box. See postcard_marks.py.
+    # divider and the postmark, above the Fun Fact box. See postcard_marks.py.
     draw_mark(c, "H4")
     y -= 11  # 29 Sept 2026: matches the 11 pt sign-off spacing (was 9)
 
@@ -125,22 +124,41 @@ def draw_back_card(c, x=0, y=0):
     # ą and ʀ have no glyph in NothingYouCouldDo (checked against the font's cmap), so her copy
     # substitutes ö and r' -- a legible stand-in, not a change to the actual cipher, since HRAFN
     # only ever needs h, r, a, f, n, none of which are affected.
+    # 11 Oct 2026 (playtest 1): the key was three lines ("1 — f u þ ö r k"), which players did
+    # not read as a lookup table. It is now a ruled grid -- rows 1-3 down the side, places 1-6
+    # across the top -- drawn with slightly uneven pen lines so it still reads as her copy.
     table_top = y - 16
-    table_bottom = max(30, table_top - 66)
+    table_bottom = max(30, table_top - 72)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.6)
     c.rect(msg_left, table_bottom, divider - msg_left - 6, table_top - table_bottom, fill=0, stroke=1)
     c.setFillColor(INK)
     c.setFont("NothingYouCouldDo", 7.6)
     c.drawString(msg_left + 6, table_top - 12, "his key, copied out:")
-    rows = ["1 — f u þ ö r k", "2 — h n i a s", "3 — t b m l r'"]
-    row_y = table_top - 24
-    for row in rows:
-        c.setFont("NothingYouCouldDo", 8.2)
-        c.drawString(msg_left + 10, row_y, row)
-        row_y -= 10.2
+    rows = [["f", "u", "þ", "ö", "r", "k"], ["h", "n", "i", "a", "s"], ["t", "b", "m", "l", "r'"]]
+    label_w, cell_w, cell_h = 16, 19, 10.5
+    grid_x, grid_top = msg_left + 14, table_top - 17
+    grid_w, grid_h = label_w + 6 * cell_w, 4 * cell_h
+    # Fixed small wobbles (pt) so each pen line is a touch off-straight, the same on every build.
+    wobble = [0.5, -0.4, 0.3, -0.6, 0.4, -0.3, 0.6, -0.5, 0.2, -0.4]
+    c.setStrokeColor(INK)
+    c.setLineWidth(0.5)
+    for i in range(5):                                   # horizontal rules
+        ly = grid_top - i * cell_h
+        c.line(grid_x - 1, ly + wobble[i], grid_x + grid_w + 1, ly - wobble[i + 1])
+    for i in range(8):                                   # vertical rules
+        lx = grid_x if i == 0 else grid_x + label_w + (i - 1) * cell_w
+        c.line(lx + wobble[i + 2], grid_top + 1, lx - wobble[i], grid_top - grid_h - 1)
+    c.setFont("NothingYouCouldDo", 8.2)
+    for col in range(6):                                 # header: place in the row
+        c.drawCentredString(grid_x + label_w + (col + 0.5) * cell_w, grid_top - cell_h + 3, str(col + 1))
+    for r, letters in enumerate(rows):
+        base = grid_top - (r + 2) * cell_h + 3
+        c.drawCentredString(grid_x + label_w / 2, base, str(r + 1))
+        for col, letter in enumerate(letters):
+            c.drawCentredString(grid_x + label_w + (col + 0.5) * cell_w, base, letter)
     c.setFont("NothingYouCouldDo", 6.4)
-    c.drawString(msg_left + 6, row_y - 1, "(left branches = which row. right = where in it.)")
+    c.drawString(msg_left + 6, grid_top - grid_h - 9, "(left branches = which row. right = where in it.)")
 
     # Same trail stamp as the other Harald cards -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72
@@ -169,36 +187,15 @@ def draw_back_card(c, x=0, y=0):
     for offset in (-7, -2, 3, 8):
         c.line(postmark_x + 23, postmark_y + offset, right, postmark_y + offset)
 
-    # Address -- same recipient and layout as the other cards (PC-13 standard).
+    # No address (playtest 1, 11 Oct 2026): the cards were never posted -- they are Liv's
+    # souvenirs -- so the TO box and its four ruled lines are gone. The Fun Fact box moves up
+    # into the freed space, stopping just below the stamp.
     address_x = divider + 17
     box_right = right + 5
-    rule_right = 278
-    c.setStrokeColor(RULE)
-    c.setLineWidth(0.6)
-    c.rect(divider + 11, 126, box_right - (divider + 11), 62, fill=0, stroke=1)
-
-    address_y = 166
-    c.setFillColor(HexColor("#59635D"))
-    c.setFont("Helvetica-Bold", 5.8)
-    c.drawString(address_x, address_y + 12, "TO")
-    c.setFillColor(INK)
-    c.setFont("NothingYouCouldDo", 8.6)
-    address_lines = [
-        "John Ericson",
-        "24 Longship Way",
-        "Ottawa ON  K1L 1S1",
-        "Canada",
-    ]
-    for index, line in enumerate(address_lines):
-        line_y = address_y - index * 13
-        c.drawString(address_x, line_y, line)
-        c.setStrokeColor(HexColor("#C0B291"))
-        c.setLineWidth(0.4)
-        c.line(address_x, line_y - 3, rule_right, line_y - 3)
 
     # Fun Fact -- typed, real trivia (PC-12), deliberately not about the rune key: her handwriting
     # and the typed box each carry different content, never the same fact twice.
-    funfact_top, funfact_bottom = 120, 31
+    funfact_top, funfact_bottom = 146, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
     c.rect(divider + 11, funfact_bottom, box_right - (divider + 11), funfact_top - funfact_bottom, fill=0, stroke=1)

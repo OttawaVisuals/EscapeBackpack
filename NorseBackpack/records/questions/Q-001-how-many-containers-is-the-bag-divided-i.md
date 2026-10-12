@@ -15,6 +15,8 @@ superseded_by:
 tags: [old-ST-01]
 ---
 
+**Superseded 11 Oct 2026 by PR-007:** no backpack, pockets, pouches or locks. Each lock N below is now envelope N in a box, holding the same items; PR-007 has the envelope table. Nesting is open again (Q-046).
+
 ## Compartment map, 9 Oct 2026 (designer)
 
 Set in chat against the real bag. Locks 1–4 were already placed by the designer; locks 5–13 were reordered at the same time (Q-005), so lock numbers 5–13 no longer follow the 7 Oct order.

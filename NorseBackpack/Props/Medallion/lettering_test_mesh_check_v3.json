@@ -1,0 +1,22 @@
+{
+  "triangles": 19852,
+  "closed_edges_all_used_twice": true,
+  "consistent_orientation": true,
+  "connected_components": 1,
+  "degenerate_facets": 0,
+  "bounds_mm": [
+    [
+      -25.0,
+      -25.0,
+      0.0
+    ],
+    [
+      25.0,
+      25.0,
+      1.2000000476837158
+    ]
+  ],
+  "signed_volume_mm3": 2212.2392090958188,
+  "physical_print_test": false,
+  "printer_profile_slice": false
+}

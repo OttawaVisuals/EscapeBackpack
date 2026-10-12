@@ -4,7 +4,7 @@ piece can be printed from output/docx/. Each source is rasterised at 300 dpi fro
 Print.pdf (never drifts from the production build) and placed as one floating picture at
 its exact PDF size, centred on a Letter page. Rebuild after any of the source PDFs change.
 
-Written: Luggage_Tags, Journal_Family_Iconography, Transition_Tickets, Hnefatafl_Board_Setup_Insert.
+Written: Luggage_Tags, Journal_Family_Iconography, Transition_Tickets, Hnefatafl_Board_Setup_Insert, Lock_Stickers.
 (Postcards, double-sided tickets and Raven's Flights card have their own PrintTest_*.docx.)
 """
 import importlib.util
@@ -32,6 +32,7 @@ PRINTABLES = {
     "Print_JournalFamilyIconography": "Journal_Family_Iconography_Letter_Print.pdf",
     "Print_TransitionTickets": "Transition_Tickets_Letter_Print.pdf",
     "Print_HnefataflBoardSetupInsert": "Hnefatafl_Board_Setup_Insert.pdf",  # small, centred
+    "Print_LockStickers": "Lock_Stickers_Print.pdf",                       # Letter portrait
 }
 
 

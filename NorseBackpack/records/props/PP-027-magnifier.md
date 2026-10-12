@@ -12,7 +12,7 @@ source: buy
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-001
 # Physical pocket/container or location; availability remains in found_in above.
-container: Front pocket (lock 1)
+container: Envelope 1
 after_game: return
 # Any related record IDs, e.g. [PZ-002, Q-004]
 links: []
@@ -20,6 +20,8 @@ links: []
 superseded_by:
 tags: []
 ---
+
+**11 Oct 2026 (PR-007):** the backpack is now a box, and pockets and pouches are envelopes. Where this record mentions the bag, a pocket, a pouch or a lock, that is the earlier format; the `container` field gives the envelope.
 
 **Primary job: the branch runes.** Carve them small enough that the tally strokes are ambiguous to the naked eye. The magnifier turns "I think that's three branches" into certainty, which makes it a real tool rather than a gimmick.
 

@@ -381,7 +381,7 @@
       node.className = i < state.stage ? 'done' : i === state.stage ? 'current' : ''; node.title = `Lock ${i + 1} · ${G.locks[i].name} · ${status}`;
       node.querySelector('.step-number').textContent = i < state.stage ? '✓' : i + 1; node.querySelector('small').textContent = ` · ${status}`;
     });
-    $('lock-panel').hidden = state.stage >= G.locks.length; $('complete').hidden = state.stage < G.locks.length; $('complete-time').textContent = `Your time: ${G.duration(state.played)}.`; drawTimer();
+    $('lock-panel').hidden = state.stage >= G.locks.length; $('complete').hidden = state.stage < G.locks.length; renderEnding(); drawTimer();
     if (state.stage < G.locks.length) {
       const lock = G.locks[state.stage]; $('lock-number').textContent = `LOCK ${String(state.stage + 1).padStart(2, '0')}`; $('lock-name').textContent = lock.name;
       $('lock-prompt').textContent = lock.prompt;
@@ -404,7 +404,7 @@
       });
       b.setAttribute('aria-label', `${n} of 5`); b.setAttribute('aria-pressed', String(state.ratings[lock - 1] === n)); b.classList.toggle('on', n <= state.ratings[lock - 1]); rate.append(b);
     }
-    track('lock_opened', { lock, hints: state.hints[lock - 1], seconds: Math.round(state.lockTime[lock - 1] / 1000) });
+    track('lock_opened', { lock, hints: state.hints[lock - 1], tries: state.attempts[lock - 1].length, seconds: Math.round(state.lockTime[lock - 1] / 1000) });
     if (lock === G.locks.length) track('game_completed', { minutes: Math.round(state.played / 60000) });
     clearTimeout(bannerTimer); bannerTimer = setTimeout(hideBanner, 16000);
   }
@@ -414,6 +414,7 @@
   $('lock-form').addEventListener('submit', async event => {
     event.preventDefault(); if (opening) return; const value = $('combination').value;
     if (!G.unlock(state, value)) {
+      const log = state.attempts[state.stage]; if (value && !log.includes(value) && log.length < 30) { log.push(value.slice(0, 12)); save(); }
       $('lock-message').textContent = 'Still locked. Take another look at your clues.'; $('lock-message').className = 'error';
       const pad = $('padlock'); pad.classList.remove('wrong'); void pad.offsetWidth; pad.classList.add('wrong'); return;
     }
@@ -465,7 +466,7 @@
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && $('inspector').open && (anchor || wordDown)) { event.preventDefault(); anchor = draft = wordDown = null; showLines(); $('word-status').textContent = 'Selection cancelled.'; return; }
     if (event.defaultPrevented || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName) || event.ctrlKey || event.metaKey || event.altKey) return;
-    if (document.querySelector('dialog[open]')) { if ($('inspector').open && event.key.toLowerCase() === 'f') { event.preventDefault(); turn(inspected); } if ($('inspector').open && event.key.toLowerCase() === 'n') { event.preventDefault(); setNoteOpen(!noteOpen); } return; }
+    if (document.querySelector('dialog[open]')) { if ($('inspector').open && event.key.toLowerCase() === 'f') { event.preventDefault(); turn(inspected); } if ($('inspector').open && event.key.toLowerCase() === 'n') { event.preventDefault(); setNoteOpen(!noteOpen); } if ($('inspector').open && event.key.toLowerCase() === 'm') { event.preventDefault(); setLens(!lensOn); } return; }
     if (event.key.toLowerCase() === 'f') { event.preventDefault(); turn(selected); }
     if (event.key.toLowerCase() === 'r') { event.preventDefault(); rotate(); }
     if (event.key === 'Enter' && document.activeElement?.classList.contains('prop')) { event.preventDefault(); inspect(selected); }
@@ -563,6 +564,50 @@
   });
   $('inspector').addEventListener('close', () => { noteOpen = false; $('inspect-note').hidden = true; });
 
+  /* ---------- Magnifier: a lens that follows the pointer over a close-up (papers and drawings; not the 3D items) ----------
+     It shows a scaled copy of the close-up, kept up to date as the page changes. Scroll over the page for strength. */
+  let lensOn = false, lensEl = null, lensZoom = 2.5, lensPoint = null, lensTimer = null, lensWatch = null;
+  const LENS = 190;
+  function lensRefresh() {
+    if (!lensOn || !lensEl) return;
+    const src = $('inspector-content'), clone = src.cloneNode(true); clone.removeAttribute('id'); clone.classList.add('lens-clone');
+    clone.style.width = `${src.clientWidth}px`; clone.style.height = `${src.clientHeight}px`;
+    const from = [src, ...src.querySelectorAll('*')], to = [clone, ...clone.querySelectorAll('*')];
+    from.forEach((n, i) => {
+      const c = to[i]; if (!c) return;
+      if (n.scrollTop || n.scrollLeft) { c.dataset.st = n.scrollTop; c.dataset.sl = n.scrollLeft; }
+      if (/^(INPUT|TEXTAREA|SELECT)$/.test(n.tagName)) c.value = n.value;
+      if (n.tagName === 'CANVAS') c.remove();
+    });
+    lensEl.replaceChildren(clone);
+    clone.querySelectorAll('[data-st]').forEach(n => { n.scrollTop = +n.dataset.st; n.scrollLeft = +n.dataset.sl; }); if (clone.dataset.st) { clone.scrollTop = +clone.dataset.st; clone.scrollLeft = +clone.dataset.sl; }
+    lensPlace();
+  }
+  function lensPlace() {
+    if (!lensEl) return;
+    const src = $('inspector-content'), r = src.getBoundingClientRect(), p = lensPoint, clone = lensEl.firstChild;
+    const inside = p && p.x >= r.left && p.x <= r.right && p.y >= r.top && p.y <= r.bottom;
+    lensEl.hidden = !inside; if (!inside || !clone) return;
+    lensEl.style.left = `${p.x - LENS / 2}px`; lensEl.style.top = `${p.y - LENS / 2}px`;
+    clone.style.transform = `translate(${LENS / 2 - (p.x - r.left) * lensZoom}px, ${LENS / 2 - (p.y - r.top) * lensZoom}px) scale(${lensZoom})`;
+  }
+  function lensLater() { clearTimeout(lensTimer); lensTimer = setTimeout(lensRefresh, 120); }
+  function setLens(on) {
+    if (on && $('inspector-content').querySelector('canvas')) { toast('The magnifier works on papers and drawings. For the 3D items, drag to turn them and scroll to zoom.'); on = false; }
+    lensOn = on; $('inspect-lens').setAttribute('aria-pressed', String(on)); $('inspector-content').classList.toggle('lens-on', on);
+    lensWatch?.disconnect(); lensWatch = null; lensEl?.remove(); lensEl = null;
+    if (!on) return;
+    lensEl = el('div', 'lens'); lensEl.hidden = true; lensEl.setAttribute('aria-hidden', 'true'); $('inspector').append(lensEl);
+    lensWatch = new MutationObserver(lensLater); lensWatch.observe($('inspector-content'), { subtree: true, childList: true, attributes: true, characterData: true });
+    lensRefresh();
+  }
+  $('inspect-lens').addEventListener('click', () => setLens(!lensOn));
+  $('inspector').addEventListener('pointermove', e => { lensPoint = { x: e.clientX, y: e.clientY }; if (lensOn) lensPlace(); });
+  $('inspector').addEventListener('pointerleave', () => { lensPoint = null; if (lensOn) lensPlace(); });
+  $('inspector-content').addEventListener('scroll', lensLater, true); $('inspector-content').addEventListener('input', lensLater, true);
+  $('inspector-content').addEventListener('wheel', e => { if (!lensOn) return; e.preventDefault(); lensZoom = Math.min(6, Math.max(1.5, lensZoom * (e.deltaY < 0 ? 1.15 : 1 / 1.15))); lensRefresh(); }, { passive: false });
+  $('inspector').addEventListener('close', () => setLens(false));
+
   /* ---------- First-time tips: a short pointer at a time, each with "Got it" and "No more tips" ---------- */
   const TIPS_KEY = 'escape-backpack.hiking-tips.v1';
   let tipsSeen = new Set(), tipEl = null;
@@ -589,6 +634,38 @@
   document.addEventListener('pointerdown', e => { if (tipEl && !e.target.closest('.tip')) dropTip(); });
   renderItemNotes(); markNotes();
 
+  /* ---------- The ending and feedback (sent to the same Formspree form as the site's feedback page) ---------- */
+  const FORMSPREE = 'https://formspree.io/f/xaqavoan';
+  const totalHints = () => state.hints.reduce((a, b) => a + b, 0), totalTries = () => state.attempts.reduce((a, l) => a + l.length, 0);
+  const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+  function renderEnding() {
+    const stats = [['Time', G.duration(state.played)], ['Hints', String(totalHints())], ['Wrong tries', String(totalTries())], ['Locks', `${state.stage} of ${G.locks.length}`]];
+    $('ending-stats').replaceChildren(...stats.flatMap(([k, v]) => [el('dt', '', k), el('dd', '', v)]));
+  }
+  function statsText() {
+    const lines = G.locks.map((l, i) => i < state.stage ? `Lock ${i + 1} (${l.name}): ${G.duration(state.lockTime[i])}, ${plural(state.hints[i], 'hint', 'hints')}, ${plural(state.attempts[i].length, 'wrong try', 'wrong tries')}, rated ${state.ratings[i] || '–'}/5` : null).filter(Boolean);
+    const now = state.stage < G.locks.length ? `Now on lock ${state.stage + 1} (${G.duration(state.lockTime[state.stage])} so far, ${plural(state.hints[state.stage], 'hint', 'hints')}, ${plural(state.attempts[state.stage].length, 'wrong try', 'wrong tries')})` : 'Finished';
+    return [`${state.stage}/${G.locks.length} locks · ${G.duration(state.played)} played · ${innerWidth}×${innerHeight}${matchMedia('(pointer: coarse)').matches ? ' touch' : ''}`, ...lines, now].join('\n');
+  }
+  function openFeedback() { $('fb-result').textContent = ''; $('fb-send').disabled = false; $('feedback-dialog').showModal(); $('fb-message').focus(); }
+  $('feedback-top').addEventListener('click', openFeedback); $('open-feedback-end').addEventListener('click', openFeedback);
+  $('review-table').addEventListener('click', () => $('table-frame').scrollIntoView({ block: 'center' }));
+  $('copy-result').addEventListener('click', async () => {
+    const text = `The Hiking Backpack · ${state.stage}/${G.locks.length} locks · ${G.duration(state.played)} · ${plural(totalHints(), 'hint', 'hints')}\nescapepack.ca/play/hiking/`;
+    try { await navigator.clipboard.writeText(text); toast('Copied. Paste it wherever you like: no answers are included.'); } catch (_) { toast(text); }
+  });
+  $('feedback-form').addEventListener('submit', async e => {
+    e.preventDefault(); if (!$('feedback-form').reportValidity()) return;
+    const body = { game: 'hiking-online', rating: $('fb-rating').value, email: $('fb-email').value.trim(), _subject: 'The Hiking Backpack · online playtest feedback',
+      message: $('fb-message').value.trim() + ($('fb-stats').checked ? `\n\n--- Game stats ---\n${statsText()}` : '') };
+    $('fb-send').disabled = true; $('fb-result').textContent = 'Sending…';
+    try {
+      const r = await fetch(FORMSPREE, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) });
+      if (!r.ok) throw new Error(r.status === 429 ? 'busy' : 'failed');
+      track('feedback_submitted', { rating: body.rating || 'none' });
+      $('fb-result').textContent = 'Thank you. It’s on its way to us.'; $('feedback-form').reset(); setTimeout(() => $('feedback-dialog').close(), 1800);
+    } catch (err) { $('fb-result').textContent = err.message === 'busy' ? 'Too many messages right now. Please try again in a minute.' : 'We couldn’t send it. Check your connection and try again.'; $('fb-send').disabled = false; }
+  });
   new ResizeObserver(fit).observe($('table-frame'));
   drawTable(); drawProgress();
   if (new URLSearchParams(location.search).get('design') === '1' && $('design-notes')) { $('design-notes').showModal(); $('design-notes').scrollTop = 0; }

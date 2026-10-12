@@ -165,6 +165,12 @@ TRAILS = {
         fixed_labels={"Manchester": (4.4, -2.8)},
         # Removed 1 Oct 2026 (user's call, PZ-14): none is a route stop or used by any puzzle,
         # and six of them only ever printed as nameless dots.
+        # Playtest 1 (11 Oct 2026): players looked for Walcheren, the RD decoy card, and it was
+        # not on the sheet -- stops.js files it as an "Island anchor", which load_corpus() skips.
+        # The other three decoys (Brattahlíð, Bjarnarhöfn, Constantinople) are point-like in the
+        # corpus and print as normal dots, so Walcheren is added here the same way, at the
+        # stops.js coordinate, and placed right after the stops so a collision cannot drop it.
+        decoy_towns=[("Walcheren", 51.53, 3.55)],
         omit_towns=["Caen", "Falaise", "Chichester", "Château Gaillard", "Dives estuary",
                     "Le Havre", "Lewes", "Pevensey", "Salisbury", "Southampton",
                     "Coutances", "Évreux", "Hastings", "Amiens", "Calais", "Chartres",
@@ -682,6 +688,8 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
     towns = {}
     for s_ in stops:                      # stops first, so they can never be crowded out
         towns[s_["name"].split(" · ")[0]] = (s_["lat"], s_["lng"])
+    for name, lat, lng in cfg.get("decoy_towns", ()):    # then decoys missing from the corpus
+        towns.setdefault(name, (lat, lng))
     for name, lat, lng in corpus + cfg["extra_towns"]:
         if name in cfg.get("omit_towns", ()):
             continue
@@ -1015,7 +1023,8 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
         print("        labels dropped for collision: %s" % ", ".join(lab.skipped))
     # A stop can also go unfindable by losing its label to a collision rather than by being absent
     # from the corpus, and the frame is tight enough since the grid band that this is reachable.
-    collided = [n for n in lab.skipped if n in stop_names]
+    collided = [n for n in lab.skipped
+                if n in stop_names or n in [d[0] for d in cfg.get("decoy_towns", ())]]
     if missing or collided:
         print("        *** STOPS NOT LABELLED ON SHEET: %s"
               % ", ".join(missing + collided))

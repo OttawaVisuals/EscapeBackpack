@@ -15,6 +15,8 @@ superseded_by:
 tags: [old-PR-27]
 ---
 
+**Moot since 11 Oct 2026 (PR-007):** no padlocks any more; codes go into the rune cypher wheel (PP-047) and point to envelopes.
+
 Status on the old page: **Bought, 23 Sept 2026**
 
 Raised 23 Sept 2026 by old page PC-18. The page previously put both SOLE and MEAD on the one owned four-letter word lock. The comb step also can’t reuse the SOLE lock during play. Options were: buy two more word locks, or move one answer to a different lock type.

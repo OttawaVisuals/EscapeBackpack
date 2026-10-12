@@ -15,6 +15,8 @@ superseded_by:
 tags: [old-ST-06]
 ---
 
+**11 Oct 2026 (PR-007):** the release order still stands; locks are now envelopes, and pockets and pouches mentioned below are the earlier format.
+
 **Revised 9 Oct 2026 (designer), while mapping the compartments (Q-001):** locks 1–4 unchanged; locks 5–13 are now 5 treasure route `521` → 6 counting `562` → 7 beasts `3212` → 8 coin tally `SOLE` → 9 word chain `1486` → 10 rebus `104` → 11 king's escape `253` → 12 raven `2648` → 13 final `1972`. Every puzzle's props are in hand by its lock (checked against the records). Difficulty estimates now run 2, 2, 2 (locks 5–7) then 3 from lock 8 on. The Brattahlíð ticket now arrives with LD at lock 6 instead of at the start; the ruler is loose in the main compartment (lock 4); the tally comes with the coins (lock 7). The table below is the 7 Oct order, kept as history; the current table is in Q-001.
 
 

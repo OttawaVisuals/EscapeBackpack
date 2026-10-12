@@ -12,7 +12,7 @@ source: print
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-011
 # Physical pocket/container or location; availability remains in found_in above.
-container: Large pouch, in the main compartment (lock 10)
+container: Envelope 10
 after_game: return
 # Any related record IDs, e.g. [PZ-002, Q-004]
 links: []
@@ -28,6 +28,9 @@ tags: [old-PR-09]
 **Approved, 25 Sept 2026:** handwritten board, retained organic smudge, “ticket was still wet” note and matching mirrored ticket reverse. [Current previews and all five PDFs] are built. This supersedes the old “map not built / artwork unfinished” status and glue explanation.
 Print Harald's two-sided map and the ticket at **100% / actual size**, with no fit-to-page scaling. Hold the ticket to the light: the reflected I–K strip must become readable and align with the map's 0.4-inch grid. The transfer area must have no conflicting print on the opposite face; choose stock that allows read-through. Check that the smudge looks convincing and leaves enough grid visible to align it.
 Test the map on the intended stock and laminate: neither its front reference grid nor its back setup should ghost through enough to confuse the other face. Digital geometry is checked; **physical print, read-through and laminate tests remain open**.
+
+
+**11 Oct 2026 (playtest 1 feedback, built same day):** **front mini-board replaced.** The 5×5 board with king and four dark pieces was read as a setup to copy. It is now a three-square strip, dark · light (struck out) · dark, captioned “trapped between two: captured”, illustrating the capture rule (chosen in chat over removing it or a king drawing). Built in `Props/Hnefatafl/build_ticket_pdf.py`; render and print-test docx rebuilt.
 
 ## Starting state
 

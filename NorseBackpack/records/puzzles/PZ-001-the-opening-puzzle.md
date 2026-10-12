@@ -18,10 +18,10 @@ difficulty: 1
 lock: 4-digit
 answer: 1021
 # Compartment this lock closes (shown on the Locks tab)
-container: Front pocket
+container: Envelope 1
 reset_display: 0000
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
-hint_title: Lock 1
+hint_title: The box, before any envelope
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.
 publish_hints: yes
 # Independent of design/build status: untested | passed | changes-needed
@@ -39,15 +39,17 @@ tags: [old-PZ-13, old-PC-01]
 
 ## How it works
 
-Two luggage tags on the bag carry four digits between them. The first postcard says which pair comes first.
+Two luggage tags on the box carry four digits between them. The first postcard says which pair comes first.
 
 Lock 1 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 1 of 3 is Claude's estimate from the mechanism (number of props and steps), not playtest data.
 
 **9 Oct 2026 (designer, Q-001):** now lock 1 of 13. Compartment: front pocket.
 
+**11 Oct 2026 (designer, PR-007):** no locks or pockets any more. This code, set on the rune cypher wheel (PP-047), points to envelope 1, which holds what lock 1 used to close.
+
 ## Player notices
 
-The first postcard, which is from L’Anse aux Meadows, and the two luggage tags attached to the backpack. Each tag has a printed “If found, please return to” line that Liv never filled in properly — instead she hand-wrote the address of a hotel she stayed at, and the street number is the only number on the tag.
+The first postcard, which is from L’Anse aux Meadows, and the two luggage tags attached to the box (how they attach: Q-047). Each tag has a printed “If found, please return to” line that Liv never filled in properly — instead she hand-wrote the address of a hotel she stayed at, and the street number is the only number on the tag.
 
 ## Player does
 
@@ -67,7 +69,7 @@ Postcard L1 names L’Anse aux Meadows as the place it comes from. **28 Sept 202
 
 ## Hints
 
-1. Everything you need is already outside the bag.
+1. Everything you need is already outside the envelopes.
 2. Both tags carry a hand-written address. Only one of them is in a place you have seen before.
 3. The postcard names L’Anse aux Meadows. That tag goes first.
 

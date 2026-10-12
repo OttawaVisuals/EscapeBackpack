@@ -3,7 +3,7 @@ id: PP-046
 title: Lock number stickers
 type: prop
 # idea | candidate | decided | built | parked
-status: built
+status: parked
 # physical | printed | digital
 form: printed
 # make | buy | print | 3d-print
@@ -17,9 +17,11 @@ after_game: none
 # Any related record IDs, e.g. [PZ-002, Q-004]
 links: []
 # Set to an ID when this record is replaced. It then moves to the Parked tab.
-superseded_by:
+superseded_by: PP-047
 tags: []
 ---
+
+**Parked 11 Oct 2026 (PR-007):** no padlocks any more, so no lock stickers. Envelopes carry rune labels from the cypher wheel builder instead (PP-047).
 
 Longship stickers numbered 1–13, one per lock in solve order (PZ-001 to PZ-013), so the lock numbers match the hint page. Locks were already to be labelled 1–13 directly on the body (Q-001).
 

@@ -1,12 +1,10 @@
-# Space Station Aurora — public-facing mark
+# Space Station Aurora — approved icon 01
 
-The station silhouette is the chosen public-facing icon for Space Station Aurora (26 September 2026). It uses the hub, connected modules, and solar arrays from the station blueprint as a simplified badge. The icon, wide banner, and palette/type reference are supplied as editable SVG and PNG files here.
+On 7 October 2026 the designer selected review icon 01 and requested deletion of the other reviewed icons. `icon.svg` is the editable master and `icon.png` is its 512 px export. The current banner uses this same design.
 
-The existing maple-leaf `Images/StationAuroraPatch.png` remains part of the fictional station identity used by in-world documents and props. This brand badge identifies the adventure in project listings and previews.
+Navy `#16253C`, white `#F4F7FA`; orange `#A84420` remains the banner/action accent. Use this icon for public and in-world identity.
 
-Colors follow the Aurora visual guide: navy `#16253C`, emergency orange `#A84420`, with white and cool blue support. The banner currently uses a portable Arial fallback; the guide calls for Orbitron on short display text and Aptos for longer reading.
-
-The SVGs are the resizing masters. PNG exports: `icon.png` 512 × 512, `banner.png` 1200 × 630, `palette-type.png` 1200 × 680.
+The authoritative copy is `Space-Station-Aurora/source/Brand/icon.svg` in the workspace. Shared branding and website icon copies are synchronized. Alternate standalone patch exports, source-reference copies in the image/patch folders and logo v2–v7 were deleted. Medallion manufacturing inputs and existing print packages remain outside this icon cleanup. Nothing was published.
 
 ## Illustrated adventure cover
 

@@ -12,7 +12,7 @@ source: print
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-009
 # Physical pocket/container or location; availability remains in found_in above.
-container: Large pouch, in the main compartment (lock 6)
+container: Envelope 6
 after_game: return
 reset_name: Postcard: Brattahlíð
 # Any related record IDs, e.g. [PZ-002, Q-004]
@@ -21,6 +21,8 @@ links: []
 superseded_by:
 tags: []
 ---
+
+**11 Oct 2026 (PR-007):** the backpack is now a box, and pockets and pouches are envelopes. Where this record mentions the bag, a pocket, a pouch or a lock, that is the earlier format; the `container` field gives the envelope.
 
 Postcard LD, Brattahlíð (decoy). 5 × 3.5 in, printed front and back. Message and Fun Fact are built by `Postcards/build_postcard_LD_pdf.py`. Print file: [Postcard_LD_Brattahlid_Print.pdf](../Web/pdf/Postcard_LD_Brattahlid_Print.pdf).
 

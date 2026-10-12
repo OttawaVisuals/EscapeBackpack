@@ -18,11 +18,10 @@ difficulty: 2
 lock: 3-digit
 answer: 562
 # Compartment this lock closes (shown on the Locks tab)
-container: Large pouch, in the main compartment
+container: Envelope 6
 reset_display: 000
-container_in: PZ-004
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
-hint_title: Lock 6
+hint_title: Just opened ᚷᛉᛟᛇ
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.
 publish_hints: yes
 # Independent of design/build status: untested | passed | changes-needed
@@ -45,6 +44,11 @@ Three Rollo-trail fronts each hide a count of one repeated object. Their Fun Fac
 Lock 9 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 2 of 3 is Claude's estimate from the mechanism (number of props and steps), not playtest data.
 
 **9 Oct 2026 (designer, Q-001):** now lock 6 of 13. Compartment: large pouch, in the main compartment.
+
+**11 Oct 2026 (designer, PR-007):** no locks or pockets any more. This code, set on the rune cypher wheel (PP-047), points to envelope 6, which holds what lock 6 used to close.
+
+
+**11 Oct 2026 (playtest 1 feedback, built same day):** players read “911” in the fun facts as something other than a year. R6 now reads “In the year 911, the Treaty of Saint-Clair-sur-Epte…” and RD “…for years before the year 911, when…” (wording chosen in chat over “AD 911” / “911 CE”). The sort order is unchanged. Separately, **Walcheren was missing from Rollo's map** (it is an “Island anchor” in `stops.js`, which the map builder skips); it now prints as a dot, like the other three decoys (PP-032).
 
 ## Player notices
 
@@ -115,3 +119,7 @@ Lock as recorded: Three-digit lock. Old page status: Decided.
 
 **All three messages and Fun Facts built,** in `build_postcard_{R1,R6,RD}_pdf.py`: R1 Châlus (plain historical statement, since evidence is `supported`), R6 Roumare (hedged legend plus the doubling hint) and RD Walcheren (hedged, ties to Rollo's own disputed pre-Normandy raiding, placed as a detour before her real Rollo-trail stops per Q-016). Backs, print PDFs and gallery entries are built for all three.
 **Still open:** what physical lock this feeds (Q-001); and placing the built double-sided-axe decoy mark on Walcheren without contradicting this illustration-counting job.
+
+## Playtest evidence
+
+**Playtest 1** (feedback relayed by the designer 11 Oct 2026; playtest date, team and hint use not recorded). “911” was confusing as a year. Walcheren could not be found on the map. Changes above; test_status stays untested until retested.

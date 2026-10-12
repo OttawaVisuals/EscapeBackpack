@@ -18,10 +18,10 @@ difficulty: 2
 lock: 4-digit
 answer: 3212
 # Compartment this lock closes (shown on the Locks tab)
-container: Inside lockable pocket 1
+container: Envelope 7
 reset_display: 0000
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
-hint_title: Lock 7
+hint_title: Just opened ᛈᛏᛟᛇ
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.
 publish_hints: yes
 # Independent of design/build status: untested | passed | changes-needed
@@ -44,6 +44,8 @@ A hidden imprint on the decoy card points to one square of Leif’s sea chart. T
 Lock 5 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 2 of 3 is Claude's estimate from the mechanism (number of props and steps), not playtest data.
 
 **9 Oct 2026 (designer, Q-001):** now lock 7 of 13. Compartment: inside lockable pocket 1.
+
+**11 Oct 2026 (designer, PR-007):** no locks or pockets any more. This code, set on the rune cypher wheel (PP-047), points to envelope 7, which holds what lock 7 used to close.
 
 ## Player notices
 

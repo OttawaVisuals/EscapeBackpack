@@ -364,3 +364,15 @@
 body.dragging-prop #prop-tools{display:none}
 /* Both faces of the note take the same space in the close-up. */
 .note-view .note-paper,.note-view .note-back{min-height:590px;height:auto}
+
+/* Magnifier lens, end-of-game summary, feedback form. */
+.lens{position:fixed;z-index:40;width:190px;height:190px;border-radius:50%;overflow:hidden;border:3px solid var(--amber);box-shadow:0 8px 24px #0008,inset 0 0 18px #0005;pointer-events:none;background:#e3e6d7}
+.lens[hidden]{display:none}
+.lens-clone{position:absolute;left:0;top:0;margin:0;overflow:auto;background:#e3e6d7;transform-origin:0 0;pointer-events:none}
+.lens-clone.comparing{display:flex;overflow:hidden}
+#inspector-content.lens-on{cursor:crosshair}
+.ending-stats{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:10px 0 14px;font-size:14px}.ending-stats dt{color:var(--muted)}.ending-stats dd{margin:0;font-weight:600}
+.ending-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+#feedback-dialog{width:min(560px,94vw)}#feedback-form label{display:block;margin:12px 0 4px;font-size:13px;font-weight:600}#feedback-form textarea,#feedback-form input[type=email],#feedback-form select{width:100%;padding:8px;border:1px solid #b8c3aa;border-radius:5px;background:#fffdf6;font:inherit}
+#feedback-form textarea{height:120px;resize:vertical}#feedback-form label.check{display:flex;gap:8px;align-items:flex-start;font-weight:400;margin-top:12px}#feedback-form label.check input{margin-top:3px}
+#fb-result{font-size:13px;min-height:18px}

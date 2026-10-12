@@ -189,7 +189,7 @@
   // The table's size: the stage's, or the tight one Tidy made (state.table) until something needs the full table again.
   const tableSize = (stage, state) => { if (state?.table) return state.table; const [w, h] = sizes[Math.min(stage, sizes.length - 1)]; return { w, h }; };
   // Retain the original key/version so earlier opening saves continue.
-  const fresh = () => ({ game: 'hiking-opening', version: 1, stage: 0, pieces: {}, lines: [], sudoku: [...givens], hints: locks.map(() => 0), ratings: locks.map(() => 0), table: null, played: 0, lockTime: locks.map(() => 0), itemNotes: {}, notes: '', calculator: { expression: '', result: '' },
+  const fresh = () => ({ game: 'hiking-opening', version: 1, stage: 0, pieces: {}, lines: [], sudoku: [...givens], hints: locks.map(() => 0), ratings: locks.map(() => 0), table: null, played: 0, lockTime: locks.map(() => 0), attempts: locks.map(() => []), itemNotes: {}, notes: '', calculator: { expression: '', result: '' },
     found: [], satellite: { built: 0, on: false, x: 40, y: 60, rot: 35 }, otter: [...boards.otter.start], map: [...boards.map.start], mapLines: [],
     push: { square: { actions: [] }, flat: { actions: [] } }, cube: {}, figures: Array.from({ length: 5 }, () => ({})) });
   // The letters on each wheel of the four-letter padlock (Master Lock 643DWD): the letters that occur in each position of the
@@ -353,6 +353,7 @@
     state.ratings = state.ratings.map((_, i) => integer(raw.ratings?.[i], 0, 5) ? raw.ratings[i] : 0);
     const ms = n => Number.isFinite(n) && n >= 0 ? Math.min(n, 1e9) : 0;      // play time in ms, at most about 11 days
     state.lockTime = state.lockTime.map((_, i) => ms(raw.lockTime?.[i])); state.played = ms(raw.played);
+    state.attempts = state.attempts.map((_, i) => Array.isArray(raw.attempts?.[i]) ? raw.attempts[i].filter(x => typeof x === 'string').slice(0, 30).map(x => x.slice(0, 12)) : []);
     if (raw.itemNotes && typeof raw.itemNotes === 'object') for (const [id, text] of Object.entries(raw.itemNotes)) if (items[id] && typeof text === 'string' && text.trim()) state.itemNotes[id] = text.slice(0, 1000);
     for (const id of available(state.stage, state.found)) {
       const p = raw.pieces?.[id], item = items[id];

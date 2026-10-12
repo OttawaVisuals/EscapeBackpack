@@ -64,7 +64,7 @@ CUT_PAD_IN = CUT_GAP_IN + CUT_LINE_IN + 0.02
 TICKETS = {
     "MuseumTicket": {"pdf": PDF_DIR / "Museum_Ticket_Print.pdf", "w_in": 2.0, "h_in": 5.5},
     "RouenTicket": {"pdf": PDF_DIR / "Rouen_Ticket_Print.pdf", "w_in": 2.0, "h_in": 3.0},
-    "HnefataflTicket": {"pdf": PDF_DIR / "Hnefatafl_Ticket_Print.pdf", "w_in": 2.6, "h_in": 6.6},
+    "HnefataflTicket": {"pdf": PDF_DIR / "Hnefatafl_Ticket_Print.pdf", "w_in": 2.6, "h_in": 5.2},
     # Page 3 of Aud_Ticket_Print.pdf is the filled-in answer copy -- never printed for players.
     "AudTicket": {"pdf": PDF_DIR / "Aud_Ticket_Print.pdf", "w_in": 3.0, "h_in": 4.0},
 }

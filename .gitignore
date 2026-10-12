@@ -45,6 +45,7 @@ NorseBackpack/**/*.ttf
 NorseBackpack/**/*.otf
 NorseBackpack/**/*.mp4
 NorseBackpack/**/*.mov
+!NorseBackpack/Art/Box/Raven_Inheritance_Box_Cover_A_v1.png
 !NorseBackpack/Art/Brand/Norse_Backpack_Scene_v1.png
 !NorseBackpack/Art/FinalPuzzle/Family_Crest_Six_Field_v2.png
 !NorseBackpack/Art/FinalPuzzle/Family_Symbol_Three_Field_v2.png
@@ -62,6 +63,10 @@ NorseBackpack/**/*.mov
 !NorseBackpack/Art/Raven/Raven_Profile_Icon_v1.png
 !NorseBackpack/Art/Raven/Raven_Profile_Knotwork_Frame_v1.png
 !NorseBackpack/Art/Raven/Raven_Spread_Wing_Emblem_v1.png
+!NorseBackpack/Digital/assets/Hnefatafl_Ticket_Light.webp
+!NorseBackpack/Digital/assets/Medallion_Back.webp
+!NorseBackpack/Digital/assets/Medallion_Front.webp
+!NorseBackpack/Digital/assets/Raven_Postmark.png
 !NorseBackpack/Props/Coins/01_dirham_common.png
 !NorseBackpack/Props/Coins/02_dirham_rare.png
 !NorseBackpack/Props/Coins/03_denier_common.png
@@ -75,9 +80,14 @@ NorseBackpack/**/*.mov
 !NorseBackpack/Props/Comb/knotwork.png
 !NorseBackpack/Props/Hnefatafl/Hnefatafl_Incomplete_Board_Sketch_v3.png
 !NorseBackpack/Props/Hnefatafl/Hnefatafl_Transferred_Ink_Paper_v1.png
+!NorseBackpack/Props/LockStickers/Concepts/A-standing-stone-6.png
+!NorseBackpack/Props/LockStickers/Longship_Blank_Sail.png
 !NorseBackpack/Props/Medallion/Medallion_Print_Files.zip
-!NorseBackpack/Props/Medallion/Medallion_v2_Preview.png
+!NorseBackpack/Props/Medallion/Medallion_Print_Files_v2.zip
+!NorseBackpack/Props/Medallion/Medallion_v3_Preview.png
+!NorseBackpack/Props/Medallion/STL/Norse_Back_Lettering_Test_1.2mm_v3.stl
 !NorseBackpack/Props/Medallion/STL/Norse_Medallion_OnePiece_v2.stl
+!NorseBackpack/Props/Medallion/STL/Norse_Medallion_OnePiece_v3.stl
 !NorseBackpack/Props/Medallion/sources/Crest_Detailed_v2.png
 !NorseBackpack/Props/Medallion/sources/Selected_Back_Reference.png
 !NorseBackpack/Props/Medallion/sources/Selected_Front_Reference.png
@@ -92,6 +102,7 @@ NorseBackpack/**/*.mov
 !NorseBackpack/Props/_Renders/Hnefatafl_Ticket_Back.png
 !NorseBackpack/Props/_Renders/Hnefatafl_Ticket_Front.png
 !NorseBackpack/Props/_Renders/Journal_Family_Iconography_Page.png
+!NorseBackpack/Props/_Renders/Lock_Stickers_Sheet.png
 !NorseBackpack/Props/_Renders/Luggage_Tag_Inserts_Sheet.png
 !NorseBackpack/Props/_Renders/Museum_Ticket_Back.png
 !NorseBackpack/Props/_Renders/Museum_Ticket_Front.png
@@ -240,3 +251,5 @@ NorseBackpack/**/*.mov
 !NorseBackpack/Web/pdf/Transition_Tickets_Print.pdf
 !NorseBackpack/assets/logo.png
 # <<< Norse web assets
+# backpack-kit build output for the Norse records (rebuild with kit.py build)
+NorseBackpack/site/

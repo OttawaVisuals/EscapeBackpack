@@ -1,40 +1,59 @@
-# Norse keepsake — one-piece medallion v2
+# Norse keepsake - one-piece medallion v3
 
-**Print file: [Norse_Medallion_OnePiece_v2.stl](STL/Norse_Medallion_OnePiece_v2.stl).** One connected solid; no glue or assembly. Import at 100%, in millimetres.
+Current model: [Norse_Medallion_OnePiece_v3.stl](STL/Norse_Medallion_OnePiece_v3.stl).
+[Complete print package](Medallion_Print_Files.zip).
+Import in millimetres at 100%. One connected solid; no glue or assembly.
 
-## Size and orientation
+## What changed
+At the designer's request on 2026-10-05, the back now uses the approved Space
+medallion layout. "ESCAPE BACKPACK" has 4.0 mm capital height, Arial Regular
+outlines, and wider spacing. The closest brand-letter pair is 0.831 mm apart.
+The main words have 4.6 mm capital height. Text, compass and border are engraved
+0.4 mm deep. Minimum text-to-border clearance is 1.321 mm.
 
-- Diameter: 50 mm. Total thickness: 4.4 mm.
-- Print as supplied: engraved lettering/compass **down**, detailed raven crest **up**.
-- Body: 3.8 mm. Crest: 0.6 mm raised above it.
-- Back text and compass: 0.4 mm recessed. Same filament as the body.
-- All lettering stays inside the engraved border, with at least 1.21 mm clearance. The back is mirrored in the build coordinates so it reads correctly when the coin is turned over.
+The raven, shield, feather channels and ornaments on the front are retained
+from v2. The build compares the top front profile extracted from both exported
+STLs and requires their symmetric difference to be effectively zero. The
+existing top-side body groove is also retained. Earlier v2 files remain at
+their original paths; [README_v2.md](README_v2.md) records that revision.
 
-## Starting print setup
+## Print setup
+- Diameter: 50 mm. Body: 3.8 mm. Front relief: 0.6 mm. Total: 4.4 mm.
+- Print **engraved back DOWN, raven front UP**, at full size.
+- Shared-kit assumption: stock 0.4 mm nozzle on a Prusa i3 MK3S+.
+  Use the profiles for the actual printer and material.
+- Use 0.20 mm layers, including the first layer; supports and raft OFF.
+- Dark-blue body, yellow front: add one manual colour change immediately before
+  layer 20 / Z = 4.00 mm. The body ends at 3.80 mm. Single-colour printing needs
+  no pause. STL files contain neither colour assignments nor G-code.
+- Review the first two layers and the engraving roof in the slicer.
+  The small solid centres of A/B/P are intentional. Extra material across
+  letter grooves can also come from first-layer spreading or short bridges.
+  Enlarged text is a geometry improvement, not a guaranteed printer fix.
 
-Recorded printer: Prusa i3 MK3S+, stock 0.4 mm nozzle.
+## Lettering test first
+[Back-only trial](STL/Norse_Back_Lettering_Test_1.2mm_v3.stl): a 50 mm disk,
+1.2 mm thick, using the same back at full size. Print engraved back DOWN.
+At 0.20 mm layers it reproduces the first six body layers with no colour change.
+Check S, B and K before printing the complete keepsake.
 
-Use 0.20 mm layer height **including the first layer**: 19 body layers, then 3 crest layers. Keep supports and raft off for this design. Use the printer profile and temperature appropriate to your actual filament; no material has been specified, so this package contains STL geometry rather than machine G-code.
+## Validation and rebuilding
+The model and trial STL pass exported-mesh closure, winding, connectivity,
+non-degenerate facet and positive-volume checks. Mesh volume is compared with
+the analytic polygon layers. The geometry preview and readable back SVG are
+screen-reviewed. **No printer-profile slice or physical test of v3 is recorded.**
 
-**Optional second colour:** in PrusaSlicer, add a colour change immediately before the first crest layer, layer 20 / Z = 4.00 mm with the settings above. The body finishes at Z = 3.80 mm. Only the crest and its surrounding ornaments are above that height; the coin rim stays the body colour. A single-filament print needs no pause. Changing colours requires one manual filament swap during the same print job.
+Rebuild: `python NorseBackpack/Props/Medallion/build_medallion_v3.py` from the
+repository root, or run `build_medallion.py` beside the model.
+Shared geometry: `Tools/medallion_cad.py`; front trace: `build_medallion_v2.py`.
+Requires numpy, Pillow, OpenCV, matplotlib, Shapely 2.1+ and Windows Arial fonts.
 
-[Prusa's colour-change instructions](https://help.prusa3d.com/article/color-change_1687) explain the layer-slider action and M600 pause. The STL itself does not contain the pause or colours.
+- `Medallion_v3_Preview.png`: exact front/back geometry preview.
+- `Front_Relief_v3.svg`, `Back_Engraving_v3.svg`: 50 mm profiles.
+- `geometry_report_v3.json`: measured text gaps and v2 front comparison.
+- `mesh_check_v3.json`, `lettering_test_mesh_check_v3.json`: mesh validation.
+- `sources/Crest_Detailed_v2.png`: retained manufacturing mask.
+- `Medallion_Print_Files_v2.zip`: preserved earlier print package.
 
-## Detail and limits
-
-The crest is traced from a new detailed mask based on the selected right-hand raven/shield concept. It retains layered neck, wing and tail feathers, beak, eye, shield and four ornaments. Fine feather channels are widened by 0.16 mm; two tiny isolated fragments that cannot contain a 0.4 mm line are removed. This is a flat 0.6 mm relief translation of the concept, not a recreation of its metallic texture or sculpted shading.
-
-The compass uses shallow outline engraving to keep underside bridge spans short. Physical printing is still needed to check underside letter counters, first-layer spread, bridging and the smallest feather tips. Do not scale this model down before checking those details.
-
-## Files and rebuilding
-
-- `Medallion_v2_Preview.png`: exact profile geometry shown from both sides; colours are illustrative.
-- `Crest_Relief_v2.svg`, `Back_Engraving_v2.svg`: profiles at actual 50 mm canvas size; back SVG reads normally.
-- `build_medallion_v2.py`: editable source. Run `python build_medallion_v2.py` to rebuild the STL, profiles, preview and geometry report. Requires numpy, Pillow, opencv, matplotlib and Shapely 2.1+. Font outlines use Windows Arial Bold.
-- `Inspect_Mesh_v2.scad`: opens the exported STL in OpenSCAD; set `PART="back"` to turn it over.
-- `sources/`: selected reference sheets and generated crest mask. The selected design is the right coin in each reference sheet.
-- `crest_prompt.txt`: exact prompt used with the built-in ImageGen tool.
-- `geometry_report_v2.json`, `mesh_check_v2.json`: measured dimensions/clearances and mesh checks.
-- `Superseded_v1/`: rejected glue-together prototype retained only as history. Do not print those halves for the current design.
-
-No physical print or printer-profile slicing has been completed for v2.
+Official references: [colour change](https://help.prusa3d.com/article/color-change_1687),
+[first-layer compensation](https://help.prusa3d.com/article/elephant-foot-compensation_114487).

@@ -16,7 +16,8 @@ It does four things:
    150 dpi copies in NorseBackpack/Web/pdf/. Only quoted paths are
    rewritten (src/href attributes and JS strings), never prose.
 2. Rebuilds any web copy that is missing or older than its source.
-3. Crawls the site from index.html and rewrites the Norse block in
+3. Crawls the site from index.html (plus the files the Norse records'
+   asset `file:` fields use) and rewrites the Norse block in
    .gitignore: binary files under NorseBackpack/ are ignored unless the
    site uses them; output/pdf/ and output/docx/ are ignored outright.
    Text sources (.py, .md, .html, .js, .css, .json, .svg) stay committed.
@@ -91,6 +92,19 @@ def crawl() -> set[str]:
             if q:
                 queue.append(q)
     return seen
+
+
+def record_files() -> set[str]:
+    """Files the Norse backpack-kit records use (asset `file:` fields, 8 Oct 2026).
+
+    The design board is built from NorseBackpack/records/, not crawled from
+    index.html, so its images would otherwise be ignored."""
+    out = set()
+    for md in (ROOT / NORSE / "records").glob("*/*.md"):
+        m = re.search(r"^file:[ \t]*(\S+)[ \t]*$", md.read_text(encoding="utf-8"), re.M)
+        if m and (ROOT / NORSE / m.group(1)).is_file():
+            out.add(NORSE + m.group(1))
+    return out
 
 
 def web_path(src: str) -> str | None:
@@ -238,7 +252,7 @@ def main() -> int:
 
     mapping = rewrite_links(crawl())
     build_copies(set(mapping) | existing_web_sources())
-    write_gitignore(crawl())
+    write_gitignore(crawl() | record_files())
     if args.untrack:
         untrack()
     return 0

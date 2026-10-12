@@ -12,7 +12,7 @@ source: print
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-001
 # Physical pocket/container or location; availability remains in found_in above.
-container: Front pocket (lock 1)
+container: Envelope 1
 after_game: return
 reset_name: Postcard: Battle Harbour (Markland)
 # Any related record IDs, e.g. [PZ-002, Q-004]
@@ -21,6 +21,8 @@ links: []
 superseded_by:
 tags: []
 ---
+
+**11 Oct 2026 (PR-007):** the backpack is now a box, and pockets and pouches are envelopes. Where this record mentions the bag, a pocket, a pouch or a lock, that is the earlier format; the `container` field gives the envelope.
 
 Postcard L2, Battle Harbour (Markland). 5 × 3.5 in, printed front and back. Message and Fun Fact are built by `Postcards/build_postcard_L2_pdf.py`. Print file: [Postcard_L2_Battle_Harbour_Print.pdf](../Web/pdf/Postcard_L2_Battle_Harbour_Print.pdf).
 

@@ -12,7 +12,7 @@ source: print
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-006
 # Physical pocket/container or location; availability remains in found_in above.
-container: Front right pocket (lock 5)
+container: Envelope 5
 after_game: return
 reset_name: Postcard: Roumare Forest
 # Any related record IDs, e.g. [PZ-002, Q-004]
@@ -21,6 +21,8 @@ links: []
 superseded_by:
 tags: []
 ---
+
+**11 Oct 2026 (PR-007):** the backpack is now a box, and pockets and pouches are envelopes. Where this record mentions the bag, a pocket, a pouch or a lock, that is the earlier format; the `container` field gives the envelope.
 
 Postcard R6, Roumare Forest. 5 × 3.5 in, printed front and back. Message and Fun Fact are built by `Postcards/build_postcard_R6_pdf.py`. Print file: [Postcard_R6_Roumare_Forest_Print.pdf](../Web/pdf/Postcard_R6_Roumare_Forest_Print.pdf).
 
@@ -67,6 +69,9 @@ Use case: precise-object-edit. This is a greatly magnified crop from a forest po
 **Final full-illustration prompt**
 Use case: precise-object-edit. Image 1 is the full postcard illustration and output composition. Image 2 is a magnified corrected crop from image 1. Transfer ONLY the corrected small boar anatomy from image 2 into the matching small boar on the middle-right background path of image 1, behind the main deer. Match the corrected rounded rump, short curled tail, and distinct hind legs from image 2. Remove the old long pointed rear snout shape in image 1 completely. Keep the right-facing head and all the rest of the full illustration exactly as it is. Maintain all three boars, deer, forest, trail and navy lower panel. Output full postcard art with same framing as image 1.
 ```
+
+
+**11 Oct 2026 (playtest 1 feedback, built same day):** Fun Fact now opens “In the year 911,” (PZ-009).
 
 ## Starting state
 

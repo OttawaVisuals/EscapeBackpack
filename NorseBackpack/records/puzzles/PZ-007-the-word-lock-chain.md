@@ -18,11 +18,10 @@ difficulty: 3
 lock: 4-digit
 answer: 1486
 # Compartment this lock closes (shown on the Locks tab)
-container: Small pouch, in the main compartment
+container: Envelope 9
 reset_display: 0000
-container_in: PZ-004
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
-hint_title: Lock 9
+hint_title: Just opened ᛏᚾᚠᛖ
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.
 publish_hints: yes
 # Independent of design/build status: untested | passed | changes-needed
@@ -45,6 +44,11 @@ Four English word pairs split along the Norman Conquest’s class line. The Roue
 Lock 7 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 3 of 3 is Claude's estimate from the mechanism (number of props and steps), not playtest data.
 
 **9 Oct 2026 (designer, Q-001):** now lock 9 of 13. Compartment: small pouch, in the main compartment.
+
+**11 Oct 2026 (designer, PR-007):** no locks or pockets any more. This code, set on the rune cypher wheel (PP-047), points to envelope 9, which holds what lock 9 used to close.
+
+
+**11 Oct 2026 (playtest 1 feedback, built same day):** the Ducal ticket is now 11 pairs, properly jumbled (PP-033). Answer squares I6, A3, B9, F7 and code 1486 unchanged.
 
 ## Player notices
 
@@ -112,3 +116,7 @@ Lock as recorded: 4-digit numeric combo lock — hardware not owned yet. Old pag
 **Order-clue text, decided — and the puzzle now has a real answer.** The Rouen postcard (stop 2, postcard R2) carries it — see Q-019 for the full message and Fun Fact. Current embedded order: **fight, people, poultry, inn**. Resolved against the coordinates and squares-distances above, that fixes the numeric lock's actual combination in solve order: `1486`.
 **Superseded record, kept for history:** the original six-word order (fight, forest, cow, people, poultry, inn) and the directional-lock reading it produced (`RIGHT, DOWN, DOWN, UP, LEFT, LEFT`) are dropped in favour of the above.
 **Still open:** which physical lock the numeric clue feeds, and what it releases (Q-001); whether six dropped scenery labels on Rollo's sheet are an acceptable cost or need the icon boxes shrunk; and rebuilding the ticket/postcard print PDFs against the new four-word chain and message text.
+
+## Playtest evidence
+
+**Playtest 1** (feedback relayed by the designer 11 Oct 2026; playtest date, team and hint use not recorded). Ticket list too easy: some pairs lined up straight across. Ticket rebuilt (PP-033); retest needed.

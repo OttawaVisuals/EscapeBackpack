@@ -1,6 +1,6 @@
 ---
 id: PP-045
-title: Liv's field bag
+title: Liv's box (was her field bag)
 type: prop
 # idea | candidate | decided | built | parked
 status: decided
@@ -12,7 +12,7 @@ source: buy
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: start
 # Physical pocket/container or location; availability remains in found_in above.
-container: The backpack itself
+container: The box itself
 after_game: none
 # Any related record IDs, e.g. [PZ-002, Q-004]
 links: []
@@ -20,6 +20,8 @@ links: []
 superseded_by:
 tags: []
 ---
+
+**11 Oct 2026 (designer, PR-007):** the field bag is replaced by a box, 11.5 × 11.5 × 2 in (Q-046), with every envelope loose inside. The candidate backpack and the canvas pouches below are superseded, and so are the lock purchases; there are no locks. The rest of the prop kit still stands. What fits in it: Q-049. What the box is in the story: Q-047.
 
 ## From the old Props & specs tab
 

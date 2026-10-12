@@ -1,0 +1,131 @@
+{
+  "diameter_mm": 50.0,
+  "body_top_mm": 3.8,
+  "total_height_mm": 4.4,
+  "engraving_depth_mm": 0.4,
+  "front_relief_height_mm": 0.6000000000000005,
+  "front_maximum_radius_mm": 23.000000000000004,
+  "front_components": 7,
+  "front_trace": {
+    "source_pixels": [
+      1302,
+      1208
+    ],
+    "fitted_outer_yellow_ellipse": [
+      648.928955078125,
+      579.9991455078125,
+      1031.704833984375,
+      1049.12841796875,
+      82.52494049072266
+    ],
+    "removed_tiny_components": 0
+  },
+  "back": {
+    "text": {
+      "ADVENTURE": {
+        "cap_height_mm": 4.6,
+        "font": "arialbd.ttf",
+        "nominal_advance_gap_mm": 0.9829581114082586,
+        "minimum_adjacent_glyph_distance_mm": 1.0014272189090854,
+        "maximum_radius_mm": 21.75581267598856
+      },
+      "COMPLETE": {
+        "cap_height_mm": 4.6,
+        "font": "arialbd.ttf",
+        "nominal_advance_gap_mm": 2.825876862201414,
+        "minimum_adjacent_glyph_distance_mm": 0.981777177218069,
+        "maximum_radius_mm": 16.648899255673015
+      },
+      "ESCAPE BACKPACK": {
+        "cap_height_mm": 4.0,
+        "font": "arial.ttf",
+        "nominal_advance_gap_mm": 1.6149716669627014,
+        "minimum_adjacent_glyph_distance_mm": 0.8310185416945128,
+        "maximum_radius_mm": 22.179112928870552
+      }
+    },
+    "minimum_distance_between_text_groups_mm": 1.3905849554553855,
+    "minimum_text_to_compass_distance_mm": 4.819370485283858,
+    "minimum_text_to_border_distance_mm": 1.3205338821580033,
+    "letter_counter_islands": [
+      {
+        "text": "ADVENTURE",
+        "letter": "A",
+        "largest_inscribed_diameter_mm": 0.8750557441104798,
+        "survives_0_2mm_inset": true
+      },
+      {
+        "text": "ADVENTURE",
+        "letter": "D",
+        "largest_inscribed_diameter_mm": 1.9665967373571531,
+        "survives_0_2mm_inset": true
+      },
+      {
+        "text": "ADVENTURE",
+        "letter": "R",
+        "largest_inscribed_diameter_mm": 1.1668078844243417,
+        "survives_0_2mm_inset": true
+      },
+      {
+        "text": "COMPLETE",
+        "letter": "O",
+        "largest_inscribed_diameter_mm": 2.5440539915387745,
+        "survives_0_2mm_inset": true
+      },
+      {
+        "text": "COMPLETE",
+        "letter": "P",
+        "largest_inscribed_diameter_mm": 1.2987554641924113,
+        "survives_0_2mm_inset": true
+      },
+      {
+        "text": "ESCAPE BACKPACK",
+        "letter": "A",
+        "largest_inscribed_diameter_mm": 0.9390105259068737,
+        "survives_0_2mm_inset": true
+      },
+      {
+        "text": "ESCAPE BACKPACK",
+        "letter": "P",
+        "largest_inscribed_diameter_mm": 1.4302546419277318,
+        "survives_0_2mm_inset": true
+      },
+      {
+        "text": "ESCAPE BACKPACK",
+        "letter": "B",
+        "largest_inscribed_diameter_mm": 1.2093276067298513,
+        "survives_0_2mm_inset": true
+      },
+      {
+        "text": "ESCAPE BACKPACK",
+        "letter": "B",
+        "largest_inscribed_diameter_mm": 1.3752338336756202,
+        "survives_0_2mm_inset": true
+      },
+      {
+        "text": "ESCAPE BACKPACK",
+        "letter": "A",
+        "largest_inscribed_diameter_mm": 0.938846932100235,
+        "survives_0_2mm_inset": true
+      },
+      {
+        "text": "ESCAPE BACKPACK",
+        "letter": "P",
+        "largest_inscribed_diameter_mm": 1.4302530695808475,
+        "survives_0_2mm_inset": true
+      },
+      {
+        "text": "ESCAPE BACKPACK",
+        "letter": "A",
+        "largest_inscribed_diameter_mm": 0.9388164834923934,
+        "survives_0_2mm_inset": true
+      }
+    ],
+    "smallest_counter_inscribed_diameter_mm": 0.8750557441104798
+  },
+  "analytic_volume_mm3": 7704.738516948462,
+  "physical_print_test": false,
+  "printer_profile_slice": false,
+  "print_orientation": "Back engraving DOWN; yellow front relief UP",
+  "assumed_nozzle_mm": 0.4
+}

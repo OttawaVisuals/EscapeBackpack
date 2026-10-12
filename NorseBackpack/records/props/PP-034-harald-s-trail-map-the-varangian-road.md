@@ -12,7 +12,7 @@ source: print
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-011
 # Physical pocket/container or location; availability remains in found_in above.
-container: Large pouch, in the main compartment (lock 10)
+container: Envelope 10
 after_game: return
 reset_name: Map: The Varangian Road
 # Any related record IDs, e.g. [PZ-002, Q-004]

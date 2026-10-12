@@ -18,11 +18,10 @@ difficulty: 3
 lock: 3-digit
 answer: 253
 # Compartment this lock closes (shown on the Locks tab)
-container: Small pouch, in the main compartment
+container: Envelope 11
 reset_display: 000
-container_in: PZ-004
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
-hint_title: Lock 11
+hint_title: Just opened ᛚᚷᚲᛇ
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.
 publish_hints: yes
 # Independent of design/build status: untested | passed | changes-needed
@@ -45,6 +44,11 @@ Rebuild the board your aunt sketched on the back of a map, then finish the game 
 Lock 8 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 3 of 3 is Claude's estimate from the mechanism (number of props and steps), not playtest data.
 
 **9 Oct 2026 (designer, Q-001):** now lock 11 of 13. Compartment: small pouch, in the main compartment.
+
+**11 Oct 2026 (designer, PR-007):** no locks or pockets any more. This code, set on the rune cypher wheel (PP-047), points to envelope 11, which holds what lock 11 used to close.
+
+
+**11 Oct 2026 (playtest 1 feedback, built same day):** Oslo ticket front no longer shows a mini-board; it shows a capture diagram (PP-036).
 
 ## Player notices
 
@@ -69,7 +73,7 @@ The strongest physical centrepiece in the set, the only puzzle that can release 
 ## Hints
 
 1. The board is eleven columns wide. Count what you can actually see.
-2. Something was lying on the ink. It is still in the bag, and it is the right shape.
+2. Something was lying on the ink. It is still in the box, and it is the right shape.
 3. Work backward from a corner that is still reachable.
 4. F6 → H6 → H11 → K11 — then measure each leg.
 
@@ -119,3 +123,7 @@ Setup still arrives via the map back and the museum ticket (PZ-008), still on **
 - `Props/Hnefatafl/build_ticket_pdf.py` — the ticket's back panel: the same three columns, reversed and matched to the same 0.4in cell pitch, so the grid lines genuinely continue when the two sheets are butted together. The ticket grew from 2.4 × 5.6in to 2.6 × 6.6in to fit the taller three-column, eleven-row panel.
 
 Settled: the grid lines cross the join so registration is self-verifying; the stain leaves the gap visible rather than implied; both marks are printed rather than real ink so the prop resets. **New candidate · recorded 2026-09-15:** 3D-print the attacker and defender pieces with controlled, concealed weights and a letter or rune on each base. Weigh and order the attackers light-to-heavy to read one sentence/word; weigh and order the defenders separately to read a second. A dark attacker and light defender may share a weight, so players must understand and group the two sides before ordering. The 16 attackers can carry the longer instruction; the 6 defenders suit a short word. Keep this separate from the board-reconstruction/king-escape solve: it is a later Oslo branch using the same pieces, not another condition of setting up the board. **Open:** which exact two texts the sides yield; target masses, ballast method and base-letter treatment; and whether the attacker/defender weights remain stable through repeated 3D-printing. Harald's actual trail map sheet is now built; the insert panel still needs compositing onto its back. Which specific board to buy is still open (PP-035), though the board size itself (11×11) and the A–H/I–K split are now settled regardless of which listing is chosen. **Updated, 25 Sept 2026:** Harald’s map sheet exists and `build_trail_maps_pdf.py` composites the board setup onto its back. What remains is the stock and read-through test in PP-036, and the board purchase in PP-035.
+
+## Playtest evidence
+
+**Playtest 1** (feedback relayed by the designer 11 Oct 2026; playtest date, team and hint use not recorded). The simplified board drawing on the Oslo ticket was confusing (read as a setup). Replaced (PP-036); retest needed.

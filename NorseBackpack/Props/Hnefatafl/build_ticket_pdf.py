@@ -7,8 +7,8 @@ puzzle's own house rules. Liv's actual task ("get him to a corner in exactly
 three moves") lives on the Oslo postcard instead, matching PZ-01's decided
 line: "Her task, on a postcard."
 
-Back is almost entirely the blank end panel PZ-07 calls for: a short
-reconstruction-caveat line up top, then the mirrored three-column offset
+Back is only the end panel PZ-07 calls for, with no text beyond the
+mirrored column letters: the mirrored three-column offset
 (columns I, J, K reversed to read K, J, I) that completes the map-back setup
 panel (build_board_setup_pdf.py) when the two are butted together on their
 shared grid lines. Geometry comes from board_layout.py so the two panels can
@@ -44,11 +44,10 @@ FONT_DIR = ROOT / "Fonts"
 pdfmetrics.registerFont(TTFont("CinzelExtraBold", str(FONT_DIR / "Cinzel" / "static" / "Cinzel-ExtraBold.ttf")))
 pdfmetrics.registerFont(TTFont("CinzelBold", str(FONT_DIR / "Cinzel" / "static" / "Cinzel-Bold.ttf")))
 
-# 2.6 x 6.6in portrait -- tall enough for the front's full rules text and the
-# back's offset panel (3 columns x 11 rows at the shared CELL size) with real
-# margins. Grew from the 7x7 layout's 2.4 x 5.6in now that the hidden strip
-# is 3 columns of 11 rows instead of 2 columns of 7.
-PAGE = portrait((2.6 * 72, 6.6 * 72))
+# 2.6 x 5.2in portrait -- sized to the back's offset panel (3 columns x 11 rows
+# at the shared CELL size, plus its column letters) with even margins; the
+# front's rules text fits inside the same height.
+PAGE = portrait((2.6 * 72, 5.2 * 72))
 W, H = PAGE
 LETTER = (8.5 * 72, 11 * 72)
 
@@ -70,14 +69,6 @@ RULES_LINES = [
     "The king escapes by reaching a corner.",
     "The attackers win by trapping him first.",
 ]
-
-CAVEAT = (
-    "No complete Viking-Age tafl ruleset survives to us today. "
-    "What you see here is one modern reconstruction, pieced "
-    "together from fragments, later sagas, and a fair amount "
-    "of educated guessing."
-)
-
 
 def wrap_lines(c, text, font, size, max_width):
     c.setFont(font, size)
@@ -121,22 +112,35 @@ def draw_front(c, x=0, y=0):
     c.setFont("Helvetica-Oblique", 6.6)
     c.drawCentredString(W / 2, H - 74, "the Viking game of kings and corners")
 
-    # Simple vector board icon: 5x5 mini-grid, king at centre, a few dark
-    # attacker tokens around the rim -- decorative, not the puzzle's own
-    # 11x11 asymmetric layout.
-    mini = 12
-    gx0 = (W - 5 * mini) / 2
-    gy0 = H - 200
+    # Capture diagram (playtest 1, 11 Oct 2026). This was a 5x5 mini-board with the king and
+    # four dark pieces, which players read as a starting position to copy. Now a three-square
+    # strip -- dark, light, dark -- with the light piece struck out: it shows the capture rule
+    # and cannot be mistaken for a setup. Chosen in chat over removing it or a king drawing.
+    gy0 = H - 150                       # rules below still hang from here, as before
+    cell = 18
+    sx0, sy0 = (W - 3 * cell) / 2, gy0 + 28
     c.setStrokeColor(HexColor("#59635D"))
     c.setLineWidth(0.6)
-    for i in range(6):
-        c.line(gx0 + i * mini, gy0, gx0 + i * mini, gy0 + 5 * mini)
-        c.line(gx0, gy0 + i * mini, gx0 + 5 * mini, gy0 + i * mini)
-    c.setFillColor(RUST)
-    c.circle(gx0 + 2.5 * mini, gy0 + 2.5 * mini, mini * 0.32, fill=1, stroke=0)
-    for (dx, dy) in [(2, 0), (0, 2), (4, 2), (2, 4)]:
-        c.setFillColor(INK)
-        c.rect(gx0 + dx * mini + 2, gy0 + dy * mini + 2, mini - 4, mini - 4, fill=1, stroke=0)
+    c.rect(sx0, sy0, 3 * cell, cell, fill=0, stroke=1)
+    c.line(sx0 + cell, sy0, sx0 + cell, sy0 + cell)
+    c.line(sx0 + 2 * cell, sy0, sx0 + 2 * cell, sy0 + cell)
+    r = cell * 0.3
+    c.setFillColor(INK)
+    for i in (0, 2):
+        c.circle(sx0 + (i + 0.5) * cell, sy0 + cell / 2, r, fill=1, stroke=0)
+    c.setFillColor(PAPER)
+    c.setStrokeColor(INK)
+    c.setLineWidth(0.8)
+    mx, my = sx0 + 1.5 * cell, sy0 + cell / 2
+    c.circle(mx, my, r, fill=1, stroke=1)
+    c.setStrokeColor(RUST)
+    c.setLineWidth(1.2)
+    d = r * 0.95
+    c.line(mx - d, my - d, mx + d, my + d)
+    c.line(mx - d, my + d, mx + d, my - d)
+    c.setFillColor(HexColor("#59635D"))
+    c.setFont("Helvetica-Oblique", 6.2)
+    c.drawCentredString(W / 2, sy0 - 11, "trapped between two: captured")
 
     # Rules, plain visitor-centre copy.
     ty = gy0 - 22
@@ -179,25 +183,14 @@ def draw_back(c, x=0, y=0):
     c.setLineWidth(0.7)
     c.rect(6, 6, W - 12, H - 12, fill=0, stroke=1)
 
-    c.setFillColor(INK)
-    c.setFont("Helvetica-Oblique", 6.6)
-    caveat_lines = wrap_lines(c, CAVEAT, "Helvetica-Oblique", 6.6, W - 36)
-    ty = H - 22
-    for line in caveat_lines:
-        c.drawCentredString(W / 2, ty, line)
-        ty -= 8.4
-
     # Reuse the SAME original strokes, then mirror the whole contact face.
     # This reverses tiny line irregularities and handwriting as well as positions.
     panel_w = len(HIDDEN_COLS) * CELL
     panel_h = SIZE * CELL
     ox = (W - panel_w) / 2
-    oy = ty - 14 - panel_h
+    # Centre panel plus its column letters (about 14pt above) vertically.
+    oy = (H - panel_h - 14) / 2
     draw_mirrored_panel(c, ox, oy)
-
-    c.setFillColor(HexColor("#59635D"))
-    c.setFont(HAND, 6.4)
-    c.drawCentredString(W / 2, oy - 14, "hold to the light, align on the grid lines")
 
     c.restoreState()
 

@@ -15,6 +15,8 @@ superseded_by:
 tags: [old-ST-04]
 ---
 
+**Moot since 11 Oct 2026 (PR-007):** no padlocks any more; codes go into the rune cypher wheel (PP-047) and point to envelopes.
+
 Status on the old page: **Decided, 26 Sept 2026**
 
 ~~Cannot be answered until a backpack is bought.~~ **Decided, 26 Sept 2026:** the backpack and pouches are in hand. Seven usable containers — back pocket (unlocked), main compartment, three lower outer pockets, two inside pockets — all lockable except the back pocket. Full mapping against old page PC-18’s 13 steps is under Q-001.

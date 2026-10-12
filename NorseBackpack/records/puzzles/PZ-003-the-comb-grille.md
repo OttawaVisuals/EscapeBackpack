@@ -18,10 +18,10 @@ difficulty: 1
 lock: 4-letter
 answer: BOOK
 # Compartment this lock closes (shown on the Locks tab)
-container: Left pocket (seen from the front)
+container: Envelope 3
 reset_display: LOCK
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
-hint_title: Lock 3
+hint_title: Just opened ᛒᛚᛟᛉ
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.
 publish_hints: yes
 # Independent of design/build status: untested | passed | changes-needed
@@ -44,6 +44,8 @@ Aud’s comb, laid upright on the decoy card’s message, covers every line exce
 Lock 3 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 1 of 3 is Claude's estimate from the mechanism (number of props and steps), not playtest data.
 
 **9 Oct 2026 (designer, Q-001):** now lock 3 of 13. Compartment: left pocket (seen from the front).
+
+**11 Oct 2026 (designer, PR-007):** no locks or pockets any more. This code, set on the rune cypher wheel (PP-047), points to envelope 3, which holds what lock 3 used to close.
 
 ## Player notices
 

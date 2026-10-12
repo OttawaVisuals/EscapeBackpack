@@ -75,6 +75,8 @@ ART_EXTRA_ROTATE = {"A3": 180}
 # Retested 2026-09-27 after switching to a paper-guide slider that holds the sheet snug --
 # no offset needed. Now that positions are absolute (not margin-driven), this is a direct
 # X/Y nudge added to every back-page card position. Revisit if a duplex run shows drift.
+# 2026-10-07: a 1.5 mm shift was tried after an R3/R4 miss and reverted; the Aud ticket printed
+# centred with 0 / 0 the same morning, so the miss was a feed problem, not a fixed offset.
 TEXT_SHIFT_X_IN = 0
 TEXT_SHIFT_Y_IN = 0
 
@@ -83,7 +85,12 @@ TEXT_SHIFT_Y_IN = 0
 # safely print past the trim line; the front is edge-to-edge photo art, so it stays at
 # exact trim size -- no bleed applied there. Grown symmetrically so the trim box stays
 # at the same absolute position.
-BLEED_IN = 1.5 / 25.4
+BLEED_IN = 3 / 25.4  # was 1.5 mm; doubled 2026-10-07 so a feed slip still leaves paper colour at the edge
+
+# 2026-10-07: page 1 is the text side, page 2 the art. The flat cream back uses less ink than the
+# photo art, so printing it first leaves the sheet flatter for the second pass, which is the one
+# that skewed on the Canon MG2900. Set False for the old order (art first).
+TEXT_FIRST = True
 
 # Ink-saving test mode: draw an empty outline box at each card's exact size/position
 # instead of the actual image, so the alignment fix can be checked without printing art.
@@ -191,15 +198,22 @@ def build_page(doc, card_ids, source_map, bleed_in=0, rotate_degrees=ROTATE_DEGR
 
 def build_pair(card_ids, out_name):
     doc = Document()
-    build_page(doc, card_ids, CARD_ART)
 
+    def art_page():
+        build_page(doc, card_ids, CARD_ART)
+
+    def text_page():
+        # Confirmed 2026-09-27 (corner-mark test): the manual flip is long-edge (book-style) --
+        # top stays top, left and right swap. mirror=True measures each back card from the right
+        # page edge, so it lands on the same physical card as the front. The mirror relation is
+        # symmetric, so the order of the two pages does not change any position.
+        build_page(doc, card_ids, CARD_TEXT, bleed_in=BLEED_IN, rotate_degrees=TEXT_ROTATE_DEGREES,
+                   shift_x_in=TEXT_SHIFT_X_IN, shift_y_in=TEXT_SHIFT_Y_IN, mirror=True)
+
+    first_page, second_page = (text_page, art_page) if TEXT_FIRST else (art_page, text_page)
+    first_page()
     doc.add_section(WD_SECTION.NEW_PAGE)
-    # Confirmed 2026-09-27 (corner-mark test): the manual flip is long-edge (book-style) --
-    # top stays top, left and right swap. mirror=True measures each back card from the right
-    # page edge, so it lands on the same physical card as the front. (Was same order, tuned for an
-    # assumed short-edge/calendar flip that turned out not to match the actual process.)
-    build_page(doc, card_ids, CARD_TEXT, bleed_in=BLEED_IN, rotate_degrees=TEXT_ROTATE_DEGREES,
-               shift_x_in=TEXT_SHIFT_X_IN, shift_y_in=TEXT_SHIFT_Y_IN, mirror=True)
+    second_page()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     out_path = OUT_DIR / out_name

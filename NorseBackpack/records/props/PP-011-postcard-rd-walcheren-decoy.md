@@ -12,7 +12,7 @@ source: print
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-006
 # Physical pocket/container or location; availability remains in found_in above.
-container: Front right pocket (lock 5)
+container: Envelope 5
 after_game: return
 reset_name: Postcard: Walcheren
 # Any related record IDs, e.g. [PZ-002, Q-004]
@@ -21,6 +21,8 @@ links: []
 superseded_by:
 tags: []
 ---
+
+**11 Oct 2026 (PR-007):** the backpack is now a box, and pockets and pouches are envelopes. Where this record mentions the bag, a pocket, a pouch or a lock, that is the earlier format; the `container` field gives the envelope.
 
 Postcard RD, Walcheren (decoy). 5 × 3.5 in, printed front and back. Message and Fun Fact are built by `Postcards/build_postcard_RD_pdf.py`. Print file: [Postcard_RD_Walcheren_Print.pdf](../Web/pdf/Postcard_RD_Walcheren_Print.pdf).
 
@@ -50,6 +52,9 @@ Style/medium: richly textured hand-pulled screen-print / mid-century travel post
 Composition/framing: exact 10:7 landscape. Scenic art fills the upper 80%. Reserve the lower 20% as a completely blank solid deep navy title panel, separated by a thin warm-cream rule. No text anywhere.
 Constraints: exactly five boats, no people, no modern boats, no wind turbines, no buildings, no roads, no signage, no flags, no lighthouses, no extra islands, no lettering, numbers, logo, watermark, decorative border, or typography in the title panel.
 ```
+
+
+**11 Oct 2026 (playtest 1 feedback, built same day):** Fun Fact now says “before the year 911” (PZ-009), and Walcheren now has a dot on Rollo's map (PP-032).
 
 ## Starting state
 

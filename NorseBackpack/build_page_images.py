@@ -34,6 +34,7 @@ RENDER_MAP = {
     "Hnefatafl_Ticket_Back": ("Hnefatafl_Ticket_Print", 1, 3.0),
     "Journal_Family_Iconography_Page": ("Journal_Family_Iconography_Print", 0, 2.5),
     "Luggage_Tag_Inserts_Sheet": ("Luggage_Tag_Inserts_Print", 0, 2.5),
+    "Lock_Stickers_Sheet": ("Lock_Stickers_Print", 0, 2.5),
     "Museum_Ticket_Front": ("Museum_Ticket_Print", 0, 3.0),
     "Museum_Ticket_Back": ("Museum_Ticket_Print", 1, 3.0),
     "Trail_Map_1_Leif_Print": ("Trail_Map_1_Leif_Print", 0, 2.0),

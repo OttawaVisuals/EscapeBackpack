@@ -9,8 +9,8 @@ Back carries the steward's word list: two independently-shuffled columns (Saxon 
 numbered, Norman words lettered) that a solver matches word-to-word. The tag on each of the
 six real answer words is fixed by the map mechanism (PZ-15 / build_trail_maps_pdf.py
 ROLLO_WORDLOCK_ART) -- letter is the target grid column (A-I only), number is the target
-grid row (1-11 only) -- while the other nine words carry arbitrary tags, some of which
-deliberately spill outside those ranges as camouflage, the same trick PZ-12's A-Z index uses.
+grid row (1-11 only) -- while the other five pairs carry arbitrary tags, two of which
+(J, K) deliberately spill outside those ranges as camouflage, the same trick PZ-12's A-Z index uses.
 
 Source: TravelMap/Art/Rollo_Chateau_Robert_Le_Diable_Line_v1.png
 Output: output/pdf/Rouen_Ticket_Print.pdf, Rouen_Ticket_Letter_Print.pdf
@@ -51,50 +51,48 @@ CREAM = HexColor("#F4EEDD")
 pdfmetrics.registerFont(TTFont("CinzelExtraBold", str(FONT_DIR / "Cinzel" / "static" / "Cinzel-ExtraBold.ttf")))
 pdfmetrics.registerFont(TTFont("CinzelBold", str(FONT_DIR / "Cinzel" / "static" / "Cinzel-Bold.ttf")))
 
-# Saxon word, its printed order on the back, and its number tag (1-15). Six of these numbers
+# 11 Oct 2026 (playtest 1): cut from 15 pairs to 11 and re-jumbled. The old order lined up
+# several pairs on the same row (sheep/mutton, fight/combat, deer/venison, cow/beef), so the
+# matching solved itself. Now every pair sits at least two rows apart, and neither column's
+# tags run in order. Dropped fillers: table/board, vision/sight, escape/flee, assemble/gather.
+#
+# Saxon word, its printed order on the back, and its number tag (1-11). Six of these numbers
 # are load-bearing (2, 3, 6, 7, 9, 10 -- the target grid ROWS for cow, hen, fight, folk, inn
-# and woodland); the rest are camouflage, four of them (12-15) deliberately past row 11, the
-# map's last row, so they can never resolve to a real square.
+# and woodland); the other five are camouflage.
 SAXON = [
-    ("sheep", 1),
-    ("fight", 6),
-    ("deer", 4),
-    ("cow", 2),
     ("inn", 9),
-    ("fire", 5),
-    ("hen", 3),
-    ("board", 8),
+    ("snake", 5),
+    ("deer", 11),
+    ("fight", 6),
     ("woodland", 10),
-    ("sight", 11),
+    ("cow", 2),
     ("folk", 7),
-    ("freedom", 12),
-    ("snake", 13),
-    ("flee", 14),
-    ("gather", 15),
+    ("sheep", 4),
+    ("freedom", 8),
+    ("hen", 3),
+    ("fire", 1),
 ]
-assert len(SAXON) == 15
+assert len(SAXON) == 11
 
-# Norman word, its printed order, and its letter tag (A-O). Six are load-bearing (A, B, D, E,
+# Norman word, its printed order, and its letter tag (A-K). Six are load-bearing (A, B, D, E,
 # F, I -- the target grid COLUMNS for poultry, tavern, beef, forest, people and combat); the
-# rest are camouflage, six of them (J-O) past column I, the map's last column.
+# rest are camouflage, two of them (J, K) past column I, the map's last column.
 NORMAN = [
-    ("mutton", "C"),
-    ("combat", "I"),
-    ("venison", "G"),
-    ("beef", "D"),
-    ("flame", "H"),
-    ("poultry", "A"),
-    ("table", "J"),
-    ("tavern", "B"),
-    ("vision", "K"),
+    ("venison", "C"),
+    ("liberty", "G"),
     ("forest", "E"),
-    ("liberty", "L"),
+    ("mutton", "J"),
+    ("tavern", "B"),
+    ("combat", "I"),
+    ("poultry", "A"),
+    ("flame", "K"),
+    ("beef", "D"),
+    ("serpent", "H"),
     ("people", "F"),
-    ("serpent", "M"),
-    ("escape", "N"),
-    ("assemble", "O"),
 ]
-assert len(NORMAN) == 15
+assert len(NORMAN) == 11
+assert {n for _, n in SAXON} == set(range(1, 12))
+assert {l for _, l in NORMAN} == set("ABCDEFGHIJK")
 
 
 def load_castle_ink() -> Image.Image:

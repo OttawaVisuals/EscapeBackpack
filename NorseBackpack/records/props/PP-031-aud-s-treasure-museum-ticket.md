@@ -12,7 +12,7 @@ source: print
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-004
 # Physical pocket/container or location; availability remains in found_in above.
-container: Main compartment (lock 4)
+container: Envelope 4
 after_game: return
 # Any related record IDs, e.g. [PZ-002, Q-004]
 links: []

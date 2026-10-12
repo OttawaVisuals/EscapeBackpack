@@ -18,11 +18,10 @@ difficulty: 3
 lock: 4-digit
 answer: 2648
 # Compartment this lock closes (shown on the Locks tab)
-container: Large pouch, in the main compartment
+container: Envelope 12
 reset_display: 0000
-container_in: PZ-004
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
-hint_title: Lock 12
+hint_title: Just opened ᛊᚲᛁᛇ
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.
 publish_hints: yes
 # Independent of design/build status: untested | passed | changes-needed
@@ -45,6 +44,11 @@ Decode five letters, then use them as five perches to read four flight digits.
 Lock 12 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 3 of 3 is Claude's estimate from the mechanism (number of props and steps), not playtest data.
 
 **9 Oct 2026 (designer, Q-001):** now lock 12 of 13. Compartment: large pouch, in the main compartment.
+
+**11 Oct 2026 (designer, PR-007):** no locks or pockets any more. This code, set on the rune cypher wheel (PP-047), points to envelope 12, which holds what lock 12 used to close.
+
+
+**11 Oct 2026 (playtest 1 feedback, built same day):** **H4's rune key is now a table.** It was three lines (“1 — f u þ ö r k”). Now a hand-ruled grid: rows 1–3 down the side, places 1–6 across the top, same letters, same footnote. Built in `Postcards/build_postcard_H4_pdf.py`.
 
 ## Player notices
 
@@ -117,3 +121,7 @@ The cryptex answer, and what opening it releases.
 **Delivery decided:** the rune stick and museum label are dropped. The five branch-rune stems live on Harald's own trail map instead, at grid cells `G6, A10, I9, C3, F2`, among seven meaningless decoy stems elsewhere on the sheet. Postcard **H4** carries the decode key (the three rune groups, and that left branches count the group while right branches count the position within it). Postcard **H5** carries the reading order: the word `RAVEN` set apart in its text. Harald's sheet is relettered on its grid band only — `A, C, E, I, K, N, R, T, V` in place of the shared `A–I` run — so the five real cells fall under columns spelling `RAVEN` (`R6, A10, V9, E3, N2`). Reading them in that literal order gives `H, R, A, F, N`. Full mechanism and the worked example: [Props & specs].
 **H4 and H5 built, 17 Sept 2026:** both cards' messages, Fun Facts and the puzzle content (H4's hand-copied rune key, H5's underlined `raven`) are done, front and back — see the Postcard system tab.
 **Still open:** which container this feeds (Q-001).
+
+## Playtest evidence
+
+**Playtest 1** (feedback relayed by the designer 11 Oct 2026; playtest date, team and hint use not recorded). Rune key should be more of a table. Changed as above; retest needed.

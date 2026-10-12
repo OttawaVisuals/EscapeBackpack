@@ -12,7 +12,7 @@ source: print
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-004
 # Physical pocket/container or location; availability remains in found_in above.
-container: Main compartment (lock 4)
+container: Envelope 4
 after_game: return
 reset_name: Postcard: Hvammur
 # Any related record IDs, e.g. [PZ-002, Q-004]
@@ -21,6 +21,8 @@ links: []
 superseded_by:
 tags: []
 ---
+
+**11 Oct 2026 (PR-007):** the backpack is now a box, and pockets and pouches are envelopes. Where this record mentions the bag, a pocket, a pouch or a lock, that is the earlier format; the `container` field gives the envelope.
 
 Postcard A2, Hvammur. 5 × 3.5 in, printed front and back. Message and Fun Fact are built by `Postcards/build_postcard_A2_pdf.py`. Print file: [Postcard_A2_Hvammur_Print.pdf](../Web/pdf/Postcard_A2_Hvammur_Print.pdf).
 

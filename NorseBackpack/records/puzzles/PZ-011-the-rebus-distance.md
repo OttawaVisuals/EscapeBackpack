@@ -18,11 +18,10 @@ difficulty: 3
 lock: 3-digit
 answer: 104
 # Compartment this lock closes (shown on the Locks tab)
-container: Large pouch, in the main compartment
+container: Envelope 10
 reset_display: 000
-container_in: PZ-004
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
-hint_title: Lock 10
+hint_title: Just opened ᛒᚠᛞᛉ
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.
 publish_hints: yes
 # Independent of design/build status: untested | passed | changes-needed
@@ -45,6 +44,11 @@ The Bayeux card explains why Liv’s postcards start carrying tapestry-style dra
 Lock 11 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 3 of 3 is Claude's estimate from the mechanism (number of props and steps), not playtest data.
 
 **9 Oct 2026 (designer, Q-001):** now lock 10 of 13. Compartment: large pouch, in the main compartment.
+
+**11 Oct 2026 (designer, PR-007):** no locks or pockets any more. This code, set on the rune cypher wheel (PP-047), points to envelope 10, which holds what lock 10 used to close.
+
+
+**11 Oct 2026 (playtest 1 feedback, built same day):** **rebus icons now pencil style.** Players found the coloured icons did not read as Liv's own drawings. `Postcards/pencil_rebus.py` turns the existing icons into graphite sketches (outlines + diagonal hatching, no colour) at build time; R3, R4 and R5 use it, and R5's colon dots are graphite too. Source PNGs untouched. Chosen in chat as the quick fix for the next playtest; Codex may still redraw them as true pencil art (swap the filenames).
 
 ## Player notices
 
@@ -115,3 +119,7 @@ Both rebus target places already carry a matching icon on Rollo’s map (crossbo
 The original nine icons (cross, bow, lightning, tree, teacup, fish-scales, Roman I, arrow, die-5) remain documented below; R5’s scale rebus was replaced 28 Sept 2026 by a scale patch, one- and two-finger hands, a one-pip die and Roman V. The colon is punctuation.
 **Code decided 2 Oct 2026: 104** (measured on paper, see the note above). **Still open:** a fresh-player check of the 0.1 m reading, which lock takes the code (three digits), and what it releases (Q-001).
 See the [Puzzles tab] for the player-facing writeup of this mechanism.
+
+## Playtest evidence
+
+**Playtest 1** (feedback relayed by the designer 11 Oct 2026; playtest date, team and hint use not recorded). Rebus should look hand-drawn: no colours, pencil style. Changed as above; retest needed.

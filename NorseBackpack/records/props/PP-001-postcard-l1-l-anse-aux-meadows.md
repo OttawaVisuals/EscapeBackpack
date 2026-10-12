@@ -12,7 +12,7 @@ source: print
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: start
 # Physical pocket/container or location; availability remains in found_in above.
-container: Open back pocket of the backpack
+container: Loose in the box, on top (placeholder, Q-047)
 after_game: return
 reset_name: Postcard: L'Anse aux Meadows
 # Any related record IDs, e.g. [PZ-002, Q-004]
@@ -21,6 +21,8 @@ links: []
 superseded_by:
 tags: []
 ---
+
+**11 Oct 2026 (PR-007):** the backpack is now a box, and pockets and pouches are envelopes. Where this record mentions the bag, a pocket, a pouch or a lock, that is the earlier format; the `container` field gives the envelope.
 
 Postcard L1, L'Anse aux Meadows. 5 × 3.5 in, printed front and back. Message and Fun Fact are built by `Postcards/build_postcard_L1_pdf.py`. Print file: [Postcard_L1_LAnse_Print.pdf](../Web/pdf/Postcard_L1_LAnse_Print.pdf).
 
@@ -37,6 +39,9 @@ Newfoundland and Labrador · front artwork reframed to full bleed; 5 × 3.5 in b
 ![Full-bleed front of the L’Anse aux Meadows postcard](Web/Postcards/Postcard_L1_LAnse_Front.webp)Front · full-bleed artwork matching cards L2 and L3
 
 ![Updated 5 by 3.5 inch back with message, longship stamp, place-only postmark and recipient address](Web/Postcards/Postcard_L1_LAnse_Back.webp)Back · postmark carries place only, no date (Q-006/old page PC-03/old page PC-04)
+
+
+**11 Oct 2026 (playtest 1 feedback, built same day):** address removed (PR-004). Because the message column is full, the souvenir note sits as a handwritten P.S. where the address was: “P.S. These postcards were never sent: they’re my souvenirs, one from every stop.” This card's Fun Fact box therefore starts lower than the other 21.
 
 ## Starting state
 

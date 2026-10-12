@@ -13,6 +13,8 @@ superseded_by:
 tags: []
 ---
 
+**11 Oct 2026 (designer, PR-007):** Liv's locked field bag is now a board-game-sized box with 13 rune-marked envelopes and no locks; a cypher wheel turns each code into the next envelope. Text below about the bag, pockets and locks describes the earlier format. The story itself is unchanged.
+
 The Story & sequence tab of the old page, moved here as written. The step grid that tab generated is now the Flow tab, built from the puzzle records.
 
 **Approved update, 22 September 2026:** coin values total 3705 and rotate to SOLE; HRAFN selects four flight digits, 2648, for a lock directly on the board pouch. The scale and cryptex are superseded. [Full specifications, visual and postcard changes]. Older options below retain their historical status.

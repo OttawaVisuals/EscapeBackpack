@@ -7,6 +7,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
+from pencil_rebus import pencil
 from postcard_marks import draw_mark
 
 
@@ -74,7 +75,6 @@ def draw_back_card(c, x=0, y=0):
     c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.7)
-    c.rect(10, 10, W - 20, H - 20, fill=0, stroke=1)
 
     left, right = 20, W - 20
     # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
@@ -112,7 +112,7 @@ def draw_back_card(c, x=0, y=0):
     c.drawString(msg_left, y - 11, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
-    # divider and the postmark, above the address box. See postcard_marks.py.
+    # divider and the postmark, above the Fun Fact box. See postcard_marks.py.
     draw_mark(c, "R3")
 
     # Rebus icons (PZ-14): the crossbow-bolt rebus -- cross + bow + lightning bolt spells
@@ -120,7 +120,7 @@ def draw_back_card(c, x=0, y=0):
     # blank space below her signature like a first try at the drawing habit she just announced.
     # Winchester carries a further piece of this rebus chain, not yet designed.
     def draw_rebus_icon(filename, cx, cy, size, angle):
-        icon = ImageReader(str(REBUS_DIR / filename))
+        icon = ImageReader(pencil(REBUS_DIR / filename))  # pencil style, playtest 1
         c.saveState()
         c.translate(cx, cy)
         c.rotate(angle)
@@ -161,35 +161,14 @@ def draw_back_card(c, x=0, y=0):
     for offset in (-7, -2, 3, 8):
         c.line(postmark_x + 23, postmark_y + offset, right, postmark_y + offset)
 
-    # Address -- same recipient and layout as cards 01-03 (PC-13 standard).
+    # No address (playtest 1, 11 Oct 2026): the cards were never posted -- they are Liv's
+    # souvenirs -- so the TO box and its four ruled lines are gone. The Fun Fact box moves up
+    # into the freed space, stopping just below the stamp.
     address_x = divider + 17
     box_right = right + 5
-    rule_right = 278
-    c.setStrokeColor(RULE)
-    c.setLineWidth(0.6)
-    c.rect(divider + 11, 126, box_right - (divider + 11), 62, fill=0, stroke=1)
-
-    address_y = 166
-    c.setFillColor(HexColor("#59635D"))
-    c.setFont("Helvetica-Bold", 5.8)
-    c.drawString(address_x, address_y + 12, "TO")
-    c.setFillColor(INK)
-    c.setFont("NothingYouCouldDo", 8.6)
-    address_lines = [
-        "John Ericson",
-        "24 Longship Way",
-        "Ottawa ON  K1L 1S1",
-        "Canada",
-    ]
-    for index, line in enumerate(address_lines):
-        line_y = address_y - index * 13
-        c.drawString(address_x, line_y, line)
-        c.setStrokeColor(HexColor("#C0B291"))
-        c.setLineWidth(0.4)
-        c.line(address_x, line_y - 3, rule_right, line_y - 3)
 
     # Fun Fact -- typed, real trivia (PC-12). Both halves verifiable, no date needed.
-    funfact_top, funfact_bottom = 120, 31
+    funfact_top, funfact_bottom = 146, 31
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
     c.rect(divider + 11, funfact_bottom, box_right - (divider + 11), funfact_top - funfact_bottom, fill=0, stroke=1)
