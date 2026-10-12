@@ -13,7 +13,7 @@ needs: [PZ-001, PZ-002, PZ-003, PZ-004, PZ-005, PZ-006, PZ-007, PZ-008, PZ-009, 
 # cipher | physical | search | logic | wordplay | other
 mechanic: logic
 # 1 (easy) to 3 (hard)
-difficulty: 3
+difficulty: 2
 # Lock it opens: 3-digit | 4-digit | 4-letter | 3-digit-colour (blank if none)
 lock: 4-digit
 answer: 1972
@@ -47,15 +47,24 @@ Lock 13 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 3 of 3
 
 **11 Oct 2026 (designer, PR-007):** no locks or pockets any more. This code, set on the rune cypher wheel (PP-047), points to envelope 13, which holds what lock 13 used to close.
 
+
+**12 Oct 2026 (designer, Q-054, after playtest 1):** **the finale no longer sends players back to the card text.** Playtest 1 found reconstructing the order from postcard sentences and ticket dates too complicated. Now:
+- **Decoys carry no mark** (they had a horned helmet or a double axe).
+- **The marks give the order.** On each trail the n-th stop carries the n-th element in the journal page's caption order (`Postcards/postcard_marks.py`). The page now says so: “To retrace my steps, follow only the places that carry one of our family's marks. / On each journey I met them in the order written under each drawing.”
+- **The marks are crops of the page's own drawings** (`Art/FinalPuzzle/build_iconography_marks.py`), so a card matches the page at a glance.
+- **Each map shows its journey's stamp** in the title band (`TravelMap/build_trail_maps_pdf.py`, `TRAIL_STAMPS`).
+
+The code stays **1972**: the trail order and the stops are unchanged, only how players find the order. The order-reconstruction clue set (ticket dates, card statements, `Tools/final_riddle_solver.py`) is no longer needed to solve. Q-055 (decided the same day): the journal's Travel highlights are cut; the transition tickets stay as story. Difficulty is now about 2 (Claude's estimate), not 3.
+
 ## Player notices
+**12 Oct 2026 (Q-054):** the 22 postcards (18 carry a family mark, the 4 decoys carry none), the four maps (each now shows its journey's stamp), and Liv's journal page with the family iconography.
 
-**8 Oct 2026 (designer):** no wet-erase marker for now (PP-042 parked). Players imagine the routes or trace them with their fingers on the maps.
-
-All 22 postcards (18 real stops plus one decoy per trail), four laminated letter maps, a wet-erase marker, and the note in the final bundle carrying the family logo and crest.
+**Superseded 12 Oct 2026:** All 22 postcards (18 real stops plus one decoy per trail), four laminated letter maps, a wet-erase marker, and the note in the final bundle carrying the family logo and crest. (8 Oct 2026: no wet-erase marker for now, PP-042 parked; players imagine the routes or trace them with their fingers on the maps.)
 
 ## Player does
+**12 Oct 2026 (Q-054):** set aside the four cards with no mark. Put each remaining card beside the map that shows the same stamp. On each map, order the cards by their marks, in the order Liv's journal page lists them under each drawing (symbol: raven, longship, sun-wheel; crest: bearded axe, round shield, wolf, anchor, drinking horn, valknut), and join the stops in that order. Each trail traces one digit. Nobody needs to reread a card's text.
 
-Use the crest/logo filter to drop the four decoys. Sort the rest by stamp series to find which trail each belongs to, lay each trail’s cards beside its map in reconstructed order, then draw the legs straight onto the laminated map. Each completed trail traces one digit.
+**Superseded 12 Oct 2026:** Use the crest/logo filter to drop the four decoys. Sort the rest by stamp series to find which trail each belongs to, lay each trail’s cards beside its map in reconstructed order, then draw the legs straight onto the laminated map.
 
 ## Player obtains
 
@@ -70,14 +79,12 @@ The cards work first as story and individual clues, then return as the final met
 “I crossed an ocean to find where we began. Every stop mattered. Now you have the whole journey.”
 
 ## Hints
-
-1. The stamps are not decoration — they say which journey a card belongs to.
-2. Four of these cards do not belong to any journey. Something in the last bundle says which.
-3. Work one map at a time, with that trail’s cards laid out beside it.
+1. Only the postcards that carry one of the family's marks from Liv's journal page count. Four cards carry no mark: set them aside.
+2. Each map shows the stamp of its journey. Put each postcard beside the map with the same stamp.
+3. Liv met the marks in the order written under each drawing on her journal page. Put each map's cards in that order and join the stops.
 
 ## Solution
-
-Set aside the four postcards whose mark is not in Liv’s journal. Put each map’s cards in the order Liv visited them, then join the stops on each map in that order. Leif’s map draws **1**, Rollo’s **9**, Aud’s **7** and Harald’s **2**: **1972**.
+Set aside the four postcards with no mark. Match the rest to the maps by their stamps. On each map, join the stops in the order of their marks on the journal page: raven, longship, sun-wheel for the symbol; bearded axe, round shield, wolf, anchor, drinking horn, valknut for the crest. Leif’s map draws **1**, Rollo’s **9**, Aud’s **7** and Harald’s **2**: **1972**.
 
 ## Solution notes
 
@@ -138,3 +145,7 @@ The order in which each trail **first appears** is the order its digit is read. 
 **What changed (PZ-013):** the source of that order is no longer a straight sort of postmark dates. Postmarks now carry place only. Order comes instead from reconstructing Liv's calendar — ticket dates, postcard statements and the final bundle — described in the [Final riddle tab].
 **Constraint this places on the still-open calendar.** The earliest real (non-decoy) card of each trail must fall in the order **Leif → Rollo → Aud → Harald**, or the code is not `1972`. Postcard L1 (L’Anse aux Meadows) is still the first card of the game, so Leif leading is already true. **Decided, 16 Sept 2026:** postmarks carry no date at all (Q-006/old page PC-03/old page PC-04, removed) — L1's own place in the calendar comes from the reconstructed evidence in the Final riddle tab, not from anything printed on the card.
 **Checked, 17 Sept 2026.** The clue set resolves this uniquely. First appearances land at positions 1, 4, 6 and 8 — Leif, Rollo, Aud, Harald — giving `1972`. Verified by `NorseBackpack/Tools/final_riddle_clues.py`; the ordering is now carried by the postcards’ own text rather than by date arithmetic, since variable stay lengths mean a date is no longer a position.
+
+## Playtest evidence
+
+**Playtest 1** (feedback relayed by the designer 12 Oct 2026; playtest date, team and hint use not recorded). Going back to the postcards for travel clues was too complicated. Playtesters suggested: using the postcards only for the family mark; making the card marks look like the iconography; more tickets or a fuller journal; clearer decoys (possibly no mark); stamps on the maps. Changes above (Q-054). Retest needed.

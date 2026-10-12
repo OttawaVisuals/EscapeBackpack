@@ -24,6 +24,8 @@ tags: []
 
 Three transition tickets in the final bundle; each documents the move from one trail's last stop to the next trail's first (see the archived Final riddle tab). Print file: `Transition_Tickets_Print.pdf`.
 
+**12 Oct 2026 (designer, Q-055):** kept. Since Q-054 they no longer carry the solve: they show the journeys' order (Leif → Rollo → Aud → Harald), which is also the play order, as story.
+
 ## Starting state
 
 Not recorded yet.

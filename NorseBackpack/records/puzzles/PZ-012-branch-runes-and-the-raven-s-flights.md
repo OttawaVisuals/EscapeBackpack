@@ -50,6 +50,8 @@ Lock 12 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 3 of 3
 
 **11 Oct 2026 (playtest 1 feedback, built same day):** **H4's rune key is now a table.** It was three lines (“1 — f u þ ö r k”). Now a hand-ruled grid: rows 1–3 down the side, places 1–6 across the top, same letters, same footnote. Built in `Postcards/build_postcard_H4_pdf.py`.
 
+**12 Oct 2026 (designer):** lighter table. Only two rules remain: one under the header row and one right of the label column. The digit headers are replaced by half-runes. Down the side is a stave with 1–3 branches on the left only (the row). Across the top is a stave with 1–6 branches on the right only (the place). A rune is read by matching its left branches to a row and its right branches to a column. Stems are drawn like Harald's map (`draw_rune_stem`), smaller. Footnote unchanged.
+
 ## Player notices
 
 H4/H5 and the player-only perch card (from lock 11) and the corrected Harald map (from lock 7, with the board kit), since 7 Oct 2026. ~~All available before the board lock.~~

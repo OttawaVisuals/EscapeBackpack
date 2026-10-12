@@ -142,8 +142,8 @@
     // The final riddle (PZ-18, PZ-06): filter the decoys, order each trail, draw it on its map.
     { nudge: 'The last postcard, three booking confirmations and a page from Liv’s journal.', name: 'Inside middle pocket', pocket: 'insideMiddle', answer: '1972', releases: ['medallion'], message: 'A plane ticket, a medallion and a note from Liv.', hints: [
       'Not every postcard belongs. Liv’s journal page shows the family’s marks; each real card carries one of them in its corner.',
-      'Four cards carry a mark that is not in the drawings: a horned helmet or a double-sided axe. Set those four decoys aside.',
-      'Sort the real cards for each map into the order Liv visited them. The booking confirmations show where one journey ended and the next began, and the journal lists journeys she made. Then use the marker to join the stops on each map in that order.',
+      'Four cards carry no mark at all. Those were not her stops: set them aside.',
+      'Each map shows the stamp of its journey: put each card beside the map with the same stamp. Liv met the marks in the order written under the drawings on her journal page, so that is the order of the stops. Use the marker to join them on each map in that order.',
       'The Western Lands route draws a 1, the Granted Lands a 9, the Island Settlement a 7 and the Varangian Road a 2. The combination is 1972.'
     ] }
   ];

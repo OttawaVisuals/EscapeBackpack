@@ -1,10 +1,12 @@
 """The "Family iconography" journal page -- the keystone prop of the endgame (PZ-18).
 
-One sheet, two halves, and they must not refer to each other:
+One sheet. Until 12 Oct 2026 it had two halves (the bottom one, "Travel highlights",
+was cut -- Q-055); the notes on that half below are kept for history:
 
   TOP     the symbol (3 elements) and the crest (6 elements), unannotated.
           This is the decoy filter: a card carrying none of the nine is not one
-          of Liv's trail stops.
+          of Liv's trail stops. Since 12 Oct 2026 (Q-054) it also gives the
+          order: the captions list each set in the order she met them.
 
   BOTTOM  "Travel highlights" -- journey entries with a memorable detail and NO
           reference to the elements at all. An earlier draft tied the two
@@ -57,8 +59,10 @@ pdfmetrics.registerFont(TTFont("Hand", str(FONT_DIR / "Nothing_You_Could_Do" / "
 
 MARGIN = 22
 
-# "bearded axe", not "axe": Rollo's and Harald's decoy mark is a DOUBLE-bladed
-# axe and the crest carries a single-bladed one. The drawings show that plainly,
+# The captions' order is load-bearing since 12 Oct 2026 (Q-054): it is the visit order on
+# each journey. Keep it in step with SYMBOL / CREST in Postcards/postcard_marks.py.
+# "bearded axe", not "axe": until 12 Oct 2026 Rollo's and Harald's decoy mark was a
+# DOUBLE-bladed axe and the crest carries a single-bladed one. The drawings show that plainly,
 # but a name list reading just "axe" would let a team match the decoy by name and
 # never look -- unfair rather than difficult. Same for "round shield", "drinking
 # horn".
@@ -68,28 +72,9 @@ MARGIN = 22
 SYMBOL_NAMES = "raven  ~  longship  ~  sun-wheel"
 CREST_NAMES = "bearded axe  ~  round shield  ~  wolf\nanchor  ~  drinking horn  ~  valknut"
 
-# Grouped by transport, deliberately NOT in date order.
-HIGHLIGHTS = [
-    ("By train", [
-        ("Staraya Ladoga – Kyiv",
-         "Two days on a train, most of it running alongside the rivers they "
-         "would have rowed. Felt like cheating. Slept through the best of it, "
-         "naturally."),
-        ("Walcheren – Châlus",
-         "The long one. Three changes, one missed connection, and a man in the "
-         "second carriage who shared his sandwiches after I gave up waiting for "
-         "the buffet car."),
-        ("from Rouen",
-         "Heading west, a short hop, for a museum I’d been looking forward "
-         "to for months."),
-    ]),
-    ("By sea", [
-        ("English Channel ferry",
-         "Landed in Winchester after a rocky night, but excited to finally see "
-         "the battlefield itself, after all those hours in front of the "
-         "tapestry."),
-    ]),
-]
+# "Travel highlights" cut 12 Oct 2026 (designer, Q-055): since the family marks give the
+# visit order (Q-054) the entries no longer helped, and "Walcheren - Chalus" named a decoy
+# as if it were a stop. The four entries are kept in git history and in PP-040.
 
 
 def wrap(text, font, size, width):
@@ -127,14 +112,19 @@ def draw_page(c, ox=0, oy=0):
     c.setFont("Hand", 9.5)
     c.setFillColor(MUTED)
     for i, line in enumerate([
+            # 12 Oct 2026 (designer, Q-054): the page now states both rules outright -- the
+            # decoy filter (no mark = not a stop) and the order (caption order = visit order,
+            # see Postcards/postcard_marks.py). Was: "Every place I actually stopped carries
+            # one of these nine."
             "Everything I could find of ours, finally drawn out properly.",
-            "Every place I actually stopped carries one of these nine."]):
+            "To retrace my steps, follow only the places that carry one of our family's marks.",
+            "On each journey I met them in the order written under each drawing."]):
         c.drawString(left, H - 74 - i * 12, line)
 
     # ---- the two drawings -------------------------------------------------
     gap = 10
     box = (inner - gap) / 2
-    art_y = H - 100 - box
+    art_y = H - 112 - box                # was H - 100; one more intro line (Q-054)
     for img, x, caption, names in (
             (SYMBOL, left, "the symbol — three", SYMBOL_NAMES),
             (CREST, left + box + gap, "the crest — six", CREST_NAMES)):
@@ -149,44 +139,6 @@ def draw_page(c, ox=0, oy=0):
         c.setFont("Hand", 8.6)
         for j, line in enumerate(names.split("\n")):
             c.drawCentredString(x + box / 2, art_y - 24 - j * 10, line)
-
-    # ---- divider ----------------------------------------------------------
-    div_y = art_y - 54
-    c.setStrokeColor(RULE)
-    c.line(left, div_y, right, div_y)
-
-    # ---- travel highlights ------------------------------------------------
-    y = div_y - 26
-    c.setFillColor(INK)
-    c.setFont("Hand", 17)
-    c.drawString(left, y, "Travel highlights")
-    y -= 19
-
-    for group, entries in HIGHLIGHTS:
-        c.setFillColor(ACCENT)
-        c.setFont("Hand", 11)
-        c.drawString(left, y, group)
-        y -= 15
-        for where, what in entries:
-            c.setFillColor(INK)
-            c.setFont("Hand", 10)
-            c.drawString(left + 8, y, where + ".")
-            used = pdfmetrics.stringWidth(where + ". ", "Hand", 10)
-            c.setFillColor(MUTED)
-            c.setFont("Hand", 9.4)
-            # first line runs on after the place, the rest hang under it
-            first = wrap(what, "Hand", 9.4, inner - 8 - used)
-            if first:
-                c.drawString(left + 8 + used, y, first[0])
-                rest = what[len(first[0]):].strip()
-            else:
-                rest = what
-            y -= 11
-            for line in wrap(rest, "Hand", 9.4, inner - 16):
-                c.drawString(left + 16, y, line)
-                y -= 11
-            y -= 7
-        y -= 6
 
     c.restoreState()
 

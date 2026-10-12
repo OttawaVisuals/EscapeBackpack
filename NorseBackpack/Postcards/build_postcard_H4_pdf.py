@@ -135,30 +135,45 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(INK)
     c.setFont("NothingYouCouldDo", 7.6)
     c.drawString(msg_left + 6, table_top - 12, "his key, copied out:")
+    # 12 Oct 2026 (designer): lighter table. Only two rules -- one under the header row, one
+    # right of the label column -- and the headers are half-runes instead of digits: down the
+    # side, a stave with 1-3 branches on the left only (the row); across the top, a stave with
+    # 1-6 branches on the right only (the place). A rune is read by matching its left branches
+    # to a row and its right branches to a column. Stems are drawn like Harald's map
+    # (draw_rune_stem in TravelMap/build_trail_maps_pdf.py), smaller.
     rows = [["f", "u", "þ", "ö", "r", "k"], ["h", "n", "i", "a", "s"], ["t", "b", "m", "l", "r'"]]
-    label_w, cell_w, cell_h = 16, 19, 10.5
-    grid_x, grid_top = msg_left + 14, table_top - 17
-    grid_w, grid_h = label_w + 6 * cell_w, 4 * cell_h
+    label_w, cell_w, head_h, cell_h = 16, 19, 15, 10
+    grid_x, grid_top = msg_left + 14, table_top - 16
+    grid_w, grid_h = label_w + 6 * cell_w, head_h + 3 * cell_h
     # Fixed small wobbles (pt) so each pen line is a touch off-straight, the same on every build.
-    wobble = [0.5, -0.4, 0.3, -0.6, 0.4, -0.3, 0.6, -0.5, 0.2, -0.4]
+    wobble = [0.5, -0.4, 0.3, -0.6]
     c.setStrokeColor(INK)
     c.setLineWidth(0.5)
-    for i in range(5):                                   # horizontal rules
-        ly = grid_top - i * cell_h
-        c.line(grid_x - 1, ly + wobble[i], grid_x + grid_w + 1, ly - wobble[i + 1])
-    for i in range(8):                                   # vertical rules
-        lx = grid_x if i == 0 else grid_x + label_w + (i - 1) * cell_w
-        c.line(lx + wobble[i + 2], grid_top + 1, lx - wobble[i], grid_top - grid_h - 1)
+    c.line(grid_x - 1, grid_top - head_h + wobble[0], grid_x + grid_w + 1, grid_top - head_h + wobble[1])
+    c.line(grid_x + label_w + wobble[2], grid_top - 1.5, grid_x + label_w + wobble[3], grid_top - grid_h - 1)
+
+    def half_rune(x, y, half, left, right_):
+        """A branch-rune stave with ticks on one side only; step and tick shape fixed so the
+        side and top headers match."""
+        c.setLineWidth(0.6)
+        c.setLineCap(1)
+        c.line(x, y - half, x, y + half)
+        step, top = 2.1, y + half - 1.2
+        for i in range(left):
+            c.line(x, top - i * step, x - 3.4, top - i * step - 1.8)
+        for i in range(right_):
+            c.line(x, top - i * step, x + 3.4, top - i * step - 1.8)
+
+    for col in range(6):                                 # header: right branches = place
+        half_rune(grid_x + label_w + (col + 0.5) * cell_w - 1.5, grid_top - head_h / 2, 6.3, 0, col + 1)
     c.setFont("NothingYouCouldDo", 8.2)
-    for col in range(6):                                 # header: place in the row
-        c.drawCentredString(grid_x + label_w + (col + 0.5) * cell_w, grid_top - cell_h + 3, str(col + 1))
     for r, letters in enumerate(rows):
-        base = grid_top - (r + 2) * cell_h + 3
-        c.drawCentredString(grid_x + label_w / 2, base, str(r + 1))
+        mid = grid_top - head_h - (r + 0.5) * cell_h
+        half_rune(grid_x + label_w / 2 + 1.5, mid, 4.2, r + 1, 0)   # side: left branches = row
         for col, letter in enumerate(letters):
-            c.drawCentredString(grid_x + label_w + (col + 0.5) * cell_w, base, letter)
+            c.drawCentredString(grid_x + label_w + (col + 0.5) * cell_w, mid - 2.5, letter)
     c.setFont("NothingYouCouldDo", 6.4)
-    c.drawString(msg_left + 6, grid_top - grid_h - 9, "(left branches = which row. right = where in it.)")
+    c.drawString(msg_left + 6, grid_top - grid_h - 8, "(left branches = which row. right = where in it.)")
 
     # Same trail stamp as the other Harald cards -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72

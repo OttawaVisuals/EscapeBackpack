@@ -23,6 +23,8 @@ tags: [old-PR-22]
 
 **11 Oct 2026 (PR-007):** the backpack is now a box, and pockets and pouches are envelopes. Where this record mentions the bag, a pocket, a pouch or a lock, that is the earlier format; the `container` field gives the envelope.
 
+**12 Oct 2026 (designer, Q-054, after playtest 1):** **the card marks are now crops of these two drawings, and decoys carry none.** `Art/FinalPuzzle/build_iconography_marks.py` cuts each crest charge's field (rounded corners, rust edge) and each symbol subject (oval fade) into `PostcardMarks/*_Iconography_v1.png`. The eleven hand-drawn marks below, including the horned-helmet and double-axe decoy marks, are **superseded** and kept unused. The assignment is no longer flavour: the n-th stop of each trail carries the n-th element in the caption order (PZ-013).
+
 ## Design notes (PP-041: Done · drawings approved · marks assigned and printed)
 
 **The two final-bundle reference drawings (PZ-013): a balanced three-part family symbol and a six-field family crest.**

@@ -23,6 +23,14 @@ tags: []
 
 Liv's journal (letter size), with the family iconography page. Print file: `Journal_Family_Iconography_Print.pdf`.
 
+**12 Oct 2026 (designer, Q-054, after playtest 1):** the iconography page now states both rules. Its intro reads: “Everything I could find of ours, finally drawn out properly. / To retrace my steps, follow only the places that carry one of our family's marks. / On each journey I met them in the order written under each drawing.” (was: “Every place I actually stopped carries one of these nine.”). The caption order under each drawing is now load-bearing. The Travel highlights section is unchanged for now (Q-055).
+
+**12 Oct 2026 (designer, Q-055):** **“Travel highlights” cut from the page.** The marks give the order now, and one entry named the decoy Walcheren as if it were a stop. The page now holds only the title, the three intro lines and the two drawings with their captions; the lower half is blank. The cut entries, for the record:
+- *By train.* Staraya Ladoga – Kyiv: “Two days on a train, most of it running alongside the rivers they would have rowed. Felt like cheating. Slept through the best of it, naturally.”
+- Walcheren – Châlus: “The long one. Three changes, one missed connection, and a man in the second carriage who shared his sandwiches after I gave up waiting for the buffet car.”
+- from Rouen: “Heading west, a short hop, for a museum I’d been looking forward to for months.”
+- *By sea.* English Channel ferry: “Landed in Winchester after a rocky night, but excited to finally see the battlefield itself, after all those hours in front of the tapestry.”
+
 ## Starting state
 
 Not recorded yet.

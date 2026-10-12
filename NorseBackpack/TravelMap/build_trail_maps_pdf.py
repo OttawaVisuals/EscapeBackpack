@@ -482,6 +482,13 @@ def draw_vignette(c, path, box, alpha):
     c.restoreState()
 
 
+_STAMP_DIR = ROOT / "NorseBackpack" / "Postcards" / "Stamps"
+TRAIL_STAMPS = {"leif": _STAMP_DIR / "Stamp_Leif_Longship_v2_flat.png",
+                "rollo": _STAMP_DIR / "Stamp_Rollo_Comet_v2_flat.png",
+                "aud": _STAMP_DIR / "Stamp_Aud_Comb_v1.png",
+                "harald": _STAMP_DIR / "Stamp_Harald_Dane_Axe_v1.png"}
+
+
 def load_corpus():
     """Point-like places from the research corpus. Broad regional anchors are skipped --
     they cannot be labelled as a dot without asserting a position the dataset disclaims."""
@@ -953,6 +960,16 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
     c.setFillColor(INK)
     c.setFont("CinzelXB", 19)
     c.drawString(tx, MY0 - 30, " ".join(cfg["title"]))
+
+    # 12 Oct 2026 (designer, Q-054): the trail's postage stamp, bottom right of the title band,
+    # so each postcard can be matched to its map by stamp. This deliberately reverses part of the
+    # "no pre-sorting" rule above: playtest 1 found sorting the deck too much work. The digit
+    # order is still not given. Same files the postcards print (Postcards/Stamps).
+    stamp = ImageReader(str(TRAIL_STAMPS[key]))
+    st_h = TITLE_H - 6
+    st_w = st_h * 20 / 24                      # the cards' 20 x 24 mm stamp proportion
+    c.drawImage(stamp, NEAT[2] - 12 - st_w, NEAT[1] + 3, st_w, st_h,
+                preserveAspectRatio=True, anchor="c", mask="auto")
 
 
     if answer:
