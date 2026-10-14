@@ -9,10 +9,10 @@ the bottom. This builds two-page .docx sheets that only ever print in the top
 zone, so a sheet can be printed, flipped, and reprinted to use the rest of the
 page instead of trusting the bottom.
 
-Each file holds two postcards, rotated 90 deg to portrait (3.5in wide x 5in
-tall) and placed side by side, so the printed block is only 5in tall instead
-of the 7in a stacked landscape pair would need -- keeping everything closer
-to the top-of-page zone that aligns reliably.
+Each file holds two postcards, rotated 90 deg to portrait (4in wide x 6in
+tall since the 6 x 4 in card, 13 Oct 2026; was 3.5 x 5) and placed side by side, so the printed
+block is only 6in tall instead of the 8.2in a stacked landscape pair would need -- keeping
+everything closer to the top-of-page zone that aligns reliably.
 
 Page 1 = front art of both cards. Page 2 = back text of both cards, same
 left/right order. Whether "same order" survives your physical flip is
@@ -53,11 +53,13 @@ DECK = ["L1_LAnse", "L2_Battle_Harbour", "L3_Baffin_Island", "LD_Brattahlid",
 CARD_ART = {card.split("_")[0]: ROOT / f"Postcard_{card}_Front.png" for card in DECK}
 CARD_TEXT = {card.split("_")[0]: ROOT / f"Postcard_{card}_Back.png" for card in DECK}
 
-# Art is 5in x 3.5in landscape. Rotated 90 deg it becomes 3.5in x 5in portrait.
-CARD_W_IN = 3.5
-CARD_H_IN = 5.0
+# Art is 6in x 4in landscape (5 x 3.5 until 13 Oct 2026). Rotated 90 deg it becomes 4in x 6in.
+CARD_W_IN = 4.0
+CARD_H_IN = 6.0
 TOP_MARGIN_IN = 0.3
-SIDE_MARGIN_IN = 0.6
+# Two 4in cards and the gap leave 0.15in each side of a Letter page (was 0.6in). That is just
+# inside the Canon MG2900's printable area; the 3 mm back bleed past it is clipped, harmlessly.
+SIDE_MARGIN_IN = 0.15
 GAP_IN = 0.2  # between the two cards on a page
 PAGE_W_IN = 8.5  # python-docx default template: US Letter, 8.5in x 11in
 ROTATE_DEGREES = -90  # clockwise, applied to the art page

@@ -13,6 +13,8 @@ superseded_by:
 tags: []
 ---
 
+**13 Oct 2026 (designer, after playtest 1):** **the card is now 6 × 4 in** (432 × 288 pt, 3:2), up from 5 × 3.5 in, because the designer's parents found the text too small. Layout B was chosen from a mock-up of L1 and AD: with the address gone, the divider moves right (x 184 of 360 → 276 of 432) so the message column is about 50% wider; message 11.5 pt (was 9.5), Fun Fact 10 pt (was 9) in a taller, narrower box under the stamp; stamp, postmark and family mark 1.2× (the mark is about 10 mm). Fronts are 1800 × 1200 px: each 1500 × 1050 source loses 50 rows (sky off the top on most cards; on L1, L2, L3, R2, R3, A2, A3 and AD some or all come out of the navy title band or, on AD, a strip of grass, so the 1576 digits, the cross and the tapestry border stay whole), then is scaled 1.2×. Print files: the .docx sheets keep two cards side by side (0.15 in side margins, was 0.6); the PDF sheets are now 2-up (11 sheets for the 22 cards, was 4-up). The digital table grew to 56 × 31.75 in so every card and map still fits at the last lock.
+
 Moved from the Design spec, 17 Sept 2026
 
 ### Format, count and address
@@ -24,7 +26,7 @@ One card per route stop, giving 18 cards across the four trails. At this volume 
 | Decision | Value |
 |---|---|
 | Count | 18 real stops in `TravelMap/Norse_Aunt_Route_Plan.json` (Leif 3, family 6, Aud 3, Harald 6), plus 4 candidate decoys — see [Final riddle tab] |
-| Size | Approx. 5 × 3.5 in (vintage postcard proportion) |
+| Size | **6 × 4 in since 13 Oct 2026** (see the note above); ~~Approx. 5 × 3.5 in (vintage postcard proportion)~~ |
 | Universal design elements | Series motif (trail identity), postmark (place), a titled Fun Fact block, her handwriting, and — candidate — a small element mark (crest/logo membership) placed away from the stamp and postmark, not UV |
 | Ordering key | Candidate change Reconstructed from ticket dates, postcard statements and the final bundle, not the postmark — see [Final riddle tab] |
 | Active clue cards | All 22 (candidate) — superseded, see the [Postcard system tab] |

@@ -17,7 +17,7 @@ FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_H6_Patara_Front.png"
 STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Harald_Dane_Axe_v1.png"
 FONT_DIR = ROOT / "Fonts"
 
-PAGE = landscape((3.5 * 72, 5 * 72))
+PAGE = (6 * 72, 4 * 72)  # 6 x 4 in since 13 Oct 2026 (was 5 x 3.5)
 W, H = PAGE
 LETTER = (8.5 * 72, 11 * 72)
 PAPER = HexColor("#EFE3C4")
@@ -52,10 +52,10 @@ def draw_front_card(c, x=0, y=0):
     c.translate(x, y)
     front = ImageReader(str(FRONT))
     fw, fh = front.getSize()
-    if (fw, fh) != (1500, 1050):
+    if (fw, fh) != (1800, 1200):
         raise ValueError(
-            f"Postcard_H6_Patara_Front.png is {fw}x{fh}, expected 1500x1050 (PC-13, "
-            f"5x3.5in @300dpi). Drawing it here would stretch it to fit the page."
+            f"Postcard_H6_Patara_Front.png is {fw}x{fh}, expected 1800x1200 (6x4in "
+            f"@300dpi). Drawing it here would stretch it to fit the page."
         )
     c.drawImage(front, 0, 0, W, H, preserveAspectRatio=False, mask="auto")
     c.restoreState()
@@ -73,16 +73,19 @@ def draw_back_card(c, x=0, y=0):
     c.setStrokeColor(RULE)
     c.setLineWidth(0.7)
 
-    left, right = 20, W - 20
+    # 13 Oct 2026 (designer, after playtest 1): the card is now 6 x 4 in, layout B. The divider
+    # moves right (x 184 of 360 -> 276 of 432) for a wider message column; message 11.5 pt
+    # (was 9.5), Fun Fact 10 pt (was 9); stamp, postmark and mark 1.2x.
+    left, right = 24, W - 24
     # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
     # 6 pt before the divider (was 12), at the user's request, on all 22 cards.
-    msg_left = 15
-    divider = 184
+    msg_left = 18
+    divider = 276
     c.setFillColor(TEAL)
-    c.setFont("Helvetica-Bold", 6.5)
-    c.drawCentredString(W / 2, H - 20, "POST CARD")
+    c.setFont("Helvetica-Bold", 7.5)
+    c.drawCentredString(W / 2, H - 22, "POST CARD")
     c.setStrokeColor(RULE)
-    c.line(divider, 24, divider, H - 30)
+    c.line(divider, 34, divider, H - 36)
 
     # Message drafted 17 Sept 2026 (concept), rewritten by the user 19 Sept 2026 (PZ-05/PC-07).
     # H6 is Harald's leg-closing, final-reveal card: it carries the "one more puzzle" nudge
@@ -96,26 +99,26 @@ def draw_back_card(c, x=0, y=0):
         'Now you should have all you need to retrace my steps!',
     ]
     c.setFillColor(INK)
-    font, size, leading = "NothingYouCouldDo", 9.5, 10.6
-    y = H - 36
+    font, size, leading = "NothingYouCouldDo", 11.5, 12.8
+    y = H - 44
     for paragraph in paragraphs:
-        for line in wrap_text(paragraph, font, size, divider - msg_left - 6):
+        for line in wrap_text(paragraph, font, size, divider - msg_left - 8):
             c.setFont(font, size)
             c.drawString(msg_left, y, line)
             y -= leading
-        y -= 1.8
+        y -= 2.2
 
-    c.setFont("NothingYouCouldDo", 9.8)
+    c.setFont("NothingYouCouldDo", 11.8)
     c.drawString(msg_left, y, "With love,")
-    c.drawString(msg_left, y - 11, "Aunt Liv")
+    c.drawString(msg_left, y - 13, "Aunt Liv")
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the Fun Fact box. See postcard_marks.py.
     draw_mark(c, "H6")
 
     # Same trail stamp as the other Harald cards -- one stamp per traveller, not per card.
-    stamp_w, stamp_h = 20 / 25.4 * 72, 24 / 25.4 * 72
-    stamp_x, stamp_y = right - stamp_w, H - 30 - stamp_h
+    stamp_w, stamp_h = 24 / 25.4 * 72, 28.8 / 25.4 * 72
+    stamp_x, stamp_y = right - stamp_w, H - 36 - stamp_h
     c.drawImage(
         ImageReader(str(STAMP)),
         stamp_x,
@@ -128,56 +131,56 @@ def draw_back_card(c, x=0, y=0):
     )
 
     # Postmark: place only. No date drawn (PC-03/PC-04).
-    postmark_x, postmark_y = stamp_x - 5, H - 48
+    postmark_x, postmark_y = stamp_x - 6, H - 58
     c.setStrokeColor(TEAL)
-    c.setLineWidth(0.8)
-    c.circle(postmark_x, postmark_y, 23, fill=0, stroke=1)
-    c.circle(postmark_x, postmark_y, 19.5, fill=0, stroke=1)
+    c.setLineWidth(0.9)
+    c.circle(postmark_x, postmark_y, 27.6, fill=0, stroke=1)
+    c.circle(postmark_x, postmark_y, 23.4, fill=0, stroke=1)
     c.setFillColor(TEAL)
-    c.setFont("Helvetica-Bold", 4.6)
-    c.drawCentredString(postmark_x, postmark_y - 1, "PATARA")
-    for offset in (-7, -2, 3, 8):
-        c.line(postmark_x + 23, postmark_y + offset, right, postmark_y + offset)
+    c.setFont("Helvetica-Bold", 5.5)
+    c.drawCentredString(postmark_x, postmark_y - 1.2, "PATARA")
+    for offset in (-8.4, -2.4, 3.6, 9.6):
+        c.line(postmark_x + 27.6, postmark_y + offset, right, postmark_y + offset)
 
     # No address (playtest 1, 11 Oct 2026): the cards were never posted -- they are Liv's
     # souvenirs -- so the TO box and its four ruled lines are gone. The Fun Fact box moves up
     # into the freed space, stopping just below the stamp.
-    address_x = divider + 17
+    address_x = divider + 16
     box_right = right + 5
 
     # Fun Fact -- typed, real trivia (PC-12). Ties Patara's real 2018 sword find directly to
     # Harald: he served in the Varangian Guard himself, so the sword's owner plausibly walked
     # a path adjacent to his -- not proven to be his own, but genuine Viking-era evidence here.
-    funfact_top, funfact_bottom = 146, 31
+    funfact_top, funfact_bottom = stamp_y - 6, 37
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
-    c.rect(divider + 11, funfact_bottom, box_right - (divider + 11), funfact_top - funfact_bottom, fill=0, stroke=1)
+    c.rect(divider + 10, funfact_bottom, box_right - (divider + 10), funfact_top - funfact_bottom, fill=0, stroke=1)
     c.setFillColor(FUNFACT)
-    c.setFont("Helvetica-Bold", 7.5)
-    c.drawString(address_x, funfact_top - 11, "FUN FACT")
+    c.setFont("Helvetica-Bold", 8.5)
+    c.drawString(address_x, funfact_top - 13, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 9, 10.7
+    fact_font, fact_size, fact_leading = "Helvetica", 10, 11.8
     # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): Fun Fact rewritten. Text from the user's Postcard
     # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
         'Archaeologists discovered a Viking sword at the Patara excavation site. It almost certainly belonged to a soldier of the Varangian Guard, of which Harald was a prominent member.'
     )
-    fact_y = funfact_top - 24
+    fact_y = funfact_top - 26
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):
         c.setFont(fact_font, fact_size)
         c.drawString(address_x, fact_y, line)
         fact_y -= fact_leading
 
-    credit_top = 19
+    credit_top = 22
     c.setStrokeColor(RULE)
-    c.line(left, credit_top + 7, right, credit_top + 7)
+    c.line(left, credit_top + 8, right, credit_top + 8)
     c.setFillColor(HexColor("#59635D"))
-    c.setFont("Helvetica", 4)
+    c.setFont("Helvetica", 4.8)
     credit_lines = [
         "Sourced via Daily Sabah, 2018 (see stops.js pataraSword).",
     ]
     for index, line in enumerate(credit_lines):
-        c.drawString(left, credit_top - index * 5, line)
+        c.drawString(left, credit_top - index * 6, line)
 
     c.restoreState()
 

@@ -77,7 +77,12 @@ def mark_path(card):
 # on R3/R4/R5 it read as another piece of the Bayeux rebus, and on H4 it crowded
 # the branch-rune key. Up here the mark is unmistakably part of the card's
 # printed furniture, not part of anything she drew.
-MARK_X, MARK_Y, MARK_SIZE = 232, 205, 23
+#
+# 13 Oct 2026 (6 x 4 in card, layout B): the divider is at x=276 of 432 and the postmark
+# circle is centred (334, 230) with r=27.6; the stamp's bottom-left corner is (340, 170) and the
+# Fun Fact box starts at y=164. The pocket is now left of the stamp, under the postmark,
+# x 278..338 by y 166..202. The mark is 1.2x (about 10 mm, was 8).
+MARK_X, MARK_Y, MARK_SIZE = 304, 185, 28
 
 
 def draw_mark(c, card, x=MARK_X, y=MARK_Y, size=MARK_SIZE):

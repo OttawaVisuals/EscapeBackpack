@@ -119,7 +119,7 @@
       'The comb is more than a comb. Try it on one of the postcards.',
       'Its two holes fit over the two little ring-and-dot marks on the Bjarnarhöfn card’s message side. Line them up and the comb settles in.',
       'With the comb in place, most lines are hidden, but four of its teeth are broken short. Read the first letter that shows after each short tooth, from the top down.',
-      'The short teeth uncover “brother’s”, “ould”, “ongside” and “Keep”: B, O, O, K. The combination is BOOK.'
+      'The short teeth uncover “brother’s”, “ould”, “o awesome” and “keep”: B, O, O, K. The combination is BOOK.'
     ] },
     { nudge: 'Two more postcards, a map of the Varangian Road and a card of raven flights.', name: 'Lower left pocket, again', pocket: 'lowerLeft', answer: '2648', releases: ['H2', 'H3', 'HD'], message: 'Three more postcards.', hints: [
       'The Varangian Road map has a few odd little marks among the places. The Hedeby postcard explains what they are.',
@@ -486,7 +486,8 @@
      square to each other, and both holes over both printed ring-and-dots (card points from
      Props/Comb). Seated, it travels and turns with the card. */
   const PT = PPI / 72;
-  const COMB = { origin: [-16.5, 7], holes: [[22, 16], [22, 186]], dots: [[22, 16], [22, 186]] };
+  // From assets/comb.json (Props/Comb/build_comb.py); 6 x 4 in AD card since 13 Oct 2026.
+  const COMB = { origin: [-16.5, 9.5], holes: [[24, 20], [24, 214]], dots: [[24, 20], [24, 214]] };
   function combPoints(state) {
     const c = state.pieces.comb, ad = state.pieces.AD;
     return { holes: COMB.holes.map(([x, y]) => onTable('comb', c, [(x - COMB.origin[0]) * PT, (y - COMB.origin[1]) * PT])), dots: COMB.dots.map(([x, y]) => onTable('AD', ad, [x * PT, y * PT])) };

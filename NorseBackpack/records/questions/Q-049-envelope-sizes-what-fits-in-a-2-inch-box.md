@@ -15,6 +15,8 @@ superseded_by:
 tags: []
 ---
 
+**13 Oct 2026, packaging update:** the designer now wants a rectangular box that fits an envelope carrying letter-size paper (PR-007, AS-065). The earlier square-box dimensions and fit calculations below are historical. Exact envelope dimensions, internal box clearance and depth still need measurement; no supplier size selected. This question remains open.
+
 **11 Oct 2026:** the designer suggests the maps need not be laminated (Q-052). Unlaminated maps can be folded in half and fit a 6 × 9 in envelope, which would remove the map problem below.
 
 Opened 11 Oct 2026, split from Q-046 once the box was set at **11.5 × 11.5 × 2 in** with all envelopes loose.
@@ -39,3 +41,5 @@ Not measured: the box's inside size.
 **The ruler does not fit lying flat** if it is the 30 cm one: the digital game models a "triangular 30 cm architect's scale ruler" (`Digital/leif-data.js`); the physical one on hand (PP-045, "Already at home") has no recorded length. A 30 cm ruler fits only along the diagonal (about 16 in inside, minus the walls), where it can't sit in an envelope. A 15 cm (6 in) ruler would fit, if the map scales still read on it.
 
 **Depth:** 2 in for 13 envelopes plus the bulky items. Probably fine; not checked until the tally and pieces are sized.
+
+**13 Oct 2026 (designer, after playtest 1):** the postcards are now 6 × 4 in (PR-004). They still fit the 6 × 9 in envelopes; a card-size envelope would need to be at least A6 (4¾ × 6½ in). The comb (PP-028) also got longer: see there.

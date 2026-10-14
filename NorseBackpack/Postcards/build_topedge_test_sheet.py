@@ -2,7 +2,8 @@
 
 Crops just the top strip of each front illustration (where the hidden 1576 halves live)
 and lays them out on a PDF sized so printing at 100% / Actual Size reproduces the same
-physical scale as the final card (1500x1050 px over a 5 x 3.5 in card = 300 dpi).
+physical scale as the final card (1800x1200 px over a 6 x 4 in card = 300 dpi; 1500x1050
+over 5 x 3.5 in until 13 Oct 2026).
 Not the whole card -- just enough to test cutting and aligning the top edge.
 """
 
@@ -17,9 +18,9 @@ ROOT = Path(__file__).resolve().parents[2]
 POSTCARDS = ROOT / "NorseBackpack" / "Postcards"
 OUT = ROOT / "output" / "pdf" / "Postcard_L2_L3_TopEdge_Test.pdf"
 
-DPI = 300.0  # PC-13: 1500x1050 art over a 5 x 3.5 in card
-STRIP_PX = 300  # crop height in source pixels; digits sit in roughly the first 30-40 px
-STRIP_W_IN = 1500 / DPI
+DPI = 300.0  # 1800x1200 art over a 6 x 4 in card
+STRIP_PX = 360  # crop height in front pixels; digits sit in roughly the first 40-50 px
+STRIP_W_IN = 1800 / DPI
 STRIP_H_IN = STRIP_PX / DPI
 
 MARGIN = 0.5 * inch
@@ -42,8 +43,8 @@ def crop_top_strip(src, dest, height_px):
     from PIL import Image
 
     im = Image.open(src)
-    if im.size != (1500, 1050):
-        raise ValueError(f"Expected 1500x1050 front for PC-13, got {im.size}: {src}")
+    if im.size != (1800, 1200):
+        raise ValueError(f"Expected 1800x1200 front (6 x 4 in), got {im.size}: {src}")
     im.crop((0, 0, im.width, height_px)).save(dest)
 
 

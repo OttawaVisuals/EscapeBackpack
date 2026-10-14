@@ -51,3 +51,5 @@ There are 22 postcards: each goes back with the lock it came from, as listed bel
 ## Replacement
 
 Reprint from the print file if damaged.
+
+**13 Oct 2026 (designer, after playtest 1):** on the 6 × 4 in card (PR-004) the rune key is about 1.15× and its box is shorter: "his key, copied out:" and the footnote sit to the right of the grid instead of above and below it, because the larger message leaves less height under the signature.

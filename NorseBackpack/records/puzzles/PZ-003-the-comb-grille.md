@@ -47,6 +47,8 @@ Lock 3 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 1 of 3 
 
 **11 Oct 2026 (designer, PR-007):** no locks or pockets any more. This code, set on the rune cypher wheel (PP-047), points to envelope 3, which holds what lock 3 used to close.
 
+
+**13 Oct 2026 (6 × 4 in card, PR-004):** AD's message rewraps in the wider column, so “alongside” now starts its line and can't give the second O. The comb now opens c**o**uld (line 3), s**o** (line 6, “It was so awesome…”) and **k**eep (line 8, which now starts its line, so that tooth is broken off at the root); the first B is unchanged. The answer is still **BOOK**. The comb grew with the card: 101 × 75 mm overall (was 69 × 66), 12 teeth (was 13), 90 mm long (was 59) and 3.0 mm wide (was 2.5), 1.55 mm gaps. The printed ring-and-dots moved to (24, 20) and (24, 214) pt. **Test print pending** at the new size.
 ## Player notices
 
 The comb and decoy postcard AD (Bjarnarhöfn), both released by lock 2 (1576) since 7 Oct 2026 (Q-005); ~~both released by SOLE~~.
@@ -74,8 +76,9 @@ AD’s message: "At her brother’s harbor — the one Aud wintered in. I’ve r
 3. Some teeth are broken. Read the first letter you can see on each line they leave open, from top to bottom.
 
 ## Solution
+With the comb in place only four lines show: **b**rother’s harbor… / c**o**uld find about her this / s**o** awesome to find that comb / **k**eep it! Reading the first visible letter of each, top to bottom: **BOOK**.
 
-With the comb in place only four lines show: **b**rother’s harbor… / **o**uld find about / **o**ngside the coins… / **k**eep it! Reading the first visible letter of each, top to bottom: **BOOK**.
+**Superseded 13 Oct 2026** (5 × 3.5 in card): With the comb in place only four lines show: **b**rother’s harbor… / **o**uld find about / **o**ngside the coins… / **k**eep it! Reading the first visible letter of each, top to bottom: **BOOK**.
 
 ## Solution notes
 

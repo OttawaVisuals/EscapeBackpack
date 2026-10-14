@@ -54,3 +54,5 @@ There are 22 postcards: each goes back with the lock it came from, as listed bel
 ## Replacement
 
 Reprint from the print file if damaged.
+
+**13 Oct 2026 (designer, after playtest 1):** on the 6 × 4 in card (PR-004) the souvenir P.S. moved under the signature in the message column; the Fun Fact box on L1 now starts at the same height as on the other 21 cards.

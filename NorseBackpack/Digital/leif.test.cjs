@@ -51,7 +51,7 @@ test('the planned whole-game layout fits: 22 postcards, 4 maps and every other p
   }
 });
 test('every prop is drawn at the same scale', () => {
-  const real = { Postcard: [5, 3.5], Map: [8.5, 11] };
+  const real = { Postcard: [6, 4], Map: [8.5, 11] };  // postcards 6 x 4 in since 13 Oct 2026
   for (const item of Object.values(G.items)) if (real[item.kind]) assert.deepEqual([item.w, item.h], real[item.kind].map(v => Math.round(v * G.PPI)), item.name);
 });
 // Props on the table stay on it and apart; the cards of a pile overlap by design, so each pile counts as one block.

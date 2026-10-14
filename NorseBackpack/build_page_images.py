@@ -8,7 +8,7 @@ renders three to four days behind their PDFs (they had been one-off snapshots wi
 
 It writes:
   * Postcards/Postcard_<ID>_Back.png -- page 2 of each output/pdf/Postcard_<ID>_Print.pdf at
-    300 dpi (1500 x 1050). Fronts are not rendered: the PDF places the Front.png unchanged.
+    300 dpi (1800 x 1200 since the 6 x 4 in card). Fronts are not rendered: the PDF places the Front.png unchanged.
   * Props/_Renders/<name>.png        -- one page of a prop or map PDF, per RENDERS below.
 
 A missing source PDF or page stops the run rather than leaving a silently stale image.

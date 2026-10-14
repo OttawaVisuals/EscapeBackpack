@@ -102,3 +102,5 @@ Lock as recorded: Four-digit padlock. Old page status: Decided · read with the 
 **Changed 7 Oct 2026 (user):** the L2/L3 join is no longer held up to the light; players lay the two top edges together and read `1576` with the magnifier. It is lock 2 and releases AD + the comb (Q-005).
 
 **Hold-to-light (cards L2/L3) decided:** the `1576` the top-edge join produces is **lock 3** in Leif's sequence (PZ-001) — it opens a fourth container holding new material, not yet designed. **Comb-grille set still has no answer** — cards assigned, mechanism decided, nothing wired to it yet.
+
+**13 Oct 2026 (designer, after playtest 1):** on the 6 × 4 in card (PR-004) L2 and L3 lose no rows at the top: their 50 rows come out of the navy title band, so the 1576 flecks are untouched and scaled 1.2× with the rest of the front. The joined edge was checked on screen (digits line up); `build_topedge_test_sheet.py` now prints a 6 in strip. **Test print pending** at the new size.

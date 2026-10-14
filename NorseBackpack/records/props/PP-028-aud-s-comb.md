@@ -23,6 +23,8 @@ tags: [old-PR-19]
 
 **11 Oct 2026 (PR-007):** the backpack is now a box, and pockets and pouches are envelopes. Where this record mentions the bag, a pocket, a pouch or a lock, that is the earlier format; the `container` field gives the envelope.
 
+**13 Oct 2026 (6 × 4 in card, PR-004):** rebuilt for the 6 × 4 in AD card: 101 × 75 mm overall (was 69 × 66), twelve 90 mm teeth (were thirteen at 59 mm), 3.0 mm wide with 1.55 mm gaps. Broken teeth end before c**o**uld, s**o** and **k**eep (see PZ-003); the K tooth is a 0.7 mm stub. Digital copy rebuilt from the same geometry (`Digital/build_digital_assets.py`, `build_aud_digital_assets.py`). Test print pending.
+
 ## From the old Props & specs tab
 
 Prop

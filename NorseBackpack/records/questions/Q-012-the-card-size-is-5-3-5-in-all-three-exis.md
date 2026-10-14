@@ -7,7 +7,7 @@ status: answered
 # Records this question is about, e.g. [PZ-003]
 about: []
 # Leave empty while open
-answer: Decided · 5 × 3.5 in
+answer: Decided · 6 × 4 in (13 Oct 2026; was 5 × 3.5 in)
 # Any related record IDs, e.g. [PZ-002, Q-004]
 links: []
 # Set to an ID when this record is replaced. It then moves to the Parked tab.
@@ -22,3 +22,5 @@ Status on the old page: **Decided · 5 × 3.5 in**
 **Join re-proofed:** the rebuilt 4× seam proof still reads `1576`; `build_topedge_test_sheet.py` now uses 300 dpi and a true 5 in strip, and its PDF was regenerated.
 **Still to do:** `build_postcard_collection.py` remains at 1536 × 1024 on a 6 × 4 in page, so cards L2 and L3 are not fully converted until its `SIZE` and `PAGE` change together and the collection outputs are rebuilt.
 **Superseded:** the earlier state had all three fronts at 3:2 and the join proof at 256 dpi. The choice between resizing 02/03 and enlarging card L1 was resolved in favour of the 5 × 3.5 in standard.
+
+**Superseded 13 Oct 2026:** the card is now 6 × 4 in (3:2); see PR-004. The 10:7 illustration sources stay at 1500 × 1050 and are cut to 3:2 in `Postcards/build_postcard_front_images.py`.

@@ -2,14 +2,15 @@
 
 How it plays. The comb lies upright on the back of AD, handle in the left margin, teeth pointing
 right. Its two end ring-and-dots are drilled through; players sit the two printed ring-and-dots
-(build_postcard_AD_pdf.COMB_MARKS) in those holes. There is one tooth per line of Liv's message and sign-off (13 in all),
-at the message's own line spacing. Intact teeth cover their whole line. Four teeth are broken
-short, each ending just before a chosen letter, so the only text left showing is
+(build_postcard_AD_pdf.COMB_MARKS) in those holes. There is one tooth per line of Liv's message and sign-off (12 in all
+since the 6 x 4 in card, 13 Oct 2026), at the message's own line spacing. Intact teeth cover their
+whole line. Four teeth are broken short, each ending just before a chosen letter, so the only text
+left showing is
 
     line 1  [At her ]brother's harbor -- the one Aud
-    line 3  [I've read everything I c]ould find about
-    line 8  [al]ongside the coins, and the museum let
-    line 9  [me ]keep it!
+    line 3  [I've read everything I c]ould find about her this
+    line 6  [It was s]o awesome to find that comb
+    line 8  keep it!          (tooth broken off at the root)
 
 and the first visible letters, top to bottom, read B O O K.
 
@@ -52,19 +53,22 @@ KNOTWORK_SVG = HERE / "knotwork.svg"
 PT = 25.4 / 72                    # mm per point
 
 # (line number, word, index of the target letter in that word)
-TARGETS = [(1, "brother", 0), (3, "could", 1), (8, "alongside", 2), (9, "keep", 0)]
+# 13 Oct 2026 (6 x 4 in card): the wider column rewraps the message, so "alongside" now starts
+# its line; the second O comes from "so" instead, and "keep" starts its line, so its tooth is
+# broken off almost at the root.
+TARGETS = [(1, "brother", 0), (3, "could", 1), (6, "so", 1), (8, "keep", 0)]
 ANSWER = "BOOK"
 
 # Geometry, in card points (x right, y down from the card's top-left) unless marked mm.
 # 29 Sept 2026: regenerated for AD at 9.5 pt / 10.6 pt leading with the wider message column
 # (text now starts at x = 15 and may run to x = 178). Same four target words, still BOOK.
-TOOTH_ROOT_X = 13.5               # message text starts at x = 15 (was 18.5 for x = 20)
+TOOTH_ROOT_X = 15.5               # message text starts at x = 18 (6 x 4 card; was 13.5 for x = 15)
 HANDLE_OUTER_X = -15.5            # handle overhangs the card's left edge by ~5.5 mm
-INTACT_TIP_X = 180.0              # longest line can reach x = 178; divider at 184 (was 168)
-TOOTH_HALF = 3.5                  # 2.47 mm teeth for 9.5 pt text; ~1.27 mm gaps at 10.6 pt leading (was 3.1)
-INK_SHIFT = -0.6                  # handwriting ink sits a little above the glyph-box centre
+INTACT_TIP_X = 270.0              # longest line can reach x = 268; divider at 276 (6 x 4 card; was 180)
+TOOTH_HALF = 4.2                  # 2.96 mm teeth for 11.5 pt text; ~1.55 mm gaps at 12.8 pt leading (was 3.5)
+INK_SHIFT = -0.7                  # handwriting ink sits a little above the glyph-box centre
 TIP_CLEAR = 0.4                   # broken tip stops this far short of the letter
-LOBE_R = 8.0                      # flared end around each alignment hole
+LOBE_R = 9.5                      # flared end around each alignment hole (8 before the 6 x 4 card)
 ROUND_OUT_MM = 2.5                # radius on the handle's outer corners (25 Sept 2026)
 ROUND_IN_MM = 0.3                 # fillet where the flared ends meet the handle bar; larger reaches tooth 1
 HOLE_R_MM = 1.0                   # 2 mm through-hole; the printed dot is 1 mm
@@ -79,12 +83,12 @@ def read_layout():
     for block in page.get_text("rawdict")["blocks"]:
         for line in block.get("lines", []):
             x0, y0, x1, y1 = line["bbox"]
-            if x0 < 30 and 25 < y0 < 185:   # message lines plus the two signature lines
+            if x0 < 30 and 25 < y0 < 205:   # message lines plus the two signature lines
                 chars = [ch for span in line["spans"] for ch in span["chars"]]
                 lines.append(((y0 + y1) / 2, chars))
     lines.sort(key=lambda item: item[0])
-    if len(lines) != 13:
-        raise SystemExit("expected 11 message + 2 signature lines on AD, found %d" % len(lines))
+    if len(lines) != 12:
+        raise SystemExit("expected 10 message + 2 signature lines on AD, found %d" % len(lines))
     tips = {}
     for number, word, index in TARGETS:
         chars = lines[number - 1][1]

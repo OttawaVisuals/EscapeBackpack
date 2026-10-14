@@ -182,9 +182,10 @@ def draw_spaced_text(draw, center_x, y, text, font, spacing, fill):
         x += draw.textlength(char, font=font) + spacing
 
 
-def fit_title(draw, text, max_width):
-    size = 84
-    while size > 52:
+def fit_title(draw, text, max_width, k=1.0):
+    # k scales the source-pixel sizes to the output (1.2 since the 6 x 4 in card).
+    size = round(84 * k)
+    while size > 52 * k:
         font = ImageFont.truetype(TITLE_FONT, size)
         spacing = round(size * 0.045)
         if spaced_width(draw, text, font, spacing) <= max_width:
@@ -193,17 +194,73 @@ def fit_title(draw, text, max_width):
     return ImageFont.truetype(TITLE_FONT, size), round(size * 0.045)
 
 
-# PC-13: card is 5 x 3.5 in (10:7). At 300 dpi that is 1500 x 1050 px -- matches
-# build_postcard_L1_pdf.py's PAGE exactly, so no aspect distortion at draw time.
-EXPECTED_SIZE = (1500, 1050)
+# PC-13: the illustration sources are 5 x 3.5 in (10:7), 1500 x 1050 px at 300 dpi.
+SOURCE_SIZE = (1500, 1050)
+# 13 Oct 2026 (designer, after playtest 1): the card is now 6 x 4 in (3:2), so the front is
+# 1800 x 1200 px. Each source loses 50 rows to become 3:2 (1500 x 1000), then is scaled 1.2x.
+# The rows come off the top (plain sky on most cards) and, where the top holds something that
+# matters, from inside the navy title band instead, just under its top edge, where a cut can't
+# be seen. TOP_TRIM is how many of the 50 come off the top; the rest come out of the band.
+OUTPUT_SIZE = (1800, 1200)
+TRIM = 50
+TOP_TRIM = {
+    "Postcard_L1_LAnse_Front.png": 10,             # tip of the sculpture
+    "Postcard_L2_Battle_Harbour_Front.png": 0,     # top edge carries the 1576 digits (PZ-002)
+    "Postcard_L3_Baffin_Island_Front.png": 0,      # same
+    "Postcard_R2_Rouen_Front.png": 36,             # band starts low: needs at least 36 off the top
+    "Postcard_R3_Bayeux_Front.png": 19,            # tapestry border along the top
+    "Postcard_A2_Hvammur_Front.png": 11,           # cliff reaches the top
+    "Postcard_A3_Esjuberg_Front.png": 2,           # painted frame edge along the top
+    "Postcard_AD_Bjarnarhofn_Front.png": 8,        # cross on the church (see SCENE_CUT)
+}
+# AD's band starts too low to give up the rows its cross needs, so a strip of the grass
+# foreground just above the band goes instead: (first source row, rows).
+SCENE_CUT = {"Postcard_AD_Bjarnarhofn_Front.png": (834, 26)}
+# Title and subtitle baselines, measured up from the card's bottom edge in source pixels.
+# Unchanged from the 5 x 3.5 card (965 and 1012 on a 1050 px source).
+TITLE_FROM_BOTTOM, SUBTITLE_FROM_BOTTOM = 1050 - 965, 1050 - 1012
+
+
+def find_band_top(image):
+    """First row of the plain navy title band: 12 rows in a row that are flat and band-coloured."""
+    import numpy as np
+    a = np.asarray(image).astype(int)
+    ref = a[-8].mean(0)
+    flat = [(np.abs(a[r].mean(0) - ref).max() < 25 and a[r].std(0).max() < 30) for r in range(len(a))]
+    for r in range(600, len(a) - 12):
+        if all(flat[r:r + 12]):
+            return r
+    raise ValueError("no title band found")
+
+
+def to_three_two(image, top, scene=None):
+    """Drop TRIM rows: `top` off the top edge, any SCENE_CUT strip, the rest from the band."""
+    w, h = image.size
+    band = TRIM - top
+    if scene:
+        start, rows = scene
+        kept = Image.new("RGB", (w, h - rows))
+        kept.paste(image.crop((0, 0, w, start)), (0, 0))
+        kept.paste(image.crop((0, start + rows, w, h)), (0, start))
+        image, h, band = kept, h - rows, band - rows
+    if band:
+        cut = find_band_top(image) + 6
+        # The title must still fit in the band: its top sits about 60 px above its baseline.
+        if cut + band > h - TITLE_FROM_BOTTOM - 70:
+            raise ValueError(f"band too short to lose {band} rows")
+        kept = Image.new("RGB", (w, h - band))
+        kept.paste(image.crop((0, 0, w, cut)), (0, 0))
+        kept.paste(image.crop((0, cut + band, w, h)), (0, cut))
+        image = kept
+    return image.crop((0, top, w, image.height))
 
 
 def build_card(source, output, title, subtitle):
     image = Image.open(source).convert("RGB")
-    if image.size != EXPECTED_SIZE:
+    if image.size != SOURCE_SIZE:
         raise ValueError(
-            f"Expected {EXPECTED_SIZE[0]} x {EXPECTED_SIZE[1]} artwork (PC-13, 5x3.5in "
-            f"@300dpi), got {image.size}: {source}. Illustration art must be regenerated "
+            f"Expected {SOURCE_SIZE[0]} x {SOURCE_SIZE[1]} artwork (PC-13, 10:7 "
+            f"source), got {image.size}: {source}. Illustration art must be regenerated "
             f"or reframed to this size -- do not stretch or force-resize it here."
         )
 
@@ -214,18 +271,23 @@ def build_card(source, output, title, subtitle):
         draw.rectangle((0, band_top, w, h), fill=BAND_NAVY)
         draw.rectangle((0, band_top - 3, w, band_top), fill=BAND_DIVIDER)
 
+    image = to_three_two(image, TOP_TRIM.get(output.name, TRIM), SCENE_CUT.get(output.name))
+    image = image.resize(OUTPUT_SIZE, Image.LANCZOS)
+    k = OUTPUT_SIZE[0] / SOURCE_SIZE[0]
+
     draw = ImageDraw.Draw(image)
     center_x = image.width / 2
-    title_font, title_spacing = fit_title(draw, title, image.width * 0.88)
-    subtitle_font = ImageFont.truetype(SUBTITLE_FONT, 23)
-    subtitle_spacing = 4
+    title_font, title_spacing = fit_title(draw, title, image.width * 0.88, k)
+    subtitle_font = ImageFont.truetype(SUBTITLE_FONT, round(23 * k))
+    subtitle_spacing = round(4 * k)
 
-    # Shared baselines at 300 dpi: clear the lowest existing divider (AD/RD),
-    # retain accent headroom and leave space below Cinzel's descending J.
-    # Keep the original illustrated bands and all scenery unchanged.
-    draw_spaced_text(draw, center_x + 2, 965, title, title_font, title_spacing, SHADOW)
-    draw_spaced_text(draw, center_x, 962, title, title_font, title_spacing, PAPER)
-    draw_spaced_text(draw, center_x, 1012, subtitle, subtitle_font, subtitle_spacing, PAPER)
+    # Shared baselines: clear the lowest existing divider (AD/RD), retain accent headroom and
+    # leave space below Cinzel's descending J. Keep the original illustrated bands unchanged.
+    title_y = image.height - TITLE_FROM_BOTTOM * k
+    subtitle_y = image.height - SUBTITLE_FROM_BOTTOM * k
+    draw_spaced_text(draw, center_x + 2 * k, title_y + 3 * k, title, title_font, title_spacing, SHADOW)
+    draw_spaced_text(draw, center_x, title_y, title, title_font, title_spacing, PAPER)
+    draw_spaced_text(draw, center_x, subtitle_y, subtitle, subtitle_font, subtitle_spacing, PAPER)
     image.save(output, optimize=True, dpi=(300, 300))
     print(output)
 

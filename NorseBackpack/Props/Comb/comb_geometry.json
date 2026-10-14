@@ -4,36 +4,36 @@
     {
       "line": 1,
       "word": "brother",
-      "tip_x_mm": 17.68,
-      "broken_length_mm": 12.92
+      "tip_x_mm": 21.37,
+      "broken_length_mm": 15.91
     },
     {
       "line": 3,
       "word": "could",
-      "tip_x_mm": 41.06,
-      "broken_length_mm": 36.29
+      "tip_x_mm": 49.67,
+      "broken_length_mm": 44.21
+    },
+    {
+      "line": 6,
+      "word": "so",
+      "tip_x_mm": 21.93,
+      "broken_length_mm": 16.46
     },
     {
       "line": 8,
-      "word": "alongside",
-      "tip_x_mm": 18.01,
-      "broken_length_mm": 13.25
-    },
-    {
-      "line": 9,
       "word": "keep",
-      "tip_x_mm": 30.36,
-      "broken_length_mm": 25.59
+      "tip_x_mm": 6.21,
+      "broken_length_mm": 0.74
     }
   ],
-  "intact_length_mm": 58.74,
-  "tooth_width_mm": 2.47,
-  "min_tooth_gap_mm": 1.27,
-  "lobe_to_tooth_gap_mm": 1.88,
-  "alignment_holes_mm_apart": 60.0,
+  "intact_length_mm": 89.78,
+  "tooth_width_mm": 2.96,
+  "min_tooth_gap_mm": 1.55,
+  "lobe_to_tooth_gap_mm": 2.29,
+  "alignment_holes_mm_apart": 68.4,
   "overall_mm": [
-    69.0,
-    65.6
+    100.7,
+    75.1
   ],
   "thickness_mm": {
     "teeth": 1.6,
