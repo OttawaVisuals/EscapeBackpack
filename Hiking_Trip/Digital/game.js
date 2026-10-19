@@ -1,6 +1,7 @@
 'use strict';
 (() => {
   const G = window.HikingGame, C = window.HikingClues, L = window.HikingLater, $ = id => document.getElementById(id);
+  const X = window.HikingExperience, experience = X.init();
   const KEY = 'escape-backpack.hiking-opening.v1', NS = 'http://www.w3.org/2000/svg';
   let state = G.fresh(), hadSave = false, scale = 1, zoom = 1, selected = 'bottle', inspected = null, z = 2, toastTimer;
   let compareId = '', bottle3d = null, bottleLoad = 0, anchor = null, draft = null, wordDown = null, wordMoved = false, savedFocused = null;
@@ -199,7 +200,7 @@
       bottle3d = null; const mine = id + (++bottleLoad);
       import('./bottle3d.js').then(m => m.mount(stage, { stickers: G.stickers, face: p.face, onFace: f => { if (piece(id).face !== f) { piece(id).face = f; save(); } } }))
         .then(h => { if ((inspected === id || compareId === id) && stage.isConnected && mine === id + bottleLoad) bottle3d = h; else h.dispose(); })
-        .catch(err => { console.error(err); stage.replaceChildren(el('p', 'bottle3d-status', 'The 3D bottle could not load. Check the internet connection, then close and reopen it.')); });
+        .catch(err => { console.error(err); stage.replaceChildren(el('p', 'bottle3d-status', 'The 3D bottle could not load. Close and reopen it, or try reloading the game. Your saved progress will stay.')); });
       return view;
     }
     if (id === 'note') { const view = el('div', 'note-view'); view.append(note(p.face)); return view; }
@@ -329,6 +330,7 @@
     w.querySelector('.prev').textContent = set[(v + n - 1) % n]; w.querySelector('.cur').textContent = set[v]; w.querySelector('.next').textContent = set[(v + 1) % n];
     w.setAttribute('aria-valuenow', v); w.setAttribute('aria-valuemin', 0); w.setAttribute('aria-valuemax', n - 1); w.setAttribute('aria-valuetext', set[v]);
     if (dir) { w.style.setProperty('--dir', dir > 0 ? '10px' : '-10px'); w.classList.remove('spin'); void w.offsetWidth; w.classList.add('spin'); }
+    if (dir) experience.cue('wheel');
     $('combination').value = dialVals.map((k, j) => dialChars[j][k]).join('');
   }
   function turnWheel(i, d) {
@@ -378,6 +380,7 @@
     }
     [...$('progress').children].forEach((node, i) => {
       const status = i < state.stage ? 'Opened' : i === state.stage ? 'Your next lock' : 'Locked';
+      if (i === state.stage) node.setAttribute('aria-current', 'step'); else node.removeAttribute('aria-current');
       node.className = i < state.stage ? 'done' : i === state.stage ? 'current' : ''; node.title = `Lock ${i + 1} · ${G.locks[i].name} · ${status}`;
       node.querySelector('.step-number').textContent = i < state.stage ? '✓' : i + 1; node.querySelector('small').textContent = ` · ${status}`;
     });
@@ -388,14 +391,14 @@
       $('combination-label').textContent = `${lock.answer.length === 4 ? 'FOUR' : 'THREE'}-${lock.letters ? 'LETTER' : 'DIGIT'} COMBINATION`;
       if (dialStage !== state.stage) { buildDial(lock.answer.length, !!lock.letters); dialStage = state.stage; $('padlock').classList.remove('unlocked', 'wrong'); }
     }
-    drawHints();
+    drawHints(); experience.progress(state, G.locks);
   }
   // Opening a lock: a banner over the table (it never blocks play) with a 1–5 star rating, kept in the save and reported.
   const track = (name, props = {}) => { try { window.zaraz?.track?.(name, { game: 'hiking-online', ...props }); } catch (_) { /* analytics never blocks play */ } };
   let bannerTimer;
   function showBanner(lock, title, text) {
     $('banner-title').textContent = title; $('banner-text').textContent = text; $('unlock-banner').hidden = false;
-    const rate = $('rate'); rate.querySelectorAll('button').forEach(b => b.remove());
+    const rate = $(lock === G.locks.length ? 'final-rate' : 'rate'); rate.querySelectorAll('button').forEach(b => b.remove());
     for (let n = 1; n <= 5; n++) {
       const b = button('★', () => {
         state.ratings[lock - 1] = n; save(); track('puzzle_rated', { lock, rating: n, hints: state.hints[lock - 1], seconds: Math.round(state.lockTime[lock - 1] / 1000) });
@@ -412,19 +415,26 @@
   $('banner-close').addEventListener('click', hideBanner);
   let opening = false;
   $('lock-form').addEventListener('submit', async event => {
-    event.preventDefault(); if (opening) return; const value = $('combination').value;
+    event.preventDefault(); if (opening || state.stage >= G.locks.length) return; const value = $('combination').value;
+    const before = new Set(G.available(state.stage, state.found));
     if (!G.unlock(state, value)) {
       const log = state.attempts[state.stage]; if (value && !log.includes(value) && log.length < 30) { log.push(value.slice(0, 12)); save(); }
+      experience.cue('wrong');
       $('lock-message').textContent = 'Still locked. Take another look at your clues.'; $('lock-message').className = 'error';
       const pad = $('padlock'); pad.classList.remove('wrong'); void pad.offsetWidth; pad.classList.add('wrong'); return;
     }
-    opening = true; $('padlock').classList.add('unlocked'); $('lock-message').className = ''; $('lock-message').textContent = 'Click! The lock springs open.';
-    await new Promise(r => setTimeout(r, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 420)); opening = false;
+    experience.cue(state.stage === G.locks.length ? 'finish' : 'unlock');
+    opening = true; $('lock-form').querySelector('[type=submit]').disabled = true; $('padlock').classList.add('unlocked'); $('lock-message').className = ''; $('lock-message').textContent = 'Click! The lock springs open.';
+    await new Promise(r => setTimeout(r, experience.motion() ? 420 : 0)); opening = false;
     const opened = G.locks[state.stage - 1];
     const tidied = state.tidied;
     $('combination').value = ''; $('lock-message').textContent = ''; $('lock-message').className = ''; selected = opened.selected; drawTable(); drawProgress(); save();
     if (tidied) toast('The table was rearranged to make room for the new items.');
+    $('lock-form').querySelector('[type=submit]').disabled = false;
+    experience.reveal(G.available(state.stage, state.found).filter(id => !before.has(id)));
     showBanner(state.stage, opened.title, opened.message);
+    if (state.stage === G.locks.length) { hideBanner(); $('ending-dialog').showModal(); experience.setActive(false); }
+    else $('lock-name').focus({ preventScroll: true });
   });
   $('notes').value = state.notes; $('notes').addEventListener('input', () => { state.notes = $('notes').value; save(); });
   $('close-finds').addEventListener('click', () => $('finds-dialog').close());
@@ -445,8 +455,9 @@
   $('game-btn').addEventListener('click', e => { e.stopPropagation(); const open = $('game-menu').hidden; $('game-menu').hidden = !open; $('game-btn').setAttribute('aria-expanded', String(open)); });
   $('game-menu').addEventListener('click', closeMenu);
   document.addEventListener('click', e => { if (!e.target.closest('.menu-wrap')) closeMenu(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('game-menu').hidden) { closeMenu(); $('game-btn').focus(); } });
-  $('how-to').addEventListener('click', () => $('intro').showModal()); $('begin').addEventListener('click', () => { $('intro').close(); save(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('game-menu').hidden) { e.preventDefault(); closeMenu(); $('game-btn').focus(); } });
+  $('how-to').addEventListener('click', () => $('intro').showModal()); $('begin').addEventListener('click', () => { $('intro').close(); lastTick = lastInput = Date.now(); experience.setActive(state.stage < G.locks.length, true); drawTimer(); save(); });
+  $('intro').addEventListener('cancel', event => { event.preventDefault(); $('begin').click(); });
   $('restart').addEventListener('click', () => $('restart-dialog').showModal());
   $('restart-confirm').addEventListener('click', () => { hideBanner(); noteOpen = false; state = G.fresh(); selected = 'bottle'; $('notes').value = ''; $('combination').value = ''; $('lock-message').textContent = ''; $('restart-dialog').close(); dialStage = null; drawTable(); drawProgress(); save(); $('intro').showModal(); });
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
@@ -478,16 +489,31 @@
      Counted only while the page is visible and someone has touched it in the last five minutes, so a game left open or in
      another tab does not run up the clock. It stops at the last lock. Kept per lock in the save. */
   let lastInput = Date.now(), lastTick = Date.now(), idle = false;
+  const clockRunning = () => X.clockRuns({ hidden: document.visibilityState !== 'visible', idle, title: $('intro').open, paused: ['pause-dialog', 'save-dialog', 'restart-dialog', 'feedback-dialog', 'ending-dialog', 'design-notes'].some(id => $(id)?.open), done: state.stage >= G.locks.length });
+  function openPause() { hideTools(); dropTip(); save(); $('pause-dialog').showModal(); experience.setActive(false); drawTimer(); }
+  $('pause-button').addEventListener('click', openPause);
+  $('menu-settings').addEventListener('click', openPause);
+  $('resume-button').addEventListener('click', () => $('pause-dialog').close());
+  $('pause-dialog').addEventListener('close', () => { lastTick = lastInput = Date.now(); experience.setActive(clockRunning(), true); drawTimer(); });
+  $('pause-save').addEventListener('click', () => { $('pause-dialog').close(); $('save-copy').click(); });
+  $('pause-help').addEventListener('click', () => { $('pause-dialog').close(); $('how-to').click(); });
+  $('menu-help').addEventListener('click', () => $('how-to').click());
+  $('ending-return').addEventListener('click', () => $('ending-dialog').close());
+  $('ending-copy').addEventListener('click', () => $('copy-result').click());
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !e.defaultPrevented && !document.querySelector('dialog[open]') && $('game-menu').hidden && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName)) { e.preventDefault(); openPause(); }
+  });
   for (const type of ['pointerdown', 'keydown', 'wheel', 'pointermove']) document.addEventListener(type, () => { lastInput = Date.now(); }, { passive: true, capture: true });
   function drawTimer() {
     $('timer-text').textContent = G.clock(state.played);
-    const done = state.stage >= G.locks.length, paused = !done && (idle || document.visibilityState !== 'visible');
+    const done = state.stage >= G.locks.length, paused = !done && !clockRunning();
     $('timer-state').textContent = done ? 'done' : paused ? 'paused' : ''; $('timer').classList.toggle('paused', paused); $('timer').classList.toggle('done', done);
   }
   function tickTimer() {
     const now = Date.now(), dt = Math.min(now - lastTick, 5000); lastTick = now;
     idle = now - lastInput > 300000;
-    if (document.visibilityState === 'visible' && !idle && state.stage < G.locks.length) { state.played += dt; state.lockTime[state.stage] += dt; if (++tickCount % 15 === 0) save(); }
+    experience.setActive(clockRunning());
+    if (clockRunning()) { state.played += dt; state.lockTime[state.stage] += dt; if (++tickCount % 15 === 0) save(); }
     drawTimer();
   }
   let tickCount = 0;
@@ -666,9 +692,14 @@
       $('fb-result').textContent = 'Thank you. It’s on its way to us.'; $('feedback-form').reset(); setTimeout(() => $('feedback-dialog').close(), 1800);
     } catch (err) { $('fb-result').textContent = err.message === 'busy' ? 'Too many messages right now. Please try again in a minute.' : 'We couldn’t send it. Check your connection and try again.'; $('fb-send').disabled = false; }
   });
+  // Utility menus pause immediately; the item inspector remains part of play time.
+  const menuObserver = new MutationObserver(() => { lastTick = lastInput = Date.now(); experience.setActive(clockRunning()); drawTimer(); });
+  for (const id of ['intro', 'pause-dialog', 'save-dialog', 'restart-dialog', 'feedback-dialog', 'ending-dialog', 'design-notes']) {
+    if ($(id)) menuObserver.observe($(id), { attributes: true, attributeFilter: ['open'] });
+  }
   new ResizeObserver(fit).observe($('table-frame'));
   drawTable(); drawProgress();
   if (new URLSearchParams(location.search).get('design') === '1' && $('design-notes')) { $('design-notes').showModal(); $('design-notes').scrollTop = 0; }
-  else if (!hadSave) $('intro').showModal();
-  else save();
+  else { $('intro').showModal(); if (hadSave) save(); }
+  drawTimer();
 })();
