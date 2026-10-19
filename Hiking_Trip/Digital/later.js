@@ -246,7 +246,7 @@
     });
     legoSatellite().then(m => m.mount(stageBox, { built: sat.built })).then(v => { model = v; startDrag(); }, err => {
       console.error(err); view.classList.add('no-3d');
-      stageBox.replaceChildren(el('p', 'lego-error', 'The 3D model could not load. Check the internet connection; the instructions still work.'));
+      stageBox.replaceChildren(el('p', 'lego-error', 'The 3D model could not load. The instructions still work. Close and reopen this view to retry.'));
     });
     show();
     return view;
@@ -272,7 +272,7 @@
   function legoView(id, state, ctx) {
     const view = el('div', 'lego-flat-view');
     lego[id]().then(m => m.mount(view, { actions: state.push[id].actions, onChange: actions => { state.push[id].actions = actions; ctx.save(); } }))
-      .catch(err => { console.error(err); view.replaceChildren(el('p', 'lego-error', 'The 3D puzzle could not load. Check the internet connection, then close and reopen it.')); });
+      .catch(err => { console.error(err); view.replaceChildren(el('p', 'lego-error', 'The 3D puzzle could not load. Close and reopen it, or try reloading the game. Your saved progress will stay.')); });
     return view;
   }
 
@@ -289,7 +289,7 @@
     const view = el('div', 'lego3d-view cube-3d'), canvasBox = el('div', 'lego3d-canvas'), bar = el('div', 'lego3d-bar');
     bar.append(el('p', 'lego3d-status', 'Loading…')); view.append(canvasBox, bar);
     legoCube().then(m => m.mount(canvasBox, { cube: state.cube, G, bar, onChange: () => ctx.save() }))
-      .catch(err => { console.error(err); view.replaceChildren(el('p', 'lego-error', 'The 3D puzzle could not load. Check the internet connection, then close and reopen it.')); });
+      .catch(err => { console.error(err); view.replaceChildren(el('p', 'lego-error', 'The 3D puzzle could not load. Close and reopen it, or try reloading the game. Your saved progress will stay.')); });
     return view;
   }
 
