@@ -665,7 +665,7 @@ TEMPLATE = r"""<!doctype html>
 @media (prefers-color-scheme:dark){:root{--bg:#161b19;--card:#1f2623;--ink:#ece6d6;--mute:#a4aea8;--rule:#35403b;--accent:#7fc3a9;--rust:#e0955a;--spoil:#2b342f}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,"Segoe UI",sans-serif}
-.wrap{display:grid;grid-template-columns:150px 1fr;max-width:1300px;margin:0 auto}
+.wrap{display:grid;grid-template-columns:150px 1fr;max-width:1900px;margin:0 auto}
 nav{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:16px 10px;border-right:1px solid var(--rule)}
 nav a{display:block;padding:5px 8px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:14px}
 nav a:hover{background:var(--spoil)}
