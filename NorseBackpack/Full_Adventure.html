@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>The Raven Inheritance: the full adventure</title>
+<style>
+:root{--bg:#f4efe3;--card:#fffaf0;--ink:#1f2a26;--mute:#5d6a63;--rule:#d9cfb8;--accent:#2f5d4e;--rust:#a8561f;--spoil:#efe3c4}
+@media (prefers-color-scheme:dark){:root{--bg:#161b19;--card:#1f2623;--ink:#ece6d6;--mute:#a4aea8;--rule:#35403b;--accent:#7fc3a9;--rust:#e0955a;--spoil:#2b342f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,"Segoe UI",sans-serif}
+.wrap{display:grid;grid-template-columns:150px 1fr;max-width:1300px;margin:0 auto}
+nav{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:16px 10px;border-right:1px solid var(--rule)}
+nav a{display:block;padding:5px 8px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:14px}
+nav a:hover{background:var(--spoil)}
+nav a b{display:inline-block;min-width:1.6em;color:var(--accent)}
+nav a span{color:var(--mute);font-size:12px;letter-spacing:.05em}
+main{padding:0 24px 80px;min-width:0}
+.top{padding:28px 0 10px}
+.top h1{margin:0;font-size:30px}
+.top p{color:var(--mute);margin:6px 0}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button{font:inherit;padding:6px 12px;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:8px;cursor:pointer}
+button:hover{background:var(--accent);color:var(--bg)}
+.env{margin-top:36px;padding:20px;background:var(--card);border:1px solid var(--rule);border-radius:14px;scroll-margin-top:60px}
+.env>header{display:flex;gap:16px;align-items:center;margin-bottom:6px}
+.num{flex:none;min-width:54px;height:54px;padding:0 8px;border-radius:50%;background:var(--accent);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:22px}
+a{color:var(--accent)}
+h2{margin:0;font-size:24px}
+.env>header p{margin:2px 0 0;color:var(--mute)}
+.runes{font-family:"Segoe UI Historic","Noto Sans Runic",serif;letter-spacing:.12em;color:var(--rust)}
+h3{margin:22px 0 8px;font-size:18px}
+h3.inside{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--mute)}
+h4{margin:0 0 8px;font-size:15px}
+h5{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--mute)}
+.id{font-weight:400;font-size:11px;color:var(--mute);margin-left:6px}
+.st{margin-left:8px;font-size:11px;padding:1px 8px;border-radius:99px;border:1px solid var(--rule);color:var(--mute);font-weight:400}
+.props{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.prop{border:1px solid var(--rule);border-radius:10px;padding:12px;background:var(--bg)}
+#PP-039{grid-column:1/-1;scroll-margin-top:100px}
+#PP-039 .figs{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+figure{margin:0}
+figure img{width:100%;height:auto;display:block;border-radius:6px;border:1px solid var(--rule);background:#fff}
+figcaption{font-size:12px;color:var(--mute);text-align:center;margin-top:3px}
+.noimg{padding:22px 10px;text-align:center;color:var(--mute);border:1px dashed var(--rule);border-radius:8px;font-size:13px}
+.meta{margin:8px 0 0;font-size:12px;color:var(--mute)}
+.puzzle{margin-top:24px;padding-top:6px;border-top:2px solid var(--rule)}
+.logic{background:var(--bg);border-radius:10px;padding:12px 16px;margin:10px 0}
+.logic p{margin:6px 0}
+.uses{margin:6px 0;font-size:14px}
+.chip{display:inline-block;margin:2px 4px 2px 0;padding:2px 10px;border:1px solid var(--rule);border-radius:99px;color:var(--ink);text-decoration:none;font-size:13px}
+.chip small{color:var(--mute)}
+.chip:hover{border-color:var(--accent)}
+.hints ol{margin:0;padding-left:22px}
+details.spoiler{margin:4px 0;border:1px solid var(--rule);border-radius:8px;background:var(--spoil)}
+details.spoiler>summary{cursor:pointer;padding:6px 12px;color:var(--accent);font-weight:600}
+details.spoiler>div{padding:4px 14px 10px}
+details.spoiler>div p{margin:6px 0}
+.sol{margin-top:10px}
+.code{padding:8px 12px;border-radius:8px;background:var(--bg)}
+code{background:var(--spoil);padding:0 4px;border-radius:4px}
+nav a.navcost{margin-top:8px;border-top:1px solid var(--rule);border-radius:0 0 6px 6px}
+.tbl{overflow-x:auto}
+table.cost{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+table.cost th,table.cost td{padding:5px 8px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:middle}
+table.cost thead th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);font-weight:600}
+table.cost tbody th{font-weight:500}
+table.cost.prices tbody th{white-space:nowrap;width:1%}
+table.cost small{color:var(--mute);font-size:11px}
+table.cost .r{text-align:right}
+table.cost input{width:100%;min-width:76px;font:inherit;text-align:right;padding:4px 6px;border:1px solid var(--rule);border-radius:6px;background:var(--bg);color:var(--ink)}
+table.cost textarea{width:100%;min-width:230px;font:inherit;font-size:13px;line-height:1.35;padding:4px 6px;border:1px solid var(--rule);border-radius:6px;background:var(--bg);color:var(--ink);resize:vertical}
+table.cost textarea:focus,table.cost input:focus{outline:2px solid var(--accent);outline-offset:0}
+table.cost input:focus{outline:2px solid var(--accent);outline-offset:0}
+table.cost tr.tot th,table.cost tr.tot td{font-weight:700;border-top:2px solid var(--ink)}
+table.cost tr.off th,table.cost tr.off td{opacity:.45}
+table.cost.pack input[type=number]{max-width:96px}
+table.cost.pack input[type=url]{min-width:150px}
+a.nolink{color:var(--ink);text-decoration:none;cursor:default}
+table.cost.pack input[type=radio]{accent-color:var(--accent);margin:0 4px 0 0}
+table.cost tr.tot2 th,table.cost tr.tot2 td{font-weight:600;color:var(--mute)}
+table.cost tr.miss th,table.cost tr.miss td{color:var(--mute);font-size:12px;font-weight:400}
+.costbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.costbar .meta{margin:0}
+.tabs{display:flex;gap:8px;margin:10px 0 0}
+.tabs button{padding:8px 18px;font-weight:600}
+.tabs button[aria-selected=true]{background:var(--accent);color:var(--bg)}
+.tab[hidden]{display:none}
+table.plan{border-collapse:collapse;width:100%;font-size:14px;margin:8px 0}
+table.plan th,table.plan td{border:1px solid var(--rule);padding:5px 8px;text-align:left;vertical-align:top}
+table.plan th{background:var(--spoil);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+table.parts{font-size:13px}
+details.plan{border:1px solid var(--rule);border-radius:10px;margin:10px 0;background:var(--bg)}
+details.plan>summary{cursor:pointer;padding:10px 14px;font-weight:600}
+details.plan>div{padding:0 16px 10px}
+h3.plan-h{font-size:16px}
+@media(max-width:760px){.wrap{display:block}nav{display:none}main{padding:0 14px 60px}}
+@media print{nav,.bar{display:none}.wrap{display:block}details.spoiler:not([open])>div{display:block}.env{break-inside:avoid-page}}
+</style></head><body>
+<div class="wrap"><nav>
+<a href="#box" data-tab="design">The box</a>
+<a href="#env1" data-tab="design"><b>1</b> <span>ᚷᛉᚦᛉ</span></a>
+<a href="#env2" data-tab="design"><b>2</b> <span>ᛉᛖᚠᛁ</span></a>
+<a href="#env3" data-tab="design"><b>3</b> <span>ᛒᛚᛟᛉ</span></a>
+<a href="#env4" data-tab="design"><b>4</b> <span>ᚱᛒᛚᚷ</span></a>
+<a href="#env5" data-tab="design"><b>5</b> <span>ᛈᚹᛟᛇ</span></a>
+<a href="#env6" data-tab="design"><b>6</b> <span>ᛈᛏᛟᛇ</span></a>
+<a href="#env7" data-tab="design"><b>7</b> <span>ᚺᛏᛏᚦ</span></a>
+<a href="#env8" data-tab="design"><b>8</b> <span>ᛏᚾᚠᛖ</span></a>
+<a href="#env9" data-tab="design"><b>9</b> <span>ᛒᚠᛞᛉ</span></a>
+<a href="#env10" data-tab="design"><b>10</b> <span>ᛁᛉᚲᛇ</span></a>
+<a href="#env11" data-tab="design"><b>11</b> <span>ᛚᚹᚲᛏ</span></a>
+<a href="#env12" data-tab="design"><b>12</b> <span>ᚲᛟᛉᛏ</span></a>
+<a href="#env13" data-tab="design"><b>13</b> <span>ᛈᛚᚹᛉ</span></a>
+<a href="#production" data-tab="production"><b>$</b> Components</a>
+<a href="#costs" data-tab="production" class="navcost"><b>$</b> Print costs</a>
+<a href="#plan-production" data-tab="production"><b>…</b> Making it</a>
+<a href="#nextsteps" data-tab="next"><b>→</b> Next steps</a>
+<a href="#outreach" data-tab="next"><b>?</b> Open questions</a>
+<a href="#plan" data-tab="next"><b>…</b> Full plan</a>
+</nav>
+<main>
+<div class="top"><h1>Norse Backpack · The Raven Inheritance: the full adventure</h1>
+<p>Designer copy with spoilers. <b>Design:</b> envelope by envelope, what is inside, the puzzle that opens it, its logic, hints and solution (13 envelopes). <b>Production:</b> components, print costs, how it gets made. <b>Next steps:</b> playtesting, quotes, launch plan. Built from the records, 2026-10-27 11:44.</p></div>
+<div class="tabs" role="tablist"><button data-go="design" role="tab">Design</button><button data-go="production" role="tab">Production</button><button data-go="next" role="tab">Next steps</button></div>
+<div class="bar" id="designbar"><button id="open">Open all hints and solutions</button><button id="close">Close all</button>
+<span class="mute" style="color:var(--mute);font-size:13px">Hints and solutions are folded until you open them.</span></div>
+<div class="tab" id="tab-design" data-tab="design"><section class="env" id="box"><header><span class="num">Box</span><div><h2>On top of the box</h2><p>Loose on the lid before any envelope is opened. Postcard L1 and the wheel start the first code (a worked example).</p></div></header><h3 class="inside">Inside</h3><div class="props"><article class="prop" id="PP-001"><h4>Postcard L1 · L&#x27;Anse aux Meadows <span class="id">PP-001</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_L1_LAnse_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_L1_LAnse_Front.webp" alt="Postcard L1 · L&#x27;Anse aux Meadows Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_L1_LAnse_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_L1_LAnse_Back.webp" alt="Postcard L1 · L&#x27;Anse aux Meadows Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-045"><h4>Liv&#x27;s box (was her field bag) <span class="id">PP-045</span></h4>
+<div class="figs">
+<figure><a href="Art/Box/Raven_Inheritance_Box_Cover_Fireside_v2.png" target="_blank" rel="noopener"><img loading="lazy" src="Art/Box/Raven_Inheritance_Box_Cover_Fireside_v2.png" alt="Liv&#x27;s box (was her field bag) Rectangular box cover - fireside table"></a><figcaption>Rectangular box cover - fireside table</figcaption></figure>
+</div>
+<p class="meta">Physical object · decided</p>
+</article>
+<article class="prop" id="PP-047"><h4>Rune cypher wheel and marked envelopes <span class="id">PP-047</span></h4>
+<div class="figs">
+<figure><a href="Web/adventure/Cypher_Wheel_Assembled_Preview_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Cypher_Wheel_Assembled_Preview_p1.png" alt="Rune cypher wheel and marked envelopes Wheel, assembled"></a><figcaption>Wheel, assembled</figcaption></figure>
+</div>
+<p class="meta">Printed · decided</p>
+</article>
+<article class="prop" id="PP-048"><h4>Liv&#x27;s notes card <span class="id">PP-048</span></h4>
+<p>4 × 6 inch card, two sides: names and words on the front, Liv’s hint QR and all 13 code formats on the back. Print at Actual size, duplex, flip on long edge. Test QR scanning and alignment before batch printing.</p><p><a href="Print/Print_LivNotesCard.docx">Word print sheet</a> · <a href="Print/_pdf_source/Liv_Notes_Card_Print.pdf" target="_blank" rel="noopener">Open PDF</a></p>
+<div class="figs">
+<figure><a href="Web/adventure/Liv_Notes_Card_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Liv_Notes_Card_Print_p1.png" alt="Liv&#x27;s notes card Names and words · front"></a><figcaption>Names and words · front</figcaption></figure>
+<figure><a href="Web/adventure/Liv_Notes_Card_Print_p2.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Liv_Notes_Card_Print_p2.png" alt="Liv&#x27;s notes card Hints and code formats · back"></a><figcaption>Hints and code formats · back</figcaption></figure>
+</div>
+<p class="meta">Printed · decided</p>
+</article></div></section>
+<section class="env" id="env1"><header><span class="num">1</span><div><h2>Envelope 1 <span class="runes">ᚷᛉᚦᛉ</span></h2><p>Opens when players set the code from <a href="#PZ-001">The opening puzzle</a> on the wheel.</p></div></header><h3 class="inside">Inside</h3><div class="props"><article class="prop" id="PP-015"><h4>Postcard AD · Bjarnarhöfn (decoy) <span class="id">PP-015</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_AD_Bjarnarhofn_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_AD_Bjarnarhofn_Front.webp" alt="Postcard AD · Bjarnarhöfn (decoy) Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_AD_Bjarnarhofn_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_AD_Bjarnarhofn_Back.webp" alt="Postcard AD · Bjarnarhöfn (decoy) Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-028"><h4>Aud&#x27;s comb <span class="id">PP-028</span></h4>
+<div class="figs">
+<figure><a href="Props/Comb/Aud_Comb_on_AD.png" target="_blank" rel="noopener"><img loading="lazy" src="Props/Comb/Aud_Comb_on_AD.png" alt="Aud&#x27;s comb Comb on postcard AD"></a><figcaption>Comb on postcard AD</figcaption></figure>
+</div>
+<p class="meta">Physical object · decided</p>
+</article></div><div class="puzzle" id="PZ-001">
+<h3>Puzzle that opens envelope 1: The opening puzzle <span class="id">PZ-001</span><span class="st st-decided">decided</span></h3>
+<p class="uses"><strong>Uses:</strong> <a class="chip" href="#PP-001">Postcard L1 · L&#x27;Anse aux Meadows<small> · on the box</small></a> <a class="chip" href="#PP-047">Rune cypher wheel and marked envelopes<small> · on the box</small></a></p>
+<div class="logic"><h5>The logic</h5><p><strong>14 Oct 2026 (designer, box + envelopes, PR-007):</strong> <strong>no longer a puzzle: a worked example.</strong> The luggage tags are gone (PP-023 parked, Q-047 answered). Postcard L1, loose on top of the box with the rune wheel, tells the story and hands over the first code as an example of how the wheel works: “Set 1 0 2 1 on my rune wheel and open the envelope with the same runes!” The wheel&#x27;s arm prints the three steps (PP-047), so the rule stays in front of players for every later code. Designer&#x27;s brief in chat: the first note explains that the package is the adventure, how the cypher works and that it picks the next envelope (with an example leading to envelope 1), and the story; option 2 of three (story on L1, rule on the wheel) chosen. The tag text below is superseded.</p>
+<p><strong>Players have:</strong> Opening the box: postcard L1 and the rune cypher wheel lie loose on top of the envelopes. L1&#x27;s message introduces Aunt Liv, the adventure and the four Norse figures, then says the Norse were felling trees at this spot in 1021 and asks players to set 1 0 2 1 on the wheel.</p>
+<p><strong>Players do:</strong> Turns the four rings until the left-hand windows read 1 0 2 1 (step 1 on the arm), reads the four runes in the right-hand windows (step 2) and finds the envelope with the same runes (step 3). This is the loop every later code uses.</p>
+<p><strong>They get:</strong> Code <strong>1021</strong> → runes ᚷᛉᚦᛉ → envelope 1: AD and Aud&#x27;s comb (PR-007, reordered 15 Oct 2026; was L2, L3 and the magnifier).</p>
+<p><strong>Why it is there:</strong> The data is in plain sight on both tags; the only hidden thing is which tag goes first, and the postcard hands that over. It teaches the game’s core habit — the card carries the rule, the props carry the data — at its lightest.</p></div>
+<div class="hints"><h5>Hints, easiest first</h5><ol>
+<li><details class="spoiler"><summary>Hint 1</summary><div>Read the postcard on top of the box: it tells you what to set on the wheel.</div></details></li>
+<li><details class="spoiler"><summary>Hint 2</summary><div>Turn the four rings until the left-hand windows show 1 0 2 1.</div></details></li>
+<li><details class="spoiler"><summary>Hint 3</summary><div>Read the four runes in the right-hand windows and open the envelope marked with the same runes.</div></details></li>
+<li><details class="spoiler"><summary>Hint 4</summary><div><em>Superseded 14 Oct 2026*</em> (luggage tags): 1. Everything you need is already outside the envelopes.</div></details></li>
+<li><details class="spoiler"><summary>Hint 5</summary><div>Both tags carry a hand-written address. Only one of them is in a place you have seen before.</div></details></li>
+<li><details class="spoiler"><summary>Hint 6</summary><div>The postcard names L’Anse aux Meadows. That tag goes first.</div></details></li>
+</ol></div>
+<div class="sol"><details class="spoiler"><summary>Solution and code</summary><div><p>Set <strong>1021</strong> on the wheel. The windows show ᚷᛉᚦᛉ, the runes on envelope 1.</p>
+<p><strong>Superseded 14 Oct 2026</strong> (luggage tags): Tag A: Vinland Trail Lodge, 10 Skipper’s Wharf, L’Anse aux Meadows, NL — matches the postcard, so it reads first: 10. Tag B: Hôtel Rollon, 21 avenue Rollo, Rouen, France — reads second: 21. Code <strong>1021</strong>, the year tree-ring dating placed the Norse at L’Anse aux Meadows.</p><p class="code">Code: <strong>1021</strong> &rarr; wheel runes <span class="runes">ᚷᛉᚦᛉ</span> &rarr; envelope 1</p></div></details></div>
+</div></section>
+<section class="env" id="env2"><header><span class="num">2</span><div><h2>Envelope 2 <span class="runes">ᛉᛖᚠᛁ</span></h2><p>Opens when players set the code from <a href="#PZ-003">The comb grille</a> on the wheel.</p></div></header><h3 class="inside">Inside</h3><div class="props"><article class="prop" id="PP-002"><h4>Postcard L2 · Battle Harbour (Markland) <span class="id">PP-002</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_L2_Battle_Harbour_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_L2_Battle_Harbour_Front.webp" alt="Postcard L2 · Battle Harbour (Markland) Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_L2_Battle_Harbour_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_L2_Battle_Harbour_Back.webp" alt="Postcard L2 · Battle Harbour (Markland) Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-003"><h4>Postcard L3 · Qikiqtarjuaq, Baffin Island (Helluland) <span class="id">PP-003</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_L3_Baffin_Island_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_L3_Baffin_Island_Front.webp" alt="Postcard L3 · Qikiqtarjuaq, Baffin Island (Helluland) Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_L3_Baffin_Island_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_L3_Baffin_Island_Back.webp" alt="Postcard L3 · Qikiqtarjuaq, Baffin Island (Helluland) Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-027"><h4>Magnifier <span class="id">PP-027</span></h4>
+<div class="noimg">Physical object: no picture yet</div>
+<p class="meta">Physical object · decided</p>
+</article></div><div class="puzzle" id="PZ-003">
+<h3>Puzzle that opens envelope 2: The comb grille <span class="id">PZ-003</span><span class="st st-decided">decided</span></h3>
+<p class="uses"><strong>Uses:</strong> <a class="chip" href="#PP-015">Postcard AD · Bjarnarhöfn (decoy)<small> · envelope 1</small></a> <a class="chip" href="#PP-028">Aud&#x27;s comb<small> · envelope 1</small></a></p>
+<div class="logic"><h5>The logic</h5><p>Aud’s comb, laid upright on the decoy card’s message, covers every line except the four its broken teeth leave open.</p>
+<p><strong>Players have:</strong> The comb and decoy postcard AD (Bjarnarhöfn), both in envelope 1, opened by <code>1021</code> from L1 (since 15 Oct 2026, PR-007); ; .</p>
+<p><strong>Players do:</strong> Sit the comb’s two end ring-and-dots over the two printed on AD, handle in the left margin, teeth across the message. One tooth covers each line. Read the first letter showing on each line that is not covered.</p>
+<p><strong>They get:</strong> Code <strong>BOOK</strong>. Set on the wheel, it opens envelope 2 (L2, L3, magnifier: PP-002, PP-003, PP-027).</p>
+<p><strong>Why it is there:</strong> Gives the comb a job as an instrument rather than a keepsake, and gives the Aud decoy a reason to be kept rather than discarded.</p></div>
+<div class="hints"><h5>Hints, easiest first</h5><ol>
+<li><details class="spoiler"><summary>Hint 1</summary><div>The two ring-and-dots on the card match the two on the comb.</div></details></li>
+<li><details class="spoiler"><summary>Hint 2</summary><div>Line the comb up so its holes sit over the printed dots — handle on the left, teeth over the writing.</div></details></li>
+<li><details class="spoiler"><summary>Hint 3</summary><div>Some teeth are broken. Read the first letter you can see on each line they leave open, from top to bottom. (Unchanged by the 15 Oct 2026 message rewrite.)</div></details></li>
+</ol></div>
+<div class="sol"><details class="spoiler"><summary>Solution and code</summary><div><p>With the comb in place only four lines show: <strong>B</strong>jarnarhöfn today, / <strong>o</strong> follow the / <strong>o</strong>f followers, then claimed land of her / <strong>k</strong>e (the end of “feels like”). Reading the first visible letter of each, top to bottom: <strong>BOOK</strong>. (Changed 15 Oct 2026 with AD&#x27;s new message; the lines are 1, 2, 5 and 8.)</p>
+<p><strong>Superseded 15 Oct 2026:</strong> <strong>b</strong>rother’s harbor… / c<strong>o</strong>uld… / <strong>o</strong> awesome to find that comb / <strong>k</strong>eep it!</p>
+<p><strong>Superseded 13 Oct 2026</strong> (5 × 3.5 in card): With the comb in place only four lines show: <strong>b</strong>rother’s harbor… / <strong>o</strong>uld find about / <strong>o</strong>ngside the coins… / <strong>k</strong>eep it! Reading the first visible letter of each, top to bottom: <strong>BOOK</strong>.</p><p class="code">Code: <strong>BOOK</strong> &rarr; wheel runes <span class="runes">ᛉᛖᚠᛁ</span> &rarr; envelope 2</p></div></details></div>
+</div></section>
+<section class="env" id="env3"><header><span class="num">3</span><div><h2>Envelope 3 <span class="runes">ᛒᛚᛟᛉ</span></h2><p>Opens when players set the code from <a href="#PZ-002">The joined top edge</a> on the wheel.</p></div></header><h3 class="inside">Inside</h3><div class="props"><article class="prop" id="PP-017"><h4>Postcard H2 · Staraya Ladoga <span class="id">PP-017</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_H2_Staraya_Ladoga_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_H2_Staraya_Ladoga_Front.webp" alt="Postcard H2 · Staraya Ladoga Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_H2_Staraya_Ladoga_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_H2_Staraya_Ladoga_Back.webp" alt="Postcard H2 · Staraya Ladoga Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-018"><h4>Postcard H3 · Kyiv <span class="id">PP-018</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_H3_Kyiv_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_H3_Kyiv_Front.webp" alt="Postcard H3 · Kyiv Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_H3_Kyiv_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_H3_Kyiv_Back.webp" alt="Postcard H3 · Kyiv Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-022"><h4>Postcard HD · Constantinople (decoy) <span class="id">PP-022</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_HD_Constantinople_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_HD_Constantinople_Front.webp" alt="Postcard HD · Constantinople (decoy) Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_HD_Constantinople_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_HD_Constantinople_Back.webp" alt="Postcard HD · Constantinople (decoy) Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article></div><div class="puzzle" id="PZ-002">
+<h3>Puzzle that opens envelope 3: The joined top edge <span class="id">PZ-002</span><span class="st st-decided">decided</span></h3>
+<p class="uses"><strong>Uses:</strong> <a class="chip" href="#PP-002">Postcard L2 · Battle Harbour (Markland)<small> · envelope 2</small></a> <a class="chip" href="#PP-003">Postcard L3 · Qikiqtarjuaq, Baffin Island (Helluland)<small> · envelope 2</small></a> <a class="chip" href="#PP-027">Magnifier<small> · envelope 2</small></a></p>
+<div class="logic"><h5>The logic</h5><p>Laid together, postcards L2 and L3’s top edges join into a four-digit code, read with the magnifier.</p>
+<p><strong>Players have:</strong> Postcards L2 and L3, both in hand once lock 1 has opened (lock 2 until 27 Sept 2026).</p>
+<p><strong>Players do:</strong> Lay card L2 against card L3, rotated 180°, so their top edges meet. The cloud fragments printed across the two edges align into four digits; read them with the magnifier. <strong>Changed 7 Oct 2026 (user):</strong> holding the cards up to the light is not needed, the magnifier is enough.</p>
+<p><strong>They get:</strong> Code <strong>1576</strong>. Set on the wheel, it opens envelope 3 (H2, H3, HD: PP-017, PP-018, PP-022).</p>
+<p><strong>Why it is there:</strong> Gives Leif’s trail a third lock from its own cards without adding a fourth card. Establishes early that cards can be combined physically, not just read individually, ahead of harder cross-trail combines later.</p></div>
+<div class="hints"><h5>Hints, easiest first</h5><ol>
+<li><details class="spoiler"><summary>Hint 1</summary><div>Read the two new postcards. What do they both say about the sky?</div></details></li>
+<li><details class="spoiler"><summary>Hint 2</summary><div>Bring the two skies together. The top edges of the cards matter.</div></details></li>
+<li><details class="spoiler"><summary>Hint 3</summary><div>Turn one card upside down and lay it so its top edge meets the other card’s top edge, both picture side up. Look along the join with the magnifier.</div></details></li>
+</ol></div>
+<div class="sol"><details class="spoiler"><summary>Solution and code</summary><div><p>Laid top edge to top edge, one card upside down, the cloud fragments across the join read <strong>1576</strong>.</p><p class="code">Code: <strong>1576</strong> &rarr; wheel runes <span class="runes">ᛒᛚᛟᛉ</span> &rarr; envelope 3</p></div></details></div>
+</div></section>
+<section class="env" id="env4"><header><span class="num">4</span><div><h2>Envelope 4 <span class="runes">ᚱᛒᛚᚷ</span></h2><p>Opens when players set the code from <a href="#PZ-004">What’s in the horn</a> on the wheel.</p></div></header><h3 class="inside">Inside</h3><div class="props"><article class="prop" id="PP-013"><h4>Postcard A2 · Hvammur <span class="id">PP-013</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_A2_Hvammur_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_A2_Hvammur_Front.webp" alt="Postcard A2 · Hvammur Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_A2_Hvammur_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_A2_Hvammur_Back.webp" alt="Postcard A2 · Hvammur Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-030"><h4>Aud&#x27;s trail map (The Island Settlement) <span class="id">PP-030</span></h4>
+<div class="figs">
+<figure><a href="Web/adventure/Trail_Map_3_Aud_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Trail_Map_3_Aud_Print_p1.png" alt="Aud&#x27;s trail map (The Island Settlement) Map"></a><figcaption>Map</figcaption></figure>
+</div>
+<p class="meta">Printed · decided</p>
+</article>
+<article class="prop" id="PP-031"><h4>Aud&#x27;s Treasure Museum ticket <span class="id">PP-031</span></h4>
+<div class="figs">
+<figure><a href="Web/adventure/Aud_Ticket_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Aud_Ticket_Print_p1.png" alt="Aud&#x27;s Treasure Museum ticket Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/adventure/Aud_Ticket_Print_p2.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Aud_Ticket_Print_p2.png" alt="Aud&#x27;s Treasure Museum ticket Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · decided</p>
+</article></div><div class="puzzle" id="PZ-004">
+<h3>Puzzle that opens envelope 4: What’s in the horn <span class="id">PZ-004</span><span class="st st-decided">decided</span></h3>
+<p class="uses"><strong>Uses:</strong> <a class="chip" href="#PP-017">Postcard H2 · Staraya Ladoga<small> · envelope 3</small></a> <a class="chip" href="#PP-018">Postcard H3 · Kyiv<small> · envelope 3</small></a> <a class="chip" href="#PP-022">Postcard HD · Constantinople (decoy)<small> · envelope 3</small></a></p>
+<div class="logic"><h5>The logic</h5><p>Three postcards each hide one attribute word behind a different riddle technique; only one drink fits all three.</p>
+<p><strong>Players have:</strong> Postcard H3 (Kyiv), postcard H2 (Staraya Ladoga) and postcard HD (Constantinople) — HD stops being a pure decoy and takes on this leg’s third lock, closing the “Constantinople still needs one assigned” gap in the [Final riddle tab].</p>
+<p><strong>Players do:</strong> Solve each card’s riddle for its one word — HONEY, DRINK, FERMENTED — using a different technique per card so no two feel the same, then combine the three attributes: the only drink that is honey, fermented and a drink is <code>MEAD</code>.</p>
+<p><strong>They get:</strong> Code <strong>MEAD</strong>. Opening this lock releases PP-013, PP-030, PP-031, PP-025.</p>
+<p><strong>Why it is there:</strong> Closes the last open lock of Harald’s leg (PZ-004) without touching the map, which the rune-and-perch branch already uses. Gives HD the real puzzle job every decoy is required to carry ([Final riddle tab]) instead of leaving Constantinople unassigned. H3 and HD are linked by real Rus’-Byzantine history, not only by this puzzle: Oleg of Novgorod made Kyiv the Rus’ capital and, per the Primary Chronicle, sailed on Constantinople in 907 — the treaty that followed gave Rus’ merchants trading rights there. That fact carries H3’s Fun Fact, deliberately not honey/bees, since the riddle itself already is the honey content and a Fun Fact repeating its own answer would break Q-015’s one-fact-per-voice rule.  <strong>Superseded 26 Sept 2026:</strong> on review this was judged too close after all — same core claim (fortune made here funded the throne), just with dates added. HD’s Fun Fact is now unrelated Constantinople trivia (Varangian runic graffiti in the Hagia Sophia) instead.</p></div>
+<div class="hints"><h5>Hints, easiest first</h5><ol>
+<li><details class="spoiler"><summary>Hint 1</summary><div>Three cards, three words, one drink.</div></details></li>
+<li><details class="spoiler"><summary>Hint 2</summary><div>What do you get when honey ferments?</div></details></li>
+<li><details class="spoiler"><summary>Hint 3</summary><div>Each card hides its word a different way — read one, count one, look at one.</div></details></li>
+</ol></div>
+<div class="sol"><details class="spoiler"><summary>Solution and code</summary><div><p>Staraya Ladoga spells <strong>DRINK</strong> with the first letter of each of its five sentences. Kyiv’s riddle (sweet but not fruit, gold but not metal, made by thousands, six-sided walls) is <strong>HONEY</strong>. Constantinople’s picture puzzle (sugar feeding yeast, a bubbling flask) means <strong>FERMENTED</strong>. A fermented honey drink is <strong>MEAD</strong>.</p><p class="code">Code: <strong>MEAD</strong> &rarr; wheel runes <span class="runes">ᚱᛒᛚᚷ</span> &rarr; envelope 4</p></div></details></div>
+</div></section>
+<section class="env" id="env5"><header><span class="num">5</span><div><h2>Envelope 5 <span class="runes">ᛈᚹᛟᛇ</span></h2><p>Opens when players set the code from <a href="#PZ-006">The treasure route</a> on the wheel.</p></div></header><h3 class="inside">Inside</h3><div class="props"><article class="prop" id="PP-005"><h4>Postcard R1 · Châlus <span class="id">PP-005</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_R1_Chalus_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_R1_Chalus_Front.webp" alt="Postcard R1 · Châlus Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_R1_Chalus_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_R1_Chalus_Back.webp" alt="Postcard R1 · Châlus Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-010"><h4>Postcard R6 · Roumare Forest <span class="id">PP-010</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_R6_Roumare_Forest_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_R6_Roumare_Forest_Front.webp" alt="Postcard R6 · Roumare Forest Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_R6_Roumare_Forest_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_R6_Roumare_Forest_Back.webp" alt="Postcard R6 · Roumare Forest Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-011"><h4>Postcard RD · Walcheren (decoy) <span class="id">PP-011</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_RD_Walcheren_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_RD_Walcheren_Front.webp" alt="Postcard RD · Walcheren (decoy) Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_RD_Walcheren_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_RD_Walcheren_Back.webp" alt="Postcard RD · Walcheren (decoy) Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article></div><div class="puzzle" id="PZ-006">
+<h3>Puzzle that opens envelope 5: The treasure route <span class="id">PZ-006</span><span class="st st-decided">decided</span></h3>
+<p class="uses"><strong>Uses:</strong> <a class="chip" href="#PP-013">Postcard A2 · Hvammur<small> · envelope 4</small></a> <a class="chip" href="#PP-030">Aud&#x27;s trail map (The Island Settlement)<small> · envelope 4</small></a> <a class="chip" href="#PP-031">Aud&#x27;s Treasure Museum ticket<small> · envelope 4</small></a></p>
+<div class="logic"><h5>The logic</h5><p>One portrait map, symbols not to scale, carrying line/area/point symbols instead of isolated icons — the split-panel design below was shelved 17 Sept 2026 in favour of this. Players walk the drawn path network and count what the route crosses.</p>
+<p><strong>Players have:</strong> Postcard A2 (Hvammur), Aud’s laminated journey map, and the Aud’s Treasure Museum ticket (six rows, one per leg, three tally columns: bridges, fords, gates).</p>
+<p><strong>Players do:</strong> Walk the six legs on the real drawn network, from the northern chapel to the wood beyond the ruin at I9. At the merged leg 5, follow the road to the correct “village at a crossing” (H9, not the lookalike near H3/G3) — A2’s message gives only the forest detail (“the road that followed the forest”) to tell them apart; it does not name a direction (corrected 17 Oct 2026, Q-063: the card never said “south”). Tally bridges, fords and gates crossed across all six legs.</p>
+<p><strong>They get:</strong> Code <strong>532</strong> (521 until the map redraw of 16 Oct 2026). Opening this lock releases PP-005, PP-010, PP-011.</p>
+<p><strong>Why it is there:</strong> Turns Aud’s own map from a final-route prop into a working treasure map without printing a second sheet, and makes the tally self-checking — a blue line or a gate is unmistakable, so counting is hard to get subtly wrong.</p></div>
+<div class="hints"><h5>Hints, easiest first</h5><ol>
+<li><details class="spoiler"><summary>Hint 1</summary><div>The Island Settlement map and the Treasure Museum ticket go together: the ticket gives directions, and the Hvammur postcard says what to count on the way.</div></details></li>
+<li><details class="spoiler"><summary>Hint 2</summary><div>Start at the northernmost chapel on the map and follow the ticket’s six steps along the roads.</div></details></li>
+<li><details class="spoiler"><summary>Hint 3</summary><div>Keep three separate tallies as you go: bridges, fords and gates. On the fifth step, the postcard tells you which road to follow.</div></details></li>
+</ol></div>
+<div class="sol"><details class="spoiler"><summary>Solution and code</summary><div><p>Six legs: chapel → chapel (1 bridge), → well (2 fords, 1 bridge), → landing (1 ford, 1 bridge), → standing stone (1 bridge), → village at the crossing, south along the forest road (2 gates, 1 bridge), → the wood beyond the ruin (nothing). Totals: 5 bridges, 3 fords, 2 gates: <strong>532</strong>.</p><p class="code">Code: <strong>532</strong> &rarr; wheel runes <span class="runes">ᛈᚹᛟᛇ</span> &rarr; envelope 5</p></div></details></div>
+</div></section>
+<section class="env" id="env6"><header><span class="num">6</span><div><h2>Envelope 6 <span class="runes">ᛈᛏᛟᛇ</span></h2><p>Opens when players set the code from <a href="#PZ-009">Counting in the illustration</a> on the wheel.</p></div></header><h3 class="inside">Inside</h3><div class="props"><article class="prop" id="PP-004"><h4>Postcard LD · Brattahlíð (decoy) <span class="id">PP-004</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_LD_Brattahlid_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_LD_Brattahlid_Front.webp" alt="Postcard LD · Brattahlíð (decoy) Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_LD_Brattahlid_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_LD_Brattahlid_Back.webp" alt="Postcard LD · Brattahlíð (decoy) Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-024"><h4>Viking Museum of Brattahlíð ticket <span class="id">PP-024</span></h4>
+<div class="figs">
+<figure><a href="Web/adventure/Museum_Ticket_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Museum_Ticket_Print_p1.png" alt="Viking Museum of Brattahlíð ticket Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/adventure/Museum_Ticket_Print_p2.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Museum_Ticket_Print_p2.png" alt="Viking Museum of Brattahlíð ticket Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · decided</p>
+</article>
+<article class="prop" id="PP-029"><h4>Leif&#x27;s trail map (The Western Lands) <span class="id">PP-029</span></h4>
+<div class="figs">
+<figure><a href="Web/adventure/Trail_Map_1_Leif_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Trail_Map_1_Leif_Print_p1.png" alt="Leif&#x27;s trail map (The Western Lands) Map"></a><figcaption>Map</figcaption></figure>
+</div>
+<p class="meta">Printed · decided</p>
+</article></div><div class="puzzle" id="PZ-009">
+<h3>Puzzle that opens envelope 6: Counting in the illustration <span class="id">PZ-009</span><span class="st st-decided">decided</span></h3>
+<p class="uses"><strong>Uses:</strong> <a class="chip" href="#PP-005">Postcard R1 · Châlus<small> · envelope 5</small></a> <a class="chip" href="#PP-010">Postcard R6 · Roumare Forest<small> · envelope 5</small></a> <a class="chip" href="#PP-011">Postcard RD · Walcheren (decoy)<small> · envelope 5</small></a></p>
+<div class="logic"><h5>The logic</h5><p>Three Rollo-trail fronts each hide a count of one repeated object. Their Fun Facts fix the order.</p>
+<p><strong>Players have:</strong> Postcards R1 (Châlus), R6 (Roumare Forest) and the decoy RD (Walcheren). Nothing else.</p>
+<p><strong>Players do:</strong> Count the repeated object on each front. Read each card’s typed Fun Fact for its date, put the three in chronological order, and read the counts in that order.</p>
+<p><strong>They get:</strong> Code <strong>562</strong>. Opening this lock releases PP-004, PP-029, PP-024.</p>
+<p><strong>Why it is there:</strong> Gives the only three Rollo-trail cards without a lock job one, satisfying PZ-013’s rule that every card gates a lock. The doubling step keeps it from being plain counting.</p></div>
+<div class="hints"><h5>Hints, easiest first</h5><ol>
+<li><details class="spoiler"><summary>Hint 1</summary><div>Look closely at the pictures on three of the postcards. Each message mentions something small in passing.</div></details></li>
+<li><details class="spoiler"><summary>Hint 2</summary><div>Count the Viking boats at Walcheren, the wild boars in Roumare Forest and the crossbow bolts at Châlus. Use the magnifier: some hide well. Read Roumare’s message again before you settle on its number.</div></details></li>
+<li><details class="spoiler"><summary>Hint 3</summary><div>The Fun Facts on the backs date each place. Put the counts in date order. Liv thinks there were twice as many boars as she saw.</div></details></li>
+</ol></div>
+<div class="sol"><details class="spoiler"><summary>Solution and code</summary><div><p>Walcheren <strong>5</strong> boats (before 911), then Roumare <strong>3</strong> boars doubled to <strong>6</strong> (911), then Châlus <strong>2</strong> crossbow bolts (1199): <strong>562</strong>.</p><p class="code">Code: <strong>562</strong> &rarr; wheel runes <span class="runes">ᛈᛏᛟᛇ</span> &rarr; envelope 6</p></div></details></div>
+</div></section>
+<section class="env" id="env7"><header><span class="num">7</span><div><h2>Envelope 7 <span class="runes">ᚺᛏᛏᚦ</span></h2><p>Opens when players set the code from <a href="#PZ-005">The beasts on the chart</a> on the wheel.</p></div></header><h3 class="inside">Inside</h3><div class="props"><article class="prop" id="PP-012"><h4>Postcard A1 · Dögurðarnes <span class="id">PP-012</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_A1_Dogurdarnes_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_A1_Dogurdarnes_Front.webp" alt="Postcard A1 · Dögurðarnes Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_A1_Dogurdarnes_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_A1_Dogurdarnes_Back.webp" alt="Postcard A1 · Dögurðarnes Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-014"><h4>Postcard A3 · Esjuberg <span class="id">PP-014</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_A3_Esjuberg_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_A3_Esjuberg_Front.webp" alt="Postcard A3 · Esjuberg Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_A3_Esjuberg_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_A3_Esjuberg_Back.webp" alt="Postcard A3 · Esjuberg Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-026"><h4>Treasure tally <span class="id">PP-026</span></h4>
+<div class="figs">
+<figure><a href="Props/SoleTally/SOLE_ring_check.png" target="_blank" rel="noopener"><img loading="lazy" src="Props/SoleTally/SOLE_ring_check.png" alt="Treasure tally SOLE ring check"></a><figcaption>SOLE ring check</figcaption></figure>
+</div>
+<p class="meta">Printed · decided</p>
+</article>
+<article class="prop" id="PP-037"><h4>The coin hoard <span class="id">PP-037</span></h4>
+<div class="figs">
+<figure><a href="Props/Coins/Coin_Faces_Overview.png" target="_blank" rel="noopener"><img loading="lazy" src="Props/Coins/Coin_Faces_Overview.png" alt="The coin hoard The coin faces"></a><figcaption>The coin faces</figcaption></figure>
+</div>
+<p class="meta">Physical object · decided</p>
+</article></div><div class="puzzle" id="PZ-005">
+<h3>Puzzle that opens envelope 7: The beasts on the chart <span class="id">PZ-005</span><span class="st st-decided">decided</span></h3>
+<p class="uses"><strong>Uses:</strong> <a class="chip" href="#PP-004">Postcard LD · Brattahlíð (decoy)<small> · envelope 6</small></a> <a class="chip" href="#PP-029">Leif&#x27;s trail map (The Western Lands)<small> · envelope 6</small></a> <a class="chip" href="#PP-024">Viking Museum of Brattahlíð ticket<small> · envelope 6</small></a></p>
+<div class="logic"><h5>The logic</h5><p>A hidden imprint on the decoy card points to one square of Leif’s sea chart. The unlabelled animal drawn there names the key to a lookup on the museum ticket.</p>
+<p><strong>Players have:</strong> Leif’s trail map — a North Atlantic sea chart with seven animal vignettes drawn into the empty water and land — decoy postcard LD, which points into it, and the museum ticket (Viking Museum of Brattahlíð since 28 Sept 2026). The card and the map arrive together from lock 4 (MEAD) since 7 Oct 2026 (Q-005); .  Since 9 Oct 2026 the card, the map and the ticket all arrive together from lock 6 (counting, PZ-009).</p>
+<p><strong>Players do:</strong> Follow the decoy card’s imprint to one beast on the chart, identify it from how and where it is drawn, then read its four letters off the A–Z visitor index printed on the back of the ticket. Each letter gives one digit.</p>
+<p><strong>They get:</strong> Code <strong>4865</strong>. Opening this lock releases PP-012, PP-014, PP-037, PP-026.</p>
+<p><strong>Why it is there:</strong> It gives Leif’s map a job on the <em>front</em>, using the geography rather than just the paper. It is a transformation chain rather than a pointer: the map’s answer becomes the key that operates the next prop, so neither object is any use alone.</p></div>
+<div class="hints"><h5>Hints, easiest first</h5><ol>
+<li><details class="spoiler"><summary>Hint 1</summary><div>The chart is not empty. Something is drawn where the card is pointing.</div></details></li>
+<li><details class="spoiler"><summary>Hint 2</summary><div>Are you certain which animal that is? Look at its pose and silhouette, not only its location.</div></details></li>
+<li><details class="spoiler"><summary>Hint 3</summary><div>It is a wolf. Read W, O, L, F off the index on the back of the museum ticket.</div></details></li>
+</ol></div>
+<div class="sol"><details class="spoiler"><summary>Solution and code</summary><div><p>The postcard points to square A6 on the sea chart, where the wolf is drawn. Reading W, O, L, F off the museum ticket’s visitor index gives <strong>4865</strong>.</p><p class="code">Code: <strong>4865</strong> &rarr; wheel runes <span class="runes">ᚺᛏᛏᚦ</span> &rarr; envelope 7</p></div></details></div>
+</div></section>
+<section class="env" id="env8"><header><span class="num">8</span><div><h2>Envelope 8 <span class="runes">ᛏᚾᚠᛖ</span></h2><p>Opens when players set the code from <a href="#PZ-010">The hoard and treasure tally</a> on the wheel.</p></div></header><h3 class="inside">Inside</h3><div class="props"><article class="prop" id="PP-006"><h4>Postcard R2 · Rouen <span class="id">PP-006</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_R2_Rouen_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_R2_Rouen_Front.webp" alt="Postcard R2 · Rouen Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_R2_Rouen_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_R2_Rouen_Back.webp" alt="Postcard R2 · Rouen Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-032"><h4>Rollo&#x27;s trail map (The Granted Lands) <span class="id">PP-032</span></h4>
+<div class="figs">
+<figure><a href="Web/adventure/Trail_Map_2_Rollo_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Trail_Map_2_Rollo_Print_p1.png" alt="Rollo&#x27;s trail map (The Granted Lands) Map"></a><figcaption>Map</figcaption></figure>
+</div>
+<p class="meta">Printed · decided</p>
+</article>
+<article class="prop" id="PP-033"><h4>Musée Ducal de Rouen ticket <span class="id">PP-033</span></h4>
+<div class="figs">
+<figure><a href="Web/adventure/Rouen_Ticket_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Rouen_Ticket_Print_p1.png" alt="Musée Ducal de Rouen ticket Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/adventure/Rouen_Ticket_Print_p2.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Rouen_Ticket_Print_p2.png" alt="Musée Ducal de Rouen ticket Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · decided</p>
+</article></div><div class="puzzle" id="PZ-010">
+<h3>Puzzle that opens envelope 8: The hoard and treasure tally <span class="id">PZ-010</span><span class="st st-decided">decided</span></h3>
+<p class="uses"><strong>Uses:</strong> <a class="chip" href="#PP-012">Postcard A1 · Dögurðarnes<small> · envelope 7</small></a> <a class="chip" href="#PP-014">Postcard A3 · Esjuberg<small> · envelope 7</small></a> <a class="chip" href="#PP-037">The coin hoard<small> · envelope 7</small></a> <a class="chip" href="#PP-031">Aud&#x27;s Treasure Museum ticket<small> · envelope 4</small></a> <a class="chip" href="#PP-030">Aud&#x27;s trail map (The Island Settlement)<small> · envelope 4</small></a> <a class="chip" href="#PP-026">Treasure tally<small> · envelope 7</small></a></p>
+<div class="logic"><h5>The logic</h5><p>Sort three real-history coin piles, convert the Viking pile&#x27;s values, add to 3705, and turn the total upside down to find a word.</p>
+<p><strong>Players have:</strong> Loose mixed hoard of 12 coins (dirham, denier, Norse), the museum ticket’s Coin Room key, the three icon marks on Aud’s map, A1/A3, calculator or four-wheel tally.</p>
+<p><strong>Players do:</strong> Sort the loose coins by face against the ticket’s Coin Room. The fehu rune beside the ruin at the end of the route on Aud’s map matches the ticket’s Norse group; add those three coins’ values ($5 + $100 + $3,600 = 3705) and rotate the entire tally 180 degrees.</p>
+<p><strong>They get:</strong> Code <strong>SOLE</strong>. Opening this lock releases PP-006, PP-032, PP-033.</p>
+<p><strong>Why it is there:</strong> Preserves physical sorting and the word reveal without a calibrated scale, and gives each currency&#x27;s rarity a real-history basis instead of an arbitrary number.</p></div>
+<div class="hints"><h5>Hints, easiest first</h5><ol>
+<li><details class="spoiler"><summary>Hint 1</summary><div>Your museum ticket has a coin room. Sort the coins into its three groups.</div></details></li>
+<li><details class="spoiler"><summary>Hint 2</summary><div>The treasure hunt ended in the wood beyond a ruin. Look at the mark beside it on Aud’s map, then find the same mark on the ticket: only those coins count.</div></details></li>
+<li><details class="spoiler"><summary>Hint 3</summary><div>Add up what those coins are worth on the ticket and set the total on the treasure tally.</div></details></li>
+<li><details class="spoiler"><summary>Hint 4</summary><div>Turn the whole tally upside down and read the four characters from left to right.</div></details></li>
+</ol></div>
+<div class="sol"><details class="spoiler"><summary>Solution and code</summary><div><p>The marked group adds up to <strong>3705</strong>, which reads <strong>SOLE</strong> upside down.</p><p class="code">Code: <strong>SOLE</strong> &rarr; wheel runes <span class="runes">ᛏᚾᚠᛖ</span> &rarr; envelope 8</p></div></details></div>
+</div></section>
+<section class="env" id="env9"><header><span class="num">9</span><div><h2>Envelope 9 <span class="runes">ᛒᚠᛞᛉ</span></h2><p>Opens when players set the code from <a href="#PZ-007">The word-lock chain</a> on the wheel.</p></div></header><h3 class="inside">Inside</h3><div class="props"><article class="prop" id="PP-007"><h4>Postcard R3 · Bayeux <span class="id">PP-007</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_R3_Bayeux_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_R3_Bayeux_Front.webp" alt="Postcard R3 · Bayeux Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_R3_Bayeux_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_R3_Bayeux_Back.webp" alt="Postcard R3 · Bayeux Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-008"><h4>Postcard R4 · Winchester <span class="id">PP-008</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_R4_Winchester_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_R4_Winchester_Front.webp" alt="Postcard R4 · Winchester Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_R4_Winchester_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_R4_Winchester_Back.webp" alt="Postcard R4 · Winchester Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-009"><h4>Postcard R5 · Battle <span class="id">PP-009</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_R5_Battle_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_R5_Battle_Front.webp" alt="Postcard R5 · Battle Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_R5_Battle_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_R5_Battle_Back.webp" alt="Postcard R5 · Battle Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-025"><h4>Architect&#x27;s scale ruler <span class="id">PP-025</span></h4>
+<div class="figs">
+<figure><a href="Web/adventure/Liv_Ruler_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Liv_Ruler_Print_p1.png" alt="Architect&#x27;s scale ruler Ruler"></a><figcaption>Ruler</figcaption></figure>
+</div>
+<p class="meta">Printed · decided</p>
+</article></div><div class="puzzle" id="PZ-007">
+<h3>Puzzle that opens envelope 9: The word-lock chain <span class="id">PZ-007</span><span class="st st-decided">decided</span></h3>
+<p class="uses"><strong>Uses:</strong> <a class="chip" href="#PP-006">Postcard R2 · Rouen<small> · envelope 8</small></a> <a class="chip" href="#PP-033">Musée Ducal de Rouen ticket<small> · envelope 8</small></a> <a class="chip" href="#PP-032">Rollo&#x27;s trail map (The Granted Lands)<small> · envelope 8</small></a></p>
+<div class="logic"><h5>The logic</h5><p>Four English word pairs split along the Norman Conquest’s class line. The Rouen card fixes the order, the ticket turns pairs into coordinates, the map turns coordinates into a square-count.</p>
+<p><strong>Players have:</strong> Postcard R2 (Rouen), the Musée Ducal de Rouen ticket, and Rollo’s trail map with its word icons.</p>
+<p><strong>Players do:</strong> Read the four Saxon-register words out of the Rouen message in the order they appear. For each, find its Norman partner on the ticket — the Norman column gives a letter, the Saxon column a number, together a grid coordinate. Find that word’s icon already drawn on Rollo’s map, and count the squares between the icon and the coordinate. Four counts, one per dial of the lock.</p>
+<p><strong>They get:</strong> Code <strong>1486</strong>. Opening this lock releases PP-007, PP-008, PP-009.</p>
+<p><strong>Why it is there:</strong> Gives Rollo’s map a second job besides the final route, and makes the Conquest’s language history the puzzle rather than the flavour. Swapping the directional lock for a numeric one keeps the same props, ticket and map work, just cheaper, more common hardware.</p></div>
+<div class="hints"><h5>Hints, easiest first</h5><ol>
+<li><details class="spoiler"><summary>Hint 1</summary><div>Read the Rouen postcard next to the back of the Rouen museum ticket. Some of Liv’s words have a partner on the ticket.</div></details></li>
+<li><details class="spoiler"><summary>Hint 2</summary><div>The ticket pairs everyday Saxon words (numbered) with their Norman partners (lettered). A matched pair gives a letter and a number: a square on the Granted Lands map.</div></details></li>
+<li><details class="spoiler"><summary>Hint 3</summary><div>Liv mentions fighting, people, poultry and an inn, in that order. For each word, find its square on the map and count the squares to the little drawing for that word.</div></details></li>
+</ol></div>
+<div class="sol"><details class="spoiler"><summary>Solution and code</summary><div><p>Fight: <strong>1</strong> square. People (folk): <strong>4</strong>. Poultry (hen): <strong>8</strong>. Inn: <strong>6</strong>. In the postcard’s order the code is <strong>1486</strong>.</p><p class="code">Code: <strong>1486</strong> &rarr; wheel runes <span class="runes">ᛒᚠᛞᛉ</span> &rarr; envelope 9</p></div></details></div>
+</div></section>
+<section class="env" id="env10"><header><span class="num">10</span><div><h2>Envelope 10 <span class="runes">ᛁᛉᚲᛇ</span></h2><p>Opens when players set the code from <a href="#PZ-011">The rebus distance</a> on the wheel.</p></div></header><h3 class="inside">Inside</h3><div class="props"><article class="prop" id="PP-016"><h4>Postcard H1 · Oslo <span class="id">PP-016</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_H1_Oslo_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_H1_Oslo_Front.webp" alt="Postcard H1 · Oslo Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_H1_Oslo_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_H1_Oslo_Back.webp" alt="Postcard H1 · Oslo Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-034"><h4>Harald&#x27;s trail map (The Varangian Road) <span class="id">PP-034</span></h4>
+<div class="figs">
+<figure><a href="Web/adventure/Trail_Map_4_Harald_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Trail_Map_4_Harald_Print_p1.png" alt="Harald&#x27;s trail map (The Varangian Road) Map front"></a><figcaption>Map front</figcaption></figure>
+<figure><a href="Web/adventure/Trail_Map_4_Harald_Print_p2.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Trail_Map_4_Harald_Print_p2.png" alt="Harald&#x27;s trail map (The Varangian Road) Map back"></a><figcaption>Map back</figcaption></figure>
+</div>
+<p class="meta">Printed · decided</p>
+</article>
+<article class="prop" id="PP-035"><h4>Hnefatafl board and pieces <span class="id">PP-035</span></h4>
+<div class="figs">
+<figure><a href="Web/adventure/Hnefatafl_Board_Setup_Insert_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Hnefatafl_Board_Setup_Insert_p1.png" alt="Hnefatafl board and pieces Setup insert"></a><figcaption>Setup insert</figcaption></figure>
+</div>
+<p class="meta">Physical object · decided</p>
+</article>
+<article class="prop" id="PP-036"><h4>Hnefatafl Museum ticket, Oslo <span class="id">PP-036</span></h4>
+<div class="figs">
+<figure><a href="Web/adventure/Hnefatafl_Ticket_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Hnefatafl_Ticket_Print_p1.png" alt="Hnefatafl Museum ticket, Oslo Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/adventure/Hnefatafl_Ticket_Print_p2.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Hnefatafl_Ticket_Print_p2.png" alt="Hnefatafl Museum ticket, Oslo Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · decided</p>
+</article></div><div class="puzzle" id="PZ-011">
+<h3>Puzzle that opens envelope 10: The rebus distance <span class="id">PZ-011</span><span class="st st-decided">decided</span></h3>
+<p class="uses"><strong>Uses:</strong> <a class="chip" href="#PP-007">Postcard R3 · Bayeux<small> · envelope 9</small></a> <a class="chip" href="#PP-008">Postcard R4 · Winchester<small> · envelope 9</small></a> <a class="chip" href="#PP-009">Postcard R5 · Battle<small> · envelope 9</small></a> <a class="chip" href="#PP-025">Architect&#x27;s scale ruler<small> · envelope 9</small></a> <a class="chip" href="#PP-032">Rollo&#x27;s trail map (The Granted Lands)<small> · envelope 8</small></a></p>
+<div class="logic"><h5>The logic</h5><p>The Bayeux card explains why Liv’s postcards start carrying tapestry-style drawings — and carries the first rebus itself. Winchester carries the second. Battle names which ruler scale to use.</p>
+<p><strong>Players have:</strong> Rollo’s Bayeux, Winchester and Battle postcards (all built), his trail map with its story icons, and the architect’s scale ruler already in the kit.</p>
+<p><strong>Players do:</strong> Read each card’s rebus as a word or phrase, find the map icons the first two name, set the ruler to the scale the third names, and measure the distance between the two points.</p>
+<p><strong>They get:</strong> Code <strong>104</strong>. Opening this lock releases PP-016, PP-034, PP-035, PP-036.</p>
+<p><strong>Why it is there:</strong> Gives two props that currently have no job a job together, and gives the margin drawings an in-fiction reason to exist rather than reading as unexplained publisher art.</p></div>
+<div class="hints"><h5>Hints, easiest first</h5><ol>
+<li><details class="spoiler"><summary>Hint 1</summary><div>The Bayeux, Winchester and Battle postcards each end with a little picture puzzle. Read them as words.</div></details></li>
+<li><details class="spoiler"><summary>Hint 2</summary><div>Two of the picture puzzles point to places on the Granted Lands map; the third tells you which scale of the ruler to use.</div></details></li>
+<li><details class="spoiler"><summary>Hint 3</summary><div>Measure between those two places on the Granted Lands map, dot to dot, with Liv’s ruler. Use the edge that matches the drawing on the Battle postcard.</div></details></li>
+</ol></div>
+<div class="sol"><details class="spoiler"><summary>Solution and code</summary><div><p>Bayeux: cross + bow + lightning bolt = CROSSBOW BOLT, so Châlus. Winchester: tree + tea = TREATY, so Saint-Clair-sur-Epte. Battle: a drawing of a longship, so use the LONGSHIP edge of the ruler (the other edge, SPEAR, is a decoy). Châlus to Saint-Clair-sur-Epte reads <strong>120</strong> on the LONGSHIP edge: <strong>120</strong>.</p><p class="code">Code: <strong>120</strong> &rarr; wheel runes <span class="runes">ᛁᛉᚲᛇ</span> &rarr; envelope 10</p></div></details></div>
+</div></section>
+<section class="env" id="env11"><header><span class="num">11</span><div><h2>Envelope 11 <span class="runes">ᛚᚹᚲᛏ</span></h2><p>Opens when players set the code from <a href="#PZ-008">The king’s unfinished escape</a> on the wheel.</p></div></header><h3 class="inside">Inside</h3><div class="props"><article class="prop" id="PP-019"><h4>Postcard H4 · Hedeby <span class="id">PP-019</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_H4_Hedeby_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_H4_Hedeby_Front.webp" alt="Postcard H4 · Hedeby Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_H4_Hedeby_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_H4_Hedeby_Back.webp" alt="Postcard H4 · Hedeby Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-020"><h4>Postcard H5 · Aci Castello, Sicily <span class="id">PP-020</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_H5_Sicily_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_H5_Sicily_Front.webp" alt="Postcard H5 · Aci Castello, Sicily Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_H5_Sicily_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_H5_Sicily_Back.webp" alt="Postcard H5 · Aci Castello, Sicily Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-038"><h4>The raven&#x27;s flights card <span class="id">PP-038</span></h4>
+<div class="figs">
+<figure><a href="Web/adventure/Raven_Flights_Card_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Raven_Flights_Card_Print_p1.png" alt="The raven&#x27;s flights card Player card"></a><figcaption>Player card</figcaption></figure>
+</div>
+<p class="meta">Printed · decided</p>
+</article></div><div class="puzzle" id="PZ-008">
+<h3>Puzzle that opens envelope 11: The king’s unfinished escape <span class="id">PZ-008</span><span class="st st-decided">decided</span></h3>
+<p class="uses"><strong>Uses:</strong> <a class="chip" href="#PP-016">Postcard H1 · Oslo<small> · envelope 10</small></a> <a class="chip" href="#PP-035">Hnefatafl board and pieces<small> · envelope 10</small></a> <a class="chip" href="#PP-036">Hnefatafl Museum ticket, Oslo<small> · envelope 10</small></a> <a class="chip" href="#PP-034">Harald&#x27;s trail map (The Varangian Road)<small> · envelope 10</small></a></p>
+<div class="logic"><h5>The logic</h5><p>Rebuild the board your aunt sketched on the back of a map, then finish the game she left set up.</p>
+<p><strong>Players have:</strong> The 11 × 11 board and pieces, the Hnefatafl Museum ticket with the rules, Harald’s Oslo map whose back carries the setup, and postcard H1 which sets the task.</p>
+<p><strong>Players do:</strong> Recover the setup from Liv&#x27;s papers (the back of Harald&#x27;s map and the museum ticket), place the pieces, then play the sequence: a dark piece moves, then the king, four times. The first two dark moves are the numbered arrows on the map back, the third is Liv&#x27;s riddle, the last is marked by the shield icon on Harald&#x27;s map. The king must reach a corner in exactly four straight-line moves. Count how far he travels on each leg.</p>
+<p><strong>They get:</strong> Code <strong>253</strong>. Opening this lock releases PP-019, PP-020, PP-038.</p>
+<p><strong>Why it is there:</strong> The strongest physical centrepiece in the set, the only puzzle that can release something mechanically rather than through a dial, and the only one that gives a trail map a job before the endgame.</p></div>
+<div class="hints"><h5>Hints, easiest first</h5><ol>
+<li><details class="spoiler"><summary>Hint 1</summary><div>The board is eleven columns wide. Count what you can actually see, and think about what the smudge hides.</div></details></li>
+<li><details class="spoiler"><summary>Hint 2</summary><div>Something was lying on the ink. It is still in the box, and it is the right shape.</div></details></li>
+<li><details class="spoiler"><summary>Hint 3</summary><div>Dark moves first, then the king, four times. The numbered arrows on the back of Harald&#x27;s map are the first two dark moves; Liv&#x27;s riddle gives the third.</div></details></li>
+<li><details class="spoiler"><summary>Hint 4</summary><div>The shield on the museum ticket is also printed on Harald&#x27;s map. It marks where the last dark piece goes, and that move frees the way for the king.</div></details></li>
+<li><details class="spoiler"><summary>Hint 5</summary><div>The king does not have to run to the top of the column. Try stopping after one square.</div></details></li>
+<li><details class="spoiler"><summary>Hint 6</summary><div>F6 → H6 → H7 → K7 → K11, then measure each leg.</div></details></li>
+</ol></div>
+<div class="sol"><details class="spoiler"><summary>Solution and code</summary><div><p>Set out the starting position from Liv&#x27;s note, with columns I to K taken from the museum ticket. Then play: dark E1 → E6, king F6 → H6; dark H2 → H5, king H6 → H7; dark H10 → H11 (the attacker on the second-highest row steps up to the top row), king H7 → K7; dark K10 → I10 (the shield on Harald&#x27;s map is at I10, and moving the piece on K10 frees column K), king K7 → K11. The moves are <strong>2</strong>, <strong>1</strong>, <strong>3</strong> and <strong>4</strong> squares long: <strong>2134</strong>.</p><p class="code">Code: <strong>2134</strong> &rarr; wheel runes <span class="runes">ᛚᚹᚲᛏ</span> &rarr; envelope 11</p></div></details></div>
+</div></section>
+<section class="env" id="env12"><header><span class="num">12</span><div><h2>Envelope 12 <span class="runes">ᚲᛟᛉᛏ</span></h2><p>Opens when players set the code from <a href="#PZ-012">Branch runes and the raven’s flights</a> on the wheel.</p></div></header><h3 class="inside">Inside</h3><div class="props"><article class="prop" id="PP-021"><h4>Postcard H6 · Patara <span class="id">PP-021</span></h4>
+<div class="figs">
+<figure><a href="Web/Postcards/Postcard_H6_Patara_Front.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_H6_Patara_Front.webp" alt="Postcard H6 · Patara Front"></a><figcaption>Front</figcaption></figure>
+<figure><a href="Web/Postcards/Postcard_H6_Patara_Back.webp" target="_blank" rel="noopener"><img loading="lazy" src="Web/Postcards/Postcard_H6_Patara_Back.webp" alt="Postcard H6 · Patara Back"></a><figcaption>Back</figcaption></figure>
+</div>
+<p class="meta">Printed · built</p>
+</article>
+<article class="prop" id="PP-039"><h4>Travel tickets (hops and flights) <span class="id">PP-039</span></h4>
+<p>18 hop tickets, each 3½ × 2 inches, in the matching fancy carrier designs. Print one Letter sheet per carrier, single-sided at 100% / actual size on the paper colour shown. Check the one-inch ruler before cutting.</p>
+<ul class="travel-prints">
+<li><strong>Nordic Air</strong> · sage paper · <a href="Print/Print_NordicAir_Flights_Sage_Paper.docx">Word print sheet</a> · <a href="Print/_pdf_source/Nordic_Air_Letter_Print.pdf" target="_blank" rel="noopener">Open PDF</a></li>
+<li><strong>Nordmark Rail</strong> · coral paper · <a href="Print/Print_NordmarkRail_Trains_Coral_Paper.docx">Word print sheet</a> · <a href="Print/_pdf_source/Nordmark_Rail_Letter_Print.pdf" target="_blank" rel="noopener">Open PDF</a></li>
+<li><strong>Northway Buses</strong> · golden yellow paper · <a href="Print/Print_NorthwayBuses_Yellow_Paper.docx">Word print sheet</a> · <a href="Print/_pdf_source/Northway_Buses_Letter_Print.pdf" target="_blank" rel="noopener">Open PDF</a></li>
+<li><strong>Longship Ferries</strong> · dark green paper · <a href="Print/Print_LongshipFerries_Green_Paper.docx">Word print sheet</a> · <a href="Print/_pdf_source/Longship_Ferries_Letter_Print.pdf" target="_blank" rel="noopener">Open PDF</a></li>
+</ul><p class="meta">The previews show the unprinted paper as white. Routes, dates and service numbers are preserved. Physical print contrast is untested.</p>
+<div class="figs">
+<figure><a href="Web/adventure/Nordic_Air_Letter_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Nordic_Air_Letter_Print_p1.png" alt="Travel tickets (hops and flights) Nordic Air · 4 tickets · sage paper"></a><figcaption>Nordic Air · 4 tickets · sage paper</figcaption></figure>
+<figure><a href="Web/adventure/Nordmark_Rail_Letter_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Nordmark_Rail_Letter_Print_p1.png" alt="Travel tickets (hops and flights) Nordmark Rail · 6 tickets · coral paper"></a><figcaption>Nordmark Rail · 6 tickets · coral paper</figcaption></figure>
+<figure><a href="Web/adventure/Northway_Buses_Letter_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Northway_Buses_Letter_Print_p1.png" alt="Travel tickets (hops and flights) Northway Buses · 4 tickets · golden-yellow paper"></a><figcaption>Northway Buses · 4 tickets · golden-yellow paper</figcaption></figure>
+<figure><a href="Web/adventure/Longship_Ferries_Letter_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Longship_Ferries_Letter_Print_p1.png" alt="Travel tickets (hops and flights) Longship Ferries · 4 tickets · dark-green paper"></a><figcaption>Longship Ferries · 4 tickets · dark-green paper</figcaption></figure>
+</div>
+<p class="meta">Printed · decided</p>
+</article></div><div class="puzzle" id="PZ-012">
+<h3>Puzzle that opens envelope 12: Branch runes and the raven’s flights <span class="id">PZ-012</span><span class="st st-decided">decided</span></h3>
+<p class="uses"><strong>Uses:</strong> <a class="chip" href="#PP-019">Postcard H4 · Hedeby<small> · envelope 11</small></a> <a class="chip" href="#PP-020">Postcard H5 · Aci Castello, Sicily<small> · envelope 11</small></a> <a class="chip" href="#PP-034">Harald&#x27;s trail map (The Varangian Road)<small> · envelope 10</small></a> <a class="chip" href="#PP-038">The raven&#x27;s flights card<small> · envelope 11</small></a> <a class="chip" href="#PP-027">Magnifier<small> · envelope 2</small></a></p>
+<div class="logic"><h5>The logic</h5><p>Decode five letters, then use them as five perches to read four flight digits.</p>
+<p><strong>Players have:</strong> H4/H5 and the player-only perch card (from lock 11) and the corrected Harald map (from lock 7, with the board kit), since 7 Oct 2026.</p>
+<p><strong>Players do:</strong> Use RAVEN to select map columns; H4 decodes HRAFN. Follow the direct connections H→R→A→F→N and read one digit per flight in that order.</p>
+<p><strong>They get:</strong> Code <strong>2648</strong>. Opening this lock releases PP-021, PP-039, PP-040, PP-041.</p>
+<p><strong>Why it is there:</strong> Keeps the existing cipher and replaces the cryptex with one printable card and a normal lock.</p></div>
+<div class="hints"><h5>Hints, easiest first</h5><ol>
+<li><details class="spoiler"><summary>Hint 1</summary><div>The underlined word on the Sicily postcard matters to the map’s unusual column labels.</div></details></li>
+<li><details class="spoiler"><summary>Hint 2</summary><div>Read the columns R, A, V, E, N in that order. On Hedeby’s key, each stem’s left branches select the row; its right branches select the letter.</div></details></li>
+<li><details class="spoiler"><summary>Hint 3</summary><div>Use the five decoded letters as perches on the raven’s flights card. Move directly from each letter to the next and read one digit from each flight. Do not add them.</div></details></li>
+</ol></div>
+<div class="sol"><details class="spoiler"><summary>Solution and code</summary><div><p>R6 → H, A10 → R, V9 → A, E3 → F, N2 → N: HRAFN. Then H → R = 2, R → A = 6, A → F = 4, F → N = 8: <strong>2648</strong>.</p><p class="code">Code: <strong>2648</strong> &rarr; wheel runes <span class="runes">ᚲᛟᛉᛏ</span> &rarr; envelope 12</p></div></details></div>
+</div></section>
+<section class="env" id="env13"><header><span class="num">13</span><div><h2>Envelope 13 <span class="runes">ᛈᛚᚹᛉ</span></h2><p>Opens when players set the code from <a href="#PZ-013">The route hidden in plain sight</a> on the wheel.</p></div></header><h3 class="inside">Inside</h3><div class="props"><article class="prop" id="PP-043"><h4>Plane ticket and letter <span class="id">PP-043</span></h4>
+<div class="figs">
+<figure><a href="Web/adventure/Plane_Ticket_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Plane_Ticket_Print_p1.png" alt="Plane ticket and letter Plane ticket"></a><figcaption>Plane ticket</figcaption></figure>
+<figure><a href="Web/adventure/Liv_Final_Letter_Print_p1.png" target="_blank" rel="noopener"><img loading="lazy" src="Web/adventure/Liv_Final_Letter_Print_p1.png" alt="Plane ticket and letter Letter"></a><figcaption>Letter</figcaption></figure>
+</div>
+<p class="meta">Printed · decided</p>
+</article>
+<article class="prop" id="PP-044"><h4>Adventure medallion <span class="id">PP-044</span></h4>
+<div class="figs">
+<figure><a href="Props/Medallion/Medallion_v3_Preview.png" target="_blank" rel="noopener"><img loading="lazy" src="Props/Medallion/Medallion_v3_Preview.png" alt="Adventure medallion Medallion v3"></a><figcaption>Medallion v3</figcaption></figure>
+</div>
+<p class="meta">Physical object · decided</p>
+</article></div><div class="puzzle" id="PZ-013">
+<h3>Puzzle that opens envelope 13: The route hidden in plain sight <span class="id">PZ-013</span><span class="st st-decided">decided</span></h3>
+<p class="uses"><strong>Uses:</strong> <a class="chip" href="#PP-001">Postcard L1 · L&#x27;Anse aux Meadows<small> · on the box</small></a> <a class="chip" href="#PP-002">Postcard L2 · Battle Harbour (Markland)<small> · envelope 2</small></a> <a class="chip" href="#PP-003">Postcard L3 · Qikiqtarjuaq, Baffin Island (Helluland)<small> · envelope 2</small></a> <a class="chip" href="#PP-004">Postcard LD · Brattahlíð (decoy)<small> · envelope 6</small></a> <a class="chip" href="#PP-005">Postcard R1 · Châlus<small> · envelope 5</small></a> <a class="chip" href="#PP-006">Postcard R2 · Rouen<small> · envelope 8</small></a> <a class="chip" href="#PP-007">Postcard R3 · Bayeux<small> · envelope 9</small></a> <a class="chip" href="#PP-008">Postcard R4 · Winchester<small> · envelope 9</small></a> <a class="chip" href="#PP-009">Postcard R5 · Battle<small> · envelope 9</small></a> <a class="chip" href="#PP-010">Postcard R6 · Roumare Forest<small> · envelope 5</small></a> <a class="chip" href="#PP-011">Postcard RD · Walcheren (decoy)<small> · envelope 5</small></a> <a class="chip" href="#PP-012">Postcard A1 · Dögurðarnes<small> · envelope 7</small></a> <a class="chip" href="#PP-013">Postcard A2 · Hvammur<small> · envelope 4</small></a> <a class="chip" href="#PP-014">Postcard A3 · Esjuberg<small> · envelope 7</small></a> <a class="chip" href="#PP-015">Postcard AD · Bjarnarhöfn (decoy)<small> · envelope 1</small></a> <a class="chip" href="#PP-016">Postcard H1 · Oslo<small> · envelope 10</small></a> <a class="chip" href="#PP-017">Postcard H2 · Staraya Ladoga<small> · envelope 3</small></a> <a class="chip" href="#PP-018">Postcard H3 · Kyiv<small> · envelope 3</small></a> <a class="chip" href="#PP-019">Postcard H4 · Hedeby<small> · envelope 11</small></a> <a class="chip" href="#PP-020">Postcard H5 · Aci Castello, Sicily<small> · envelope 11</small></a> <a class="chip" href="#PP-021">Postcard H6 · Patara<small> · envelope 12</small></a> <a class="chip" href="#PP-022">Postcard HD · Constantinople (decoy)<small> · envelope 3</small></a> <a class="chip" href="#PP-029">Leif&#x27;s trail map (The Western Lands)<small> · envelope 6</small></a> <a class="chip" href="#PP-032">Rollo&#x27;s trail map (The Granted Lands)<small> · envelope 8</small></a> <a class="chip" href="#PP-030">Aud&#x27;s trail map (The Island Settlement)<small> · envelope 4</small></a> <a class="chip" href="#PP-034">Harald&#x27;s trail map (The Varangian Road)<small> · envelope 10</small></a> <a class="chip" href="#PP-039">Travel tickets (hops and flights)<small> · envelope 12</small></a> <a class="chip" href="#PP-024">Viking Museum of Brattahlíð ticket<small> · envelope 6</small></a> <a class="chip" href="#PP-031">Aud&#x27;s Treasure Museum ticket<small> · envelope 4</small></a> <a class="chip" href="#PP-033">Musée Ducal de Rouen ticket<small> · envelope 8</small></a> <a class="chip" href="#PP-036">Hnefatafl Museum ticket, Oslo<small> · envelope 10</small></a></p>
+<div class="logic"><h5>The logic</h5><p>Twenty-two cards, four of them decoys. Filter, sort, trace, and read the four shapes as four digits.</p>
+<p><strong>Players have:</strong> <strong>17 Oct 2026 (designer, Q-062):</strong> the 22 postcards (18 carry Liv&#x27;s small raven, the 4 decoys none), the four maps (each with its stamp), the 18 hop tickets (one page per journey, stops chain from one to the next, decoys included),  (dropped 20 Oct 2026; every hop ticket is dated), and H6&#x27;s note about the family icon. <strong>12 Oct 2026 (Q-054):</strong> the 22 postcards (18 carry a family mark, the 4 decoys carry none), the four maps (each now shows its journey&#x27;s stamp), and Liv&#x27;s journal page with the family iconography. <strong>19 Oct 2026 (designer):</strong> every hop ticket and booking now carries a departure date (PP-039, 8 Sep to 12 Dec 2025). The stop order still comes from chaining the routes; the dates also confirm it. Code stays 1972. Retest needed.</p>
+<p><strong>Players do:</strong> <strong>17 Oct 2026 (designer, Q-062):</strong> set aside the four cards with no raven. Put each remaining card beside the map with the same stamp. Chain the journey&#x27;s travel tickets (decoys included) to get the stop order, then join the raven stops in that order on the map. Each map traces one digit;  the ticket dates give the order of the four journeys (20 Oct 2026). <strong>12 Oct 2026 (Q-054):</strong> set aside the four cards with no mark. Put each remaining card beside the map that shows the same stamp. On each map, order the cards by their marks, in the order Liv&#x27;s journal page lists them under each drawing (symbol: raven, longship, sun-wheel; crest: bearded axe, round shield, wolf, anchor, drinking horn, valknut), and join the stops in that order. Each trail traces one digit. Nobody needs to reread a card&#x27;s text.</p>
+<p><strong>They get:</strong> Code <strong>1972</strong>. Opening this lock releases PP-043, PP-044.</p>
+<p><strong>Why it is there:</strong> The cards work first as story and individual clues, then return as the final meta-puzzle. Every place name gains a second meaning.</p></div>
+<div class="hints"><h5>Hints, easiest first</h5><ol>
+<li><details class="spoiler"><summary>Hint 1</summary><div>Liv wrote to retrace only the steps that matter to your family&#x27;s history. Only the postcards with her small raven count. Four cards have no raven: set them aside.</div></details></li>
+<li><details class="spoiler"><summary>Hint 2</summary><div>Each map shows the stamp of its journey. Put each postcard beside the map with the same stamp. The travel tickets show how Liv got from each stop to the next, so use them to put each journey&#x27;s stops in order.</div></details></li>
+<li><details class="spoiler"><summary>Hint 3</summary><div>On each map, join the raven stops in that order, skipping any stop without a raven. Each map draws one digit. The dates on the travel tickets give the order to read the four maps.</div></details></li>
+</ol></div>
+<div class="sol"><details class="spoiler"><summary>Solution and code</summary><div><p>Set aside the four postcards with no raven. Match the rest to the maps by their stamps. Chain each journey&#x27;s travel tickets (each goes from one stop to the next) to put its stops in order; the decoy stops appear on the tickets too, so skip any whose postcard has no raven. On each map, join the raven stops in that order: Leif&#x27;s map draws <strong>1</strong>, Rollo&#x27;s <strong>9</strong>, Aud&#x27;s <strong>7</strong> and Harald&#x27;s <strong>2</strong>. The ticket dates put the journeys in order: Leif (September), Rollo (late September to mid October), Aud (late October), Harald (November to December): <strong>1972</strong>.</p><p class="code">Code: <strong>1972</strong> &rarr; wheel runes <span class="runes">ᛈᛚᚹᛉ</span> &rarr; envelope 13</p></div></details></div>
+</div></section></div><div class="tab" id="tab-production" data-tab="production" hidden><section class="env" id="production"><header><span class="num">$</span><div><h2>Production</h2><p>What it costs to make a box and what it is made of. Quotes so far: the print shops (Newprint, LoudMouth) and a few listed prices; everything else is still to be quoted.</p></div></header><h3 class="inside">Components</h3><div class="tbl"><table class="plan parts"><thead><tr><th>Envelope</th><th>Item</th><th>Record</th><th>Qty</th><th>Prototype now</th><th>Production idea</th><th>Size / spec</th><th>Status / open</th></tr></thead><tbody><tr><td>Box</td><td>Box</td><td><a href="#PP-045">PP-045</a></td><td>1</td><td>Not bought</td><td>Board-game-style box</td><td>11.5 × 11.5 × 2 in (outside)</td><td>Inside size not measured (Q-049). What it is in the story: Q-047.</td></tr><tr><td>Box</td><td>Luggage tags</td><td><a href="#PP-023">PP-023</a></td><td>2</td><td>Lewis N. Clark tags, bought ($9.95 CAD each retail)</td><td>Printed card parcel tags on twine (Q-047 option)</td><td>4.25 × 2.5 in</td><td>How tags attach to a box is open (Q-047).</td></tr><tr><td>Box</td><td>Luggage tag inserts</td><td><a href="#PP-023">PP-023</a></td><td>2</td><td>Printed business cards</td><td>Same, or printed straight on the card tag</td><td>Business card</td><td></td></tr><tr><td>Box</td><td>Rune cypher wheel (4 disks + arm)</td><td><a href="#PP-047">PP-047</a></td><td>1</td><td>Cardstock print, hand cut</td><td>Die-cut cardboard</td><td>Disks 196, 156, 116, 76 mm; arm 202 × 18 mm</td><td>Prototype not yet printed or assembled.</td></tr><tr><td>Box</td><td>Brass fastener for the wheel</td><td><a href="#PP-047">PP-047</a></td><td>1</td><td>Brass split pin</td><td>Brass split pin or plastic rivet</td><td>Through all 5 layers</td><td></td></tr><tr><td>Box</td><td>Rune labels for envelopes</td><td><a href="#PP-047">PP-047</a></td><td>13</td><td>Printed sheet, cut by hand</td><td>Printed straight on the envelopes</td><td>58 × 22 mm</td><td>Decoy envelopes would add labels (Q-050).</td></tr><tr><td>Box</td><td>Envelopes, paper</td><td>PR-007</td><td>9</td><td>—</td><td>Kraft or cream envelopes</td><td>6 × 9 in assumed (folded maps fit)</td><td>Assumption: envelopes 2, 3, 4, 5, 6, 8, 9, 11, 12. Sizes open (Q-049).</td></tr><tr><td>Box</td><td>Envelopes, padded or gusseted</td><td>PR-007</td><td>4</td><td>—</td><td>Padded envelopes</td><td>Fits 1, 7, 10, 13</td><td>Assumption: magnifier, coins + tally, game pieces, medallion. Sizes open (Q-049).</td></tr><tr><td>Various</td><td>Postcards (18 stops + 4 decoys)</td><td>PP-001–PP-022</td><td>22</td><td>Printed, double-sided</td><td>Printed card stock</td><td>5 × 3.5 in, double-sided</td><td>L1 starts loose in the box; the rest are spread over envelopes 1–12.</td></tr><tr><td>1</td><td>Magnifier</td><td><a href="#PP-027">PP-027</a></td><td>1</td><td>Candidate: 90 mm glass, wooden handle</td><td>Flat Fresnel card magnifier</td><td>Credit-card size (production idea)</td><td>Must make the branch runes and the 1576 top edge readable. Not tested.</td></tr><tr><td>2</td><td>Aud&#x27;s comb</td><td><a href="#PP-028">PP-028</a></td><td>1</td><td>3D print</td><td>Die-cut cardboard grille</td><td>Sits over postcard AD</td><td>Tooth gaps must still expose the BOOK letters.</td></tr><tr><td>4</td><td>Architect&#x27;s scale ruler</td><td><a href="#PP-025">PP-025</a></td><td>1</td><td>Ruler on hand (length not recorded)</td><td>Printed card ruler (Claude&#x27;s idea, not the designer&#x27;s)</td><td>Needs 1:25 and 1:125 scales</td><td>A 30 cm ruler won&#x27;t lie flat in the box (Q-049).</td></tr><tr><td>4, 6, 8, 10</td><td>Trail maps</td><td>PP-029/030/032/034</td><td>4</td><td>Letter sheets, laminated</td><td>Not laminated, folded in half</td><td>8.5 × 11 in; Harald&#x27;s is double-sided</td><td>Check Harald&#x27;s back still reads without lamination.</td></tr><tr><td>4</td><td>Aud&#x27;s Treasure Museum ticket</td><td><a href="#PP-031">PP-031</a></td><td>1</td><td>Printed</td><td>Printed card</td><td>Size not recorded</td><td></td></tr><tr><td>6</td><td>Viking Museum of Brattahlíð ticket</td><td><a href="#PP-024">PP-024</a></td><td>1</td><td>Printed</td><td>Printed card</td><td>About 2 in wide</td><td>Front/back registration drift seen in a test print.</td></tr><tr><td>7</td><td>Coin hoard</td><td><a href="#PP-037">PP-037</a></td><td>12</td><td>3D print</td><td>Open: not discussed</td><td>5 dirhams, 4 deniers, 3 Norse coins</td><td>Cheap options to price: stock replica coins, wooden or card discs.</td></tr><tr><td>7</td><td>Treasure tally</td><td><a href="#PP-026">PP-026</a></td><td>1</td><td>3D-printed four-wheel counter</td><td>Cardboard wheels in windows</td><td>Seven-segment digits</td><td>3705 must read SOLE upside down.</td></tr><tr><td>8</td><td>Musée Ducal de Rouen ticket</td><td><a href="#PP-033">PP-033</a></td><td>1</td><td>Printed</td><td>Printed card</td><td>2 × 3 in</td><td>To re-print (record, 29 Sept).</td></tr><tr><td>10</td><td>Hnefatafl board</td><td><a href="#PP-035">PP-035</a></td><td>1</td><td>3D print / printed</td><td>Printed cardboard board</td><td>11 × 11 squares; size not recorded</td><td>Must fit the box (fold if needed).</td></tr><tr><td>10</td><td>Hnefatafl pieces</td><td><a href="#PP-035">PP-035</a></td><td>23</td><td>3D print</td><td>Stock wooden pawns</td><td>16 dark, 6 light, 1 king</td><td>King must look different (taller piece).</td></tr><tr><td>10</td><td>Hnefatafl Museum ticket, Oslo</td><td><a href="#PP-036">PP-036</a></td><td>1</td><td>Printed</td><td>Printed card</td><td>Size not recorded</td><td>Mirrored back must read through when held to the light; test on chosen stock.</td></tr><tr><td>11</td><td>The raven&#x27;s flights card</td><td><a href="#PP-038">PP-038</a></td><td>1</td><td>To print</td><td>Printed card</td><td>Half letter (proposed)</td><td></td></tr><tr><td>12</td><td>Travel tickets (hop tickets)</td><td><a href="#PP-039">PP-039</a></td><td>18</td><td>Printed</td><td>Printed card</td><td>Size not recorded</td><td>18 hop tickets, business card 3.5 × 2. The 3 itinerary receipts were dropped 20 Oct 2026 (hop-ticket dates give the journey order).</td></tr><tr><td>12</td><td>Liv&#x27;s journal</td><td><a href="#PP-040">PP-040</a></td><td>1</td><td>Printed</td><td>Printed</td><td>Letter; page count not recorded</td><td></td></tr><tr><td>12</td><td>Family logo and crest note</td><td><a href="#PP-041">PP-041</a></td><td>1</td><td>Printed</td><td>Printed</td><td>Size not recorded</td><td></td></tr><tr><td>13</td><td>Plane ticket and letter</td><td><a href="#PP-043">PP-043</a></td><td>1</td><td>Printed</td><td>Printed</td><td>Size not recorded</td><td>Counted as one set (ticket + letter).</td></tr><tr><td>13</td><td>Adventure medallion</td><td><a href="#PP-044">PP-044</a></td><td>1</td><td>3D print</td><td>Open: not discussed</td><td>50 mm × 4.4 mm</td><td>Cheap options to price: struck metal coin, wooden token.</td></tr><tr><td>Box</td><td>Hint page card (QR code)</td><td>—</td><td>1</td><td>—</td><td>Printed card</td><td>Business card</td><td>Not in the records: Claude&#x27;s suggestion. Hint page address is known.</td></tr><tr><td>Box</td><td>How to use the cypher wheel</td><td>—</td><td>1</td><td>—</td><td>Printed card or print on the box lid</td><td>Not set</td><td>Not in the records: Claude&#x27;s suggestion.</td></tr></tbody></table></div><p class="meta">29 lines from <code>Production/Norse_Parts_List.xlsx</code> (Parts list tab). Unit prices at 500 and 1,000 are blank there until quotes arrive.</p></section><section class="env" id="costs"><header><span class="num">$</span><div><h2>Print costs</h2><p>Prices are the <b>total price for one design</b> from the online quote system (Newprint or LoudMouth), quoted 20 Oct 2026. Cost per box works itself out: designs per box × price ÷ quantity. Type over a price to try another; changes stay in this browser only (<i>Reset to quotes</i> brings the quotes back).</p></div></header><h3 class="inside">1 · Prices from the quote system (CAD, total per design)</h3><div class="tbl"><table class="cost prices"><thead><tr><th>Product</th><th class="r">@100</th><th class="r">@250</th><th class="r">@500</th><th class="r">@1,000</th><th>Notes (paper, finish, packaging of the cheapest quote)</th></tr></thead><tbody><tr><th scope="row">Postcard 4 × 6 · 2 sides</th><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="pc2" data-q="100" value="65.31" data-default="65.31" aria-label="Postcard 4 × 6 · 2 sides, total price for 100"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="pc2" data-q="250" value="79.10" data-default="79.10" aria-label="Postcard 4 × 6 · 2 sides, total price for 250"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="pc2" data-q="500" value="111.80" data-default="111.80" aria-label="Postcard 4 × 6 · 2 sides, total price for 500"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="pc2" data-q="1000" value="182.60" data-default="182.60" aria-label="Postcard 4 × 6 · 2 sides, total price for 1,000"></td><td class="note"><textarea rows="2" data-k="pc2:note" data-default="" aria-label="Postcard 4 × 6 · 2 sides, notes" placeholder="Notes"></textarea></td></tr><tr><th scope="row">Postcard 4 × 6 · 1 side</th><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="pc1" data-q="100" value="55.86" data-default="55.86" aria-label="Postcard 4 × 6 · 1 side, total price for 100"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="pc1" data-q="250" value="65.75" data-default="65.75" aria-label="Postcard 4 × 6 · 1 side, total price for 250"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="pc1" data-q="500" value="82.30" data-default="82.30" aria-label="Postcard 4 × 6 · 1 side, total price for 500"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="pc1" data-q="1000" value="124.20" data-default="124.20" aria-label="Postcard 4 × 6 · 1 side, total price for 1,000"></td><td class="note"><textarea rows="2" data-k="pc1:note" data-default="" aria-label="Postcard 4 × 6 · 1 side, notes" placeholder="Notes"></textarea></td></tr><tr><th scope="row">Bookmark 2 × 6 · 2 sides</th><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="bm2" data-q="100" value="62.80" data-default="62.80" aria-label="Bookmark 2 × 6 · 2 sides, total price for 100"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="bm2" data-q="250" value="72.35" data-default="72.35" aria-label="Bookmark 2 × 6 · 2 sides, total price for 250"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="bm2" data-q="500" value="83.00" data-default="83.00" aria-label="Bookmark 2 × 6 · 2 sides, total price for 500"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="bm2" data-q="1000" value="102.60" data-default="102.60" aria-label="Bookmark 2 × 6 · 2 sides, total price for 1,000"></td><td class="note"><textarea rows="2" data-k="bm2:note" data-default="" aria-label="Bookmark 2 × 6 · 2 sides, notes" placeholder="Notes"></textarea></td></tr><tr><th scope="row">Bookmark 2 × 6 · 1 side</th><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="bm1" data-q="100" value="60.44" data-default="60.44" aria-label="Bookmark 2 × 6 · 1 side, total price for 100"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="bm1" data-q="250" value="68.75" data-default="68.75" aria-label="Bookmark 2 × 6 · 1 side, total price for 250"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="bm1" data-q="500" value="77.30" data-default="77.30" aria-label="Bookmark 2 × 6 · 1 side, total price for 500"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="bm1" data-q="1000" value="93.00" data-default="93.00" aria-label="Bookmark 2 × 6 · 1 side, total price for 1,000"></td><td class="note"><textarea rows="2" data-k="bm1:note" data-default="" aria-label="Bookmark 2 × 6 · 1 side, notes" placeholder="Notes"></textarea></td></tr><tr><th scope="row">Business card 3.5 × 2 · 1 side</th><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="bc1" data-q="100" value="39.98" data-default="39.98" aria-label="Business card 3.5 × 2 · 1 side, total price for 100"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="bc1" data-q="250" value="46.78" data-default="46.78" aria-label="Business card 3.5 × 2 · 1 side, total price for 250"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="bc1" data-q="500" value="60.15" data-default="60.15" aria-label="Business card 3.5 × 2 · 1 side, total price for 500"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="bc1" data-q="1000" value="83.10" data-default="83.10" aria-label="Business card 3.5 × 2 · 1 side, total price for 1,000"></td><td class="note"><textarea rows="2" data-k="bc1:note" data-default="" aria-label="Business card 3.5 × 2 · 1 side, notes" placeholder="Notes"></textarea></td></tr><tr><th scope="row">Flyer 5.5 × 8.5 · 14 pt card · 1 side</th><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="fl1" data-q="100" value="" data-default="" aria-label="Flyer 5.5 × 8.5 · 14 pt card · 1 side, total price for 100"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="fl1" data-q="250" value="" data-default="" aria-label="Flyer 5.5 × 8.5 · 14 pt card · 1 side, total price for 250"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="fl1" data-q="500" value="" data-default="" aria-label="Flyer 5.5 × 8.5 · 14 pt card · 1 side, total price for 500"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="fl1" data-q="1000" value="" data-default="" aria-label="Flyer 5.5 × 8.5 · 14 pt card · 1 side, total price for 1,000"></td><td class="note"><textarea rows="2" data-k="fl1:note" data-default="Cheapest option:
+Shape - Rectangle (Portrait)
+Format - 5.5 x 8.5 Inches Portrait
+Paper - 80 lb. Lynx® Uncoated Text FSC® ♽
+Colours - Colour Front Side Only
+Coating - No Coating
+Packaging - Pack Loose in Box" aria-label="Flyer 5.5 × 8.5 · 14 pt card · 1 side, notes" placeholder="Notes">Cheapest option:
+Shape - Rectangle (Portrait)
+Format - 5.5 x 8.5 Inches Portrait
+Paper - 80 lb. Lynx® Uncoated Text FSC® ♽
+Colours - Colour Front Side Only
+Coating - No Coating
+Packaging - Pack Loose in Box</textarea></td></tr><tr><th scope="row">Flyer 5.5 × 8.5 · 14 pt card · 2 sides</th><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="fl2" data-q="100" value="" data-default="" aria-label="Flyer 5.5 × 8.5 · 14 pt card · 2 sides, total price for 100"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="fl2" data-q="250" value="" data-default="" aria-label="Flyer 5.5 × 8.5 · 14 pt card · 2 sides, total price for 250"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="fl2" data-q="500" value="" data-default="" aria-label="Flyer 5.5 × 8.5 · 14 pt card · 2 sides, total price for 500"></td><td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="fl2" data-q="1000" value="" data-default="" aria-label="Flyer 5.5 × 8.5 · 14 pt card · 2 sides, total price for 1,000"></td><td class="note"><textarea rows="2" data-k="fl2:note" data-default="" aria-label="Flyer 5.5 × 8.5 · 14 pt card · 2 sides, notes" placeholder="Notes"></textarea></td></tr></tbody></table></div><h3 class="inside" id="cost-perbox">2 · Cost per box</h3><div class="tbl"><table class="cost"><thead><tr><th>Item</th><th>Product</th><th class="r">Designs per box</th><th class="r">@100</th><th class="r">@250</th><th class="r">@500</th><th class="r">@1,000</th></tr></thead><tbody><tr data-p="pc2" data-n="22"><th scope="row"><a href="#PP-001">Postcards</a></th><td>Postcard 4 × 6 · 2 sides</td><td class="r">22</td><td class="r" data-q="100"></td><td class="r" data-q="250"></td><td class="r" data-q="500"></td><td class="r" data-q="1000"></td></tr><tr data-p="pc2" data-n="1"><th scope="row"><a href="#PP-048">Liv&#x27;s note (QR code + helper on the back)</a></th><td>Postcard 4 × 6 · 2 sides</td><td class="r">1</td><td class="r" data-q="100"></td><td class="r" data-q="250"></td><td class="r" data-q="500"></td><td class="r" data-q="1000"></td></tr><tr data-p="pc1" data-n="1"><th scope="row"><a href="#PP-043">Final Liv note</a> <small>One side</small></th><td>Postcard 4 × 6 · 1 side</td><td class="r">1</td><td class="r" data-q="100"></td><td class="r" data-q="250"></td><td class="r" data-q="500"></td><td class="r" data-q="1000"></td></tr><tr data-p="bm2" data-n="4"><th scope="row"><a href="#PP-024">Museum tickets (Brattahlíð, Aud, Rouen, Oslo)</a> <small>Size open</small></th><td>Bookmark 2 × 6 · 2 sides</td><td class="r">4</td><td class="r" data-q="100"></td><td class="r" data-q="250"></td><td class="r" data-q="500"></td><td class="r" data-q="1000"></td></tr><tr data-p="bc1" data-n="1"><th scope="row"><a href="#PP-038">Raven&#x27;s path card</a> <small>Built 20 Oct</small></th><td>Business card 3.5 × 2 · 1 side</td><td class="r">1</td><td class="r" data-q="100"></td><td class="r" data-q="250"></td><td class="r" data-q="500"></td><td class="r" data-q="1000"></td></tr><tr data-p="bc1" data-n="18"><th scope="row"><a href="#PP-039">Travel tickets: hops</a> <small>Built 20 Oct</small></th><td>Business card 3.5 × 2 · 1 side</td><td class="r">18</td><td class="r" data-q="100"></td><td class="r" data-q="250"></td><td class="r" data-q="500"></td><td class="r" data-q="1000"></td></tr><tr data-p="bc1" data-n="1"><th scope="row"><a href="#PP-043">Travel tickets: final plane ticket</a> <small>Was 7 × 2.9; not rebuilt</small></th><td>Business card 3.5 × 2 · 1 side</td><td class="r">1</td><td class="r" data-q="100"></td><td class="r" data-q="250"></td><td class="r" data-q="500"></td><td class="r" data-q="1000"></td></tr><tr data-p="bm1" data-n="1"><th scope="row"><a href="#PP-025">Ruler</a> <small>Built 20 Oct</small></th><td>Bookmark 2 × 6 · 1 side</td><td class="r">1</td><td class="r" data-q="100"></td><td class="r" data-q="250"></td><td class="r" data-q="500"></td><td class="r" data-q="1000"></td></tr><tr data-p="fl1" data-n="3"><th scope="row"><a href="#PP-029">Trail maps (Leif, Rollo, Aud)</a> <small>Production size; prototype stays Letter</small></th><td>Flyer 5.5 × 8.5 · 14 pt card · 1 side</td><td class="r">3</td><td class="r" data-q="100"></td><td class="r" data-q="250"></td><td class="r" data-q="500"></td><td class="r" data-q="1000"></td></tr><tr data-p="fl2" data-n="1"><th scope="row"><a href="#PP-034">Harald&#x27;s map (board note on the back)</a> <small>Production size; prototype stays Letter</small></th><td>Flyer 5.5 × 8.5 · 14 pt card · 2 sides</td><td class="r">1</td><td class="r" data-q="100"></td><td class="r" data-q="250"></td><td class="r" data-q="500"></td><td class="r" data-q="1000"></td></tr></tbody><tfoot><tr class="tot"><th scope="row">Printing per box</th><td></td><td class="r" id="cost-pieces"></td><td class="r" data-tot="100"></td><td class="r" data-tot="250"></td><td class="r" data-tot="500"></td><td class="r" data-tot="1000"></td></tr><tr class="tot2"><th scope="row">Whole print order (per box × quantity)</th><td></td><td></td><td class="r" data-order="100"></td><td class="r" data-order="250"></td><td class="r" data-order="500"></td><td class="r" data-order="1000"></td></tr><tr class="miss"><th scope="row">Rows without a price</th><td></td><td></td><td class="r" data-miss="100"></td><td class="r" data-miss="250"></td><td class="r" data-miss="500"></td><td class="r" data-miss="1000"></td></tr></tfoot></table></div><div class="costbar"><button id="cost-clear">Reset to quotes</button><span id="cost-msg" class="meta"></span></div><p class="meta">Superseded Letter 8.5 × 11 quotes, kept for reference (prototype maps): Letter 8.5 × 11 · 1 side: $73.50 / $112.65 / $188.20 / $314.90; Letter 8.5 × 11 · 2 sides: $87.03 / $147.75 / $254.80 / $433.50 (at 100 / 250 / 500 / 1,000).</p><h3 class="inside">3 · Bought in packs (envelopes, magnifier, small parts)</h3><div class="tbl"><table class="cost pack"><thead><tr><th>Item</th><th class="r">Per box</th><th class="r">Items per pack</th><th class="r">Pack price</th><th>Link</th><th class="r">Price each</th><th class="r">Cost per box</th><th>Notes</th></tr></thead><tbody><tr data-env="env69" data-name="6 × 9 clasp envelopes"><th scope="row"><a data-linkname target="_blank" rel="noopener" href="https://www.amazon.ca/dp/B0H274MFZM">6 × 9 clasp envelopes</a> <small>Envelopes 4, 6, 8, 10 + 1 decoy (assumed)</small></th><td><input type="number" min="0" step="1" data-k="env69:qty" value="5" data-default="5" aria-label="6 × 9 clasp envelopes, per box"></td><td><input type="number" min="0" step="1" data-k="env69:pack" value="300" data-default="300" aria-label="6 × 9 clasp envelopes, items per pack"></td><td><input type="number" min="0" step="0.01" data-k="env69:packprice" value="45.99" data-default="45.99" aria-label="6 × 9 clasp envelopes, pack price"></td><td><input type="url" data-k="env69:link" value="https://www.amazon.ca/dp/B0H274MFZM" data-default="https://www.amazon.ca/dp/B0H274MFZM" placeholder="https://" aria-label="6 × 9 clasp envelopes, link"></td><td class="r" data-each></td><td class="r" data-cost></td><td class="note"><textarea rows="2" data-k="env69:note" data-default="" aria-label="6 × 9 clasp envelopes, notes" placeholder="Notes"></textarea></td></tr><tr data-env="envsm" data-name="Small string-tie envelopes 4.5 × 6.7"><th scope="row"><a data-linkname target="_blank" rel="noopener" href="https://www.amazon.ca/dp/B0DFWX19GS">Small string-tie envelopes 4.5 × 6.7</a> <small>Prototype pack; 9 envelopes + 1 decoy (assumed)</small></th><td><input type="number" min="0" step="1" data-k="envsm:qty" value="10" data-default="10" aria-label="Small string-tie envelopes 4.5 × 6.7, per box"></td><td><input type="number" min="0" step="1" data-k="envsm:pack" value="20" data-default="20" aria-label="Small string-tie envelopes 4.5 × 6.7, items per pack"></td><td><input type="number" min="0" step="0.01" data-k="envsm:packprice" value="18.59" data-default="18.59" aria-label="Small string-tie envelopes 4.5 × 6.7, pack price"></td><td><input type="url" data-k="envsm:link" value="https://www.amazon.ca/dp/B0DFWX19GS" data-default="https://www.amazon.ca/dp/B0DFWX19GS" placeholder="https://" aria-label="Small string-tie envelopes 4.5 × 6.7, link"></td><td class="r" data-each></td><td class="r" data-cost></td><td class="note"><textarea rows="2" data-k="envsm:note" data-default="" aria-label="Small string-tie envelopes 4.5 × 6.7, notes" placeholder="Notes"></textarea></td></tr><tr data-env="mag" data-name="Magnifier, Fresnel card 3.3 × 2.2 in"><th scope="row"><a data-linkname target="_blank" rel="noopener" href="https://www.amazon.ca/dp/B0GSD9RKKN">Magnifier, Fresnel card 3.3 × 2.2 in</a> <small>Kronabelle, 200 pcs (PP-027)</small></th><td><input type="number" min="0" step="1" data-k="mag:qty" value="1" data-default="1" aria-label="Magnifier, Fresnel card 3.3 × 2.2 in, per box"></td><td><input type="number" min="0" step="1" data-k="mag:pack" value="200" data-default="200" aria-label="Magnifier, Fresnel card 3.3 × 2.2 in, items per pack"></td><td><input type="number" min="0" step="0.01" data-k="mag:packprice" value="54.37" data-default="54.37" aria-label="Magnifier, Fresnel card 3.3 × 2.2 in, pack price"></td><td><input type="url" data-k="mag:link" value="https://www.amazon.ca/dp/B0GSD9RKKN" data-default="https://www.amazon.ca/dp/B0GSD9RKKN" placeholder="https://" aria-label="Magnifier, Fresnel card 3.3 × 2.2 in, link"></td><td class="r" data-each></td><td class="r" data-cost></td><td class="note"><textarea rows="2" data-k="mag:note" data-default="" aria-label="Magnifier, Fresnel card 3.3 × 2.2 in, notes" placeholder="Notes"></textarea></td></tr><tr data-env="fast" data-name="Brass fastener (cypher wheel centre)"><th scope="row"><a data-linkname target="_blank" rel="noopener">Brass fastener (cypher wheel centre)</a> <small>PP-047</small></th><td><input type="number" min="0" step="1" data-k="fast:qty" value="1" data-default="1" aria-label="Brass fastener (cypher wheel centre), per box"></td><td><input type="number" min="0" step="1" data-k="fast:pack" value="" data-default="" aria-label="Brass fastener (cypher wheel centre), items per pack"></td><td><input type="number" min="0" step="0.01" data-k="fast:packprice" value="" data-default="" aria-label="Brass fastener (cypher wheel centre), pack price"></td><td><input type="url" data-k="fast:link" value="" data-default="" placeholder="https://" aria-label="Brass fastener (cypher wheel centre), link"></td><td class="r" data-each></td><td class="r" data-cost></td><td class="note"><textarea rows="2" data-k="fast:note" data-default="" aria-label="Brass fastener (cypher wheel centre), notes" placeholder="Notes"></textarea></td></tr><tr data-env="clip" data-name="Small paper clips (treasure tally)"><th scope="row"><a data-linkname target="_blank" rel="noopener">Small paper clips (treasure tally)</a> <small>Paper tally holds digits with 4 clips (PP-026)</small></th><td><input type="number" min="0" step="1" data-k="clip:qty" value="4" data-default="4" aria-label="Small paper clips (treasure tally), per box"></td><td><input type="number" min="0" step="1" data-k="clip:pack" value="" data-default="" aria-label="Small paper clips (treasure tally), items per pack"></td><td><input type="number" min="0" step="0.01" data-k="clip:packprice" value="" data-default="" aria-label="Small paper clips (treasure tally), pack price"></td><td><input type="url" data-k="clip:link" value="" data-default="" placeholder="https://" aria-label="Small paper clips (treasure tally), link"></td><td class="r" data-each></td><td class="r" data-cost></td><td class="note"><textarea rows="2" data-k="clip:note" data-default="" aria-label="Small paper clips (treasure tally), notes" placeholder="Notes"></textarea></td></tr><tr data-env="pawn" data-name="Hnefatafl pieces (19 dark, 6 light, 1 king)"><th scope="row"><a data-linkname target="_blank" rel="noopener">Hnefatafl pieces (19 dark, 6 light, 1 king)</a> <small>Stock wooden pawns; the king must look different (PP-035)</small></th><td><input type="number" min="0" step="1" data-k="pawn:qty" value="26" data-default="26" aria-label="Hnefatafl pieces (19 dark, 6 light, 1 king), per box"></td><td><input type="number" min="0" step="1" data-k="pawn:pack" value="" data-default="" aria-label="Hnefatafl pieces (19 dark, 6 light, 1 king), items per pack"></td><td><input type="number" min="0" step="0.01" data-k="pawn:packprice" value="" data-default="" aria-label="Hnefatafl pieces (19 dark, 6 light, 1 king), pack price"></td><td><input type="url" data-k="pawn:link" value="" data-default="" placeholder="https://" aria-label="Hnefatafl pieces (19 dark, 6 light, 1 king), link"></td><td class="r" data-each></td><td class="r" data-cost></td><td class="note"><textarea rows="2" data-k="pawn:note" data-default="" aria-label="Hnefatafl pieces (19 dark, 6 light, 1 king), notes" placeholder="Notes"></textarea></td></tr></tbody><tfoot><tr class="tot"><th scope="row">Bought in packs, per box</th><td></td><td></td><td></td><td></td><td></td><td class="r" id="cost-env"></td><td></td></tr></tfoot></table></div><h3 class="inside">4 · Box (quotes, price each; tick the one to count)</h3><div class="tbl"><table class="cost pack"><thead><tr><th>Box</th><th class="r">Per box</th><th class="r">Each @250</th><th class="r">Each @500</th><th class="r">Each @1,000</th><th>Link</th><th>Notes</th></tr></thead><tbody><tr data-boxrow="boxA" data-name="Sales Presentation Box 11.75 × 1 × 10 in, 18 pt SBS"><th scope="row"><label><input type="radio" name="cost-box" value="boxA" checked aria-label="Count this box"> </label><a data-linkname target="_blank" rel="noopener">Sales Presentation Box 11.75 × 1 × 10 in, 18 pt SBS</a> <small>Newprint; inside/outside size and 1 in depth to check</small></th><td><input type="number" min="0" step="1" data-k="boxA:qty" value="1" data-default="1" aria-label="Sales Presentation Box 11.75 × 1 × 10 in, 18 pt SBS, per box"></td><td><input type="number" min="0" step="0.01" data-k="boxA:p250" value="" data-default="" aria-label="Sales Presentation Box 11.75 × 1 × 10 in, 18 pt SBS, price each at 250"></td><td><input type="number" min="0" step="0.01" data-k="boxA:p500" value="3.88" data-default="3.88" aria-label="Sales Presentation Box 11.75 × 1 × 10 in, 18 pt SBS, price each at 500"></td><td><input type="number" min="0" step="0.01" data-k="boxA:p1000" value="" data-default="" aria-label="Sales Presentation Box 11.75 × 1 × 10 in, 18 pt SBS, price each at 1,000"></td><td><input type="url" data-k="boxA:link" value="" data-default="" placeholder="https://" aria-label="Sales Presentation Box 11.75 × 1 × 10 in, 18 pt SBS, link"></td><td class="note"><textarea rows="2" data-k="boxA:note" data-default="" aria-label="Sales Presentation Box 11.75 × 1 × 10 in, 18 pt SBS, notes" placeholder="Notes"></textarea></td></tr><tr data-boxrow="boxB" data-name="Box 10 × 8 × 2 in"><th scope="row"><label><input type="radio" name="cost-box" value="boxB" aria-label="Count this box"> </label><a data-linkname target="_blank" rel="noopener">Box 10 × 8 × 2 in</a></th><td><input type="number" min="0" step="1" data-k="boxB:qty" value="1" data-default="1" aria-label="Box 10 × 8 × 2 in, per box"></td><td><input type="number" min="0" step="0.01" data-k="boxB:p250" value="" data-default="" aria-label="Box 10 × 8 × 2 in, price each at 250"></td><td><input type="number" min="0" step="0.01" data-k="boxB:p500" value="" data-default="" aria-label="Box 10 × 8 × 2 in, price each at 500"></td><td><input type="number" min="0" step="0.01" data-k="boxB:p1000" value="" data-default="" aria-label="Box 10 × 8 × 2 in, price each at 1,000"></td><td><input type="url" data-k="boxB:link" value="" data-default="" placeholder="https://" aria-label="Box 10 × 8 × 2 in, link"></td><td class="note"><textarea rows="2" data-k="boxB:note" data-default="" aria-label="Box 10 × 8 × 2 in, notes" placeholder="Notes"></textarea></td></tr></tbody></table></div><h3 class="inside">5 · Made parts (quotes: one-time setup + price each)</h3><div class="tbl"><table class="cost pack"><thead><tr><th>Part</th><th class="r">Per box</th><th class="r">One-time</th><th class="r">Each @250</th><th class="r">Each @500</th><th class="r">Each @1,000</th><th>Link</th><th>Notes</th></tr></thead><tbody><tr data-made="diecut" data-name="Die-cut card sheet: cypher wheel + treasure tally + Aud&#x27;s comb"><th scope="row"><a data-linkname target="_blank" rel="noopener">Die-cut card sheet: cypher wheel + treasure tally + Aud&#x27;s comb</a> <small>Wheel disks 196/156/116/76 mm + 202 × 34 mm arm; tally 4 × 2 in sleeve, rails, four 6 in strips; comb 100.7 × 87.8 mm</small></th><td><input type="number" min="0" step="1" data-k="diecut:qty" value="1" data-default="1" aria-label="Die-cut card sheet: cypher wheel + treasure tally + Aud&#x27;s comb, per box"></td><td><input type="number" min="0" step="0.01" data-k="diecut:setup" value="" data-default="" aria-label="Die-cut card sheet: cypher wheel + treasure tally + Aud&#x27;s comb, one-time cost"></td><td><input type="number" min="0" step="0.01" data-k="diecut:p250" value="" data-default="" aria-label="Die-cut card sheet: cypher wheel + treasure tally + Aud&#x27;s comb, price each at 250"></td><td><input type="number" min="0" step="0.01" data-k="diecut:p500" value="" data-default="" aria-label="Die-cut card sheet: cypher wheel + treasure tally + Aud&#x27;s comb, price each at 500"></td><td><input type="number" min="0" step="0.01" data-k="diecut:p1000" value="" data-default="" aria-label="Die-cut card sheet: cypher wheel + treasure tally + Aud&#x27;s comb, price each at 1,000"></td><td><input type="url" data-k="diecut:link" value="" data-default="" placeholder="https://" aria-label="Die-cut card sheet: cypher wheel + treasure tally + Aud&#x27;s comb, link"></td><td class="note"><textarea rows="2" data-k="diecut:note" data-default="" aria-label="Die-cut card sheet: cypher wheel + treasure tally + Aud&#x27;s comb, notes" placeholder="Notes"></textarea></td></tr><tr data-made="board" data-name="Hnefatafl playing board, 11 × 11 (printed card)"><th scope="row"><a data-linkname target="_blank" rel="noopener">Hnefatafl playing board, 11 × 11 (printed card)</a> <small>Or print it on the box or a flyer back</small></th><td><input type="number" min="0" step="1" data-k="board:qty" value="1" data-default="1" aria-label="Hnefatafl playing board, 11 × 11 (printed card), per box"></td><td><input type="number" min="0" step="0.01" data-k="board:setup" value="" data-default="" aria-label="Hnefatafl playing board, 11 × 11 (printed card), one-time cost"></td><td><input type="number" min="0" step="0.01" data-k="board:p250" value="" data-default="" aria-label="Hnefatafl playing board, 11 × 11 (printed card), price each at 250"></td><td><input type="number" min="0" step="0.01" data-k="board:p500" value="" data-default="" aria-label="Hnefatafl playing board, 11 × 11 (printed card), price each at 500"></td><td><input type="number" min="0" step="0.01" data-k="board:p1000" value="" data-default="" aria-label="Hnefatafl playing board, 11 × 11 (printed card), price each at 1,000"></td><td><input type="url" data-k="board:link" value="" data-default="" placeholder="https://" aria-label="Hnefatafl playing board, 11 × 11 (printed card), link"></td><td class="note"><textarea rows="2" data-k="board:note" data-default="" aria-label="Hnefatafl playing board, 11 × 11 (printed card), notes" placeholder="Notes"></textarea></td></tr><tr data-made="coins" data-name="Coin hoard (12 coins)"><th scope="row"><a data-linkname target="_blank" rel="noopener">Coin hoard (12 coins)</a> <small>3D-printed in the prototype (PP-037)</small></th><td><input type="number" min="0" step="1" data-k="coins:qty" value="12" data-default="12" aria-label="Coin hoard (12 coins), per box"></td><td><input type="number" min="0" step="0.01" data-k="coins:setup" value="" data-default="" aria-label="Coin hoard (12 coins), one-time cost"></td><td><input type="number" min="0" step="0.01" data-k="coins:p250" value="" data-default="" aria-label="Coin hoard (12 coins), price each at 250"></td><td><input type="number" min="0" step="0.01" data-k="coins:p500" value="" data-default="" aria-label="Coin hoard (12 coins), price each at 500"></td><td><input type="number" min="0" step="0.01" data-k="coins:p1000" value="" data-default="" aria-label="Coin hoard (12 coins), price each at 1,000"></td><td><input type="url" data-k="coins:link" value="" data-default="" placeholder="https://" aria-label="Coin hoard (12 coins), link"></td><td class="note"><textarea rows="2" data-k="coins:note" data-default="" aria-label="Coin hoard (12 coins), notes" placeholder="Notes"></textarea></td></tr><tr data-made="medal" data-name="Adventure medallion, 50 mm"><th scope="row"><a data-linkname target="_blank" rel="noopener">Adventure medallion, 50 mm</a> <small>3D-printed in the prototype (PP-044)</small></th><td><input type="number" min="0" step="1" data-k="medal:qty" value="1" data-default="1" aria-label="Adventure medallion, 50 mm, per box"></td><td><input type="number" min="0" step="0.01" data-k="medal:setup" value="" data-default="" aria-label="Adventure medallion, 50 mm, one-time cost"></td><td><input type="number" min="0" step="0.01" data-k="medal:p250" value="" data-default="" aria-label="Adventure medallion, 50 mm, price each at 250"></td><td><input type="number" min="0" step="0.01" data-k="medal:p500" value="" data-default="" aria-label="Adventure medallion, 50 mm, price each at 500"></td><td><input type="number" min="0" step="0.01" data-k="medal:p1000" value="" data-default="" aria-label="Adventure medallion, 50 mm, price each at 1,000"></td><td><input type="url" data-k="medal:link" value="" data-default="" placeholder="https://" aria-label="Adventure medallion, 50 mm, link"></td><td class="note"><textarea rows="2" data-k="medal:note" data-default="" aria-label="Adventure medallion, 50 mm, notes" placeholder="Notes"></textarea></td></tr></tbody></table></div><div class="costbar"><button id="cost-copy-notes">Copy all notes</button><span id="cost-msg-notes" class="meta"></span></div><h3 class="inside">6 · Total per box (printing + bought + box + made parts)</h3><div class="tbl"><table class="cost"><thead><tr><th></th><th class="r">@100</th><th class="r">@250</th><th class="r">@500</th><th class="r">@1,000</th></tr></thead><tbody><tr><th scope="row">Printing per box</th><td class="r" data-g1="100"></td><td class="r" data-g1="250"></td><td class="r" data-g1="500"></td><td class="r" data-g1="1000"></td></tr><tr><th scope="row">Bought in packs</th><td class="r" data-g2="100"></td><td class="r" data-g2="250"></td><td class="r" data-g2="500"></td><td class="r" data-g2="1000"></td></tr><tr><th scope="row">Box <small>(ticked; the 100 column uses its 250 price)</small></th><td class="r" data-g5="100"></td><td class="r" data-g5="250"></td><td class="r" data-g5="500"></td><td class="r" data-g5="1000"></td></tr><tr><th scope="row">Made parts <small>(one-time costs spread over the quantity)</small></th><td class="r" data-g6="100"></td><td class="r" data-g6="250"></td><td class="r" data-g6="500"></td><td class="r" data-g6="1000"></td></tr><tr class="tot"><th scope="row">Total per box</th><td class="r" data-g3="100"></td><td class="r" data-g3="250"></td><td class="r" data-g3="500"></td><td class="r" data-g3="1000"></td></tr><tr class="miss"><th scope="row">Prices still missing</th><td class="r" data-g4="100"></td><td class="r" data-g4="250"></td><td class="r" data-g4="500"></td><td class="r" data-g4="1000"></td></tr></tbody></table></div><p class="meta">Not yet here: rune stamps and ink, mailer bag, shipping, fees.</p><p class="meta">Pick the column for the print run: base case about 300 backers ≈ 350 boxes. Compare whole orders: one order of 500 can cost less than 250 + 100. Assumes each design is its own order of that quantity; if the shop lets several designs share one order, the cost per box drops. Museum ticket size is still open (2 × 6 proposed, Q-052). Not here: hnefatafl board, repacking letter, die-cut parts, envelopes, box.</p></section><section class="env" id="plan-production"><header><span class="num">…</span><div><h2>Making it</h2><p>From the Kickstarter plan (a plan, not a decision; ballpark prices are guesses, not quotes).</p></div></header><details class="plan" open><summary>Phase 2 — Costs, and cheaper parts (1 Nov → 15 Jan, parallel)</summary><div><h3 class="plan-h">2a. What one box costs — fill these in</h3>
+<p>The full component list already exists: <code>Production/Norse_Parts_List.xlsx</code> (29 rows, no prices yet). Add five rows the sheet leaves out:</p>
+<div class="tbl"><table class="plan"><thead><tr><th>Extra cost</th><th>How to get the number</th></tr></thead><tbody><tr><td>Kitting (stuffing 15 envelopes + box)</td><td>Time yourself packing 3 boxes; × hourly rate</td></tr><tr><td>Mailer bag + label</td><td>Supplier listing price</td></tr><tr><td>Shipping per region</td><td>Weigh the full prototype; quote Canada Post, Chit Chats or Stallion Express (CA→US)</td></tr><tr><td>Kickstarter + payment fees</td><td>Budget 10% of funds (5% platform + about 3% + $0.20 per pledge processing, plus pledge manager)</td></tr><tr><td>Spares + damage</td><td>5% extra print run</td></tr></tbody></table></div>
+<p><strong>Only real price so far:</strong> ImprintNow printed envelopes, CAD $1.35 each at 500, $1.30 at 1,000 (15 × 22 cm only; Q-052). With 15 envelopes per box that alone is about <strong>$20 per box</strong> — the single biggest cost to fix.</p>
+<h3 class="plan-h">2b. Ballpark cost per box (unverified, for planning only)</h3>
+<div class="tbl"><table class="plan"><thead><tr><th>Group</th><th>Ballpark CAD at 500–1,000</th><th>Biggest lever</th></tr></thead><tbody><tr><td>Printed mailer box + bag</td><td>$4–7</td><td>Box size is standard; white board, 1–2 colours outside</td></tr><tr><td>15 envelopes + rune labels</td><td>$3–20</td><td>Plain bulk envelopes + printed labels instead of custom-printed envelopes</td></tr><tr><td>Paper: 22 postcards, 4 maps, tickets, letters</td><td>$3–6</td><td>One paper stock, ganged on few sheets, no hand trimming</td></tr><tr><td>Card parts: wheel, comb, tally, coins, ruler, hnefatafl</td><td>$2–8</td><td>One punchboard sheet instead of six processes</td></tr><tr><td>Bought bits: magnifier, fastener, 23 pawns, medallion</td><td>$2–6</td><td>Fresnel card; stock pawns; card or wood medallion</td></tr><tr><td>Kitting labour</td><td>$3–8</td><td>Fewer loose pieces</td></tr><tr><td><strong>Total landed (before shipping)</strong></td><td><strong>about $17–55</strong></td><td>The wide range is why quotes come first</td></tr></tbody></table></div>
+<p><strong>Real print quotes, 20 Oct 2026</strong> (online quote system, each design ordered separately; Q-052): all printed cards and maps cost <strong>$10.17 per box at 500</strong> ($14.66 at 250, $7.87 at 1,000), above the $3–6 guessed for paper above. Postcards are about half of it. Next lever: ask for a ganged quote (several designs on one press run).</p>
+<p><strong>Pricing rule of thumb:</strong> pledge price ≈ 2.5–3 × landed cost per box, shipping charged separately. A box costing $20 lands at a $55–60 CAD pledge. Benchmarks seen: Escape Room in a Box ran a $45 USD tier; Envelescape (envelope escape game, CAD campaign) averaged $116 CAD per backer.</p>
+<h3 class="plan-h">2c. Design changes that cut cost (proposals — each needs your OK and a test)</h3>
+<p>Ranked by savings. None changes a puzzle&#x27;s answer.</p>
+<ol>
+<li><strong>One die-cut sheet for every card part</strong> (designer packs the boxes and punches the parts out, 20 Oct; so heavy die-cut card is enough, not game-grade punchboard). Cypher wheel disks + arm, Aud&#x27;s comb, treasure tally, 12 coins, ruler and (optionally) hnefatafl pieces as round tokens, all on one or two sheets that players punch out. Replaces 3D printing, hand cutting and paper clips with one process. The tally needs a rivet like the wheel; coins as printed tokens keep their values.</li>
+<li><strong>Envelopes — designer&#x27;s direction, 20 Oct:</strong> plain bulk string-and-button envelopes, stamped by hand with <strong>3D-printed stamps</strong>, one stamp per whole rune label (13 real + 2 decoys = 15 stamps). Get supplier quotes for plain kraft envelopes in the two sizes. Keep string-and-button: reuse is what makes lending work.</li>
+</ol>
+<ul>
+<li>Model each stamp <strong>mirrored</strong> (several runes are not symmetric).</li>
+<li>TPU (95A) face printed face-down on a smooth plate, PLA handle. Pigment ink; test on the real kraft, which bleeds.</li>
+<li>A corner jig so every label lands in the same place. 15 × 500 boxes = 7,500 presses.</li>
+</ul>
+<ol>
+<li><strong>Print the colour, not the paper.</strong> Sage, coral, yellow, green and tan stocks are a home-printing choice. A print shop prints the background colour on one white stock at no extra cost, and one stock is cheaper to order and store.</li>
+<li><strong>Standard sizes, few of them.</strong> A printer cuts any rectangle, but standard sizes are cheap stock products (business cards, postcards, event tickets), match pre-perforated sheets for short runs, and fewer sizes mean fewer cuts. Current sizes read from the print PDFs (may include bleed):</li>
+</ol>
+<div class="tbl"><table class="plan"><thead><tr><th>Item</th><th>Now</th><th>Nearest standard</th><th>Change</th></tr></thead><tbody><tr><td>22 postcards, Liv&#x27;s memo, Liv&#x27;s notes</td><td>4 × 6</td><td>Postcard 4 × 6</td><td>none</td></tr></tbody></table></div>
+<p><strong>20 Oct update:</strong> Liv&#x27;s notes now include the approved help QR and code guide on the back. Quote 23 two-sided designs (22 postcards + Liv&#x27;s notes) and 1 single-sided design (Liv&#x27;s memo). The cost table and workbook Print quotes tab reflect this split; existing entered quote prices are preserved.</p>
+<div class="tbl"><table class="plan"><thead><tr><th>14 rail, bus, ferry hop tickets</th><th>3.5 × 1.75</th><th>Business card 3.5 × 2</th><th>+¼ in height</th></tr></thead><tbody><tr><td>4 air hop tickets</td><td>4 × 1.75</td><td>Business card 3.5 × 2, or event ticket 5.5 × 2</td><td>narrower, or longer</td></tr><tr><td>Brattahlíð and Aud museum tickets</td><td>3.5 × 6</td><td>Postcard 4 × 6</td><td>+½ in width</td></tr><tr><td>Rouen museum ticket</td><td>3.5 × 5.5</td><td>Postcard 4 × 6, or quarter-Letter 4.25 × 5.5 (4 per sheet, no waste)</td><td>small</td></tr><tr><td>Oslo hnefatafl ticket</td><td>about 2.5 × 5.1</td><td>Event ticket 2 × 5.5</td><td>check the text fits</td></tr><tr><td>3 transition receipts</td><td>about 5.4 × 2.5</td><td>Event ticket 5.5 × 2</td><td>check the text fits</td></tr><tr><td>Plane ticket</td><td>about 7 × 2.9</td><td>Large event ticket 8.5 × 2.75</td><td>small</td></tr><tr><td>Hnefatafl setup insert</td><td>about 4.75 × 7</td><td>Card 5 × 7</td><td>small</td></tr></tbody></table></div>
+<p>That leaves four sizes: 4 × 6, 3.5 × 2, 5.5 × 2 and 8.5 × 2.75 (plus 5 × 7). Every resize needs its own layout pass and paper test.</p>
+<ol>
+<li><strong>Hnefatafl board printed on the inside of the box base</strong>, or on the back of a sheet already in envelope 10. Removes a component. Check: is seeing the board from the start a spoiler or a teaser?</li>
+<li><strong>Magnifier = flat Fresnel card</strong> (credit-card size). Test it on the branch runes and the 1576 top edge first (PP-027).</li>
+<li><strong>Medallion: card or wood token in the base box; struck metal coin as a stretch goal or deluxe tier.</strong></li>
+<li><strong>Weight and thickness.</strong> Shipping can cost more than the game. Weigh the prototype; if it is just over a postal weight step, trim paper weight to drop under it.</li>
+</ol>
+<h3 class="plan-h">2d. Who to ask for quotes</h3>
+<div class="tbl"><table class="plan"><thead><tr><th>Part</th><th>Local / small run</th><th>Larger run</th></tr></thead><tbody><tr><td>Mailer box</td><td>Newprint (Ottawa; offset + digital, die-cut packaging, labels, fulfilment)</td><td>Packaging printers (Packlane, Arka type)</td></tr><tr><td>Paper, postcards, tickets</td><td>Newprint; ASAP PM and Artext (Ottawa, offset/digital) for comparison quotes</td><td>Same</td></tr><tr><td>Die-cut card parts</td><td>Newprint (ask: die-cut on heavy board, loose or in sheets)</td><td>Chicago Game and Card (US, from 50 units); Panda, QinPrinting (Asia, ~500 minimum)</td></tr><tr><td>Envelopes</td><td>Plain bulk string envelopes (designer&#x27;s direction)</td><td>Alibaba suppliers (plain, bulk)</td></tr><tr><td>Review copies (10–20)</td><td>The Game Crafter (print on demand: cards, punchboard, boxes)</td><td>—</td></tr></tbody></table></div>
+<p>No Canadian board-game component manufacturer turned up in searches (20 Oct); Stitchy Lizard (Toronto area) prints custom games from 1,000 units, promo-focused.</p>
+<p><strong>Printing in Canada has an extra benefit:</strong> US duties follow the country of origin, and China-made games have faced high US tariffs since 2025. Check the current rule for Canadian-made printed games before setting US shipping (see Admin below).</p></div></details><details class="plan"><summary>How many copies to plan for (added 20 Oct 2026)</summary><div><p>1,000 is the upside case, not the base case, for a first campaign with no existing audience. Comparable escape-in-a-box campaigns: A Haunting in the Highlands raised £5,217 (likely about 100–150 backers); Envelescape about 617 backers ($71,593 CAD ÷ $116 average).</p>
+<div class="tbl"><table class="plan"><thead><tr><th>Scenario</th><th>Backers</th><th>Print run</th><th>Self-packing at 20 min/box (guess; time a real pack)</th></tr></thead><tbody><tr><td>Base</td><td>300</td><td>~350</td><td>~115 h</td></tr><tr><td>Good</td><td>600</td><td>~700</td><td>~230 h</td></tr><tr><td>Upside</td><td>1,000</td><td>~1,150</td><td>~380 h</td></tr></tbody></table></div>
+<ul>
+<li><strong>Print run = backers + 10–20% late pledges + 5% spares + ~30 review/demo copies.</strong></li>
+<li><strong>Funding goal on the base case</strong> (about 300 boxes), quotes at 500 and 1,000 (the parts list already has both columns).</li>
+<li><strong>Print after the campaign closes</strong>, to the exact number: local digital printing has no 1,000-unit commitment.</li>
+<li><strong>Envelopes and mailer boxes are shared by every adventure</strong> (backpack-kit Packaging), so buying 1,000+ of those is low risk.</li>
+<li><strong>The real ceiling is packing time</strong>, not printing. Past ~600 boxes, plan for helpers or a fulfilment service.</li>
+<li><strong>Forecast from followers:</strong> six weeks before launch, the follower count tells you which row you are in (about a third of pre-launch followers back).</li>
+</ul></div></details><details class="plan"><summary>Phase 5 — After funding (Apr → Jul 2027)</summary><div><ol>
+<li>Pledge manager (Kickstarter&#x27;s own, or Gamefound / PledgeBox / BackerKit) for addresses and add-ons.</li>
+<li>Final print files: one documented build path (Q-063 warns old builders can overwrite approved output).</li>
+<li>Print proof → approve → full run.</li>
+<li>Kitting day(s) with a checklist (the repacking letter doubles as the packing checklist).</li>
+<li>Ship, then one update per milestone. Deliver late June / July 2027.</li>
+</ol></div></details></section></div><div class="tab" id="tab-next" data-tab="next" hidden><section class="env" id="nextsteps"><header><span class="num">→</span><div><h2>Next steps</h2><p>Drafted 20 Oct 2026 (Claude) for the Norse box game (PR-007: mailer box, 13 rune-marked envelopes + 2 decoys, rune cypher wheel). <strong>This is a plan, not a decision.</strong> Nothing here changes the game records. Prices marked <em>ballpark</em> are Claude&#x27;s rough planning guesses, not quotes; replace them in <code>Norse_Parts_List.xlsx</code> as quotes arrive.</p></div></header><details class="plan" open><summary>The short version</summary><div><div class="tbl"><table class="plan"><thead><tr><th>Phase</th><th>When</th><th>Done when</th></tr></thead><tbody><tr><td>0. Fix playtest blockers</td><td>now → 8 Nov 2026</td><td>The six Q-063 items below are closed or knowingly parked</td></tr><tr><td>1. Blind playtests</td><td>9 Nov → 20 Dec 2026</td><td>5+ fresh teams played with no designer in the room; exit targets met</td></tr><tr><td>2. Costs and cheaper parts</td><td>1 Nov 2026 → 15 Jan 2027 (parallel with 1)</td><td>Every line in the parts list has a quote at 500 and 1,000; prototype of the production version exists</td></tr><tr><td>3. Pre-launch</td><td>15 Jan → 1 Mar 2027</td><td>Pre-launch page live, 1,000+ followers, reviews in hand, page and video finished</td></tr><tr><td>4. Campaign</td><td>Tue 2 Mar → Tue 23 Mar 2027 (21 days)</td><td>Funded; late pledges turned on before it closes</td></tr><tr><td>5. Make and ship</td><td>Apr → Jul 2027</td><td>Boxes delivered — &quot;in time for Liv&#x27;s summer 2027 ticket&quot;</td></tr></tbody></table></div>
+<p><strong>Go / no-go gate before launch:</strong> at least 1,000 pre-launch followers and a quoted cost per box. If either is missing on 15 Feb 2027, move launch to April (avoid Easter week, 28 Mar 2027).</p></div></details></section><section class="env" id="outreach"><header><span class="num">?</span><div><h2>Playtesting and open questions</h2><p>Open records that block or shape the next playtests. The full wording is in the records.</p></div></header><div class="props"><article class="prop"><h4>Playtesting outreach in Ottawa and publisher lead <span class="id">Q-064</span></h4><p><strong>21 Oct 2026 (designer):</strong> where to find local people to try the prototype. This is the &quot;blind playtests&quot; phase of <code>Production/Kickstarter_Plan.md</code> (phase 1, rounds B and C). Nobody has been contacted yet.</p>
+<p><strong>For game testing:</strong></p></article><article class="prop"><h4>Physical game review: readability and difficulty progression <span class="id">Q-063</span></h4><p>## Follow-up review after live adoption, 17 October 2026 (Codex)</p>
+<p><strong>Latest assessment; earlier review below is historical where superseded here. Recommendations only. No game assets, rules or order changed.</strong></p></article><article class="prop"><h4>Playtest 1: the trail maps need a design pass <span class="id">Q-053</span></h4><p>Playtest 1 (feedback relayed 11 Oct 2026): “Maps would need some work — need to be done later.” No specifics were recorded. The one concrete map fault, Walcheren missing from Rollo&#x27;s sheet, is fixed (PP-032). Left open on purpose: what the work is, and for which of the four maps, still needs the designer&#x27;s notes from the playtest.</p></article></div></section><section class="env" id="plan"><header><span class="num">…</span><div><h2>The full plan</h2><p>Phases, playtest rounds, pre-launch, the campaign, awards, wording and risks.</p></div></header><details class="plan"><summary>Phase 0 — Fix the blockers before strangers play (now → 8 Nov)</summary><div><p>From the 17 Oct review (Q-063). A blind playtest is wasted if the box itself has known faults.</p>
+<ol>
+<li><strong>Packing key matches the envelope order.</strong> The wheel PDF&#x27;s packing page and the <code>found_in</code> fields still show the pre-15-Oct contents of envelopes 1–3, and envelope 12 still lists the retired journal and crest note.</li>
+<li><strong>Hints match the current game.</strong> PZ-013&#x27;s hints still describe the retired journal marks; small fixes in PZ-012 and PZ-006 (Q-063 item 2). The hint site is the only help an unattended team has.</li>
+<li><strong>The AUD ending has a finish.</strong> Build the online confirmation page or an offline reveal (PP-043, Q-058).</li>
+<li><strong>The two decoy envelopes exist</strong> (Q-050): labels and contents chosen.</li>
+<li><strong>One start card</strong> saying: keep everything, you may write on the maps, hints are at <code>escapepack.ca/help/norse</code>.</li>
+<li><strong>One player print set</strong>, with designer answer pages removed (the Aud ticket PDF&#x27;s page 3).</li>
+</ol></div></details><details class="plan"><summary>Phase 1 — Finish playtesting (9 Nov → 20 Dec)</summary><div><h3 class="plan-h">Who</h3>
+<div class="tbl"><table class="plan"><thead><tr><th>Round</th><th>Teams</th><th>Setup</th><th>What it proves</th></tr></thead><tbody><tr><td>A. Friends, observed</td><td>2</td><td>You watch silently, take notes, no help</td><td>Where people stall; how long each envelope takes</td></tr><tr><td>B. Blind, unobserved</td><td>3+</td><td>Box handed over (or mailed) with a feedback form; you are not there</td><td>It works without the designer — the real Kickstarter situation</td></tr><tr><td>C. Reset test</td><td>the same B teams</td><td>They repack with the repacking letter and pass it on</td><td>&quot;Play it, repack it, lend it&quot; is true (a selling point, see wording)</td></tr></tbody></table></div>
+<p>Good sources for B teams: Ottawa escape-room staff and regulars, board-game cafés, r/escaperooms, and players of the free Hiking game on escapepack.ca.</p>
+<h3 class="plan-h">What to record per team (one sheet per team)</h3>
+<ul>
+<li>Start and finish time; time per envelope (they write the time on each envelope as they open it).</li>
+<li>Hints used, and on which puzzle. Any puzzle where they opened the answer.</li>
+<li>Team size, experience (first escape game / many).</li>
+<li>Rating 1–10 for: fun, difficulty, &quot;would you give this as a gift&quot;, &quot;would you pay $___ for it&quot; (open number).</li>
+<li>Best moment and worst moment, one line each.</li>
+</ul>
+<h3 class="plan-h">Exit targets (proposed; adjust after round A)</h3>
+<ul>
+<li>80%+ of teams finish (hints allowed).</li>
+<li>No single puzzle where more than half the teams need the full answer.</li>
+<li>No component damaged or lost in play or reset.</li>
+<li>A measured play time range to print on the box (do not guess it: the box and page must show real numbers).</li>
+<li>Watch the finale workload: if sorting 18 hop tickets + 22 postcards feels like admin, keep tickets grouped by journey (Q-063).</li>
+</ul></div></details><details class="plan"><summary>Phase 3 — Pre-launch (15 Jan → 1 Mar 2027)</summary><div><h3 class="plan-h">Steps in order</h3>
+<ol>
+<li><strong>Kickstarter account and project draft</strong> (Canada, CAD). Decide the creator name: Escape Backpack or The Cryptic Bureau (the box cover says &quot;The Cryptic Bureau&quot;; open question).</li>
+<li><strong>Pre-launch page live by 15 Jan.</strong> Kickstarter&#x27;s own data: 32% of pre-launch followers back, against 17% of people who arrive later. One big &quot;Notify me on launch&quot; button, launch date stated.</li>
+<li><strong>One landing page on escapepack.ca</strong> collecting emails, linked from:</li>
+</ol>
+<ul>
+<li>the free Hiking online game (an end screen: &quot;Liked this? Liv&#x27;s Norse box launches 2 Mar&quot;),</li>
+<li>a <strong>free demo puzzle</strong>: the cypher wheel + L1 as an online toy or print-and-play PDF,</li>
+<li>every playtester.</li>
+</ul>
+<ol>
+<li><strong>Review copies out by 1 Feb</strong>, so reviews land before launch: Room Escape Artist, The Logic Escapes Me, escape-room YouTubers and podcasts, board-game reviewers who cover puzzle games.</li>
+<li><strong>List it on BoardGameGeek</strong> (game page + designer diary) in February.</li>
+<li><strong>Page and video finished by 20 Feb</strong>; ask two people who never saw the game to read the page and say what it is in one sentence.</li>
+</ol>
+<h3 class="plan-h">Audience target</h3>
+<p>To fund on day 1 you need roughly: goal backers ÷ 0.32 followers. A 300-backer goal needs about 950 followers. Set the bar at 1,000 followers before launch.</p></div></details><details class="plan"><summary>Phase 4 — The campaign (2 Mar → 23 Mar 2027)</summary><div><h3 class="plan-h">Settings</h3>
+<ul>
+<li><strong>Length 21 days.</strong> Launch a Tuesday, 10:00 ET. Ends before Easter.</li>
+<li><strong>Funding goal = the smallest print run that still works</strong>, not the dream number. Example only: 300 boxes × $20 landed + 10% fees ≈ $6,600 → goal about $7,000 CAD. A small goal that funds in hours makes the &quot;funded&quot; banner do the selling.</li>
+<li><strong>Turn on Late Pledges before the campaign ends</strong> — it cannot be enabled afterwards.</li>
+<li><strong>Regions at launch: Canada and US only.</strong> EU/UK VAT and shipping come in a later wave or retail.</li>
+<li><strong>Charge shipping in the campaign</strong>, by region, from real quotes.</li>
+</ul>
+<h3 class="plan-h">Reward tiers (keep it to 3 or 4)</h3>
+<div class="tbl"><table class="plan"><thead><tr><th>Tier</th><th>Contents</th><th>Why</th></tr></thead><tbody><tr><td>Early raven (48 h, limited)</td><td>The box, small discount or a bonus postcard</td><td>Rewards day-1 backers; drives momentum</td></tr><tr><td>The Raven Inheritance</td><td>The box</td><td>The main tier</td></tr><tr><td>Two families</td><td>2 boxes, small discount</td><td>Gift buyers; second copy to lend</td></tr><tr><td>Liv&#x27;s patron (optional)</td><td>Box + metal medallion + name in Liv&#x27;s acknowledgements</td><td>Higher pledge without changing the base box</td></tr></tbody></table></div>
+<p>Avoid a digital-only tier until the digital game is finished (Q-051; physical game first).</p>
+<h3 class="plan-h">Stretch goals (only ones that cost little per box)</h3>
+<ul>
+<li>Metal medallion for everyone (if the deluxe-tier price covers it).</li>
+<li>A bonus postcard or story extra in a decoy envelope (Q-050 option 3).</li>
+<li>Social goals (&quot;1,000 backers → we publish Liv&#x27;s travel playlist&quot;) — free.</li>
+</ul>
+<h3 class="plan-h">Daily rhythm</h3>
+<ul>
+<li>Day 1: email list, everyone personally, every channel.</li>
+<li>Days 2–19: one update every 3–4 days (a behind-the-scenes photo, a prop close-up, a stretch goal). Cross-promote with 2–3 other tabletop campaigns live at the same time.</li>
+<li>Last 48 h: Kickstarter sends followers a reminder; send your own email too.</li>
+</ul></div></details><details class="plan"><summary>Awards and badges</summary><div><p>Most awards need a finished, available product, so they come <strong>after delivery</strong>. Before launch, reviews and Kickstarter&#x27;s own badge do the same job.</p>
+<div class="tbl"><table class="plan"><thead><tr><th>Award / badge</th><th>Fit</th><th>When</th><th>Note</th></tr></thead><tbody><tr><td>Kickstarter &quot;Project We Love&quot;</td><td>High</td><td>Before launch</td><td>Chosen by staff; a polished page and video, shared early, help</td></tr><tr><td>Room Escape Artist reviews and Golden Lock Award (tabletop category since 2022)</td><td><strong>Best fit</strong></td><td>Review copy before launch; award after</td><td>REA awards games they reviewed; format changed after 2024, check current rules</td></tr><tr><td>Origins Awards (GAMA)</td><td>Medium</td><td>After delivery</td><td>Needs a published product; check categories and fees</td></tr><tr><td>Family / parent seals (Dad&#x27;s Choice, Family Choice, Mom&#x27;s Choice)</td><td>Medium for gift buyers</td><td>After delivery</td><td>Pay to enter (about $100–£125 per entry); less weight with hobby gamers</td></tr><tr><td>BoardGameGeek Golden Geek</td><td>Low</td><td>Year after release</td><td>Community vote; needs a large audience</td></tr><tr><td>Mensa Select</td><td>Low</td><td>—</td><td>Average play time must be 90 min or less; Norse is likely longer</td></tr></tbody></table></div>
+<p>No current Canadian game award turned up: the Canadian Toy Testing Council (Ottawa) closed in 2015. Worth a separate search later (Canadian Game of the Year, local game-design contests).</p></div></details><details class="plan"><summary>Wording that sells</summary><div><h3 class="plan-h">The one-liners (drafts to react to)</h3>
+<ul>
+<li><strong>Title:</strong> The Raven Inheritance</li>
+<li><strong>Subtitle (125 characters; keep under Kickstarter&#x27;s 135):</strong> &quot;Cooperative escape game in a box. Follow Great-Aunt Liv&#x27;s postcards across the Viking world and uncover your family&#x27;s secret.&quot; Echoes the box cover line.</li>
+<li><strong>Hook sentence:</strong> &quot;Liv left you her field box: 22 postcards, 15 sealed envelopes and a rune wheel. Every code you solve tells you which envelope to open.&quot;</li>
+</ul>
+<h3 class="plan-h">Rules for the page</h3>
+<ol>
+<li><strong>Lead with the experience, not the parts list.</strong> First screen: a hand turning the rune wheel and opening an envelope. Components come later.</li>
+<li><strong>Say the facts players filter on, early:</strong> players (2–5?), age (14+), play time (measured in Phase 1), one session or several, difficulty, &quot;no spoilers on this page&quot;.</li>
+<li><strong>Answer the one-shot objection head-on:</strong> &quot;Nothing is destroyed. Repack it in 10 minutes and lend it to friends.&quot; (only if the reset test proves it).</li>
+<li><strong>Use concrete numbers over adjectives:</strong> &quot;13 puzzles, 4 Viking journeys, 18 real places&quot; beats &quot;an epic adventure&quot;.</li>
+<li><strong>Show the real thing.</strong> Photos of the printed prototype on a table; no renders where a photo will do.</li>
+</ol>
+<h3 class="plan-h">Words to use / avoid</h3>
+<div class="tbl"><table class="plan"><thead><tr><th>Use</th><th>Avoid</th></tr></thead><tbody><tr><td>cooperative, escape game, puzzle adventure, rune, postcards, sealed envelopes</td><td>&quot;revolutionary&quot;, &quot;like nothing you&#x27;ve seen&quot;, vague &quot;epic&quot;</td></tr><tr><td>real Viking places, family secret, inheritance</td><td>Answer-revealing images (no postcard backs, no map routes)</td></tr><tr><td>play it, repack it, lend it</td><td>&quot;Replayable&quot; (it isn&#x27;t; &quot;shareable&quot; is honest)</td></tr></tbody></table></div></div></details><details class="plan"><summary>Admin and risks to clear before launch</summary><div><div class="tbl"><table class="plan"><thead><tr><th>Item</th><th>Why it matters</th><th>Action</th></tr></thead><tbody><tr><td><strong>AI-generated art</strong></td><td>Kickstarter requires creators to disclose AI-generated content; part of the tabletop audience is hostile to it. Stamps, ravens, logos, box art and ticket logos were made with ImageGen.</td><td>Decide: disclose plainly, or commission a human artist for the box cover and key art (add the cost).</td></tr><tr><td><strong>Image licences</strong></td><td>Some postcard fronts adapt CC BY / CC BY-SA photos (Q-009, Q-010). Commercial use is allowed; ShareAlike means those adapted images stay under the same licence.</td><td>Confirm every postcard image&#x27;s source and licence before printing (the credits page is the record).</td></tr><tr><td><strong>Age rating</strong></td><td>Products for children 12 and under need third-party safety testing in the US (CPSIA) and must meet Canada&#x27;s toy rules; coins and pawns are small parts.</td><td>Label 14+ and market as adult/family-with-teens.</td></tr><tr><td><strong>Name</strong></td><td>&quot;The Raven Inheritance&quot; may already be used.</td><td>Trademark and Kickstarter/BGG search.</td></tr><tr><td><strong>Business and tax</strong></td><td>Canadian sales tax (GST/HST) applies once sales pass $30,000 in four quarters; Kickstarter income is taxable.</td><td>Register the business; one hour with an accountant before launch.</td></tr><tr><td><strong>US duties</strong></td><td>Rules changed several times in 2025–26 (de minimis ended; tariff rulings).</td><td>Check current duty for Canadian-made printed games in January 2027 before fixing US shipping prices.</td></tr></tbody></table></div></div></details><details class="plan"><summary>Next three actions</summary><div><ol>
+<li>Pick which Phase 0 blocker to fix first (one per session).</li>
+<li>Time yourself packing one complete box (kitting cost + packing-key check in one go).</li>
+<li>Ask Newprint for a mailer box quote at 500 and 1,000.</li>
+</ol></div></details><details class="plan"><summary>Sources (checked 20 Oct 2026)</summary><div><ul>
+<li>Kickstarter fees, Canada: <a href="https://betakit.com/?p=26793" target="_blank" rel="noopener">BetaKit</a>, <a href="https://www.pledgebox.com/post/kickstarter-fee-calculator" target="_blank" rel="noopener">PledgeBox fee calculator</a> — verify on Kickstarter&#x27;s own fee page.</li>
+<li>Late pledges: <a href="https://updates.kickstarter.com/understanding-late-pledges-a-comprehensive-guide-for-kickstarter-creators/" target="_blank" rel="noopener">Kickstarter guide</a>, <a href="https://help.kickstarter.com/en-us/articles/16236499-third-party-pledge-manager-data-faqs" target="_blank" rel="noopener">pledge manager FAQ</a>.</li>
+<li>Pre-launch follower conversion (32% vs 17%): <a href="https://updates.kickstarter.com/the-anatomy-of-a-great-kickstarter-prelaunch-page/" target="_blank" rel="noopener">Kickstarter</a>.</li>
+<li>Golden Lock Awards: <a href="https://roomescapeartist.com/2026/01/01/golden-lock-award-2025-complete-winner-list/" target="_blank" rel="noopener">2025 winners</a>, <a href="https://roomescapeartist.com/2024/04/30/2024-golden-lock-awards/" target="_blank" rel="noopener">2024 format note</a>.</li>
+<li>Mensa Select rules and 2026 results: <a href="https://boardgamewire.com/index.php/2026/04/22/high-iq-society-mensa-reveals-its-top-board-games-after-annual-four-day-judging-marathon/" target="_blank" rel="noopener">BoardGameWire</a>.</li>
+<li>Pay-to-enter seals: <a href="https://www.spielwarenmesse.de/en/mag/toy-market-news/dads-choice-awards-2024-opens-for-entries/" target="_blank" rel="noopener">Dad&#x27;s Choice 2024</a>, <a href="https://form.jotform.com/32617287848972" target="_blank" rel="noopener">Family Choice form</a>.</li>
+<li>Canadian Toy Testing Council closure: <a href="https://amp.cbc.ca/news/canada/ottawa/canadian-toy-testing-council-shuts-down-1.3039490" target="_blank" rel="noopener">CBC</a>.</li>
+<li>Comparable campaigns: <a href="https://www.kicktraq.com/projects/envelescape/envelescape-pop-up-escape-room/" target="_blank" rel="noopener">Envelescape</a>, <a href="https://fanbasepress.com/press/interviews/gaming/item/6069-the-kickstarter-report-an-interview-with-the-creators-of-escape-room-in-a-box/" target="_blank" rel="noopener">Escape Room in a Box</a>.</li>
+<li>US tariffs / de minimis: <a href="https://cardboardedison.com/tariffs" target="_blank" rel="noopener">Cardboard Edison</a>, <a href="https://www.fulfillrite.com/blog/usa-tariffs-what-ecommerce-kickstarter-brands-must-know/" target="_blank" rel="noopener">Fulfillrite</a> — vendor sources, conflicting; verify with CBP.</li>
+</ul></div></details></section></div>
+</main></div>
+<script>
+(function(){
+var tabs=document.querySelectorAll('.tab'),btns=document.querySelectorAll('.tabs button'),links=document.querySelectorAll('.wrap>nav a'),bar=document.getElementById('designbar');
+function show(name){tabs.forEach(function(t){t.hidden=t.getAttribute('data-tab')!==name});
+  btns.forEach(function(b){b.setAttribute('aria-selected',b.getAttribute('data-go')===name)});
+  links.forEach(function(a){a.style.display=a.getAttribute('data-tab')===name?'':'none'});
+  bar.style.display=name==='design'?'':'none'}
+function fromHash(){var id=decodeURIComponent(location.hash.slice(1)),el=id&&document.getElementById(id),t=el&&el.closest('.tab');
+  show(t?t.getAttribute('data-tab'):(window.__tab||'design'));if(el)el.scrollIntoView()}
+btns.forEach(function(b){b.onclick=function(){window.__tab=b.getAttribute('data-go');history.replaceState(null,'',location.pathname);show(window.__tab);window.scrollTo(0,0)}});
+window.addEventListener('hashchange',fromHash);fromHash();
+})();
+var all=function(){return document.querySelectorAll('details.spoiler')};
+document.getElementById('open').onclick=function(){all().forEach(function(d){d.open=true})};
+document.getElementById('close').onclick=function(){all().forEach(function(d){d.open=false})};
+(function(){
+var root=document.getElementById('costs');if(!root)return;
+var KEY='norse-print-prices-v2',saved={};
+try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(err){saved={}}
+var inputs=root.querySelectorAll('input[data-p],input[data-k],textarea[data-k]'),rows=root.querySelectorAll('tbody tr[data-p]');
+var envRows=root.querySelectorAll('tr[data-env]'),boxRows=root.querySelectorAll('tr[data-boxrow]'),madeRows=root.querySelectorAll('tr[data-made]'),radios=root.querySelectorAll('input[name="cost-box"]');
+var qtys=[].map.call(root.querySelectorAll('td[data-tot]'),function(td){return +td.getAttribute('data-tot')});
+function money(x){return '$'+x.toFixed(2)}
+function price(p,q){var i=root.querySelector('input[data-p="'+p+'"][data-q="'+q+'"]');var v=i?parseFloat(i.value):NaN;return isNaN(v)?null:v}
+function calc(){
+  var pieces=0,tot={},miss={};qtys.forEach(function(q){tot[q]=0;miss[q]=0});
+  rows.forEach(function(r){var p=r.getAttribute('data-p'),n=+r.getAttribute('data-n');pieces+=n;
+    qtys.forEach(function(q){var v=price(p,q),c=r.querySelector('td[data-q="'+q+'"]');
+      if(v===null){c.textContent='';miss[q]++}else{var x=n*v/q;tot[q]+=x;c.textContent=money(x)}})});
+  document.getElementById('cost-pieces').textContent=pieces;
+  qtys.forEach(function(q){root.querySelector('td[data-tot="'+q+'"]').textContent=miss[q]===rows.length?'':money(tot[q]);
+    root.querySelector('td[data-order="'+q+'"]').textContent=miss[q]===rows.length?'':'$'+Math.round(tot[q]*q).toLocaleString('en-CA');
+    root.querySelector('td[data-miss="'+q+'"]').textContent=miss[q]});
+  var env=0,emiss=0;
+  envRows.forEach(function(r){var k=r.getAttribute('data-env'),f=function(n){return parseFloat(r.querySelector('input[data-k="'+k+':'+n+'"]').value)};
+    var n=f('qty'),items=f('pack'),pp=f('packprice'),ok=!(isNaN(n)||isNaN(items)||isNaN(pp)||items<=0),each=ok?pp/items:0;
+    r.querySelector('td[data-each]').textContent=ok?'$'+each.toFixed(3):'';
+    r.querySelector('td[data-cost]').textContent=ok?money(n*each):'';
+    if(ok)env+=n*each;else emiss++;
+    setLink(r,k)});
+  document.getElementById('cost-env').textContent=money(env);
+  var box=(root.querySelector('input[name="cost-box"]:checked')||{}).value,tier={100:250,250:250,500:500,1000:1000};
+  boxRows.forEach(function(r){var k=r.getAttribute('data-boxrow');r.classList.toggle('off',k!==box);setLink(r,k)});
+  var br=root.querySelector('tr[data-boxrow="'+box+'"]');
+  qtys.forEach(function(q){var bn=br?parseFloat(br.querySelector('input[data-k="'+box+':qty"]').value):NaN,
+      bp=br?parseFloat(br.querySelector('input[data-k="'+box+':p'+tier[q]+'"]').value):NaN,bc=(isNaN(bn)||isNaN(bp))?null:bn*bp;
+    setq('g1',q,money(tot[q]));setq('g2',q,money(env));setq('g5',q,bc===null?'':money(bc));
+    var made=0,mmiss=0;
+    madeRows.forEach(function(r){var k=r.getAttribute('data-made'),n=parseFloat(r.querySelector('input[data-k="'+k+':qty"]').value),
+        su=parseFloat(r.querySelector('input[data-k="'+k+':setup"]').value),pe=parseFloat(r.querySelector('input[data-k="'+k+':p'+tier[q]+'"]').value);
+      if(isNaN(pe)||isNaN(n)){mmiss++}else{made+=n*pe+(isNaN(su)?0:su/q)}});
+    setq('g6',q,money(made));
+    setq('g3',q,money(tot[q]+env+(bc||0)+made));setq('g4',q,miss[q]+emiss+(bc===null?1:0)+mmiss)});
+  madeRows.forEach(function(r){setLink(r,r.getAttribute('data-made'))})}
+function setq(a,q,t){root.querySelector('td[data-'+a+'="'+q+'"]').textContent=t}
+function setLink(r,k){var a=r.querySelector('a[data-linkname]'),v=(r.querySelector('input[data-k="'+k+':link"]').value||'').trim();
+  if(/^https?:\/\//i.test(v)){a.href=v;a.classList.remove('nolink')}else{a.removeAttribute('href');a.classList.add('nolink')}}
+radios.forEach(function(r){if(saved.box)r.checked=(r.value===saved.box);
+  r.addEventListener('change',function(){saved.box=r.value;try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(err){}calc()})});
+inputs.forEach(function(inp){var k=inp.getAttribute('data-k')||(inp.getAttribute('data-p')+'@'+inp.getAttribute('data-q'));
+  if(saved[k]!=null)inp.value=saved[k];
+  inp.addEventListener('input',function(){if(inp.value===inp.getAttribute('data-default'))delete saved[k];else saved[k]=inp.value;
+    try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(err){}calc()})});
+var msg=document.getElementById('cost-msg');
+document.getElementById('cost-copy-notes').onclick=function(){
+  var lines=[].filter.call(root.querySelectorAll('textarea[data-k]'),function(t){return t.value.trim()}).map(function(t){
+    var k=t.getAttribute('data-k').replace(':note',''),r=t.closest('tr'),h=r.querySelector('th');
+    return (h?h.textContent.trim():k)+'\t'+t.value.replace(/\n/g,' / ')});
+  var m=document.getElementById('cost-msg-notes');
+  function done(){m.textContent='Copied '+lines.length+' notes (item, note).'}
+  function fallback(){var t=document.createElement('textarea');t.value=lines.join('\n');document.body.appendChild(t);t.select();
+    try{document.execCommand('copy');done()}catch(err){m.textContent='Copy failed.'}t.remove()}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(lines.join('\n')).then(done,fallback)}else{fallback()}};
+document.getElementById('cost-clear').onclick=function(){if(!confirm('Put back the quoted prices (20 Oct 2026)?'))return;
+  saved={};try{localStorage.removeItem(KEY)}catch(err){}inputs.forEach(function(i){i.value=i.getAttribute('data-default')});
+  radios.forEach(function(r){r.checked=(r.value==='boxA')});calc();msg.textContent='Quoted prices restored.'};
+calc();
+})();
+</script></body></html>
