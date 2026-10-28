@@ -3,7 +3,7 @@ id: PP-041
 title: Family logo and crest note
 type: prop
 # idea | candidate | decided | built | parked
-status: decided
+status: parked
 # physical | printed | digital
 form: printed
 # make | buy | print | 3d-print
@@ -11,6 +11,7 @@ source: print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-012
+envelope: PZ-012
 # Physical pocket/container or location; availability remains in found_in above.
 container: Envelope 12
 after_game: return
@@ -21,9 +22,13 @@ superseded_by:
 tags: [old-PR-22]
 ---
 
+**Parked 17 Oct 2026 (designer, Q-062): no longer in envelope 12.** Replaced by the raven marks (PP-021) and Liv's H6 note. Kept as history.
+
 **11 Oct 2026 (PR-007):** the backpack is now a box, and pockets and pouches are envelopes. Where this record mentions the bag, a pocket, a pouch or a lock, that is the earlier format; the `container` field gives the envelope.
 
 **12 Oct 2026 (designer, Q-054, after playtest 1):** **the card marks are now crops of these two drawings, and decoys carry none.** `Art/FinalPuzzle/build_iconography_marks.py` cuts each crest charge's field (rounded corners, rust edge) and each symbol subject (oval fade) into `PostcardMarks/*_Iconography_v1.png`. The eleven hand-drawn marks below, including the horned-helmet and double-axe decoy marks, are **superseded** and kept unused. The assignment is no longer flavour: the n-th stop of each trail carries the n-th element in the caption order (PZ-013).
+
+**17 Oct 2026 (designer, Q-062): superseded.** Only the raven remains: a large detailed one on the last postcard (H6), and a smaller, simpler sketch on each real stop's card. The crest, the six crest marks and the longship and sun-wheel are retired. Codex to redraw both ravens (not started).
 
 ## Design notes (PP-041: Done · drawings approved · marks assigned and printed)
 
@@ -346,3 +351,5 @@ Not recorded yet.
 ## Replacement
 
 Not recorded yet.
+
+**17 Oct 2026 (designer, Q-062): raven art chosen and wired in.** Large raven = `Art/Raven/Raven_Profile_Knotwork_Pencil_v2.png` (H6, beside the signature, 82 pt). Small raven = `Art/Raven/Raven_Profile_Pencil_28pt_Frame_v1.png` (pencil sketch in a thin knotwork ring, 28 pt, under the postmark) on the 18 real cards; the 4 decoys carry no mark. `Postcards/postcard_marks.py` and `build_postcard_H6_pdf.py` updated, all 22 card PDFs rebuilt. Not yet written: Liv's raven note and the "retrace" line on H6.

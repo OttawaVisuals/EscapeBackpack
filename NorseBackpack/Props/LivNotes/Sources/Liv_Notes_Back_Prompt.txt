@@ -1,0 +1,15 @@
+Edit the latest approved Liv note-back design into its final transparent printable artwork. Reference image 1 is the approved page design; reference image 2 is the supplied REAL QR image to be inserted. Preserve the warm personal handwriting style, simple thin black page border with tiny angular corners, and decorative interwoven Norse square frame ONLY around QR. REMOVE ALL parchment, ivory, paper grain, shadows and background: truly transparent background with dark black ink artwork and text. Flat portrait page, 2:3 proportions. At top exact text in readable warm handwriting: "If you’re feeling stuck, I’ve put together a little help for you." Beneath, center the Norse QR frame, modest sized to allow room for 13 guide rows. Inside frame leave a perfectly square completely empty transparent area for exact mechanical insertion of source QR; DO NOT DRAW OR REINTERPRET A QR CODE. Frame outer extent approximately x32%-68%, y18%-42%; empty square opening x35%-65%, y20%-40% (square in 2:3 page). Under frame exact handwritten text "Scan here for a hint." One very thin horizontal divider. Below exact handwritten text "Not sure what kind of code you’re looking for? I’ve made you a guide." Then a single neat centered block of 13 left-aligned highly readable text rows, regular elegant serif lettering, generous consistent line spacing. Exact rows IN THIS ORDER:
+Puzzle #1: 4 digits
+Puzzle #2: 4 letters
+Puzzle #3: 4 digits
+Puzzle #4: 4 letters
+Puzzle #5: 3 digits
+Puzzle #6: 3 digits
+Puzzle #7: 4 digits
+Puzzle #8: 4 letters
+Puzzle #9: 4 digits
+Puzzle #10: 3 digits
+Puzzle #11: 4 digits
+Puzzle #12: 4 digits
+Puzzle #13: 4 digits
+Place guide rows between 57% and 91% page height, with a small warm handwritten "— Liv" bottom right around 94%. Must fit all 13 rows. Never include actual puzzle answers, placeholder labels, preview labels, headers, icons, or extra text. Black ink only on true transparency, no paper substrate anywhere; preserve readable scale. The empty QR aperture will be filled afterward with the exact user-supplied QR pixels to preserve scan accuracy.

@@ -43,7 +43,7 @@ Not a hard rule, but this is the split that works and it saves rediscovering it 
 - `NorseBackpack/` — Norse-themed concept and brainstorming materials.
 - `NorseBackpack/records/` + `NorseBackpack/backpack.json` — the Norse design, as backpack-kit records (since 2026-10-07). `kit.py build` writes the board to `NorseBackpack/site/` (not committed).
 - `NorseBackpack/Norse_Brainstorm.html` — frozen archive of the Norse design up to 2026-10-07. The Final riddle, Travel routes, Design guide and Digital version tabs are not yet split into records (see the records' reference premise).
-- `NorseBackpack/Web/` — smaller website copies of the Norse postcard images and print PDFs (PR-07). Norse commits only what the website uses; full-size art and `output/pdf/`, `output/docx/` are local print masters. After rebuilding a postcard image or print PDF, run `python NorseBackpack/Tools/build_web_assets.py`, and link new files by their full-size path — the script repoints links and updates `.gitignore`.
+- `NorseBackpack/Web/` — smaller website copies of the Norse postcard images and print PDFs (PR-07). Norse commits only what the website uses; full-size art and everything in `NorseBackpack/Print/` (the print-ready .docx files, with their source PDFs in `Print/_pdf_source/`) are local print masters. After rebuilding a postcard image or print PDF, run `python NorseBackpack/Tools/build_web_assets.py`, and link new files by their full-size path — the script repoints links and updates `.gitignore`.
 - `Space Station Aurora/` — active space-station escape-game materials.
 - `Space Station Aurora/Station_Map.html` — interactive map built from the detailed AutoCAD station plan.
 - `Space Station Aurora/StationBluePrint/` — original DWG/DXF/PDF blueprint sources, the layer-preserving SVG converter, and the rendered map base.
@@ -73,6 +73,7 @@ Many deliverables are binary files (`.docx`, `.pptx`, `.pdf`, and images). Prese
 - For visual work, follow the relevant existing design guide and compare a rendered result with the source.
 - Keep each project's brainstorming and design content in that project's single main HTML file, added as a new tab/section in the existing single-page structure (Norse is the exception: it uses backpack-kit records, see above). Do not split design notes into a second standalone HTML file unless the user asks for a separate document.
 - Do not commit, push, or publish unless the user asks.
+- **Norse images: one current version.** Each image keeps one current version in its live folder. When a new version is adopted, move the old one to `C:\EscapeBackpack\Norse_Archive\` at the same relative path and log it in that folder's `README.md`. Never delete: images under `NorseBackpack/` are gitignored, so git cannot restore them. Raw ImageGen outputs go in a `Sources/` subfolder next to the art they feed. Once a `Drafts/` folder's work is adopted, put nothing new in it. Check with `python NorseBackpack/Tools/audit_files.py` (read-only).
 
 ## HTML PDF Links
 

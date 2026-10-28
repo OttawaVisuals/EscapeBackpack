@@ -3,7 +3,7 @@ id: PP-023
 title: Luggage tags A and B
 type: prop
 # idea | candidate | decided | built | parked
-status: decided
+status: parked
 # physical | printed | digital
 form: printed
 # make | buy | print | 3d-print
@@ -11,6 +11,7 @@ source: buy
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: start
+envelope: start
 # Physical pocket/container or location; availability remains in found_in above.
 container: Attached to the outside of the box (how: Q-047)
 after_game: stays
@@ -20,6 +21,8 @@ links: []
 superseded_by:
 tags: [old-PR-01]
 ---
+
+**14 Oct 2026 (designer, box + envelopes, PR-007):** **parked:** the luggage tags are no longer in the game. Postcard L1 gives the opening code `1021` as a worked example of the rune wheel instead (PZ-001, Q-047). The bought tags and the builder are kept.
 
 **11 Oct 2026 (PR-007):** the backpack is now a box, and pockets and pouches are envelopes. Where this record mentions the bag, a pocket, a pouch or a lock, that is the earlier format; the `container` field gives the envelope.
 

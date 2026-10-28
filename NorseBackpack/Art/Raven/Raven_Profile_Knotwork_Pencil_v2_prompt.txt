@@ -1,0 +1,8 @@
+Generated with built-in image_gen on 2026-10-17.
+Source: Raven_Profile_Knotwork_Pencil_v1.png
+
+Use case: style-transfer.
+Edit target: supplied pencil raven emblem.
+User request: Make it simpler, same shape but less detail and less intricate, like a person drawing it.
+Preserve the overall silhouette and proportions, left-facing raven, beak, eye, perched pose, long tail, circular braided Norse frame, and two small bird-head terminals at the bottom.
+Redraw as a casual human pencil sketch someone could make in a notebook in a few minutes. Substantially reduce internal detail: use a few loose lines to suggest grouped wing feathers, only a few feather marks on the neck, simple feet, simple beak and eye. Outline the frame braid with single pencil strokes and clear crossings; remove all fine strand texture. Most interior areas should remain open and unshaded. A little loose light hatching in a few places is enough. Natural slightly uneven graphite contours and modest asymmetry, confidently recognizable but informal. No densely rendered feather vanes, no engraving, no photorealistic shading, no polished illustration, no fine crosshatching. Same entire emblem centered with margin. Monochrome grey graphite on genuine transparent background, no paper rectangle or texture, no text, no new objects.

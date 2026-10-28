@@ -11,8 +11,8 @@ from postcard_marks import draw_mark
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "output" / "pdf" / "Postcard_AD_Bjarnarhofn_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_AD_Bjarnarhofn_Letter_Print.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_AD_Bjarnarhofn_Print.pdf"
+OUT_LETTER = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_AD_Bjarnarhofn_Letter_Print.pdf"
 FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_AD_Bjarnarhofn_Front.png"
 STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Aud_Comb_v1.png"
 FONT_DIR = ROOT / "Fonts"
@@ -21,6 +21,8 @@ PAGE = (6 * 72, 4 * 72)  # 6 x 4 in since 13 Oct 2026 (was 5 x 3.5)
 W, H = PAGE
 LETTER = (8.5 * 72, 11 * 72)
 PAPER = HexColor("#EFE3C4")
+# 20 Oct 2026 (designer): no beige fill behind the back; it prints on the paper itself. True restores it.
+PAPER_BACKGROUND = False
 NAVY = HexColor("#12343C")
 TEAL = HexColor("#6D528B")
 RULE = HexColor("#A99A7B")
@@ -36,7 +38,7 @@ FUNFACT = HexColor("#B56A2A")
 # flared end clears the taller first tooth. The comb was regenerated to match.
 # 13 Oct 2026 (6 x 4 in card): marks 1.2x, at x 24 (message now starts at x 18); the lower one
 # sits under "Aunt Liv", which now ends near y 199.
-COMB_MARKS = [(24.0, 20.0), (24.0, 214.0)]
+COMB_MARKS = [(24.0, 20.0), (24.0, 250.0)]  # lower mark 214 -> 250 on 15 Oct 2026: the longer message reaches y 214; comb must be rebuilt
 COMB_MARK_RING, COMB_MARK_DOT = 6.2, 1.7
 
 pdfmetrics.registerFont(TTFont("CinzelExtraBold", str(FONT_DIR / "Cinzel" / "static" / "Cinzel-ExtraBold.ttf")))
@@ -80,10 +82,14 @@ def draw_back_card(c, x=0, y=0):
     # card edge so a slightly-off cut or duplex registration never shows a white band; only
     # the sheet crop marks define trim. Confirmed on the L1/L2 print test, 2026-09-27.
     BLEED = 1.5 / 25.4 * 72
-    c.setFillColor(PAPER)
-    c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
+    if PAPER_BACKGROUND:
+        c.setFillColor(PAPER)
+        c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.7)
+    # 14 Oct 2026 (designer): thin border back "for now" (removed 7 Oct 2026 because off-centre
+    # duplex prints made it look uneven). 12 pt in: the old 10 pt, 1.2x for the 6 x 4 card.
+    c.rect(12, 12, W - 24, H - 24, fill=0, stroke=1)
 
     # 13 Oct 2026 (designer, after playtest 1): the card is now 6 x 4 in, layout B. The divider
     # moves right (x 184 of 360 -> 276 of 432) for a wider message column; message 11.5 pt
@@ -105,11 +111,15 @@ def draw_back_card(c, x=0, y=0):
     # 20 Sept 2026: was "Wintered like Aud did, at her brother's harbor." Aud's leg now runs in
     # May-July, so Liv cannot have wintered here. Reworded to echo Aud's winter instead of
     # claiming Liv's. Meaning and voice preserved; no ordering content either way.
+    # 15 Oct 2026 (designer): message rewritten. AD is now the first card after L1 and introduces
+    # Aud; museum reference dropped. The comb (Props/Comb/build_comb.py) still targets the OLD
+    # message and must be redesigned for this one (BOOK from first visible letters) before printing.
     paragraphs = [
-        "At her brother’s harbor — the one Aud wintered in.",
+        "Bjarnarhöfn today,",
+        "One of the stops on my way to follow the path of Aud the Deep-Minded.",
+        "She sailed here with her family and a shipful of followers, then claimed land of her own.",
         "I’ve read everything I could find about her this trip, to the point that she feels like family (and she actually maybe was).",
-        "It was so awesome to find that comb alongside the coins, and the museum let me keep it!",
-        "This is actually the real treasure, a piece of history that we can use!",
+        "During my expedition, I managed to find a comb that might have belonged to her. So cool! A piece of history we can use!",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 11.5, 12.8
@@ -185,8 +195,10 @@ def draw_back_card(c, x=0, y=0):
     fact_font, fact_size, fact_leading = "Helvetica", 10, 11.8
     # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): Fun Fact rewritten. Text from the user's Postcard
     # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
+    # 15 Oct 2026 (designer, Q-057 option 2): shortened, keeps the joke; "fermented" dropped
+    # because it is HD's rebus answer.
     fact_text = (
-        'Bjarnarhöfn is famous for hákarl: Greenland shark fermented, then hung to dry for months. It smells exactly as bad as it sounds.'
+        'Hákarl is Greenland shark, cured for months. It smells as bad as it sounds.'
     )
     fact_y = funfact_top - 26
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

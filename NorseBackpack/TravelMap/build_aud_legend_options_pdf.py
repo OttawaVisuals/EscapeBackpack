@@ -12,7 +12,7 @@ import aud_layer
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-OUT = ROOT / "output" / "pdf" / "Aud_Map_Legend_Options.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Aud_Map_Legend_Options.pdf"
 
 INK = HexColor("#283B34")
 MUTED = HexColor("#66736D")

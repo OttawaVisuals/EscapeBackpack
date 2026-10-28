@@ -25,6 +25,16 @@
   .cell.throne{box-shadow:inset 0 0 0 3px var(--rust)}
   .cell.legal{box-shadow:inset 0 0 0 3px #4a7a5c}
   .cell.selected{box-shadow:inset 0 0 0 3px #1c4a2e}
+  .axis{position:absolute;left:2px;top:1px;font:10px/1 Georgia,serif;color:#7a6c48;pointer-events:none}
+  .cell.y0 .axis{top:auto;bottom:1px}
+  .cell.covered{background-image:repeating-linear-gradient(45deg,rgba(140,122,82,.55) 0 6px,rgba(140,122,82,.35) 6px 12px)}
+  .cell.covered .piece{opacity:0}
+  .log{font:12.5px/1.6 ui-monospace,Consolas,monospace;margin:6px 0}
+  .log .cur{background:#f3d9a5;font-weight:700}
+  .verdict{font-weight:700;margin-top:6px;font-size:13px}
+  .verdict.ok{color:#1c6b3a}
+  .verdict.bad{color:#9b2c1c}
+  input.mv{font:13px ui-monospace,Consolas,monospace;padding:6px 8px;width:110px;border:1px solid var(--rule);border-radius:6px}
   .piece{width:30px;height:30px;border-radius:50%;pointer-events:none}
   .piece.attacker{background:var(--dark);border:1.5px solid #10201a}
   .piece.defender{background:var(--light);border:1.5px solid #b7ac86}
@@ -55,19 +65,20 @@
 <body>
 
 <h1>Hnefatafl Board Designer</h1>
-<p class="lede">11&times;11 sandbox for finding the King's Escape puzzle's final layout (Escape Backpack, Norse project).
-Starting position below is an adapted tafl-style opening (inspired by traditional 8-defender ring patterns like
-Tablut's), not a verified historical ruleset for this exact board size &mdash; free to rearrange however you like.
-Move pieces by sliding (click a piece, then a highlighted destination); captures happen automatically when you
-sandwich an enemy piece between two of your own. This is a design sandbox, not a rules-enforced game &mdash; nothing
-stops illegal-looking positions if you use Place/Remove mode.</p>
+<p class="lede">11&times;11 board for the King's Escape puzzle (Escape Backpack, Norse project). It starts on the <b>real puzzle layout</b>
+(16 dark, 6 light, king on F6, the same as <code>board_layout.py</code>). Slide a piece by clicking it, then a highlighted square, or type a move
+such as <code>A8-D8</code>. Turn on <b>Puzzle run</b> to play black &rarr; king, repeated (you choose how many king moves, 3 or 4, and how many black moves) and see the king's
+leg lengths and the code. Captures happen automatically (a piece sandwiched between two enemies). Use Place / edit to change the position.</p>
 
 <div class="wrap">
   <div class="boardcol">
     <div class="toolbar">
       <button id="modeMove" class="active">Move pieces</button>
       <button id="modePlace">Place / edit</button>
-      <button id="reset">Reset to start</button>
+      <button id="reset">Reset to puzzle layout</button>
+      <button id="newLayoutBtn">Adopted layout (19 dark, code 2134)</button>
+      <button id="oldLayout">Old sandbox opening</button>
+      <button id="hideIK">Cover columns I&ndash;K: off</button>
       <button id="clear">Clear board</button>
     </div>
     <div id="placeTools" class="toolbar" style="display:none">
@@ -89,6 +100,29 @@ stops illegal-looking positions if you use Place/Remove mode.</p>
   </div>
 
   <div class="side">
+    <div class="card">
+      <h2>Puzzle run</h2>
+      <p style="margin-top:0"><label><input type="checkbox" id="runToggle"> Play a sequence</label>
+        </p>
+      <p>King moves to escape:
+        <select id="kingSel"><option value="4" selected>4</option><option value="3">3</option></select>
+        &nbsp;Black moves:
+        <select id="blackSel"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option></select></p>
+      <p style="margin:2px 0;font-size:12px">Order: <span id="orderTxt"></span> (B = a dark piece, K = the king; black always plays before the king's move of the same number.)</p>
+      <p>Move: <input class="mv" id="mvInput" placeholder="A8-D8"> <button id="mvGo">Play</button></p>
+      <div id="runCard" style="display:none">
+        <div id="runLog"></div>
+        <div class="toolbar" style="justify-content:flex-start;margin-top:6px">
+          <button id="undo">Undo</button>
+          <button id="restart">Restart this layout</button>
+          <button id="makeStart">Make this board the start layout</button>
+          <button id="saveRun">Save in this browser</button>
+          <button id="loadRun">Load saved</button>
+        </div>
+        <p style="margin:8px 0 2px;font-size:12px">Copy this to keep or send the sequence:</p>
+        <textarea id="runText" readonly style="height:96px"></textarea>
+      </div>
+    </div>
     <div class="card">
       <h2>Turn</h2>
       <p id="turnLabel">Free play &mdash; no turn order enforced.</p>
@@ -131,7 +165,30 @@ function defaultLayout(){
   return board;
 }
 
-let board = defaultLayout();
+const PUZZLE_ATTACKERS = ['A4','A5','A8','B1','D11','D6','E11','F1','F11','F9','G1','G8','H5','I6','K4','K8'];
+const PUZZLE_DEFENDERS = ['C5','E8','F5','F8','G5','G7'];
+function labelToKey(l){ return coordKey(l.charCodeAt(0)-65, parseInt(l.slice(1),10)-1); }
+function puzzleLayout(){
+  const b = {};
+  b[THRONE] = {type:'king', side:'defender'};
+  PUZZLE_ATTACKERS.forEach(l => b[labelToKey(l)] = {type:'piece', side:'attacker'});
+  PUZZLE_DEFENDERS.forEach(l => b[labelToKey(l)] = {type:'piece', side:'defender'});
+  return b;
+}
+const NEW_ATTACKERS = ['A4','A5','A8','B1','D11','D7','E1','E11','F1','F11','F9','G1','H2','H10','I6','I8','I9','K4','K10'];
+function newLayout(){
+  const b = {};
+  b[THRONE] = {type:'king', side:'defender'};
+  NEW_ATTACKERS.forEach(l => b[labelToKey(l)] = {type:'piece', side:'attacker'});
+  PUZZLE_DEFENDERS.forEach(l => b[labelToKey(l)] = {type:'piece', side:'defender'});
+  return b;
+}
+let board = puzzleLayout();
+let coverIK = false;
+let kingTarget = 4, blackCount = 4;
+let editLog = [];
+function buildOrder(){ let o = ''; for (let i = 1; i <= kingTarget; i++){ if (i <= blackCount) o += 'B'; o += 'K'; } return o; }
+let runMode = false, order = buildOrder(), step = 0, history = [], log = [], kingPath = [], verdict = null;
 let mode = 'move'; // 'move' | 'place'
 let placeType = 'attacker';
 let selected = null; // coordKey of selected piece
@@ -147,6 +204,7 @@ const turnLabelEl = document.getElementById('turnLabel');
 
 function cellClass(x,y){
   const classes = ['cell'];
+  if (y === 0) classes.push('y0');
   if ((x+y) % 2 === 1) classes.push('b');
   const key = coordKey(x,y);
   if (CORNERS.has(key)) classes.push('corner');
@@ -165,6 +223,13 @@ function render(){
       cell.className = cellClass(x,y);
       cell.dataset.x = x; cell.dataset.y = y;
       cell.title = coordLabel(x,y);
+      if (x === 0 || y === 0){
+        const lab = document.createElement('span');
+        lab.className = 'axis';
+        lab.textContent = (y === 0 ? String.fromCharCode(65+x) : '') + (x === 0 ? (y+1) : '');
+        cell.appendChild(lab);
+      }
+      if (coverIK && x >= 8) cell.classList.add('covered');
       const occ = board[key];
       if (occ){
         const p = document.createElement('div');
@@ -178,6 +243,7 @@ function render(){
   }
   updateCounts();
   updateExport();
+  renderRun();
 }
 
 function updateCounts(){
@@ -230,6 +296,8 @@ function slideDestinations(x,y){
 function onCellClick(x,y){
   const key = coordKey(x,y);
   if (mode === 'place'){
+    if (runMode){ history.push(snapshot());   // an edit mid-run keeps the sequence; Undo can take it back
+      editLog.push({after: log.length, text: (placeType === 'empty' ? 'erase ' : 'add ' + (placeType === 'attacker' ? 'dark ' : placeType === 'defender' ? 'light ' : 'king ') + 'on ') + coordLabel(x,y)}); }
     if (placeType === 'empty'){ delete board[key]; }
     else if (placeType === 'king'){
       // Only one king allowed -- move it if it already exists elsewhere.
@@ -238,6 +306,7 @@ function onCellClick(x,y){
     } else {
       board[key] = {type:'piece', side:placeType};
     }
+    if (runMode && log.length === 0) captureBase();   // before any move: Restart returns to the edited layout
     render();
     return;
   }
@@ -246,13 +315,7 @@ function onCellClick(x,y){
   if (selected === null){
     const occ = board[key];
     if (!occ) return;
-    if (enforceTurns){
-      const pieceSide = occ.type === 'king' ? 'defender' : occ.side;
-      if (pieceSide !== turn){
-        statusEl.textContent = `It's ${turn}s' turn.`;
-        return;
-      }
-    }
+    if (!mayMove(occ)) return;
     selected = key;
     legalMoves = slideDestinations(x,y);
     statusEl.textContent = legalMoves.length ? 'Click a highlighted square to move there, or click the piece again to cancel.' : 'No legal slides from here.';
@@ -267,31 +330,131 @@ function onCellClick(x,y){
   }
 
   if (legalMoves.includes(key)){
-    const piece = board[selected];
-    delete board[selected];
-    board[key] = piece;
-    applyCaptures(x,y, piece);
-    selected = null; legalMoves = [];
-    if (enforceTurns) turn = (turn === 'attacker') ? 'defender' : 'attacker';
-    statusEl.textContent = 'Moved to ' + coordLabel(x,y) + '.';
-    render();
+    doMove(selected, key);
     return;
   }
 
   // Clicked a different piece -- reselect.
   const occ = board[key];
-  if (occ){
-    if (enforceTurns){
-      const pieceSide = occ.type === 'king' ? 'defender' : occ.side;
-      if (pieceSide !== turn){
-        statusEl.textContent = `It's ${turn}s' turn.`;
-        return;
-      }
-    }
+  if (occ && mayMove(occ)){
     selected = key;
     legalMoves = slideDestinations(x,y);
     render();
   }
+}
+
+// Whether this piece may move now (puzzle run: the sequence decides; otherwise the optional turn rule).
+function mayMove(occ){
+  if (runMode){
+    if (verdict || step >= order.length){ statusEl.textContent = 'The run is over. Undo, or Restart.'; return false; }
+    const want = order[step];
+    const ok = want === 'K' ? occ.type === 'king' : (occ.type !== 'king' && occ.side === 'attacker');
+    if (!ok) statusEl.textContent = want === 'K' ? 'Now the KING moves.' : 'Now a DARK piece moves.';
+    return ok;
+  }
+  if (enforceTurns){
+    const pieceSide = occ.type === 'king' ? 'defender' : occ.side;
+    if (pieceSide !== turn){ statusEl.textContent = `It's ${turn}s' turn.`; return false; }
+  }
+  return true;
+}
+
+function snapshot(){ return JSON.stringify({board, step, log, kingPath, verdict, turn, editLog}); }
+function restore(js){ const o = JSON.parse(js); board=o.board; step=o.step; log=o.log; kingPath=o.kingPath; verdict=o.verdict; turn=o.turn; editLog=o.editLog||[]; }
+
+function doMove(fromKey, toKey){
+  const piece = board[fromKey];
+  if (runMode) history.push(snapshot());
+  delete board[fromKey];
+  board[toKey] = piece;
+  const [x,y] = toKey.split(',').map(Number);
+  const [fx,fy] = fromKey.split(',').map(Number);
+  applyCaptures(x,y, piece);
+  selected = null; legalMoves = [];
+  if (enforceTurns && !runMode) turn = (turn === 'attacker') ? 'defender' : 'attacker';
+  statusEl.textContent = 'Moved to ' + coordLabel(x,y) + '.';
+  if (runMode){
+    const side = order[step];
+    log.push({side, from: coordLabel(fx,fy), to: coordLabel(x,y), dist: Math.abs(x-fx)+Math.abs(y-fy)});
+    step++;
+    if (piece.type === 'king') kingPath.push(toKey);
+    evaluateRun(piece, toKey);
+  }
+  render();
+}
+
+function kingMoveCount(){ return log.filter(l => l.side === 'K').length; }
+function evaluateRun(piece, toKey){
+  const kingAlive = Object.values(board).some(p => p.type === 'king');
+  if (!kingAlive){ verdict = {ok:false, text:'The king was captured. Black wins.'}; return; }
+  if (piece.type === 'king' && CORNERS.has(toKey)){
+    const n = kingMoveCount();
+    const legs = log.filter(l => l.side === 'K').map(l => l.dist);
+    if (n === kingTarget) verdict = {ok:true, text:'ESCAPE in exactly ' + kingTarget + ' king moves. Legs ' + legs.join(' + ') + ', code ' + legs.join('') + '.'};
+    else verdict = {ok:false, text:'The king escaped after ' + n + ' king move' + (n===1?'':'s') + ', not ' + kingTarget + ' (legs ' + legs.join(', ') + ').'};
+    return;
+  }
+  if (step >= order.length){
+    verdict = {ok:false, text:'No escape: the sequence ended and the king is not in a corner.'};
+  }
+}
+
+function renderRun(){
+  const card = document.getElementById('runCard');
+  card.style.display = runMode ? 'block' : 'none';
+  if (!runMode) return;
+  const names = {B:'Black', K:'King'};
+  let html = '<div class="log">';
+  for (let i = 0; i < order.length; i++){
+    const done = log[i];
+    const cur = (i === step && !verdict);
+    html += '<div class="' + (cur ? 'cur' : '') + '">' + (i+1) + '. ' + names[order[i]] + ': ' + (done ? done.from + ' &rarr; ' + done.to + (done.side==='K' ? ' (' + done.dist + ')' : '') : (cur ? '&hellip; your move' : '')) + '</div>';
+  }
+  html += '</div>';
+  if (verdict) html += '<div class="verdict ' + (verdict.ok ? 'ok' : 'bad') + '">' + verdict.text + '</div>';
+  document.getElementById('runLog').innerHTML = html;
+  document.getElementById('runText').value = runText();
+}
+
+// Plain text of the run: the moves in order, the verdict, and the layout the run started from.
+function runText(){
+  const lines = ['Sequence (' + order.split('').join(' ') + '):'];
+  const editsAt = n => editLog.filter(e => e.after === n).forEach(e => lines.push('   (edit: ' + e.text + ')'));
+  editsAt(0);
+  log.forEach((l, i) => { lines.push((i+1) + '. ' + (l.side === 'B' ? 'Black' : 'King') + ' ' + l.from + '-' + l.to + (l.side === 'K' ? ' (' + l.dist + ')' : '')); editsAt(i+1); });
+  if (verdict) lines.push(verdict.text);
+  if (runBase){
+    const b = JSON.parse(runBase), att = [], dfn = []; let king = '';
+    Object.entries(b).forEach(([k, p]) => { const [x, y] = k.split(',').map(Number); const lab = coordLabel(x, y); if (p.type === 'king') king = lab; else if (p.side === 'attacker') att.push(lab); else dfn.push(lab); });
+    att.sort(); dfn.sort();
+    lines.push('Start layout: king ' + king + '; dark ' + att.join(' ') + '; light ' + dfn.join(' '));
+  }
+  if (editLog.length){
+    const cur = {att: [], dfn: [], king: ''};
+    Object.entries(board).forEach(([k, p]) => { const [x, y] = k.split(',').map(Number); const lab = coordLabel(x, y); if (p.type === 'king') cur.king = lab; else if (p.side === 'attacker') cur.att.push(lab); else cur.dfn.push(lab); });
+    cur.att.sort(); cur.dfn.sort();
+    lines.push('Layout now (after the edits and moves): king ' + cur.king + '; dark ' + cur.att.join(' ') + '; light ' + cur.dfn.join(' '));
+  }
+  return lines.join('\n');
+}
+
+function parseMove(text){
+  const m = text.trim().toUpperCase().replace(/\s+/g,'').match(/^([A-K])(\d{1,2})(?:-|TO|>|,)?([A-K])(\d{1,2})$/);
+  if (!m) return null;
+  return [labelToKey(m[1]+m[2]), labelToKey(m[3]+m[4])];
+}
+function typedMove(){
+  const input = document.getElementById('mvInput');
+  const mv = parseMove(input.value);
+  if (!mv){ statusEl.textContent = 'Type a move like A8-D8.'; return; }
+  const [from, to] = mv;
+  const occ = board[from];
+  if (!occ){ statusEl.textContent = 'There is no piece on that first square.'; return; }
+  if (!mayMove(occ)) return;
+  const [x,y] = from.split(',').map(Number);
+  if (!slideDestinations(x,y).includes(to)){ statusEl.textContent = 'That piece cannot slide there (blocked, or not in a straight line).'; return; }
+  input.value = '';
+  doMove(from, to);
 }
 
 function applyCaptures(x,y, mover){
@@ -355,8 +518,8 @@ document.querySelectorAll('[data-place]').forEach(btn => {
   });
 });
 document.getElementById('reset').addEventListener('click', () => {
-  board = defaultLayout(); selected = null; legalMoves = []; turn = 'attacker';
-  statusEl.textContent = 'Reset to the starting layout.';
+  board = puzzleLayout(); selected = null; legalMoves = []; turn = 'attacker'; captureBase(); resetRun();
+  statusEl.textContent = 'Reset to the puzzle layout.';
   render();
 });
 document.getElementById('clear').addEventListener('click', () => {
@@ -370,6 +533,63 @@ document.getElementById('toggleTurns').addEventListener('click', (e) => {
   turnLabelEl.textContent = enforceTurns ? `Attackers move first. Current turn: ${turn}.` : 'Free play — no turn order enforced.';
   render();
 });
+
+document.getElementById('newLayoutBtn').addEventListener('click', () => {
+  board = newLayout(); selected = null; legalMoves = []; turn = 'attacker'; captureBase(); resetRun();
+  statusEl.textContent = 'Adopted layout loaded: 19 dark (I8, I9 and K10 added; D6, G8, H5, K8 gone; D7, E1, H2, H10 in). Black moves to try: E1-E6, H2-H5, H10-H11, K10-I10; king F6-H6, H6-H7, H7-K7, K7-K11 (code 2134). The last black move opens column K.'; render();
+});
+let runStart = null, runBase = null;
+function captureBase(){ runBase = JSON.stringify(board); }
+function resetRun(){ step = 0; history = []; log = []; kingPath = []; verdict = null; editLog = []; runStart = snapshot(); }
+function restartRun(){ if (runBase) board = JSON.parse(runBase); selected = null; legalMoves = []; resetRun(); }
+document.getElementById('runToggle').addEventListener('change', (e) => {
+  runMode = e.target.checked; selected = null; legalMoves = []; captureBase(); resetRun();
+  statusEl.textContent = runMode ? 'Puzzle run on: play the sequence shown on the right.' : 'Free play.';
+  render();
+});
+function applyOrder(){
+  kingTarget = parseInt(document.getElementById('kingSel').value, 10);
+  blackCount = Math.min(parseInt(document.getElementById('blackSel').value, 10), kingTarget);
+  document.getElementById('blackSel').value = blackCount;
+  order = buildOrder();
+  document.getElementById('orderTxt').textContent = order.split('').join(' ');
+  restartRun(); render();
+}
+document.getElementById('kingSel').addEventListener('change', applyOrder);
+document.getElementById('blackSel').addEventListener('change', applyOrder);
+document.getElementById('orderTxt').textContent = order.split('').join(' ');
+document.getElementById('undo').addEventListener('click', () => {
+  if (!history.length) return; restore(history.pop()); selected = null; legalMoves = []; render();
+});
+document.getElementById('restart').addEventListener('click', () => {
+  restartRun(); statusEl.textContent = 'Restarted from the layout at the start of the run.'; render();
+});
+const SAVE_KEY = 'hnefatafl-board-designer-run';
+document.getElementById('saveRun').addEventListener('click', () => {
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify({runBase, runStart, state: snapshot(), history, order, kingTarget, blackCount}));
+    statusEl.textContent = 'Saved in this browser (it stays after a reload, on this computer only).';
+  } catch (err){ statusEl.textContent = 'Could not save here; copy the text box instead.'; }
+});
+document.getElementById('loadRun').addEventListener('click', () => {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw){ statusEl.textContent = 'Nothing saved yet.'; return; }
+    const o = JSON.parse(raw);
+    runMode = true; document.getElementById('runToggle').checked = true;
+    kingTarget = o.kingTarget; blackCount = o.blackCount; order = o.order;
+    document.getElementById('kingSel').value = kingTarget; document.getElementById('blackSel').value = blackCount;
+    document.getElementById('orderTxt').textContent = order.split('').join(' ');
+    runBase = o.runBase; runStart = o.runStart; history = o.history; restore(o.state);
+    selected = null; legalMoves = [];
+    statusEl.textContent = 'Saved run loaded.'; render();
+  } catch (err){ statusEl.textContent = 'Could not load the saved run.'; }
+});
+document.getElementById('makeStart').addEventListener('click', () => {
+  captureBase(); editLog = []; statusEl.textContent = 'The board as it is now is the start layout (Restart and Save use it).'; render();
+});
+document.getElementById('mvGo').addEventListener('click', typedMove);
+document.getElementById('mvInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') typedMove(); });
 
 render();
 </script>

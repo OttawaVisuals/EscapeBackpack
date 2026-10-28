@@ -10,9 +10,10 @@ form: physical
 source: buy
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
-found_in: PZ-001
+found_in: PZ-003
+envelope: PZ-003
 # Physical pocket/container or location; availability remains in found_in above.
-container: Envelope 1
+container: Envelope 2
 after_game: return
 # Any related record IDs, e.g. [PZ-002, Q-004]
 links: []
@@ -20,6 +21,8 @@ links: []
 superseded_by:
 tags: []
 ---
+
+**17 Oct 2026 (designer, prototype):** added to the prototype order: ZUNOXAZ flat Fresnel card magnifier, 5×, 3 × 2 in, 10 for CAD $11.77 (Amazon.ca B0GMYLLTC4). Fits the small envelope 2 with L2 and L3. Not yet tested on the branch runes or the 1576 top edge.
 
 **11 Oct 2026 (PR-007):** the backpack is now a box, and pockets and pouches are envelopes. Where this record mentions the bag, a pocket, a pouch or a lock, that is the earlier format; the `container` field gives the envelope.
 

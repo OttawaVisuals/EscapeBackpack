@@ -9,7 +9,7 @@ registration with the ticket's mirrored offset panel (build_ticket_pdf.py).
 as distinct tokens (dark filled vs. light outlined squares) since this layout,
 unlike the old 7x7 one, includes both.
 
-Output: output/pdf/Hnefatafl_Board_Setup_Insert.pdf
+Output: NorseBackpack/Print/_pdf_source/Hnefatafl_Board_Setup_Insert.pdf
 """
 
 import math
@@ -26,13 +26,13 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
-from board_layout import ATTACKERS, CELL, DEFENDERS, HIDDEN_COLS, INK, PAPER, RUST, SIZE, VISIBLE_COLS
+from board_layout import ATTACKERS, BLACK_MOVES, CELL, DEFENDERS, HIDDEN_COLS, INK, PAPER, RUST, SIZE, VISIBLE_COLS
 from hand_drawn_board import (
-    HAND, draw_grid_ink, draw_tokens, draw_column_labels, draw_row_labels, hand_text,
+    HAND, draw_grid_ink, draw_tokens, draw_column_labels, draw_row_labels, hand_text, pen_line,
 )
 
 ROOT = Path(__file__).resolve().parents[3]
-OUT = ROOT / "output" / "pdf" / "Hnefatafl_Board_Setup_Insert.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Hnefatafl_Board_Setup_Insert.pdf"
 FONT_DIR = ROOT / "Fonts"
 
 pdfmetrics.registerFont(TTFont("CinzelExtraBold", str(FONT_DIR / "Cinzel" / "static" / "Cinzel-ExtraBold.ttf")))
@@ -41,7 +41,7 @@ pdfmetrics.registerFont(TTFont("CinzelBold", str(FONT_DIR / "Cinzel" / "static" 
 MARGIN_TOP = 46      # title
 MARGIN_LABEL = 16    # column-letter row above the grid
 MARGIN_SIDE = 16      # row-number column left of the grid
-MARGIN_BOTTOM = 62    # caption + margin note
+MARGIN_BOTTOM = 130    # caption + margin note
 
 GRID_W = SIZE * CELL
 GRID_H = SIZE * CELL
@@ -149,6 +149,45 @@ def _smudged_lines(box, ox, oy):
     return _png(out)
 
 
+PENCIL = HexColor("#4A4A4A")
+
+# Liv's note under the board (17 Oct 2026, PZ-008). The first two dark moves are the numbered
+# arrows; the third is the riddle; the last is on Harald's map and the ticket, so the note stays vague.
+LIV_NOTE = ("Silly sausage me, I smudged part of the board with my wet museum ticket. "
+            "Not to worry, for the 3rd attacker move solve this riddle: "
+            "The attacker on the second-highest row steps up to the top row. "
+            "For the last attacker move, you might have to look somewhere else for it.")
+
+
+def draw_move_arrows(c):
+    """Numbered pencil arrows for the first two dark moves (BLACK_MOVES[0] and [1]). Drawn in the
+    board's own coordinates (called inside the translate to the grid origin). Visible columns only."""
+    c.saveState()
+    c.setLineCap(1)
+    c.setStrokeColor(PENCIL)
+    c.setFillColor(PENCIL)
+    for n, ((fx, fy), (tx, ty)) in enumerate(BLACK_MOVES[:2], start=1):
+        assert fx in VISIBLE_COLS and tx in VISIBLE_COLS, "arrows must sit on the visible columns"
+        x0, y0 = (fx + 0.5) * CELL, (fy + 0.5) * CELL
+        x1, y1 = (tx + 0.5) * CELL, (ty + 0.5) * CELL
+        dx, dy = x1 - x0, y1 - y0
+        length = math.hypot(dx, dy)
+        ux, uy = dx / length, dy / length
+        a = (x0 + ux * CELL * 0.38, y0 + uy * CELL * 0.38)       # leave the piece
+        b = (x1 - ux * CELL * 0.30, y1 - uy * CELL * 0.30)       # stop short of the centre
+        pen_line(c, a, b, 7100 + n, wobble=0.9, width=1.5)
+        nx, ny = -uy, ux
+        for side in (1, -1):
+            h = (b[0] - ux * 6.5 + nx * 3.6 * side, b[1] - uy * 6.5 + ny * 3.6 * side)
+            pen_line(c, b, h, 7200 + n * 2 + (side > 0), wobble=0.3, width=1.5)
+        mx, my = (a[0] + b[0]) / 2 - 11, (a[1] + b[1]) / 2          # number to the left of the shaft
+        c.setFont(HAND, 11)
+        c.drawCentredString(mx, my - 3.5, str(n))
+        c.setLineWidth(0.9)
+        c.circle(mx, my, 6.2, stroke=1, fill=0)
+    c.restoreState()
+
+
 def grid_origin():
     return MARGIN_SIDE, MARGIN_BOTTOM
 
@@ -182,6 +221,7 @@ def draw_grid(c, background=True):
     draw_column_labels(c)
     draw_row_labels(c)
     draw_tokens(c, VISIBLE_COLS)
+    draw_move_arrows(c)
     c.restoreState()
 
     # The stain, over the hidden columns.
@@ -213,9 +253,17 @@ def draw_grid(c, background=True):
     hand_text(c, "Escape = any corner.", ox, oy - 26, 8)
 
     c.setFillColor(HexColor("#59635D"))
-    hand_text(c, "Oops - ticket was still wet when I set it down here.",
-              ox, oy - 43, 8, GRID_W)
-    hand_text(c, "Sorry, past me. - L", ox, oy - 55, 8)
+    line, ly = "", oy - 43
+    for word in LIV_NOTE.split(" "):
+        trial = (line + " " + word).strip()
+        if pdfmetrics.stringWidth(trial, HAND, 8.4) > GRID_W:
+            hand_text(c, line, ox, ly, 8.4)
+            ly -= 11.5
+            line = word
+        else:
+            line = trial
+    hand_text(c, line, ox, ly, 8.4)
+    hand_text(c, "- L", ox, ly - 12, 8.4)
 
 
 def main():

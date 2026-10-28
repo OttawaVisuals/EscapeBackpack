@@ -9,7 +9,7 @@ beat: ST-005
 # Props the player needs, e.g. [PP-001]
 props: [PP-017, PP-018, PP-022]
 # Puzzles that must be solved first, e.g. [PZ-002]
-needs: [PZ-003]
+needs: [PZ-002]
 # cipher | physical | search | logic | wordplay | other
 mechanic: wordplay
 # 1 (easy) to 3 (hard)
@@ -17,11 +17,12 @@ difficulty: 2
 # Lock it opens: 3-digit | 4-digit | 4-letter | 3-digit-colour (blank if none)
 lock: 4-letter
 answer: MEAD
+envelope_marks: ᚱᛒᛚᚷ
 # Compartment this lock closes (shown on the Locks tab)
 container: Envelope 4
 reset_display: LOCK
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
-hint_title: Just opened ᛉᛖᚠᛁ
+hint_title: Just opened ᛒᛚᛟᛉ
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.
 publish_hints: yes
 # Independent of design/build status: untested | passed | changes-needed
@@ -46,6 +47,8 @@ Lock 4 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 2 of 3 
 **9 Oct 2026 (designer, Q-001):** now lock 4 of 13. Compartment: main compartment.
 
 **11 Oct 2026 (designer, PR-007):** no locks or pockets any more. This code, set on the rune cypher wheel (PP-047), points to envelope 4, which holds what lock 4 used to close.
+
+**15 Oct 2026 (playtest feedback, designer):** players struggled to reach MEAD from the three riddles. Decided: define the word on Liv's notes card (PP-048), which comes with L1, instead of changing this puzzle. The riddles and cards are unchanged. Retest needed.
 
 ## Player notices
 
@@ -107,3 +110,11 @@ Pinned as a candidate, 16 Sept 2026, while reviewing leg 3 (Aud). `MEAD` was the
 PR
 
 ### Props and production
+
+**15 Oct 2026 (designer, PR-007):** envelope 3 (H2, H3, HD) is now opened by `1576` (was `BOOK`), so its runes are ᛒᛚᛟᛉ; needs PZ-002 instead of PZ-003.
+
+**15 Oct 2026 (designer, text pass):** H2 rewritten to introduce Harald and nudge toward DRINK (Liv sipping hot tea while reading the sagas); H2's last line no longer breaks the fourth wall; HD's lead-in now says “riddle in pictures”; Fun Facts for H2, H3, HD shortened (PP-017, PP-018, PP-022). The riddles, the DRINK acrostic, HONEY and the rebus are unchanged. Retest still needed.
+
+**16 Oct 2026 (designer, direction, not built):** HD is to be retired from this puzzle and reused for PZ-008 (envelope 10). The FERMENTED rebus will move onto H2 or H3, with a tipsy-person drawing on the other. Envelope 3 then holds only H2, H3 and (if kept) nothing from HD. See PZ-008.
+
+**16 Oct 2026 (designer):** the note above about retiring HD is withdrawn: HD stays in envelope 3 as it is (see PZ-008).

@@ -10,9 +10,10 @@ form: physical
 source: 3d-print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
-found_in: PZ-002
+found_in: PZ-001
+envelope: PZ-001
 # Physical pocket/container or location; availability remains in found_in above.
-container: Envelope 2
+container: Envelope 1
 after_game: return
 # Any related record IDs, e.g. [PZ-002, Q-004]
 links: []
@@ -46,7 +47,7 @@ This is actually the real treasure, a piece of history that we can use!
 With love,
 Aunt Liv
 
-Built: `Postcards/build_postcard_AD_pdf.py` → `output/pdf/Postcard_AD_Bjarnarhofn_Print.pdf`. See [Postcards · AD] for the rendered card.
+Built: `Postcards/build_postcard_AD_pdf.py` → `NorseBackpack/Print/_pdf_source/Postcard_AD_Bjarnarhofn_Print.pdf`. See [Postcards · AD] for the rendered card.
 
 ~~**Still open:** which specific letters in this text the comb's teeth expose to spell BOOK, and the physical tooth-cutting itself.~~ **Resolved 25 Sept 2026** — see below.
 
@@ -116,3 +117,11 @@ Not recorded yet.
 ## Replacement
 
 Not recorded yet.
+
+**14 Oct 2026 (designer, box + envelopes):** rebuilt after AD dropped “alongside the coins”: 11 teeth (was 12), the K tooth now ends before “keep” mid-line 7 instead of being a root stub. Overall 100.7 × 75.1 mm and the hole positions are unchanged. Digital comb rebuilt; `node --test Digital/leif.test.cjs` 40/40. Test print pending.
+
+**15 Oct 2026 (designer):** AD's message was rewritten and its lower mark moved, so this comb is out of date. See PZ-003 and PP-015; rebuild after the comb's target letters are chosen.
+
+**15 Oct 2026 (designer):** rebuilt for the new AD message (PZ-003): 14 teeth, 100.7 × 87.8 mm, holes 81.1 mm apart; `Aud_Comb.stl`, `.scad`, `comb_geometry.json`, `Aud_Comb_on_AD.png` regenerated. Digital comb copy not rebuilt. Test print pending. Replaces the out-of-date note above.
+
+**21 Oct 2026 (designer's request, Claude): paper comb and ruler on one Letter page.** `Props/Comb/build_comb_ruler_sheet.py` draws the comb from the same geometry as the 3D comb (read from the live AD print PDF, 6 × 4 in card: 100.7 × 87.8 mm, 14 teeth, holes 81.1 mm apart, still BOOK) together with the 2 × 6 in ruler (PP-025, matched to the current Rollo map, 120 mark). Output `Print/_pdf_source/Comb_And_Ruler_Print.pdf`, with a 50 mm check bar. For heavy paper: cut the brown outline and the slots between teeth (1.55 mm wide), punch the two 2 mm holes. Not tested: paper print, cutting the slots by hand, hole alignment on AD.

@@ -11,6 +11,7 @@ source: print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: start
+envelope: start
 # Physical pocket/container or location; availability remains in found_in above.
 container: Stuck on each lock body
 after_game: none
@@ -31,7 +32,7 @@ Longship stickers numbered 1–13, one per lock in solve order (PZ-001 to PZ-013
 
 - Each longship 1.3 cm wide; two full sets on one US Letter sheet (26 stickers including spares).
 - Numbers in Helvetica Bold: Cinzel's "11" read as "ll" at this size.
-- Builder: `Props/LockStickers/build_lock_stickers_pdf.py` → `output/pdf/Lock_Stickers_Print.pdf`; Word copy `output/docx/Print_LockStickers.docx` (from `Props/build_printables_docx.py`).
+- Builder: `Props/LockStickers/build_lock_stickers_pdf.py` → `NorseBackpack/Print/_pdf_source/Lock_Stickers_Print.pdf`; Word copy `NorseBackpack/Print/Print_LockStickers.docx` (from `Props/build_printables_docx.py`).
 - Not yet printed on sticker paper.
 - Both sequences 1–13 checked in the PDF; sheet and embedded Word artwork visually inspected, including two-digit numbers. Native DOCX rendering is unavailable here: LibreOffice and Microsoft Word are absent. The existing one-page image anchor and Letter page layout were preserved exactly.
 

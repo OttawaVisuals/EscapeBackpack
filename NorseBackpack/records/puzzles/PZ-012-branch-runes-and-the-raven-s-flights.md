@@ -17,11 +17,12 @@ difficulty: 3
 # Lock it opens: 3-digit | 4-digit | 4-letter | 3-digit-colour (blank if none)
 lock: 4-digit
 answer: 2648
+envelope_marks: ᚲᛟᛉᛏ
 # Compartment this lock closes (shown on the Locks tab)
 container: Envelope 12
 reset_display: 0000
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
-hint_title: Just opened ᛊᚲᛁᛇ
+hint_title: Just opened ᛚᚹᚲᛏ
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.
 publish_hints: yes
 # Independent of design/build status: untested | passed | changes-needed
@@ -108,7 +109,7 @@ Lock as recorded: Four-digit lock on the pouch holding H6, the transition ticket
 
 **29 Sept 2026 (user):** H5 now writes the word in capitals — “A RAVEN followed me the whole time!” — instead of underlining it. Same selector, more visible.
 
-**29 Sept 2026 (user):** the card is now path only — the title, instruction lines, four answer boxes and raven emblem are removed — and it prints on coloured paper on the same Letter page as the two luggage tags. To suit coloured paper nothing is filled white: each flight stops at the perch outline and breaks around its digit. Graph enlarged (3.4 in wide, digits 11 pt); still a 4 × 3 in cut with crop marks. Print file: `output/docx/Print_LuggageTags.docx`. The stand-alone `PrintTest_RavenFlights.docx` is retired.
+**29 Sept 2026 (user):** the card is now path only — the title, instruction lines, four answer boxes and raven emblem are removed — and it prints on coloured paper on the same Letter page as the two luggage tags. To suit coloured paper nothing is filled white: each flight stops at the perch outline and breaks around its digit. Graph enlarged (3.4 in wide, digits 11 pt); still a 4 × 3 in cut with crop marks. Print file: `NorseBackpack/Print/Print_LuggageTags.docx`. The stand-alone `PrintTest_RavenFlights.docx` is retired.
 
 **Player card built, 28 Sept 2026:** 4 × 3 in, single-sided (size chosen by the user; the review's working size was half-Letter). Approved graph; no route or answer marked. *(Originally also had the title and clue, four blank answer boxes and a small raven emblem; removed 29 Sept 2026, see the note above.)* Source `Props/RavenFlights/build_raven_flights_pdf.py` (checks that HRAFN reads 2648 before building; the sheet itself is built by `Props/build_luggage_tag_inserts_pdf.py`); PDF [View PDF](../Web/pdf/Raven_Flights_Card_Print.pdf) (card alone). Not yet printed or tested on a player.
 H4/H5 and the corrected map still decode HRAFN. Follow H–R–A–F–N on the new flight card: 2, 6, 4, 8. One four-digit lock directly secures H1, the board, pieces, ticket and challenge rules. Release the perch card with H4/H5 after SOLE, outside that pouch. **Superseded, 23 Sept 2026 (old page PC-18):** 2648 now opens the pouch with H2, H3 and HD. The hnefatafl pouch opens with MEAD. The perch card arrives with H4/H5 after the comb (BOOK), not directly after SOLE. No cryptex or key. See PP-038 and Approved changes.
@@ -127,3 +128,11 @@ The cryptex answer, and what opening it releases.
 ## Playtest evidence
 
 **Playtest 1** (feedback relayed by the designer 11 Oct 2026; playtest date, team and hint use not recorded). Rune key should be more of a table. Changed as above; retest needed.
+
+**17 Oct 2026:** Harald's map had its base-map pass (single place names, Denmark and Sweden dots dropped, bolder dots and names; Q-060). The five branch-rune cells and the grid are unchanged; the map also now carries the hnefatafl shield at I10 (PZ-008), which is not a rune stem. Not retested.
+
+**17 Oct 2026 (designer, Q-057), envelope 11 text pass:** H4 and H5 Fun Facts shortened (PP-019, PP-020); messages unchanged (the branch-rune rule on H4 and the capitals RAVEN on H5 carry the clues); puzzle logic and answer 2648 unchanged. Envelope 11 is opened by 2134 (PZ-008). Not retested.
+
+**17 Oct 2026 (designer):** H4's message now ends with “You just have to map the correct ones to get the final value.” as the reference to the map the runes are found on (PP-019). Hint 1 still points to H5's RAVEN for the columns. Not retested.
+
+**20 Oct 2026:** the raven's path card is now a 3.5 × 2 in business card, same graph and digits (PP-038). Print sheet `Print/Print_RavenFlights_Card.docx`.

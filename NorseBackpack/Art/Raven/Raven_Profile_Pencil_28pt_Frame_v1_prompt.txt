@@ -1,0 +1,7 @@
+Generated with built-in image_gen on 2026-10-17.
+Source: Raven_Profile_Pencil_28pt_v1.png
+
+Use case: precise-object-edit.
+Edit target: supplied very simple graphite pencil raven icon.
+Request: add back a MUCH simpler circular frame, keeping the existing simple raven drawing style and minimal details. This entire framed icon must read when printed at only 28 by 28 typographic points, approximately 10 mm square.
+Preserve the raven's left-facing profile, long beak, eye dot, perched pose, diagonal tail and sparse wing marks. Surround it with one loose hand-drawn pencil circle, with just a few widely spaced simple overlapping loops suggesting an extremely simplified Norse braid. Think a quick circle of two loosely twisting pencil lines with only four broad crossings around the whole circumference. Keep plenty of open space between the bird and ring. No decorative bird-head terminals, no diamonds, no intricate knots, no fine texture, no shading, no extra feather details. The feet may meet the lower circle and the tail can slightly overlap it, recalling the original emblem. Raven remains large and recognizable within ring. Bold dark graphite contours, natural slight hand wobble, same thick soft-pencil texture as the reference. Mostly transparent open interiors. Center whole emblem in square with safe margin, all edges visible. Genuine transparent background, monochrome charcoal grey, no paper rectangle, no text, no shadow. Overall result a tiny human-drawn raven badge with a simple loose braided circle, not a polished or elaborate illustration.

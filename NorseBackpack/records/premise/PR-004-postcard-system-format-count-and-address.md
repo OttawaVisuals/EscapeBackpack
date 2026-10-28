@@ -65,3 +65,5 @@ Kept as a note rather than deleted silently, because the argument it made — th
 
 
 **11 Oct 2026 (playtest 1 feedback, built same day):** **address removed from all 22 cards.** Players asked why addressed cards were never sent. The cards are now Liv's souvenirs, never posted: no TO box, no recipient. The Fun Fact box moves up into the freed space (top at 146 pt, was 120). Postcard L1 carries a handwritten P.S.: “These postcards were never sent: they’re my souvenirs, one from every stop.” (wording chosen in chat). The format row “addressed and stamped like a real postcard” and the recipient row in the table above are **superseded** by this; stamp and place-only postmark stay. Built in all 22 `Postcards/build_postcard_*_pdf.py`.
+
+**14 Oct 2026 (designer):** the thin border on the card backs is back “for now”, 12 pt in from the edge on all 22 cards (it was removed 7 Oct 2026 because off-centre duplex prints made it look uneven). The narrow-right-side layout and short Fun Facts are rolling out card by card (Q-057).

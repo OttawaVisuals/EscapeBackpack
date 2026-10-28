@@ -10,9 +10,10 @@ form: printed
 source: print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
-found_in: PZ-001
+found_in: PZ-003
+envelope: PZ-003
 # Physical pocket/container or location; availability remains in found_in above.
-container: Envelope 1
+container: Envelope 2
 after_game: return
 reset_name: Postcard: Qikiqtarjuaq, Baffin Island (Helluland)
 # Any related record IDs, e.g. [PZ-002, Q-004]
@@ -49,3 +50,5 @@ There are 22 postcards: each goes back with the lock it came from, as listed bel
 ## Replacement
 
 Reprint from the print file if damaged.
+
+**15 Oct 2026 (designer, Q-057):** Fun Fact shortened to “The saga says two men could lie heel-to-heel on the stones here.” Handwritten message unchanged (sky lines are the PZ-002 clue). L3 is in envelope 2 (PR-007). Print PDFs, page images and web copies rebuilt.

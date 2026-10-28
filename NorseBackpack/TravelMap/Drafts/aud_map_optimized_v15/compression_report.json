@@ -1,0 +1,27 @@
+{
+  "source_bytes": 33918855,
+  "source_sha256": "c2394d9ae95db0e4e4414f34de2015ae5c29e3349119aad92d95a06d7d4bc305",
+  "source_vector_paths": 751,
+  "outputs": {
+    "Aud_Map_v15_Print_300dpi.pdf": {
+      "bytes": 908594,
+      "reduction_percent": 97.32,
+      "image_dpi": 300,
+      "compression": "lossless PNG after resampling; alpha preserved",
+      "text_and_vector_paths_preserved": true
+    },
+    "Aud_Map_v15_Web_200dpi.pdf": {
+      "bytes": 762687,
+      "reduction_percent": 97.75,
+      "image_dpi": 200,
+      "compression": "lossless PNG after resampling; alpha preserved",
+      "text_and_vector_paths_preserved": true
+    },
+    "Aud_Map_v15_Game_2400.webp": {
+      "bytes": 616636,
+      "width": 2400,
+      "height": 3106,
+      "webp_quality": 90
+    }
+  }
+}

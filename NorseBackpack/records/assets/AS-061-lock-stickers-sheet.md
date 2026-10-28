@@ -19,6 +19,6 @@ superseded_by:
 tags: []
 ---
 
-Render of `output/pdf/Lock_Stickers_Print.pdf` made by `build_page_images.py`. Not a generated image.
+Render of `NorseBackpack/Print/_pdf_source/Lock_Stickers_Print.pdf` made by `build_page_images.py`. Not a generated image.
 
 Updated 8 October 2026 to the selected longship (AS-062 option C), two complete sets of 1–13. The PDF combines AS-063's blank-sail artwork with typeset numbers. This update was rendered with bundled PDFium because bundled PyMuPDF was unavailable. The earlier shield sheet is superseded. No physical print test yet.

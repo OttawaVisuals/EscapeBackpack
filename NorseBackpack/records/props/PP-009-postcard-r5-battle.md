@@ -11,6 +11,7 @@ source: print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-007
+envelope: PZ-007
 # Physical pocket/container or location; availability remains in found_in above.
 container: Envelope 9
 after_game: return
@@ -65,3 +66,7 @@ There are 22 postcards: each goes back with the lock it came from, as listed bel
 ## Replacement
 
 Reprint from the print file if damaged.
+
+**16 Oct 2026 (designer, PZ-011 redesign):** the SCALE 1:125 rebus is replaced by a pencil-style longship drawing (Codex) that matches the LONGSHIP edge of the ruler; message last line is now “Good thing I packed my old ruler: my maps only make sense when I pick the right side.” Fun Fact unchanged so far. R5 is in envelope 9. Print PDFs, page images and web copies rebuilt; render checked.
+
+**16 Oct 2026 (designer, Q-057):** Fun Fact shortened to “The arrow in Harold’s eye on the Bayeux Tapestry may have been reworked by Victorian restorers.” (not source-checked). Rebuilt.

@@ -33,7 +33,7 @@ Set in chat against the real bag. Locks 1–4 were already placed by the designe
 | 7 | `3212` | Inside lockable pocket 1 | A1, A3, coin hoard, treasure tally | LD + Leif's map + Brattahlíð ticket (PZ-005) |
 | 8 | `SOLE` | Large pouch | Rollo's map, R2, Rouen ticket | A1, A3, coins, tally, Aud's map + ticket (PZ-010) |
 | 9 | `1486` | Small pouch | R3, R4, R5 | R2 + Rouen ticket + Rollo's map (PZ-007) |
-| 10 | `104` | Large pouch | Harald's map, H1, hnefatafl board + pieces, Oslo ticket | R3, R4, R5 + ruler + Rollo's map (PZ-011) |
+| 10 | `120` | Large pouch | Harald's map, H1, hnefatafl board + pieces, Oslo ticket | R3, R4, R5 + ruler + Rollo's map (PZ-011) |
 | 11 | `253` | Small pouch | H4, H5, raven's flights card | H1 + board + Oslo ticket + Harald's map (PZ-008) |
 | 12 | `2648` | Large pouch | H6, transition tickets, Liv's journal, crest note | H4, H5, raven card, Harald's map, magnifier (PZ-012) |
 | 13 | `1972` | Inside lockable pocket 2 | Plane ticket and letter, adventure medallion | All cards + the four maps (PZ-013) |
@@ -118,3 +118,5 @@ Kept because it was a decision record, not deleted. **Parts of it are now wrong:
 **Basis and limits.** Read the text in Norse_Ideas.pptx, Ideas-Designs.pptx, Hiking’s clue and reassembly documents and support workbook; inspected Aurora_Visual_Guide.html. The existing Norse deck supplies the aunt, family origins, Norway invitation, runes, board game and mythology ideas. This page proposes everything else. Original slide artwork and physical backpacks were not inspected.
 
 Historical references: [British Museum: hnefatafl](https://www.britishmuseumshoponline.org/hnefatafl-the-viking-game.html); [Museum of Gaming: an example rule set](https://www.museumofgaming.org.uk/RULES-Hnefatafl.pdf); [National Museum of Denmark: Viking Age runes](https://natmus.dk/museer-og-slotte/nationalmuseet/undervisning-paa-nationalmuseet/undervisningsmaterialer/grundskolen/danmarks-oldtid/undervisningsrollespil/vikingetiden/genstande/runes-skalp/). Viking Age rune alphabets had 16 characters with some shared sounds. The aunt’s cipher, saga, genealogy and solo board rules are invented for this game.
+
+**15 Oct 2026 (designer, PR-007):** envelopes 1 to 3 now hold AD + comb, L2 + L3 + magnifier, and H2 + H3 + HD (opened by `1021`, `BOOK`, `1576`). The rows above are history; PR-007 has the current table.

@@ -1,0 +1,16 @@
+{
+  "pdf": "C:\\EscapeBackpack\\EscapeBackpack\\NorseBackpack\\Print\\_pdf_source\\Liv_Notes_Card_Print.pdf",
+  "word": "C:\\EscapeBackpack\\EscapeBackpack\\NorseBackpack\\Print\\Print_LivNotesCard.docx",
+  "card_inches": [
+    4,
+    6
+  ],
+  "word_position_inches": [
+    2.25,
+    0.5
+  ],
+  "front_background_removed": true,
+  "pages": 2,
+  "front_text_preserved": true,
+  "print": "Actual size, duplex, long edge; physical scan and alignment untested"
+}

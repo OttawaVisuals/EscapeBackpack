@@ -11,6 +11,7 @@ source: print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-006
+envelope: PZ-006
 # Physical pocket/container or location; availability remains in found_in above.
 container: Envelope 5
 after_game: return
@@ -84,3 +85,7 @@ There are 22 postcards: each goes back with the lock it came from, as listed bel
 ## Replacement
 
 Reprint from the print file if damaged.
+
+**16 Oct 2026 (designer, Q-057):** Fun Fact shortened to “In 911 CE, the Treaty of Saint-Clair-sur-Epte made Rollo ruler of Normandy.” (“CE” replaces “the year”, so the date reads as a year; the playtest 1 misreading of “911” is the reason). Handwritten message unchanged so far (the boar-doubling hint stays). R6 is in envelope 5. Print PDFs, page images and web copies rebuilt.
+
+**16 Oct 2026 (designer, Q-057), message:** now “Rollo’s own Normandy, in this little forest just outside Rouen. / The wild boars are real: I counted a few slipping through the beech and oak, and for every one I actually saw, I’d bet good money there was a second one just out of sight.” The “local legend” sentence is gone; the doubling hint is unchanged. Rebuilt.

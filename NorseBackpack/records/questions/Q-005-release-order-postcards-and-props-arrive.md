@@ -39,9 +39,11 @@ Status on the old page: **Order decided, 7 Oct 2026**
 | 8 | King’s escape | `253` | Harald | 4 | R1, R6, RD |
 | 9 | Counting in the illustration | `562` | Rollo | 3 (easier) | A1, A3 + the mixed coin hoard |
 | 10 | Coin tally | `SOLE` | Aud | 4 | R3, R4, R5 |
-| 11 | Rebus distance | `104` | Rollo | 4 | H4, H5 + raven’s flights card |
+| 11 | Rebus distance | `120` | Rollo | 4 | H4, H5 + raven’s flights card |
 | 12 | Raven’s flights | `2648` | Harald | 5 | H6 + transition tickets + journal |
 | 13 | Route hidden in plain sight | `1972` | All | 5 | Final gift |
 
 **Checked:** every puzzle’s inputs are in hand by its lock — Harald’s map arrives at lock 7 for both the board (8) and the raven (12); the Coin Room key arrives on the Treasure ticket at lock 5, before the tally (10); Rollo’s map arrives at lock 6 for the word chain (7) and the rebus (11); the ruler and tally device are loose in the main compartment from lock 1. LD is still the last release of Leif’s trail (playtest 1). The puzzle data in Puzzles & locks is now in this order, so the Story & sequence grid follows it.
 **Still open:** (1) where the magnifier starts — it must be in hand by lock 2; suggested loose in the main compartment with the ruler and tally device, not confirmed. (2) The pocket mapping in Q-001 follows the old order and needs redoing. (3) Story order to check: the treasure route ends at the cave but no longer opens the coin cache (the coins now come from lock 9), and AD says the comb was found “alongside the coins” while the comb now arrives eight locks before them. (4) The hint page (`norse-hints.html`) and the online version (`Digital/leif-data.js`, its “lamp” for lock 2, and locks 1–5) follow the old order and the light. (5) Optional further mixing: each lock could also release one card for a later puzzle from another trail, so bundles are not single-trail.
+
+**15 Oct 2026 (designer, PR-007):** the first three steps are reordered. 1 `1021` (L1) opens AD + comb; 2 comb grille `BOOK` opens L2, L3 + magnifier; 3 joined top edge `1576` opens H2, H3, HD. Steps 4 to 13 unchanged. The tables above are history. More mixing of legs: Q-059.

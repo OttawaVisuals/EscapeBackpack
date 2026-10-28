@@ -1,0 +1,97 @@
+{
+  "features": 102,
+  "source_hashes": {
+    "C:\\EscapeBackpack\\EscapeBackpack\\NorseBackpack\\TravelMap\\Drafts\\aud_features_full_2026-10-16.json": "84d98d857e1eaaf5694dbd4f6c6391dad60dcd2cdfce8ed202d47f76fa7d7194",
+    "C:\\EscapeBackpack\\EscapeBackpack\\NorseBackpack\\TravelMap\\aud_layer.py": "a636470900118622cdc4b6726dddcd9d2b68d77157de1235f9ccf2c3572a7534",
+    "C:\\EscapeBackpack\\EscapeBackpack\\NorseBackpack\\TravelMap\\aud_features.json": "65af057441fb98adb0572b3a84ff820385c7f74295bf7327638a5920e9cd942f",
+    "C:\\EscapeBackpack\\EscapeBackpack\\NorseBackpack\\TravelMap\\build_trail_maps_pdf.py": "a92657d166074c007ddbae589246db2b8b3ee1971bce5905fda62f7da47fa71b",
+    "C:\\EscapeBackpack\\EscapeBackpack\\NorseBackpack\\TravelMap\\aud_base.js": "0c603299f33df138d9b7b6e809b43cc23e1099656c87ba4e02aa7e6251709134"
+  },
+  "markers": [
+    {
+      "label": "coin1",
+      "ticket_icon": "camel",
+      "position": [
+        565.07,
+        749.89
+      ]
+    },
+    {
+      "label": "Coincorretc",
+      "ticket_icon": "fehu",
+      "position": [
+        573.15,
+        230.98
+      ]
+    },
+    {
+      "label": "Coin2",
+      "ticket_icon": "fleur",
+      "position": [
+        374.66,
+        127.89
+      ]
+    }
+  ],
+  "ports": {
+    "(247.8, 760.43)": {
+      "shore_attachment": [
+        220.38,
+        752.98
+      ],
+      "hull_samples_on_sea": true
+    },
+    "(198.1, 414.85)": {
+      "shore_attachment": [
+        193.79344665648273,
+        417.26580981813953
+      ],
+      "hull_samples_on_sea": true
+    },
+    "(290.81, 608.72)": {
+      "shore_attachment": [
+        285.530044596688,
+        613.2810404736382
+      ],
+      "hull_samples_on_sea": true
+    },
+    "(283.5, 155.59)": {
+      "shore_attachment": [
+        282.31,
+        156.84
+      ],
+      "hull_samples_on_sea": true
+    }
+  },
+  "edge_artwork_fit_adjustments": [
+    [
+      272.34,
+      110.58,
+      272.34,
+      119.20355074336312
+    ],
+    [
+      569.69,
+      722.58,
+      567.2790686999277,
+      722.58
+    ],
+    [
+      568.92,
+      246.37,
+      567.2790686999277,
+      246.37
+    ],
+    [
+      573.15,
+      404.85,
+      569.1244094488188,
+      404.85
+    ]
+  ],
+  "crossing_counts": {
+    "bridge": 12,
+    "ford": 5,
+    "gate": 7
+  }
+}

@@ -9,13 +9,13 @@ test('a new game exposes only the starting props', () => {
 });
 test('locks reject wrong and later answers; each correct answer releases the next set once', () => {
   const s = G.fresh();
-  assert.equal(G.attempt(s, '3212'), false); assert.equal(s.stage, 0);
+  assert.equal(G.attempt(s, '4865'), false); assert.equal(s.stage, 0);
   assert.equal(G.attempt(s, '1021'), true); assert.equal(s.stage, 1);
   assert.equal(G.attempt(s, '1021'), false);
   assert.deepEqual(G.available(s.stage).slice(4), ['L2', 'L3']);
   assert.equal(G.attempt(s, '1576'), true); assert.ok(G.available(s.stage).includes('map'));
-  assert.equal(G.attempt(s, '3212'), true); assert.ok(G.available(s.stage).includes('R2'));
-  assert.equal(G.attempt(s, '3212'), false); assert.equal(s.stage, 3);
+  assert.equal(G.attempt(s, '4865'), true); assert.ok(G.available(s.stage).includes('R2'));
+  assert.equal(G.attempt(s, '4865'), false); assert.equal(s.stage, 3);
 });
 test('save round-trip preserves progress, notes and arrangement', () => {
   const s = G.fresh(); G.attempt(s, '1021'); s.notes = 'Try the skies'; s.hints[1] = 2;
@@ -77,7 +77,7 @@ test('the table grows as props arrive, never shrinks, and moved props stay put',
   const s = G.fresh(); G.deal(s);
   s.pieces.L1.x = 600; s.pieces.L1.y = 500;
   let last = s.table;
-  for (const code of ['1021', '1576', '3212']) {
+  for (const code of ['1021', '1576', '4865']) {
     G.attempt(s, code); G.deal(s);
     assert.ok(s.table >= last); last = s.table; overlapFree(s);
   }
@@ -117,7 +117,7 @@ test('snap pulls a slightly overlapping card out to meet the edge', () => {
 });
 test('Rollo’s leg: 1486 releases Châlus, Roumare and Walcheren; the three-digit 562 releases Bayeux–Battle and the ruler', () => {
   const s = G.fresh();
-  for (const code of ['1021', '1576', '3212']) assert.equal(G.attempt(s, code), true);
+  for (const code of ['1021', '1576', '4865']) assert.equal(G.attempt(s, code), true);
   assert.equal(G.attempt(s, '562'), false);
   assert.equal(G.attempt(s, '1486'), true); assert.deepEqual(G.available(s.stage).slice(-3), ['R1', 'R6', 'RD']);
   assert.equal(G.attempt(s, '562'), true); assert.deepEqual(G.available(s.stage).slice(-4), ['R3', 'R4', 'R5', 'ruler']);
@@ -145,7 +145,7 @@ test('an angled ruler survives a save and never snaps; other props keep quarter 
   const r = { ...s.pieces.ruler };
   assert.equal(G.snap(s, 'ruler', 50), false); assert.deepEqual(s.pieces.ruler, r);
 });
-const toStage = n => { const s = G.fresh(); for (const c of ['1021', '1576', '3212', '1486', '562', '104', '521', 'SOLE', 'BOOK', '2648', 'MEAD', '253', '1972'].slice(0, n)) assert.equal(G.attempt(s, c), true, c); assert.equal(s.stage, n); return s; };
+const toStage = n => { const s = G.fresh(); for (const c of ['1021', '1576', '4865', '1486', '562', '104', '532', 'SOLE', 'BOOK', '2648', 'MEAD', '2134', '1972'].slice(0, n)) assert.equal(G.attempt(s, c), true, c); assert.equal(s.stage, n); return s; };
 test('lock 6 opens with 104 and brings Aud’s first props', () => {
   const s = toStage(5);
   assert.equal(G.locks[5].pending, undefined);
@@ -153,9 +153,9 @@ test('lock 6 opens with 104 and brings Aud’s first props', () => {
   assert.equal(G.attempt(s, '104'), true); assert.equal(s.stage, 6);
   assert.deepEqual(G.available(6).slice(-3), ['A2', 'audMap', 'audTicket']);
 });
-test('Aud’s leg: 521 brings the coins and tally, SOLE (any case) the comb, BOOK the first of Harald’s props', () => {
+test('Aud’s leg: 532 brings the coins and tally, SOLE (any case) the comb, BOOK the first of Harald’s props', () => {
   const s = toStage(6);
-  assert.equal(G.attempt(s, '521'), true);
+  assert.equal(G.attempt(s, '532'), true);
   const coins = G.available(s.stage).filter(id => G.items[id].kind === 'Coin');
   assert.equal(coins.length, 12); assert.ok(G.available(s.stage).includes('tally'));
   assert.equal(G.attempt(s, 'sole'), true); assert.deepEqual(G.available(s.stage).slice(-2), ['AD', 'comb']);
@@ -187,11 +187,11 @@ test('the tally keeps its digits through a save and through Tidy', () => {
   G.arrange(r); assert.deepEqual(r.pieces.tally.wheels, [3, 7, 0, 5]);
   assert.deepEqual(G.restore({ version: 1, stage: 7, pieces: { tally: { x: 10, y: 10, wheels: [12, -1, 'x'] } } }).pieces.tally.wheels, [9, 0, 0, 0]);
 });
-test('Harald’s leg: 2648, MEAD (any case) and 253 bring the board, ticket, last card, bookings and journal', () => {
+test('Harald’s leg: 2648, MEAD (any case) and 2134 bring the board, ticket, last card, bookings and journal', () => {
   const s = toStage(9);
   assert.equal(G.attempt(s, '2648'), true); assert.deepEqual(G.available(s.stage).slice(-3), ['H2', 'H3', 'HD']);
   assert.equal(G.attempt(s, 'mead'), true); assert.deepEqual(G.available(s.stage).slice(-3), ['H1', 'board', 'osloTicket']);
-  assert.equal(G.attempt(s, '235'), false); assert.equal(G.attempt(s, '253'), true);
+  assert.equal(G.attempt(s, '2143'), false); assert.equal(G.attempt(s, '2134'), true);
   assert.deepEqual(G.available(s.stage).slice(-5), ['H6', 'transition1', 'transition2', 'transition3', 'journal']);
   assert.equal(G.available(s.stage).filter(id => G.items[id].kind === 'Postcard').length, 22);
   G.deal(s); overlapFree(s);
@@ -226,7 +226,7 @@ test('marker lines on the maps survive a save and Tidy; bad lines are dropped', 
 test('Tidy stacks older keepsakes: postcards, maps and papers in piles, solid props put away', () => {
   // Played through without tidying: every lock's props were dealt as they arrived.
   const s = G.fresh(); G.deal(s);
-  for (const c of ['1021', '1576', '3212', '1486', '562', '104', '521', 'SOLE']) { G.attempt(s, c); G.deal(s); }
+  for (const c of ['1021', '1576', '4865', '1486', '562', '104', '532', 'SOLE']) { G.attempt(s, c); G.deal(s); }
   const before = s.table;
   G.arrange(s); overlapFree(s);
   const pile = name => G.pileMembers(s, name);
@@ -275,7 +275,7 @@ test('opening a lock never stacks anything; the last lock brings piled postcards
   const piled = id => s.pieces[id].pile;
   assert.equal(piled('L1'), 'cards'); assert.equal(piled('rolloMap'), 'maps');
   Object.assign(s.pieces.A2, { x: 2000, y: 1500 });
-  for (const c of ['2648', 'MEAD', '253']) { G.attempt(s, c); G.deal(s); }
+  for (const c of ['2648', 'MEAD', '2134']) { G.attempt(s, c); G.deal(s); }
   assert.deepEqual([s.pieces.A2.x, s.pieces.A2.y], [2000, 1500], 'a card the player laid out stays put');
   assert.ok(!s.pieces.H4.pile, 'nothing is stacked when a lock opens, even what Tidy would now pile');
   G.bringBack(s); overlapFree(s);
@@ -299,7 +299,7 @@ test('the attempt log keeps each wrong code once, newest last, and survives a sa
 test('an earlier lock’s code is recognised, a later one is not', () => {
   const s = toStage(3);
   assert.equal(G.earlierLock(s, '1576'), 1); assert.equal(G.earlierLock(s, ' 1021 '), 0);
-  assert.equal(G.earlierLock(s, '1486'), -1, 'lock 4 is the current lock'); assert.equal(G.earlierLock(s, '521'), -1);
+  assert.equal(G.earlierLock(s, '1486'), -1, 'lock 4 is the current lock'); assert.equal(G.earlierLock(s, '532'), -1);
 });
 test('play time, ratings, pinned notes and team name survive a save and are cleaned', () => {
   const s = toStage(2); Object.assign(s, { played: 123456, team: '  The   Ravens ' }); s.lockTime[0] = 5000; s.ratings[0] = 4; s.itemNotes.L1 = 'Two numbers';

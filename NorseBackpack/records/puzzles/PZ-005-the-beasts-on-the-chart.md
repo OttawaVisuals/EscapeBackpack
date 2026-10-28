@@ -16,7 +16,8 @@ mechanic: search
 difficulty: 2
 # Lock it opens: 3-digit | 4-digit | 4-letter | 3-digit-colour (blank if none)
 lock: 4-digit
-answer: 3212
+answer: 4865
+envelope_marks: ᚺᛏᛏᚦ
 # Compartment this lock closes (shown on the Locks tab)
 container: Envelope 7
 reset_display: 0000
@@ -57,7 +58,7 @@ Follow the decoy card’s imprint to one beast on the chart, identify it from ho
 
 ## Player obtains
 
-Code **3212**. Opening this lock releases PP-012, PP-014, PP-037, PP-026.
+Code **4865**. Opening this lock releases PP-012, PP-014, PP-037, PP-026.
 
 ## Story reason
 
@@ -71,21 +72,21 @@ It gives Leif’s map a job on the *front*, using the geography rather than just
 
 1. The chart is not empty. Something is drawn where the card is pointing.
 2. Are you certain which animal that is? Look at its pose and silhouette, not only its location.
-3. It is a bear. Read B, E, A, R off the index on the back of the museum ticket.
+3. It is a wolf. Read W, O, L, F off the index on the back of the museum ticket.
 
 ## Solution
 
-The postcard points to square F1 on the sea chart, where the bear is drawn. Reading B, E, A, R off the museum ticket’s visitor index gives **3212**.
+The postcard points to square A6 on the sea chart, where the wolf is drawn. Reading W, O, L, F off the museum ticket’s visitor index gives **4865**.
 
 ## Solution notes
 
 Design-side solution text, kept when the player-facing Solution above was written for the hint page (9 Oct 2026).
 
-Seven beasts, each a four-letter word: **BEAR, WOLF, SEAL, ORCA, LOON, HARE, DEER**. None is labelled; each is drawn in a setting or pose that makes it identifiable. Square F1 holds the bear, so the key is BEAR, and B/E/A/R read off the ticket index as **3212**. The other six beast codes are recorded in PP-024 in case the live pointer ever changes. The chart artwork is finished — see `TravelMap/build_trail_maps_pdf.py`.
+Seven beasts, each a four-letter word: **BEAR, WOLF, SEAL, ORCA, LOON, HARE, DEER**. None is labelled; each is drawn in a setting or pose that makes it identifiable. Square A6 holds the wolf, so the key is WOLF, and W/O/L/F read off the ticket index as **4865** (until 16 Oct 2026 the pointer was F1, the bear, BEAR 3212). The other six beast codes are recorded in PP-024 in case the live pointer ever changes. The chart artwork is finished — see `TravelMap/build_trail_maps_pdf.py`.
 
 ## Open risks
 
-**No validator, by choice** — the lock is the check. **Bear vs. wolf confirmed legible and distinct at print size, 19 Sept 2026** — no longer an open risk. Artwork is print-ready (`output/pdf/Trail_Map_1_Leif_Print.pdf`).
+**No validator, by choice** — the lock is the check. **Bear vs. wolf confirmed legible and distinct at print size, 19 Sept 2026** — no longer an open risk. Artwork is print-ready (`NorseBackpack/Print/_pdf_source/Trail_Map_1_Leif_Print.pdf`).
 
 ## Releases (as worded on the old page)
 
@@ -94,3 +95,7 @@ Seven beasts, each a four-letter word: **BEAR, WOLF, SEAL, ORCA, LOON, HARE, DEE
 **Since 7 Oct 2026 (Q-005):** lock 5; releases postcard A2, Aud’s map and Aud’s Treasure Museum ticket. ~~Postcard R2, Rollo’s trail map and the Rouen museum ticket (changed 27 Sept 2026: this is now lock 3, the last of Leif’s leg)~~
 
 Lock as recorded: Four-digit padlock. Old page status: Decided · art finished.
+
+**16 Oct 2026 (designer, envelope 6 text pass):** players struggled with this puzzle, so the pointer moved from F1 (bear) to **A6 (wolf)**: card LD's imprint now reads `Vinland Editions · Series A, No. 6`, and the answer is **WOLF 4865** (W 4, O 8, L 6, F 5 on the ticket index). The map art is unchanged (the wolf was already drawn at A6). Envelope 7 is now opened by 4865 (rune label changes). LD text pass: first line gets a comma (“Brattahlid, Greenland, where Leif…”); the spelling stays “Brattahlid” without í and ð because the handwriting font (NothingYouCouldDo) draws ð badly (tried and reverted); Fun Fact shortened to “Leif's mother built Greenland's first church here, a tiny turf one.” (saga tradition, not checked against a source); message lines 2 and 3 (the underlined “spell” clue and “a few steps”) unchanged. Not retested with players.
+
+**16 Oct 2026 (designer, Q-060):** Leif's sheet base-map pass applied: six clustered towns dropped, single name Brattahlíð, bolder dots and names. Beast art and grid squares unchanged (wolf A6, bear F1).

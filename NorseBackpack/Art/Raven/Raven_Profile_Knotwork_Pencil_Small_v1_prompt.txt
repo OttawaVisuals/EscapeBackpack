@@ -1,0 +1,8 @@
+Generated with built-in image_gen on 2026-10-17.
+Source: Raven_Profile_Knotwork_Pencil_v2.png
+
+Use case: style-transfer.
+Input image: edit target, existing simplified pencil-drawn raven and circular Norse knotwork emblem.
+Primary request: a miniature hand-drawn copy of this emblem, as a person would sketch it in a small area with the same ordinary pencil. Redesign the stroke-to-detail ratio for a small printed mark: much thicker, darker graphite strokes relative to the emblem and dramatically fewer internal details. Preserve the recognizable left-facing raven silhouette, long beak, perched pose, long diagonal tail, circular braided frame and suggestions of the two bird-head terminals at the bottom. Keep overall composition and proportions.
+Drawing style: sparse, casual human graphite sketch, naturally imperfect contours, bold soft-pencil outlines. One dot for the eye, one beak division, one curved wing boundary and only a handful of long feather strokes, a few neck flicks, simple legs and feet. The ring should be a clearly simplified braid of broad looping bands with very few crossings and no interior strand texture; bottom terminals are simple hooked beak shapes with dot eyes. Mostly empty interior surfaces, virtually no shading, no fine texture or tiny feather detailing. Recognizable as a small quick copy of the reference, not an elaborate illustration. Strong readable linework for use at roughly postage-stamp scale; render the asset itself large enough for clean reproduction, with generous margin.
+Monochrome dark graphite, genuine transparent background. No paper rectangle, no text, no extra objects, no shadow, no engraving, no densely shaded fill.

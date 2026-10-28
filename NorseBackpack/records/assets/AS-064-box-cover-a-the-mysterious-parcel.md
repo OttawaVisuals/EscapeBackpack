@@ -8,11 +8,13 @@ for: PP-045
 tool: Built-in ImageGen
 file: Art/Box/Raven_Inheritance_Box_Cover_A_v1.png
 links: [PR-007, PR-002, Q-029, Q-047, Q-052]
-superseded_by:
+superseded_by: AS-065
 tags: [packaging, kickstarter, concept]
 ---
 
 ## Direction and approval
+
+**Superseded 13 October 2026:** the designer requested a rectangular fireside-table cover; see AS-065. The square format and scene below are retained as history. Raven emblem, title and title font carry forward.
 
 11 October 2026: the designer selected direction A, "The mysterious parcel": postcards, folded map and rune-marked envelope on a warmly lit wooden table, with the existing raven emblem above the title. Direction B, a large raven on a simple green field, was not selected for this first concept.
 

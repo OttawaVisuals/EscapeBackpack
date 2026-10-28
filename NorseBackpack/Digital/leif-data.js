@@ -78,11 +78,11 @@
       'Put Battle Harbour above Baffin Island, both picture-side up. Rotate Battle Harbour twice so it is upside down, then move it until its top edge meets Baffin Island’s top edge. Use the magnifier on the join.',
       'The joined cloud fragments read 1576.'
     ] },
-    { nudge: 'A postcard from Greenland and a map of the Western Lands.', name: 'Small pouch', pocket: 'rolloPouch', answer: '3212', releases: ['R2', 'rolloMap', 'rouenTicket'], message: 'A postcard from Rouen, a map of the Granted Lands and a museum ticket.', hints: [
+    { nudge: 'A postcard from Greenland and a map of the Western Lands.', name: 'Small pouch', pocket: 'rolloPouch', answer: '4865', releases: ['R2', 'rolloMap', 'rouenTicket'], message: 'A postcard from Rouen, a map of the Granted Lands and a museum ticket.', hints: [
       'Inspect every detail on the Brattahlíð postcard, including the small print. Keep the sea chart and museum ticket nearby.',
-      '“Series F, No. 1” points to a square on the chart. What animal is there?',
-      'The animal is a bear. Spell its name using the visitor index on the back of the museum ticket, taking one digit per letter.',
-      'B → 3, E → 2, A → 1, R → 2. The combination is 3212.'
+      '“Series A, No. 6” points to a square on the chart. What animal is there?',
+      'The animal is a wolf. Spell its name using the visitor index on the back of the museum ticket, taking one digit per letter.',
+      'W → 4, O → 8, L → 6, F → 5. The combination is 4865.'
     ] },
     { nudge: 'A postcard from Rouen, a map of the Granted Lands and a museum ticket.', name: 'Lower left pocket', pocket: 'lowerLeft', answer: '1486', releases: ['R1', 'R6', 'RD'], message: 'Three more postcards.', hints: [
       'Read the Rouen postcard next to the back of the Rouen museum ticket. Some of Liv’s words have a partner on the ticket.',
@@ -103,11 +103,11 @@
       'Measure between those two places on the Granted Lands map with the architect’s ruler, on its 1:125 scale.',
       'The distance measures 104 on the 1:125 scale. The combination is 104.'
     ] },
-    { nudge: 'A postcard from Iceland, a map of the Island Settlement and a museum ticket.', name: 'Lower front pocket, again', pocket: 'lowerFront', answer: '521', releases: ['A1', 'A3', ...coinIds, 'tally'], message: 'Two more postcards, a pouch of coins and a little tally.', hints: [
+    { nudge: 'A postcard from Iceland, a map of the Island Settlement and a museum ticket.', name: 'Lower front pocket, again', pocket: 'lowerFront', answer: '532', releases: ['A1', 'A3', ...coinIds, 'tally'], message: 'Two more postcards, a pouch of coins and a little tally.', hints: [
       'The Island Settlement map and the Treasure Museum ticket go together: the ticket gives directions, and the Hvammur card says what to count on the way.',
       'Start at the northernmost chapel on the Island Settlement map and follow the ticket’s six steps along the roads.',
       'As you go, count the bridges, the fords and the gates you cross. Keep three separate tallies, in that order.',
-      '5 bridges, 2 fords, 1 gate. The combination is 521.'
+      '5 bridges, 3 fords, 2 gates. The combination is 532.'
     ] },
     { nudge: 'Two more postcards, a pouch of coins and a little tally.', name: 'Inside top pocket', pocket: 'insideTop', answer: 'SOLE', releases: ['AD', 'comb'], message: 'A postcard from Bjarnarhöfn and a carved comb.', hints: [
       'Not every coin belongs to the same hoard. The front of the Treasure Museum ticket sorts them into three groups and gives their values.',
@@ -133,11 +133,11 @@
       'Staraya Ladoga spells DRINK, Kyiv’s riddle answers HONEY, and Constantinople’s pictures (sugar and yeast becoming a fizzing flask) mean FERMENTED. A fermented honey drink is…',
       'MEAD. The combination is MEAD.'
     ] },
-    { nudge: 'The Oslo postcard, a Hnefatafl board with its pieces, and a museum ticket.', name: 'Large pouch, last time', pocket: 'largePouch', answer: '253', releases: ['H6', 'transition1', 'transition2', 'transition3', 'journal'], message: 'The last postcard, three booking confirmations and a page from Liv’s journal.', hints: [
-      'The back of the Varangian Road map is Liv’s note of a Hnefatafl starting position. Set the pieces out on the board to match it.',
+    { nudge: 'The Oslo postcard, a Hnefatafl board with its pieces, and a museum ticket.', name: 'Large pouch, last time', pocket: 'largePouch', answer: '2134', releases: ['H6', 'transition1', 'transition2', 'transition3', 'journal'], message: 'The last postcard, three booking confirmations and a page from Liv’s journal.', hints: [
+      'The back of the Varangian Road map is Liv’s note of a Hnefatafl starting position. Set the pieces out on the board to match it. Two numbered arrows show the first two dark moves.',
       'A wet ticket ruined columns I to K of her note. The museum ticket carries them: turn it over until you can see it held up to the light, the right way round.',
-      'The Oslo postcard says the king escapes in exactly three moves. The king starts on the centre square and slides like a rook, never jumping, until it reaches a corner. Count the squares of each move.',
-      'F6 → H6 → H11 → K11: moves of 2, 5 and 3 squares. The combination is 253.'
+      'The Oslo postcard says the king escapes in exactly four moves. Dark moves first, then the king, four times: the arrows are the first two dark moves, Liv’s riddle is the third and the shield icon on the map marks the last. The king starts on the centre square and slides like a rook, never jumping, until it reaches a corner. Count the squares of each move.',
+      'F6 → H6 → H7 → K7 → K11: moves of 2, 1, 3 and 4 squares. The combination is 2134.'
     ] },
     // The final riddle (PZ-18, PZ-06): filter the decoys, order each trail, draw it on its map.
     { nudge: 'The last postcard, three booking confirmations and a page from Liv’s journal.', name: 'Inside middle pocket', pocket: 'insideMiddle', answer: '1972', releases: ['medallion'], message: 'A plane ticket, a medallion and a note from Liv.', hints: [

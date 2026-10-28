@@ -16,7 +16,7 @@ from reportlab.lib.utils import ImageReader
 
 ROOT = Path(__file__).resolve().parents[2]
 POSTCARDS = ROOT / "NorseBackpack" / "Postcards"
-OUT = ROOT / "output" / "pdf" / "Postcard_L2_L3_TopEdge_Test.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_L2_L3_TopEdge_Test.pdf"
 
 DPI = 300.0  # 1800x1200 art over a 6 x 4 in card
 STRIP_PX = 360  # crop height in front pixels; digits sit in roughly the first 40-50 px

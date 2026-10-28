@@ -11,8 +11,8 @@ from postcard_marks import draw_mark
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "output" / "pdf" / "Postcard_H1_Oslo_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_H1_Oslo_Letter_Print.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_H1_Oslo_Print.pdf"
+OUT_LETTER = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_H1_Oslo_Letter_Print.pdf"
 FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_H1_Oslo_Front.png"
 STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Harald_Dane_Axe_v1.png"
 FONT_DIR = ROOT / "Fonts"
@@ -21,6 +21,8 @@ PAGE = (6 * 72, 4 * 72)  # 6 x 4 in since 13 Oct 2026 (was 5 x 3.5)
 W, H = PAGE
 LETTER = (8.5 * 72, 11 * 72)
 PAPER = HexColor("#EFE3C4")
+# 20 Oct 2026 (designer): no beige fill behind the back; it prints on the paper itself. True restores it.
+PAPER_BACKGROUND = False
 NAVY = HexColor("#12343C")
 TEAL = HexColor("#2F7775")
 RULE = HexColor("#A99A7B")
@@ -69,10 +71,14 @@ def draw_back_card(c, x=0, y=0):
     # card edge so a slightly-off cut or duplex registration never shows a white band; only
     # the sheet crop marks define trim. Confirmed on the L1/L2 print test, 2026-09-27.
     BLEED = 1.5 / 25.4 * 72
-    c.setFillColor(PAPER)
-    c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
+    if PAPER_BACKGROUND:
+        c.setFillColor(PAPER)
+        c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.7)
+    # 14 Oct 2026 (designer): thin border back "for now" (removed 7 Oct 2026 because off-centre
+    # duplex prints made it look uneven). 12 pt in: the old 10 pt, 1.2x for the 6 x 4 card.
+    c.rect(12, 12, W - 24, H - 24, fill=0, stroke=1)
 
     # 13 Oct 2026 (designer, after playtest 1): the card is now 6 x 4 in, layout B. The divider
     # moves right (x 184 of 360 -> 276 of 432) for a wider message column; message 11.5 pt
@@ -93,14 +99,17 @@ def draw_back_card(c, x=0, y=0):
     # in 3 moves" (which does not by itself produce a code).
     # 20 Sept 2026 (PZ-18): dropped "and the obvious place to begin with him" -- a card may not
     # state its own position (rule 1). The Aud->Harald transition ticket proves H1 opens the leg.
+    # 17 Oct 2026 (designer, Q-063): turn order added ("Each round, a dark piece moves first, as my notes show,
+    # then the king."), wording proposed by Claude and chosen in chat.
     paragraphs = [
         "I'm spending a whole week in Oslo, so much to do!",
         "It's Harald's city — so much Viking history.",
         "Found the quirkiest little museum near the harbour, all about hnefatafl, the "
         "chess-like old board game the Vikings loved and that we used to play with our own "
         "rules when you were younger. Grabbed you a little souvenir from the gift shop so "
-        "you can try — can you get the king to escape in exactly 3 moves? Count how far "
-        "he travels each time.",
+        "you can try — can you get the king to escape in exactly 4 moves? Each round, a dark "
+        "piece moves first, as my notes show, then the king. Count how far "
+        "he travels each time. I've set up the board for you, good luck!",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 11.5, 12.8

@@ -11,8 +11,8 @@ from postcard_marks import draw_mark
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "output" / "pdf" / "Postcard_R6_Roumare_Forest_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_R6_Roumare_Forest_Letter_Print.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_R6_Roumare_Forest_Print.pdf"
+OUT_LETTER = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_R6_Roumare_Forest_Letter_Print.pdf"
 FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_R6_Roumare_Forest_Front.png"
 STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Rollo_Comet_v2_flat.png"
 FONT_DIR = ROOT / "Fonts"
@@ -21,6 +21,8 @@ PAGE = (6 * 72, 4 * 72)  # 6 x 4 in since 13 Oct 2026 (was 5 x 3.5)
 W, H = PAGE
 LETTER = (8.5 * 72, 11 * 72)
 PAPER = HexColor("#EFE3C4")
+# 20 Oct 2026 (designer): no beige fill behind the back; it prints on the paper itself. True restores it.
+PAPER_BACKGROUND = False
 NAVY = HexColor("#12343C")
 TEAL = HexColor("#2F7775")
 RULE = HexColor("#A99A7B")
@@ -32,7 +34,7 @@ pdfmetrics.registerFont(TTFont("NothingYouCouldDo", str(FONT_DIR / "Nothing_You_
 
 
 def wrap_text(text, font, size, width):
-    words = text.split()
+    words = text.split(" ")
     lines, current = [], ""
     for word in words:
         candidate = f"{current} {word}".strip()
@@ -68,10 +70,14 @@ def draw_back_card(c, x=0, y=0):
     # card edge so a slightly-off cut or duplex registration never shows a white band; only
     # the sheet crop marks define trim. Confirmed on the L1/L2 print test, 2026-09-27.
     BLEED = 1.5 / 25.4 * 72
-    c.setFillColor(PAPER)
-    c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
+    if PAPER_BACKGROUND:
+        c.setFillColor(PAPER)
+        c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.7)
+    # 14 Oct 2026 (designer): thin border back "for now" (removed 7 Oct 2026 because off-centre
+    # duplex prints made it look uneven). 12 pt in: the old 10 pt, 1.2x for the 6 x 4 card.
+    c.rect(12, 12, W - 24, H - 24, fill=0, stroke=1)
 
     # 13 Oct 2026 (designer, after playtest 1): the card is now 6 x 4 in, layout B. The divider
     # moves right (x 184 of 360 -> 276 of 432) for a wider message column; message 11.5 pt
@@ -98,8 +104,8 @@ def draw_back_card(c, x=0, y=0):
     # 28 Sept 2026 (postcard update, batch 1 -- Leif + Rollo): message rewritten. Text from the user's
     # Postcard update tab export; message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     paragraphs = [
-        'Rollo’s own Normandy, and this little forest just outside Rouen has a local legend all its own, though nobody can really pin the story down.',
-        'What I can tell you is the wild boars are real: I counted a few slipping through the beech and oak, and for every one I actually saw, I’d bet good money there was a second one just out of sight.',
+        'Rollo’s own Normandy, in this little forest just outside Rouen.',
+        'The wild boars are real: I counted a few slipping through the beech and oak, and for every one I actually saw, I’d bet good money there was a second one just out of sight.',
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 11.5, 12.8
@@ -170,7 +176,7 @@ def draw_back_card(c, x=0, y=0):
     # 28 Sept 2026 (postcard update, batch 1 -- Leif + Rollo): Fun Fact rewritten. Text from the user's
     # Postcard update tab export; message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        'In the year 911, the Treaty of Saint-Clair-sur-Epte handed Rollo all of Normandy, with Rouen as his new capital: the deal that turned a Viking raider into a duke.'
+        'In 911 CE, the Treaty of Saint-Clair-sur-Epte made Rollo ruler of Normandy.'
     )
     fact_y = funfact_top - 26
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

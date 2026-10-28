@@ -17,11 +17,12 @@ difficulty: 3
 # Lock it opens: 3-digit | 4-digit | 4-letter | 3-digit-colour (blank if none)
 lock: 4-letter
 answer: SOLE
+envelope_marks: ᛏᚾᚠᛖ
 # Compartment this lock closes (shown on the Locks tab)
 container: Envelope 8
 reset_display: LOCK
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
-hint_title: Just opened ᛈᛞᛁᛟ
+hint_title: Just opened ᚺᛏᛏᚦ
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.
 publish_hints: yes
 # Independent of design/build status: untested | passed | changes-needed
@@ -53,7 +54,7 @@ Loose mixed hoard of 12 coins (dirham, denier, Norse), the museum ticket’s Coi
 
 ## Player does
 
-Sort the loose coins by face against the ticket’s Coin Room. The fehu rune beside the treasure cave on Aud’s map matches the ticket’s Norse group; add those three coins’ values ($5 + $100 + $3,600 = 3705) and rotate the entire tally 180 degrees.
+Sort the loose coins by face against the ticket’s Coin Room. The fehu rune beside the ruin at the end of the route on Aud’s map matches the ticket’s Norse group; add those three coins’ values ($5 + $100 + $3,600 = 3705) and rotate the entire tally 180 degrees.
 
 ## Player obtains
 
@@ -70,7 +71,7 @@ A1 (rewritten 25 Sept 2026): historical coins that ‘fetch a pretty penny’. A
 ## Hints
 
 1. Your museum ticket has a coin room. Sort the coins into its three groups.
-2. The treasure hunt ended at a cave. Look at the mark beside it on Aud’s map, then find the same mark on the ticket: only those coins count.
+2. The treasure hunt ended in the wood beyond a ruin. Look at the mark beside it on Aud’s map, then find the same mark on the ticket: only those coins count.
 3. Add up what those coins are worth on the ticket and set the total on the treasure tally.
 4. Turn the whole tally upside down and read the four characters from left to right.
 
@@ -100,7 +101,7 @@ Lock as recorded: Dedicated four-letter lock; check dial letters. Old page statu
 
 **Aud’s coin-value tally gives SOLE.**
 
-Three piles, one per real-history currency (dirham/denier/Viking), each its own small natural find with a common-to-rare spread. The cache mark (the fehu rune beside the treasure cave, matched to the ticket’s Coin Room key, 24 Sept 2026) selects the Viking pile from the loose hoard; its three coins (rates 5, 100, 3600) convert to 3705, recorded and rotated to read SOLE. A1 and A3 messages rewritten by the user and rebuilt, 25 Sept 2026 (“pretty penny”, “head is spinning”). See Approved changes and [the hoard prop] for the full currency/coin design. Device choice and physical coin fabrication remain open (PP-026/25).
+Three piles, one per real-history currency (dirham/denier/Viking), each its own small natural find with a common-to-rare spread. The cache mark (the fehu rune beside the ruin at the end of the route, matched to the ticket’s Coin Room key, 24 Sept 2026) selects the Viking pile from the loose hoard; its three coins (rates 5, 100, 3600) convert to 3705, recorded and rotated to read SOLE. A1 and A3 messages rewritten by the user and rebuilt, 25 Sept 2026 (“pretty penny”, “head is spinning”). See Approved changes and [the hoard prop] for the full currency/coin design. Device choice and physical coin fabrication remain open (PP-026/25).
 
 **Superseded specification · before 22 September 2026**
 
@@ -113,3 +114,7 @@ Aud’s coin weight supplies the owned four-letter-lock answer.
 **Changed from a five-letter to a four-letter lock:** the owned lock takes `SOLE`; `KAMBR` (5 letters) is dropped from this slot and `MEAD` is superseded (now a pinned idea for Harald’s trail instead, PZ-004).
 **Mechanism:** after the treasure-map code opens the hoard, players sort all released coins into their three types. The treasure square’s cache mark identifies the one pile to weigh. Dögurðarnes gives the weighing task; Esjuberg’s upside-down art and Liv’s scale-display sketch, with the final digit crossed out, tell players to read `370.56` as `370.5`, then upside down as `SOLE`.
 **Still open:** exact route clues, coin designs/counts and physical mass calibration (PZ-006, PP-037).
+
+**16 Oct 2026 (designer, Q-057), envelope 7 text pass:** A1 and A3 Fun Facts shortened (PP-012, PP-014); A3's message gains “I added it all up on my trusty old counter, and my head is still spinning.” so players know what the tally is for. Open flags, not changed: the coin hoard arrives in envelope 7 but the card messages say the coins came “at the end of the treasure hunt” (that hunt ends in envelope 5), and the puzzle needs Aud's ticket (Coin Room key) and map (cave marks) from envelope 4 to be kept out; the dögurður meaning was checked (C&V: the main day-meal; place named from a settler's first meal), one source only; see PP-012. Not retested.
+
+**17 Oct 2026 (designer):** wording fixed to match the v15 map and the ticket: the hunt ends in the wood beyond the ruin at I9, where the fehu mark is; the only cave on the map is a scenery icon at G1, away from the route. The “cave” in the older notes of this record and in PZ-006 is history (the earlier map ended the route at a cave).

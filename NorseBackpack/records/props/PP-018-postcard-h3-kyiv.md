@@ -10,7 +10,8 @@ form: printed
 source: print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
-found_in: PZ-003
+found_in: PZ-002
+envelope: PZ-002
 # Physical pocket/container or location; availability remains in found_in above.
 container: Envelope 3
 after_game: return
@@ -51,3 +52,5 @@ There are 22 postcards: each goes back with the lock it came from, as listed bel
 ## Replacement
 
 Reprint from the print file if damaged.
+
+**15 Oct 2026 (designer, PZ-004):** Fun Fact shortened to “Harald married Elisiv, daughter of Kyiv's Grand Prince Yaroslav.” Message unchanged (riddle HONEY).

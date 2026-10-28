@@ -22,8 +22,8 @@ Storage/
 # Norse commits only what the website uses. Binary files under
 # NorseBackpack/ are ignored unless listed with ! below. Rerun the
 # script to refresh this block; do not edit it by hand.
-output/pdf/
-output/docx/
+NorseBackpack/Print/_pdf_source/
+NorseBackpack/Print/
 NorseBackpack/**/*.png
 NorseBackpack/**/*.jpg
 NorseBackpack/**/*.jpeg
@@ -46,6 +46,7 @@ NorseBackpack/**/*.otf
 NorseBackpack/**/*.mp4
 NorseBackpack/**/*.mov
 !NorseBackpack/Art/Box/Raven_Inheritance_Box_Cover_A_v1.png
+!NorseBackpack/Art/Box/Raven_Inheritance_Box_Cover_Fireside_v2.png
 !NorseBackpack/Art/Brand/Norse_Backpack_Scene_v1.png
 !NorseBackpack/Art/FinalPuzzle/Family_Crest_Six_Field_v2.png
 !NorseBackpack/Art/FinalPuzzle/Family_Symbol_Three_Field_v2.png
@@ -67,6 +68,11 @@ NorseBackpack/**/*.mov
 !NorseBackpack/Digital/assets/Medallion_Back.webp
 !NorseBackpack/Digital/assets/Medallion_Front.webp
 !NorseBackpack/Digital/assets/Raven_Postmark.png
+!NorseBackpack/Print/Print_LivNotesCard.docx
+!NorseBackpack/Print/Print_LongshipFerries_Green_Paper.docx
+!NorseBackpack/Print/Print_NordicAir_Flights_Sage_Paper.docx
+!NorseBackpack/Print/Print_NordmarkRail_Trains_Coral_Paper.docx
+!NorseBackpack/Print/Print_NorthwayBuses_Yellow_Paper.docx
 !NorseBackpack/Props/Coins/01_dirham_common.png
 !NorseBackpack/Props/Coins/02_dirham_rare.png
 !NorseBackpack/Props/Coins/03_denier_common.png
@@ -75,10 +81,12 @@ NorseBackpack/**/*.mov
 !NorseBackpack/Props/Coins/06_york_cross.png
 !NorseBackpack/Props/Coins/07_raven.png
 !NorseBackpack/Props/Coins/Coin_Face_Artwork.zip
+!NorseBackpack/Props/Coins/Coin_Faces_Overview.png
 !NorseBackpack/Props/Comb/Aud_Comb_on_AD.png
 !NorseBackpack/Props/Comb/Aud_Comb_preview.png
 !NorseBackpack/Props/Comb/knotwork.png
 !NorseBackpack/Props/Hnefatafl/Hnefatafl_Incomplete_Board_Sketch_v3.png
+!NorseBackpack/Props/Hnefatafl/Hnefatafl_Ticket_Back_Smudged_v2.png
 !NorseBackpack/Props/Hnefatafl/Hnefatafl_Transferred_Ink_Paper_v1.png
 !NorseBackpack/Props/LockStickers/Concepts/A-standing-stone-6.png
 !NorseBackpack/Props/LockStickers/Longship_Blank_Sail.png
@@ -92,10 +100,10 @@ NorseBackpack/**/*.mov
 !NorseBackpack/Props/Medallion/sources/Selected_Back_Reference.png
 !NorseBackpack/Props/Medallion/sources/Selected_Front_Reference.png
 !NorseBackpack/Props/MuseumTicket/Museum_Ticket_Back_300dpi_v2.png
-!NorseBackpack/Props/MuseumTicket/Museum_Ticket_Front_300dpi_v2.png
 !NorseBackpack/Props/RavenFlights/Raven_Flights_Card_preview.png
 !NorseBackpack/Props/RouenTicket/Rouen_Ticket_Back_300dpi.png
 !NorseBackpack/Props/RouenTicket/Rouen_Ticket_Front_300dpi.png
+!NorseBackpack/Props/SoleTally/SOLE_ring_check.png
 !NorseBackpack/Props/_Renders/Aud_Ticket_Back.png
 !NorseBackpack/Props/_Renders/Aud_Ticket_Front.png
 !NorseBackpack/Props/_Renders/Hnefatafl_Board_Setup_Insert_Insert.png
@@ -114,14 +122,6 @@ NorseBackpack/**/*.mov
 !NorseBackpack/Props/_Renders/Transition_Tickets_Ticket1.png
 !NorseBackpack/Props/_Renders/Transition_Tickets_Ticket2.png
 !NorseBackpack/Props/_Renders/Transition_Tickets_Ticket3.png
-!NorseBackpack/Review_2026-09-22/Aud_Ticket_PLAYER_ONLY.pdf
-!NorseBackpack/Review_2026-09-22/Journal_Family_Iconography_Review.pdf
-!NorseBackpack/Review_2026-09-22/Playtest_Clue_Inserts_Review.pdf
-!NorseBackpack/Review_2026-09-22/Previews/Aud_Ticket_PLAYER_ONLY_1.png
-!NorseBackpack/Review_2026-09-22/Previews/Journal_Family_Iconography_Review_1.png
-!NorseBackpack/Review_2026-09-22/Previews/Playtest_Clue_Inserts_Review_1.png
-!NorseBackpack/Review_2026-09-22/Previews/Trail_Map_4_Harald_Rune_Review_1.png
-!NorseBackpack/Review_2026-09-22/Trail_Map_4_Harald_Rune_Review.pdf
 !NorseBackpack/TravelMap/Art/Leif_Orca_v1.png
 !NorseBackpack/TravelMap/Art/Leif_Polar_Bear_v1.png
 !NorseBackpack/TravelMap/Art/Rollo_Boar_v1.png
@@ -205,6 +205,31 @@ NorseBackpack/**/*.mov
 !NorseBackpack/Web/Postcards/Stamps/Stamp_Harald_Dane_Axe_v1.webp
 !NorseBackpack/Web/Postcards/Stamps/Stamp_Leif_Longship_v2_flat.webp
 !NorseBackpack/Web/Postcards/Stamps/Stamp_Rollo_Comet_v2_flat.webp
+!NorseBackpack/Web/adventure/Aud_Ticket_Print_p1.png
+!NorseBackpack/Web/adventure/Aud_Ticket_Print_p2.png
+!NorseBackpack/Web/adventure/Cypher_Wheel_Assembled_Preview_p1.png
+!NorseBackpack/Web/adventure/Hnefatafl_Board_Setup_Insert_p1.png
+!NorseBackpack/Web/adventure/Hnefatafl_Ticket_Print_p1.png
+!NorseBackpack/Web/adventure/Hnefatafl_Ticket_Print_p2.png
+!NorseBackpack/Web/adventure/Liv_Final_Letter_Print_p1.png
+!NorseBackpack/Web/adventure/Liv_Notes_Card_Print_p1.png
+!NorseBackpack/Web/adventure/Liv_Notes_Card_Print_p2.png
+!NorseBackpack/Web/adventure/Liv_Ruler_Print_p1.png
+!NorseBackpack/Web/adventure/Longship_Ferries_Letter_Print_p1.png
+!NorseBackpack/Web/adventure/Museum_Ticket_Print_p1.png
+!NorseBackpack/Web/adventure/Museum_Ticket_Print_p2.png
+!NorseBackpack/Web/adventure/Nordic_Air_Letter_Print_p1.png
+!NorseBackpack/Web/adventure/Nordmark_Rail_Letter_Print_p1.png
+!NorseBackpack/Web/adventure/Northway_Buses_Letter_Print_p1.png
+!NorseBackpack/Web/adventure/Plane_Ticket_Print_p1.png
+!NorseBackpack/Web/adventure/Raven_Flights_Card_Print_p1.png
+!NorseBackpack/Web/adventure/Rouen_Ticket_Print_p1.png
+!NorseBackpack/Web/adventure/Rouen_Ticket_Print_p2.png
+!NorseBackpack/Web/adventure/Trail_Map_1_Leif_Print_p1.png
+!NorseBackpack/Web/adventure/Trail_Map_2_Rollo_Print_p1.png
+!NorseBackpack/Web/adventure/Trail_Map_3_Aud_Print_p1.png
+!NorseBackpack/Web/adventure/Trail_Map_4_Harald_Print_p1.png
+!NorseBackpack/Web/adventure/Trail_Map_4_Harald_Print_p2.png
 !NorseBackpack/Web/pdf/Aud_Ticket_Letter_Print.pdf
 !NorseBackpack/Web/pdf/Aud_Ticket_Print.pdf
 !NorseBackpack/Web/pdf/Hnefatafl_Board_Setup_Insert.pdf
@@ -212,9 +237,14 @@ NorseBackpack/**/*.mov
 !NorseBackpack/Web/pdf/Hnefatafl_Ticket_Print.pdf
 !NorseBackpack/Web/pdf/Journal_Family_Iconography_Letter_Print.pdf
 !NorseBackpack/Web/pdf/Journal_Family_Iconography_Print.pdf
+!NorseBackpack/Web/pdf/Liv_Notes_Card_Print.pdf
+!NorseBackpack/Web/pdf/Longship_Ferries_Letter_Print.pdf
 !NorseBackpack/Web/pdf/Luggage_Tag_Inserts_Print.pdf
 !NorseBackpack/Web/pdf/Museum_Ticket_Print.pdf
+!NorseBackpack/Web/pdf/Nordic_Air_Letter_Print.pdf
+!NorseBackpack/Web/pdf/Nordmark_Rail_Letter_Print.pdf
 !NorseBackpack/Web/pdf/Norse_Postcards_Full_Print.pdf
+!NorseBackpack/Web/pdf/Northway_Buses_Letter_Print.pdf
 !NorseBackpack/Web/pdf/Postcard_A1_Dogurdarnes_Print.pdf
 !NorseBackpack/Web/pdf/Postcard_A2_Hvammur_Print.pdf
 !NorseBackpack/Web/pdf/Postcard_A3_Esjuberg_Print.pdf
@@ -239,9 +269,7 @@ NorseBackpack/**/*.mov
 !NorseBackpack/Web/pdf/Postcard_RD_Walcheren_Print.pdf
 !NorseBackpack/Web/pdf/Raven_Flights_Card_Print.pdf
 !NorseBackpack/Web/pdf/Rouen_Ticket_Print.pdf
-!NorseBackpack/Web/pdf/Trail_Map_1_Leif_ANSWER.pdf
 !NorseBackpack/Web/pdf/Trail_Map_1_Leif_Print.pdf
-!NorseBackpack/Web/pdf/Trail_Map_2_Rollo_ANSWER.pdf
 !NorseBackpack/Web/pdf/Trail_Map_2_Rollo_Print.pdf
 !NorseBackpack/Web/pdf/Trail_Map_3_Aud_ANSWER.pdf
 !NorseBackpack/Web/pdf/Trail_Map_3_Aud_Print.pdf
@@ -249,7 +277,6 @@ NorseBackpack/**/*.mov
 !NorseBackpack/Web/pdf/Trail_Map_4_Harald_Print.pdf
 !NorseBackpack/Web/pdf/Transition_Tickets_Letter_Print.pdf
 !NorseBackpack/Web/pdf/Transition_Tickets_Print.pdf
-!NorseBackpack/assets/logo.png
 # <<< Norse web assets
 # backpack-kit build output for the Norse records (rebuild with kit.py build)
 NorseBackpack/site/

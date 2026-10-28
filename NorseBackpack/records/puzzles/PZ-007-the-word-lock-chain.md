@@ -17,6 +17,7 @@ difficulty: 3
 # Lock it opens: 3-digit | 4-digit | 4-letter | 3-digit-colour (blank if none)
 lock: 4-digit
 answer: 1486
+envelope_marks: ᛒᚠᛞᛉ
 # Compartment this lock closes (shown on the Locks tab)
 container: Envelope 9
 reset_display: 0000
@@ -120,3 +121,5 @@ Lock as recorded: 4-digit numeric combo lock — hardware not owned yet. Old pag
 ## Playtest evidence
 
 **Playtest 1** (feedback relayed by the designer 11 Oct 2026; playtest date, team and hint use not recorded). Ticket list too easy: some pairs lined up straight across. Ticket rebuilt (PP-033); retest needed.
+
+**16 Oct 2026 (designer, Q-057, Q-060):** envelope 8 text pass: R2 Fun Fact trimmed (PP-006), message unchanged. The ticket was already cut to 11 pairs and re-jumbled on 11 Oct 2026 (PP-033), so no further change. Rollo's map base-map pass applied (PP-032); no icon or square moved, so 1486 stands. Not retested.

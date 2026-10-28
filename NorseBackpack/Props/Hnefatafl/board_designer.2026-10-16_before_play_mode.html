@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hnefatafl Board Designer — 11×11 sandbox</title>
+<style>
+  :root{
+    --paper:#EFE3C4; --ink:#283B34; --rust:#B56A2A; --rule:#A99A7B;
+    --cream:#F4EEDD; --cell-a:#f4e9ce; --cell-b:#ebe0c4; --corner:#ba8b44;
+    --dark:#233e32; --light:#f9f2d9;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 Georgia,serif;padding:24px 16px 60px}
+  h1{font-size:22px;margin:0 0 4px;text-align:center}
+  p.lede{max-width:680px;margin:0 auto 22px;text-align:center;color:#5a5142;font-size:13.5px}
+  .wrap{display:flex;gap:26px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+  .boardcol{display:flex;flex-direction:column;align-items:center;gap:12px}
+  .board{display:grid;grid-template-columns:repeat(11,42px);grid-template-rows:repeat(11,42px);
+    border:4px solid #345247;background:#345247;gap:1px}
+  .cell{background:var(--cell-a);position:relative;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;user-select:none}
+  .cell.b{background:var(--cell-b)}
+  .cell.corner{box-shadow:inset 0 0 0 3px var(--corner)}
+  .cell.throne{box-shadow:inset 0 0 0 3px var(--rust)}
+  .cell.legal{box-shadow:inset 0 0 0 3px #4a7a5c}
+  .cell.selected{box-shadow:inset 0 0 0 3px #1c4a2e}
+  .piece{width:30px;height:30px;border-radius:50%;pointer-events:none}
+  .piece.attacker{background:var(--dark);border:1.5px solid #10201a}
+  .piece.defender{background:var(--light);border:1.5px solid #b7ac86}
+  .piece.king{background:var(--light);border:2px solid var(--rust);display:flex;align-items:center;
+    justify-content:center;font-size:16px;color:var(--rust);font-weight:700}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:420px}
+  button{font:600 12px Georgia,serif;padding:7px 12px;border-radius:6px;border:1px solid var(--rule);
+    background:var(--cream);color:var(--ink);cursor:pointer}
+  button.active{background:var(--rust);color:var(--cream);border-color:var(--rust)}
+  button.primary{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+  .status{min-height:20px;font-size:13px;color:#5a5142;text-align:center;max-width:460px}
+  .side{width:340px;max-width:90vw}
+  .side h2{font-size:15px;margin:0 0 8px}
+  .side .card{background:var(--cream);border:1px solid var(--rule);border-radius:8px;padding:12px 14px;margin-bottom:14px}
+  .side .card p{margin:4px 0;font-size:12.5px}
+  .counts{display:flex;gap:14px;font-size:12.5px;justify-content:center;flex-wrap:wrap}
+  .counts b{color:var(--rust)}
+  textarea{width:100%;height:160px;font:11.5px/1.4 ui-monospace,Consolas,monospace;padding:8px;
+    border:1px solid var(--rule);border-radius:6px;background:#fff;color:var(--ink);resize:vertical}
+  .legend{display:flex;gap:14px;font-size:12px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .swatch{width:14px;height:14px;border-radius:50%;display:inline-block}
+  .swatch.attacker{background:var(--dark)}
+  .swatch.defender{background:var(--light);border:1.5px solid #b7ac86}
+  .swatch.king{background:var(--light);border:2px solid var(--rust)}
+</style>
+</head>
+<body>
+
+<h1>Hnefatafl Board Designer</h1>
+<p class="lede">11&times;11 sandbox for finding the King's Escape puzzle's final layout (Escape Backpack, Norse project).
+Starting position below is an adapted tafl-style opening (inspired by traditional 8-defender ring patterns like
+Tablut's), not a verified historical ruleset for this exact board size &mdash; free to rearrange however you like.
+Move pieces by sliding (click a piece, then a highlighted destination); captures happen automatically when you
+sandwich an enemy piece between two of your own. This is a design sandbox, not a rules-enforced game &mdash; nothing
+stops illegal-looking positions if you use Place/Remove mode.</p>
+
+<div class="wrap">
+  <div class="boardcol">
+    <div class="toolbar">
+      <button id="modeMove" class="active">Move pieces</button>
+      <button id="modePlace">Place / edit</button>
+      <button id="reset">Reset to start</button>
+      <button id="clear">Clear board</button>
+    </div>
+    <div id="placeTools" class="toolbar" style="display:none">
+      <button data-place="attacker">+ Attacker</button>
+      <button data-place="defender">+ Defender</button>
+      <button data-place="king">+ King</button>
+      <button data-place="empty">Erase</button>
+    </div>
+    <div class="board" id="board"></div>
+    <div class="legend">
+      <span><span class="swatch attacker"></span>Attacker</span>
+      <span><span class="swatch defender"></span>Defender</span>
+      <span><span class="swatch king"></span>King</span>
+      <span>Gold outline = corner (escape)</span>
+      <span>Rust outline = throne</span>
+    </div>
+    <div class="status" id="status">Click a piece to select it, then click a highlighted square to move.</div>
+    <div class="counts" id="counts"></div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <h2>Turn</h2>
+      <p id="turnLabel">Free play &mdash; no turn order enforced.</p>
+      <button id="toggleTurns">Enforce alternating turns: off</button>
+    </div>
+    <div class="card">
+      <h2>Current layout (for board_layout.py)</h2>
+      <p style="margin-top:0">Copy this into a future update of <code>Props/Hnefatafl/board_layout.py</code> once you've settled on a final position.</p>
+      <textarea id="export" readonly></textarea>
+    </div>
+  </div>
+</div>
+
+<script>
+const SIZE = 11;
+const CENTER = 5; // 0-indexed -> true centre on an 11x11 board
+const CORNERS = new Set([coordKey(0,0), coordKey(0,SIZE-1), coordKey(SIZE-1,0), coordKey(SIZE-1,SIZE-1)]);
+const THRONE = coordKey(CENTER, CENTER);
+
+function coordKey(x,y){ return x+','+y; }
+function coordLabel(x,y){ return String.fromCharCode(65+x) + (y+1); }
+
+function defaultLayout(){
+  const board = {};
+  // King on the true centre throne.
+  board[THRONE] = {type:'king', side:'defender'};
+  // 8 defenders in a ring at distance 1 (orthogonal + diagonal) -- Tablut's classic pattern, scaled.
+  const ring = [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+  ring.forEach(([dx,dy]) => {
+    board[coordKey(CENTER+dx, CENTER+dy)] = {type:'piece', side:'defender'};
+  });
+  // 20 attackers: a straight row of 5, centred on the throne's column/row, at each edge.
+  const span = [CENTER-2, CENTER-1, CENTER, CENTER+1, CENTER+2];
+  span.forEach(v => {
+    board[coordKey(v, 0)] = {type:'piece', side:'attacker'};
+    board[coordKey(v, SIZE-1)] = {type:'piece', side:'attacker'};
+    board[coordKey(0, v)] = {type:'piece', side:'attacker'};
+    board[coordKey(SIZE-1, v)] = {type:'piece', side:'attacker'};
+  });
+  return board;
+}
+
+let board = defaultLayout();
+let mode = 'move'; // 'move' | 'place'
+let placeType = 'attacker';
+let selected = null; // coordKey of selected piece
+let legalMoves = [];
+let turn = 'attacker'; // whose turn, only matters if enforceTurns
+let enforceTurns = false;
+
+const boardEl = document.getElementById('board');
+const statusEl = document.getElementById('status');
+const countsEl = document.getElementById('counts');
+const exportEl = document.getElementById('export');
+const turnLabelEl = document.getElementById('turnLabel');
+
+function cellClass(x,y){
+  const classes = ['cell'];
+  if ((x+y) % 2 === 1) classes.push('b');
+  const key = coordKey(x,y);
+  if (CORNERS.has(key)) classes.push('corner');
+  if (key === THRONE) classes.push('throne');
+  if (selected === key) classes.push('selected');
+  if (legalMoves.includes(key)) classes.push('legal');
+  return classes.join(' ');
+}
+
+function render(){
+  boardEl.innerHTML = '';
+  for (let y = SIZE-1; y >= 0; y--){
+    for (let x = 0; x < SIZE; x++){
+      const key = coordKey(x,y);
+      const cell = document.createElement('div');
+      cell.className = cellClass(x,y);
+      cell.dataset.x = x; cell.dataset.y = y;
+      cell.title = coordLabel(x,y);
+      const occ = board[key];
+      if (occ){
+        const p = document.createElement('div');
+        p.className = 'piece ' + (occ.type === 'king' ? 'king' : occ.side);
+        if (occ.type === 'king') p.textContent = '♚';
+        cell.appendChild(p);
+      }
+      cell.addEventListener('click', () => onCellClick(x,y));
+      boardEl.appendChild(cell);
+    }
+  }
+  updateCounts();
+  updateExport();
+}
+
+function updateCounts(){
+  let a=0,d=0,k=0;
+  Object.values(board).forEach(p => {
+    if (p.type === 'king') k++;
+    else if (p.side === 'attacker') a++;
+    else d++;
+  });
+  countsEl.innerHTML = `<span><b>${a}</b> attackers</span><span><b>${d}</b> defenders</span><span><b>${k}</b> king</span>`;
+}
+
+function updateExport(){
+  const lines = ['# 11x11 board, 0-indexed coordinates in the code, labels below are A1-K11.', '', 'THRONE = ' + coordLabel(CENTER,CENTER), 'CORNERS = [' + [...CORNERS].map(k=>{const [x,y]=k.split(',').map(Number); return coordLabel(x,y);}).join(', ') + ']', ''];
+  const attackers = [], defenders = [];
+  let king = null;
+  Object.entries(board).forEach(([key,p]) => {
+    const [x,y] = key.split(',').map(Number);
+    const label = coordLabel(x,y);
+    if (p.type === 'king') king = label;
+    else if (p.side === 'attacker') attackers.push(label);
+    else defenders.push(label);
+  });
+  attackers.sort(); defenders.sort();
+  lines.push('KING = ' + (king || 'none'));
+  lines.push('ATTACKERS = [' + attackers.join(', ') + ']');
+  lines.push('DEFENDERS = [' + defenders.join(', ') + ']');
+  exportEl.value = lines.join('\n');
+}
+
+function inBounds(x,y){ return x>=0 && x<SIZE && y>=0 && y<SIZE; }
+
+function slideDestinations(x,y){
+  const dests = [];
+  const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+  const piece = board[coordKey(x,y)];
+  dirs.forEach(([dx,dy]) => {
+    let cx = x+dx, cy = y+dy;
+    while (inBounds(cx,cy)){
+      const key = coordKey(cx,cy);
+      if (board[key]) break; // blocked
+      if (CORNERS.has(key) && piece.type !== 'king') { cx+=dx; cy+=dy; continue; } // only king may land on a corner
+      dests.push(key);
+      cx += dx; cy += dy;
+    }
+  });
+  return dests;
+}
+
+function onCellClick(x,y){
+  const key = coordKey(x,y);
+  if (mode === 'place'){
+    if (placeType === 'empty'){ delete board[key]; }
+    else if (placeType === 'king'){
+      // Only one king allowed -- move it if it already exists elsewhere.
+      Object.keys(board).forEach(k => { if (board[k].type === 'king') delete board[k]; });
+      board[key] = {type:'king', side:'defender'};
+    } else {
+      board[key] = {type:'piece', side:placeType};
+    }
+    render();
+    return;
+  }
+
+  // Move mode.
+  if (selected === null){
+    const occ = board[key];
+    if (!occ) return;
+    if (enforceTurns){
+      const pieceSide = occ.type === 'king' ? 'defender' : occ.side;
+      if (pieceSide !== turn){
+        statusEl.textContent = `It's ${turn}s' turn.`;
+        return;
+      }
+    }
+    selected = key;
+    legalMoves = slideDestinations(x,y);
+    statusEl.textContent = legalMoves.length ? 'Click a highlighted square to move there, or click the piece again to cancel.' : 'No legal slides from here.';
+    render();
+    return;
+  }
+
+  if (key === selected){
+    selected = null; legalMoves = []; statusEl.textContent = 'Selection cleared.';
+    render();
+    return;
+  }
+
+  if (legalMoves.includes(key)){
+    const piece = board[selected];
+    delete board[selected];
+    board[key] = piece;
+    applyCaptures(x,y, piece);
+    selected = null; legalMoves = [];
+    if (enforceTurns) turn = (turn === 'attacker') ? 'defender' : 'attacker';
+    statusEl.textContent = 'Moved to ' + coordLabel(x,y) + '.';
+    render();
+    return;
+  }
+
+  // Clicked a different piece -- reselect.
+  const occ = board[key];
+  if (occ){
+    if (enforceTurns){
+      const pieceSide = occ.type === 'king' ? 'defender' : occ.side;
+      if (pieceSide !== turn){
+        statusEl.textContent = `It's ${turn}s' turn.`;
+        return;
+      }
+    }
+    selected = key;
+    legalMoves = slideDestinations(x,y);
+    render();
+  }
+}
+
+function applyCaptures(x,y, mover){
+  const moverSide = mover.type === 'king' ? 'defender' : mover.side;
+  const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+  dirs.forEach(([dx,dy]) => {
+    const nx = x+dx, ny = y+dy;
+    const fx = x+2*dx, fy = y+2*dy;
+    if (!inBounds(nx,ny)) return;
+    const neighborKey = coordKey(nx,ny);
+    const neighbor = board[neighborKey];
+    if (!neighbor) return;
+    const neighborSide = neighbor.type === 'king' ? 'defender' : neighbor.side;
+    if (neighborSide === moverSide) return; // not an enemy
+
+    if (neighbor.type === 'king'){
+      // King captured only when hostile on every orthogonal side that exists on the board.
+      const kingDirs = [[1,0],[-1,0],[0,1],[0,-1]];
+      const surrounded = kingDirs.every(([kdx,kdy]) => {
+        const sx = nx+kdx, sy = ny+kdy;
+        if (!inBounds(sx,sy)) return true; // edge counts as hostile-adjacent
+        const s = board[coordKey(sx,sy)];
+        return s && (s.type !== 'king') && s.side !== neighborSide;
+      });
+      if (surrounded){
+        delete board[neighborKey];
+        statusEl.textContent = 'King captured!';
+      }
+      return;
+    }
+
+    if (!inBounds(fx,fy)) return;
+    const farKey = coordKey(fx,fy);
+    const far = board[farKey];
+    const farIsFriendlyOrHostileSquare = (far && (far.type === 'king' ? 'defender' : far.side) === moverSide) || CORNERS.has(farKey) || farKey === THRONE;
+    if (farIsFriendlyOrHostileSquare){
+      delete board[neighborKey];
+    }
+  });
+}
+
+document.getElementById('modeMove').addEventListener('click', () => {
+  mode = 'move'; selected = null; legalMoves = [];
+  document.getElementById('modeMove').classList.add('active');
+  document.getElementById('modePlace').classList.remove('active');
+  document.getElementById('placeTools').style.display = 'none';
+  render();
+});
+document.getElementById('modePlace').addEventListener('click', () => {
+  mode = 'place'; selected = null; legalMoves = [];
+  document.getElementById('modePlace').classList.add('active');
+  document.getElementById('modeMove').classList.remove('active');
+  document.getElementById('placeTools').style.display = 'flex';
+  render();
+});
+document.querySelectorAll('[data-place]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    placeType = btn.dataset.place;
+    document.querySelectorAll('[data-place]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+document.getElementById('reset').addEventListener('click', () => {
+  board = defaultLayout(); selected = null; legalMoves = []; turn = 'attacker';
+  statusEl.textContent = 'Reset to the starting layout.';
+  render();
+});
+document.getElementById('clear').addEventListener('click', () => {
+  board = {}; selected = null; legalMoves = [];
+  statusEl.textContent = 'Board cleared.';
+  render();
+});
+document.getElementById('toggleTurns').addEventListener('click', (e) => {
+  enforceTurns = !enforceTurns;
+  e.target.textContent = 'Enforce alternating turns: ' + (enforceTurns ? 'on' : 'off');
+  turnLabelEl.textContent = enforceTurns ? `Attackers move first. Current turn: ${turn}.` : 'Free play — no turn order enforced.';
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

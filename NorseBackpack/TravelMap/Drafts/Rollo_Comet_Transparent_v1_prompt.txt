@@ -1,0 +1,3 @@
+Built-in image_gen edit. Source: Postcards/Stamps/Stamp_Rollo_Comet_v2_flat.png
+
+Edit this exact supplied postage stamp artwork into an isolated transparent ink cutout for placement on a map title band. Preserve the rust brown historical engraving of the large comet and the two pointing people, the exact recognizable composition, proportions, linework, colors and details. Remove ALL cream paper, paper texture, cream fills between ink lines, scalloped postage border and any perimeter marks. Every non-brown-ink area must be transparent, including spaces within the artwork. No new frame, background, text, shadow, glow or objects. Tight but safe crop around the comet and two figures with a small transparent margin. This is background removal only, not a redesign.

@@ -65,6 +65,6 @@ python NorseBackpack/TravelMap/build_trail_maps_pdf.py harald
 python NorseBackpack/build_page_images.py
 ```
 
-The first three commands produce five PDFs in `output/pdf/`: `Hnefatafl_Board_Setup_Insert.pdf`, `Hnefatafl_Ticket_Print.pdf`, `Hnefatafl_Ticket_Letter_Print.pdf`, `Trail_Map_4_Harald_Print.pdf` and `Trail_Map_4_Harald_ANSWER.pdf`. The last command refreshes the project page images for all cards and props. For a targeted refresh, use its `render()` helper and `RENDER_MAP` entries for `Hnefatafl_Board_Setup_Insert_Insert`, `Hnefatafl_Ticket_Back` and `Trail_Map_4_Harald_Back`.
+The first three commands produce five PDFs in `NorseBackpack/Print/_pdf_source/`: `Hnefatafl_Board_Setup_Insert.pdf`, `Hnefatafl_Ticket_Print.pdf`, `Hnefatafl_Ticket_Letter_Print.pdf`, `Trail_Map_4_Harald_Print.pdf` and `Trail_Map_4_Harald_ANSWER.pdf`. The last command refreshes the project page images for all cards and props. For a targeted refresh, use its `render()` helper and `RENDER_MAP` entries for `Hnefatafl_Board_Setup_Insert_Insert`, `Hnefatafl_Ticket_Back` and `Trail_Map_4_Harald_Back`.
 
 Geometry comes from `Props/Hnefatafl/board_layout.py`; the common pen drawing comes from `hand_drawn_board.py`. Rebuild both sides after a change to either shared source. Print at actual size (100%, no fit-to-page scaling); physical alignment and read-through remain to be checked under PR-09.

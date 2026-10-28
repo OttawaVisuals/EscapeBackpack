@@ -20,3 +20,5 @@ tags: []
 ---
 
 Render of the print PDF made by `build_page_images.py`. Not a generated image.
+
+**20 Oct 2026: retired.** The itinerary receipts are dropped (PP-039); this image is no longer printed.

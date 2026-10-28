@@ -12,7 +12,7 @@ the envelope carrying those runes is the one the code opens.
 - Codes and envelope numbers come from the puzzle records (answer, container
   "Envelope N"); the key lists each envelope's props (found_in).
 
-Output: output/pdf/Cypher_Wheel_Print.pdf (5 Letter pages: wheels I-IV, arm,
+Output: NorseBackpack/Print/_pdf_source/Cypher_Wheel_Print.pdf (5 Letter pages: wheels I-IV, arm,
 envelope labels, designer key). Print at 100% on cardstock.
 """
 import random
@@ -29,8 +29,8 @@ from reportlab.pdfgen.canvas import FILL_EVEN_ODD
 
 ROOT = Path(__file__).resolve().parents[3]
 RECORDS = ROOT / "NorseBackpack" / "records"
-OUT = ROOT / "output" / "pdf" / "Cypher_Wheel_Print.pdf"
-PREVIEW = ROOT / "output" / "pdf" / "Cypher_Wheel_Assembled_Preview.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Cypher_Wheel_Print.pdf"
+PREVIEW = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Cypher_Wheel_Assembled_Preview.pdf"
 FONTS = {
     "Digit": Path(r"C:\Windows\Fonts\arialbd.ttf"),
     "Rune": Path(r"C:\Windows\Fonts\seguihis.ttf"),
@@ -213,10 +213,14 @@ def pin(c, cx, cy):
 
 
 def arm(c, bounds, cx, cy):
-    """Top arm: code windows on the left, rune windows on the right."""
+    """Top arm: code windows on the left, rune windows on the right.
+
+    17 Oct 2026 (designer, readability drafts by Codex, adopted): the arm is 34 mm tall (was 18) so the
+    three steps and the blank-first rule print at 10.5-12 pt (was 6 pt). Windows, centre and pin are
+    unchanged. The text now sits outside the windows in the extra height."""
     from math import pi
     half = (RADII[0] + 3) * MM
-    w = 18 * MM
+    height = 34 * MM
     holes = []
     for R in RADII:
         sym_pitch = 2 * pi * (R - SYM_R) / len(SYMBOLS)
@@ -228,24 +232,32 @@ def arm(c, bounds, cx, cy):
         x0, x1 = cx + (R - BAND + 0.5) * MM, cx + (R - SPLIT - 0.5) * MM
         holes.append((x0, cy - h / 2, x1 - x0, h))
     path = c.beginPath()
-    path.roundRect(cx - half, cy - w / 2, 2 * half, w, w / 2)
+    path.roundRect(cx - half, cy - height / 2, 2 * half, height, 8 * MM)
     for hole in holes:
         path.rect(*hole)
     c.setFillColor(HUB)
     c.setStrokeColor(INK)
     c.setLineWidth(0.8)
     c.drawPath(path, stroke=0, fill=1, fillMode=FILL_EVEN_ODD)
-    c.roundRect(cx - half, cy - w / 2, 2 * half, w, w / 2, stroke=1, fill=0)
+    c.roundRect(cx - half, cy - height / 2, 2 * half, height, 8 * MM, stroke=1, fill=0)
     c.setDash(2, 1.5)
     c.setStrokeColor(RED)
     c.setLineWidth(0.6)
     for hole in holes:
         c.rect(*hole, stroke=1, fill=0)
     c.setDash()
+    left, right = cx - 54 * MM, cx + 54 * MM
     c.setFillColor(INK)
-    c.setFont("Cinzel", 5.5)
-    c.drawRightString(cx - 4 * MM, cy + 4.6 * MM, "CODE")
-    c.drawString(cx + 4 * MM, cy + 4.6 * MM, "RUNES")
+    c.setFont("Helvetica-Bold", 12)
+    c.drawCentredString(left, cy + 28, "1  SET THE CODE")
+    c.drawCentredString(right, cy + 28, "2  READ THE RUNES")
+    c.setFont("Helvetica", 10.5)
+    c.drawCentredString(left, cy - 29, "Three digits? First window:")
+    c.drawCentredString(left, cy - 41, "leave it blank, not zero.")
+    c.setFont("Helvetica-Bold", 10.5)
+    c.drawCentredString(right, cy - 29, "3  Open the envelope")
+    c.setFont("Helvetica", 10.5)
+    c.drawCentredString(right, cy - 41, "with these runes.")
     pin(c, cx, cy)
 
 
@@ -383,7 +395,7 @@ def main():
     arm(c, bounds, PAGE_W / 2, 40 * MM)
     c.setFont("Helvetica", 7)
     c.setFillColor(INK)
-    c.drawCentredString(PAGE_W / 2, 26 * MM, "Arm: cut out, then cut out the 8 red-dashed windows. It goes on top.")
+    c.drawCentredString(PAGE_W / 2, 14 * MM, "Arm: cut out, then cut out the 8 red-dashed windows. It goes on top.")
     c.showPage()
 
     labels_page(c, bounds, maps, locks)

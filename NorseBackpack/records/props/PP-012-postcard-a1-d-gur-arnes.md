@@ -11,6 +11,7 @@ source: print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-005
+envelope: PZ-005
 # Physical pocket/container or location; availability remains in found_in above.
 container: Envelope 7
 after_game: return
@@ -51,3 +52,9 @@ There are 22 postcards: each goes back with the lock it came from, as listed bel
 ## Replacement
 
 Reprint from the print file if damaged.
+
+**16 Oct 2026 (designer, Q-057):** Fun Fact shortened to “Dögurðarnes is named after dögurður, an Old Norse word for a daytime meal.” The old “main meal … preserved in the map itself” wording is gone; the meaning of dögurður is not yet checked against a source (the designer applied the draft anyway). Message unchanged (the handwriting spells it “Dogurdarnes”: the font draws ð badly). A1 is in envelope 7. Rebuilt.
+
+**16 Oct 2026, source check on dögurður:** the Cleasby & Vigfusson dictionary entry (read through oldnorsedictionary.com, a mirror, not the printed volume) glosses dögurðr / dagverðr as the “day-meal”, the main meal of the early Scandinavians, eaten in the forenoon (breakfast time, dinner in substance), set against the evening meal náttverðr. The same entry says several Icelandic places, naming Dögurðarnes and Dögurðará (Landnámabók), are named from a settler's first day-meal there. So the old Fun Fact's “the day's main meal” was supported, and the current “a daytime meal” is true but vaguer. The settler-meal origin is the dictionary's explanation, not a documented event. Only one source checked.
+
+**16 Oct 2026 (designer):** Fun Fact changed again after the source check: “Dögurðarnes is named after dögurður, the Old Norse day-meal, probably a settler's first meal here.” Rebuilt.

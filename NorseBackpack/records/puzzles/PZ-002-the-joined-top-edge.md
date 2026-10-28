@@ -9,7 +9,7 @@ beat: ST-002
 # Props the player needs, e.g. [PP-001]
 props: [PP-002, PP-003, PP-027]
 # Puzzles that must be solved first, e.g. [PZ-002]
-needs: [PZ-001]
+needs: [PZ-003]
 # cipher | physical | search | logic | wordplay | other
 mechanic: physical
 # 1 (easy) to 3 (hard)
@@ -17,11 +17,12 @@ difficulty: 1
 # Lock it opens: 3-digit | 4-digit | 4-letter | 3-digit-colour (blank if none)
 lock: 4-digit
 answer: 1576
+envelope_marks: ᛒᛚᛟᛉ
 # Compartment this lock closes (shown on the Locks tab)
-container: Envelope 2
+container: Envelope 3
 reset_display: 0000
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
-hint_title: Just opened ᚷᛉᚦᛉ
+hint_title: Just opened ᛉᛖᚠᛁ
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.
 publish_hints: yes
 # Independent of design/build status: untested | passed | changes-needed
@@ -57,7 +58,7 @@ Lay card L2 against card L3, rotated 180°, so their top edges meet. The cloud f
 
 ## Player obtains
 
-Code **1576**. Opening this lock releases PP-015, PP-028.
+Code **1576**. Set on the wheel, it opens envelope 3 (H2, H3, HD: PP-017, PP-018, PP-022). ~~Opening this lock releases PP-015, PP-028.~~
 
 ## Story reason
 
@@ -104,3 +105,5 @@ Lock as recorded: Four-digit padlock. Old page status: Decided · read with the 
 **Hold-to-light (cards L2/L3) decided:** the `1576` the top-edge join produces is **lock 3** in Leif's sequence (PZ-001) — it opens a fourth container holding new material, not yet designed. **Comb-grille set still has no answer** — cards assigned, mechanism decided, nothing wired to it yet.
 
 **13 Oct 2026 (designer, after playtest 1):** on the 6 × 4 in card (PR-004) L2 and L3 lose no rows at the top: their 50 rows come out of the navy title band, so the 1576 flecks are untouched and scaled 1.2× with the rest of the front. The joined edge was checked on screen (digits line up); `build_topedge_test_sheet.py` now prints a 6 in strip. **Test print pending** at the new size.
+
+**15 Oct 2026 (designer, PR-007):** now the second puzzle. L2, L3 and the magnifier are in envelope 2, opened by `BOOK` (from the comb, PZ-003); `1576` opens envelope 3 (H2, H3, HD). Puzzle unchanged. Needs PZ-003 instead of PZ-001. Hint title now "Just opened ᛉᛖᚠᛁ".

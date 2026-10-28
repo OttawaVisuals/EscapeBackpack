@@ -1,0 +1,48 @@
+/* The Raven Inheritance, V2: the box of rune-marked envelopes and the cypher wheel.
+   Loaded after leif.css; only what the backpack and padlock had is replaced. */
+.runes,.rune-window{font-family:"Segoe UI Historic","Noto Sans Runic","Noto Sans Symbols","Apple Symbols",serif}
+
+/* The box */
+.pack-art{float:none!important;width:auto!important;margin:0 0 8px!important}
+.box{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:8px 6px;padding:10px 8px 12px;margin:4px 0 6px;max-width:none;border-radius:8px;
+  background:linear-gradient(160deg,#5a3b1f,#46301a);border:2px solid #8a5f33;box-shadow:inset 0 2px 10px rgba(0,0,0,.45)}
+.box-note{margin:0 0 6px;font-size:12px;color:var(--muted);text-align:center}
+.envelope{position:relative;display:block;width:100%;padding:0;border:0;background:none;cursor:pointer;transform:rotate(var(--tilt,0deg));transition:transform .2s,filter .3s;aspect-ratio:120/98;color:#3a2810}
+.envelope svg{display:block;width:100%;height:100%;overflow:visible}
+.envelope .paper{fill:#c9a06a;stroke:#7a5232;stroke-width:1.5}
+.envelope .fold{fill:none;stroke:#a67c46;stroke-width:1}
+.envelope .flap-shut{fill:#d6b17b;stroke:#7a5232;stroke-width:1.5}
+.envelope .flap-open{fill:#b98a54;stroke:#7a5232;stroke-width:1.5;display:none}
+.envelope .knob{fill:#efe3c4;stroke:#7a5232;stroke-width:1.2}
+.envelope .string{fill:none;stroke:#efe3c4;stroke-width:1.4}
+.envelope .runes{position:absolute;left:0;right:0;bottom:8%;white-space:nowrap;text-align:center;font-size:12px;letter-spacing:.08em;font-weight:600;color:#2b1c0a;pointer-events:none}
+.envelope:hover:not(.open){transform:rotate(var(--tilt,0deg)) translateY(-2px);filter:brightness(1.08)}
+.envelope:focus-visible{outline:3px solid var(--copper-light);outline-offset:2px;border-radius:4px}
+.envelope.open{cursor:default;filter:saturate(.6) brightness(.82)}
+.envelope.open .flap-shut,.envelope.open .knob,.envelope.open .string{display:none}
+.envelope.open .flap-open{display:block}
+.envelope.open .paper{fill:#8d6a3d}
+.envelope.open .runes{opacity:.55;text-decoration:line-through}
+.envelope.opening .flap-shut,.envelope.opening .knob,.envelope.opening .string{display:none}
+.envelope.opening .flap-open{display:block}
+.envelope.opening .paper{fill:#E0A26A;filter:drop-shadow(0 0 10px rgba(224,162,106,1))}
+.envelope.wrong{animation:shake .4s ease-in-out}
+
+/* The cypher wheel's arm: code windows above, rune windows below */
+.cypher{margin:10px 0 6px;padding:10px 12px 12px;border-radius:12px;background:#efe3c4;border:1px solid #c9b48a;box-shadow:inset 0 0 0 3px rgba(255,255,255,.35);color:#283b34}
+.cypher-steps{list-style:none;margin:6px 0 4px;padding:0;font-size:13px;letter-spacing:.06em}
+.cypher-blank{margin:6px 0 2px;font-size:12px;color:#4e5f57}
+.cypher-step3{margin:8px 0 0;font-size:12.5px}
+.cypher .dial{margin:0 auto;width:fit-content}
+.cypher .wheel .cur{font-weight:700}
+.cypher .wheel.blank .cur{opacity:.4}
+.rune-windows{display:flex;justify-content:center;gap:6px;margin:2px 0}
+.rune-window{display:grid;place-items:center;width:42px;height:46px;border-radius:6px;border:2px solid #283b34;background:#fffaf0;font-size:28px;color:#283b34;box-shadow:inset 0 2px 5px rgba(0,0,0,.2)}
+.cypher.matched{box-shadow:0 0 0 3px var(--copper-light),0 0 18px rgba(224,162,106,.9)}
+.cypher.wrong{animation:shake .4s ease-in-out}
+.cypher.matched .rune-window{background:#fff3d6}
+
+/* The opening dialog's box */
+.unpack-box{max-width:250px!important}
+.unpack-box .lid-items{transition:transform .7s cubic-bezier(.3,.8,.3,1),opacity .7s}
+.unpack.opening .unpack-box .lid-items{transform:translateY(-34px) rotate(-6deg);opacity:0}

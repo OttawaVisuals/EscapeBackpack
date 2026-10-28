@@ -10,9 +10,10 @@ form: printed
 source: print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
-found_in: PZ-001
+found_in: PZ-003
+envelope: PZ-003
 # Physical pocket/container or location; availability remains in found_in above.
-container: Envelope 1
+container: Envelope 2
 after_game: return
 reset_name: Postcard: Battle Harbour (Markland)
 # Any related record IDs, e.g. [PZ-002, Q-004]
@@ -49,3 +50,9 @@ There are 22 postcards: each goes back with the lock it came from, as listed bel
 ## Replacement
 
 Reprint from the print file if damaged.
+
+**15 Oct 2026 (designer, Q-057):** Fun Fact shortened to “Markland means “Forest Land”: the Norse came here for timber.” (was the long logging-camp sentence). Handwritten message unchanged, including the closing “Still, you'd love it here.”; the sky line stays (clue for PZ-002). L2 is in envelope 2 (PR-007). Print PDFs, page images and web copies rebuilt.
+
+**15 Oct 2026 (designer, later):** message first paragraph changed (the “handwritten message unchanged” note above no longer holds): “Markland today — ‘Forest Land’ in the old sagas, and they weren’t exaggerating, it is gorgeous! Trees for miles, beautiful light and no one around. No wonder Leif’s crews came here for timber.” Sky line and “Still, you’d love it here.” unchanged. The Leif-and-timber claim is the designer's wording and not checked against a source. The Fun Fact now repeats the timber idea.
+
+**15 Oct 2026 (designer):** the Leif-and-timber sentence stays as written; no source check wanted. Decided.

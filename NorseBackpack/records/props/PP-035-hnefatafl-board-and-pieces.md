@@ -11,6 +11,7 @@ source: 3d-print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-011
+envelope: PZ-011
 # Physical pocket/container or location; availability remains in found_in above.
 container: Envelope 10
 after_game: return
@@ -41,7 +42,7 @@ The ticket can say honestly that no complete Viking-Age tafl ruleset survives an
 
 **Her task, on the Oslo postcard, in her own words:** “We like to play our own rules though: can you get the king to escape to a corner in exactly three moves?” The word **exactly** is what forces the solution to be unique.
 
-Built: `Props/Hnefatafl/build_ticket_pdf.py` → `output/pdf/Hnefatafl_Ticket_Print.pdf`.
+Built: `Props/Hnefatafl/build_ticket_pdf.py` → `NorseBackpack/Print/_pdf_source/Hnefatafl_Ticket_Print.pdf`.
 
 ![Hnefatafl ticket, front](Props/_Renders/Hnefatafl_Ticket_Front.png)Front
 
@@ -168,3 +169,9 @@ Take every piece off the board and pack the pieces with the board.
 ## Replacement
 
 Not recorded yet.
+
+**17 Oct 2026 (designer, PZ-008):** the board now carries **19 dark pieces and 6 light** (it was 16 and 6), with the king on F6: dark A4 A5 A8 B1 D11 D7 E1 E11 F1 F11 F9 G1 H2 H10 I6 I8 I9 K4 K10; light C5 E8 F5 F8 G5 G7. The physical set needs 19 dark pieces (three more than before). The puzzle is now four king moves with four dark moves in between (black first), answer 2134; see PZ-008. `Props/Hnefatafl/board_layout.py` holds the layout, the four black moves and the solution path.
+
+**17 Oct 2026 (designer):** the designer has the dark pieces already, so the 19-dark-piece shortfall is closed.
+
+**20 Oct 2026 (designer): production print size** — setup insert size still open (postcard 4 × 6 or bookmark 2 × 6). Decided in Q-052 (standard print sizes); not rebuilt yet. **Reopened later on 20 Oct** (designer: museum tickets smaller and all one size; travel tickets smaller, cheap and all one size); see Q-052.

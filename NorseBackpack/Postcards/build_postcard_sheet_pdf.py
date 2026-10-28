@@ -31,7 +31,7 @@ from reportlab.pdfgen import canvas
 
 ROOT = Path(__file__).resolve().parents[2]
 POSTCARDS_DIR = Path(__file__).resolve().parent
-OUT_DIR = ROOT / "output" / "pdf"
+OUT_DIR = ROOT / "NorseBackpack" / "Print" / "_pdf_source"
 
 LETTER_PORTRAIT = (8.5 * 72, 11 * 72)
 ROW_GAP = 0.3 * 72

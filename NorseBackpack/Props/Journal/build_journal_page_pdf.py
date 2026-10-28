@@ -43,8 +43,8 @@ ART = ROOT / "NorseBackpack" / "Art" / "FinalPuzzle"
 SYMBOL = ART / "Family_Symbol_Three_Field_v2.png"
 CREST = ART / "Family_Crest_Six_Field_v2.png"
 FONT_DIR = ROOT / "Fonts"
-OUT = ROOT / "output" / "pdf" / "Journal_Family_Iconography_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Journal_Family_Iconography_Letter_Print.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Journal_Family_Iconography_Print.pdf"
+OUT_LETTER = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Journal_Family_Iconography_Letter_Print.pdf"
 
 PAGE = portrait((148 / 25.4 * 72, 210 / 25.4 * 72))          # A5, prints 2-up on Letter
 W, H = PAGE

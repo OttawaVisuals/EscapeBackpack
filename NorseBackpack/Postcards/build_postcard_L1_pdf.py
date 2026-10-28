@@ -7,12 +7,12 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
-from postcard_marks import draw_mark
+from postcard_marks import NARROW_MARK_X, NARROW_MARK_Y, draw_mark
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "output" / "pdf" / "Postcard_L1_LAnse_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_L1_LAnse_Letter_Print.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_L1_LAnse_Print.pdf"
+OUT_LETTER = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_L1_LAnse_Letter_Print.pdf"
 FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_L1_LAnse_Front.png"
 STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Leif_Longship_v2_flat.png"
 FONT_DIR = ROOT / "Fonts"
@@ -21,6 +21,8 @@ PAGE = (6 * 72, 4 * 72)  # 6 x 4 in since 13 Oct 2026 (was 5 x 3.5)
 W, H = PAGE
 LETTER = (8.5 * 72, 11 * 72)
 PAPER = HexColor("#EFE3C4")
+# 20 Oct 2026 (designer): no beige fill behind the back; it prints on the paper itself. True restores it.
+PAPER_BACKGROUND = False
 NAVY = HexColor("#12343C")
 TEAL = HexColor("#2F7775")
 RULE = HexColor("#A99A7B")
@@ -73,10 +75,14 @@ def draw_back_card(c, x=0, y=0):
     # past the card edge; only the sheet crop marks define trim, so this prints
     # harmlessly into the surrounding paper.
     BLEED = 1.5 / 25.4 * 72
-    c.setFillColor(PAPER)
-    c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
+    if PAPER_BACKGROUND:
+        c.setFillColor(PAPER)
+        c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.7)
+    # 14 Oct 2026 (designer): thin border back "for now" (removed 7 Oct 2026 because off-centre
+    # duplex prints made it look uneven). 12 pt in: the old 10 pt, 1.2x for the 6 x 4 card.
+    c.rect(12, 12, W - 24, H - 24, fill=0, stroke=1)
 
     # 13 Oct 2026 (designer, after playtest 1): the card is now 6 x 4 in, layout B. The divider
     # moves right (x 184 of 360 -> 276 of 432) for a wider message column; message 11.5 pt
@@ -85,7 +91,9 @@ def draw_back_card(c, x=0, y=0):
     # 29 Sept 2026: message column widened -- starts 5 pt from the border (was 10) and wraps
     # 6 pt before the divider (was 12), at the user's request, on all 22 cards.
     msg_left = 18
-    divider = 276
+    # 14 Oct 2026 (designer, Q-057): narrow right side. Divider x 276 -> 298 (message column
+    # 250 -> 272 pt); mark under the postmark; Fun Fact box from mid-card to the bottom.
+    divider = 298
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 7.5)
     c.drawCentredString(W / 2, H - 22, "POST CARD")
@@ -94,12 +102,19 @@ def draw_back_card(c, x=0, y=0):
 
     # 28 Sept 2026 (postcard update, batch 1 -- Leif + Rollo): message rewritten. Text from the user's
     # Postcard update tab export; message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
+    # 14 Oct 2026 (designer, box + envelopes, PR-007): L1 is the loose note on top of the box. It
+    # now hands over the first code as a worked example (1021, the tree-ring year) instead of
+    # pointing at the luggage tags, which are gone. The wheel's arm prints the three steps
+    # (PP-047), so this card only needs the story and the first try. Option 2 chosen in chat.
     paragraphs = [
-        'Hello nephew!',
-        'As you know, I spent a lot of time travelling to explore our Norse heritage. As I travelled, I collected fun stuff for you.',
-        'I know you love puzzles, so I created an adventure for you! With a surprise at the end!',
-        'You will explore the history of Leif Erikson, Rollo the Walker, Aud the Deep-Minded and Harald Hardrada.',
-        'This postcard comes from the first stop of my journey and should help you get started!',
+        # 14 Oct 2026 (designer, Q-058): was 'Hello nephew!'; a greeting that works for any player.
+        'Hello, my dear explorer!',
+        'I spent months travelling to explore our Norse heritage, and I turned it into an adventure for you, with a surprise at the end! Everything you need is in this box.',
+        # 14 Oct 2026 (designer): first names only; each leg's cards introduce their figure (Q-057).
+        'You will follow Leif, Rollo, Aud and Harald.',
+        # 14 Oct 2026 (designer, Q-057 option A): introduces Leif. "May have": whether this was Leif's own
+        # camp is debated.
+        'Start right here, where Leif Erikson’s crew may have camped: the Norse were felling trees at this spot in 1021. Set 1 0 2 1 on my rune wheel and open the envelope with the same runes!',
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 11.5, 12.8
@@ -128,7 +143,7 @@ def draw_back_card(c, x=0, y=0):
 
     # PZ-18 element mark. Fixed position on every card -- the pocket between the
     # divider and the postmark, above the Fun Fact box. See postcard_marks.py.
-    draw_mark(c, "L1")
+    draw_mark(c, "L1", NARROW_MARK_X, NARROW_MARK_Y)
 
     # The agreed route stamp, shown at approximately 20 x 24 mm.
     stamp_w, stamp_h = 24 / 25.4 * 72, 28.8 / 25.4 * 72
@@ -164,7 +179,23 @@ def draw_back_card(c, x=0, y=0):
     box_right = right + 5
 
     # Fun Fact — typed, real trivia, under the stamp.
-    funfact_top, funfact_bottom = stamp_y - 6, 37
+    c.setFillColor(INK)
+    fact_font, fact_size, fact_leading = "Helvetica", 10, 11.8
+    # 28 Sept 2026 (postcard update, batch 1 -- Leif + Rollo): Fun Fact rewritten. Text from the user's
+    # Postcard update tab export; message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
+    fact_text = (
+        # 14 Oct 2026 (designer): Fun Facts aim for one sentence under ~70 characters (Q-057). Was "L'Anse aux
+        # Meadows was found after a local man pointed out odd bumps in a meadow. It is still the only
+        # confirmed Norse site in North America."
+        "This is still the only confirmed Viking site in North America."
+    )
+    # 14 Oct 2026 (Q-057): the box sits on the bottom (y 37) and starts at mid-card; a fact longer
+    # than 7 lines raises its top, up to just under the stamp.
+    funfact_bottom = 37
+    fact_lines = wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6)
+    funfact_top = max(H / 2, funfact_bottom + 35 + fact_leading * (len(fact_lines) - 1))
+    if funfact_top > stamp_y - 6:
+        raise SystemExit(f"Fun Fact is {len(fact_lines)} lines; too long for the box (Q-057)")
     c.setStrokeColor(FUNFACT)
     c.setLineWidth(0.6)
     c.rect(divider + 10, funfact_bottom, box_right - (divider + 10), funfact_top - funfact_bottom, fill=0, stroke=1)
@@ -172,12 +203,6 @@ def draw_back_card(c, x=0, y=0):
     c.setFont("Helvetica-Bold", 8.5)
     c.drawString(address_x, funfact_top - 13, "FUN FACT")
     c.setFillColor(INK)
-    fact_font, fact_size, fact_leading = "Helvetica", 10, 11.8
-    # 28 Sept 2026 (postcard update, batch 1 -- Leif + Rollo): Fun Fact rewritten. Text from the user's
-    # Postcard update tab export; message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
-    fact_text = (
-        "L'Anse aux Meadows was found after a local man pointed out odd bumps in a meadow. It is still the only confirmed Norse site in North America."
-    )
     fact_y = funfact_top - 26
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):
         c.setFont(fact_font, fact_size)

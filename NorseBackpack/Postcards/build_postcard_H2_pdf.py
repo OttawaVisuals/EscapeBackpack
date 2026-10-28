@@ -11,8 +11,8 @@ from postcard_marks import draw_mark
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "output" / "pdf" / "Postcard_H2_Staraya_Ladoga_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_H2_Staraya_Ladoga_Letter_Print.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_H2_Staraya_Ladoga_Print.pdf"
+OUT_LETTER = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_H2_Staraya_Ladoga_Letter_Print.pdf"
 FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_H2_Staraya_Ladoga_Front.png"
 STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Harald_Dane_Axe_v1.png"
 FONT_DIR = ROOT / "Fonts"
@@ -21,6 +21,8 @@ PAGE = (6 * 72, 4 * 72)  # 6 x 4 in since 13 Oct 2026 (was 5 x 3.5)
 W, H = PAGE
 LETTER = (8.5 * 72, 11 * 72)
 PAPER = HexColor("#EFE3C4")
+# 20 Oct 2026 (designer): no beige fill behind the back; it prints on the paper itself. True restores it.
+PAPER_BACKGROUND = False
 NAVY = HexColor("#12343C")
 TEAL = HexColor("#2F7775")
 RULE = HexColor("#A99A7B")
@@ -69,10 +71,14 @@ def draw_back_card(c, x=0, y=0):
     # card edge so a slightly-off cut or duplex registration never shows a white band; only
     # the sheet crop marks define trim. Confirmed on the L1/L2 print test, 2026-09-27.
     BLEED = 1.5 / 25.4 * 72
-    c.setFillColor(PAPER)
-    c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
+    if PAPER_BACKGROUND:
+        c.setFillColor(PAPER)
+        c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.7)
+    # 14 Oct 2026 (designer): thin border back "for now" (removed 7 Oct 2026 because off-centre
+    # duplex prints made it look uneven). 12 pt in: the old 10 pt, 1.2x for the 6 x 4 card.
+    c.rect(12, 12, W - 24, H - 24, fill=0, stroke=1)
 
     # 13 Oct 2026 (designer, after playtest 1): the card is now 6 x 4 in, layout B. The divider
     # moves right (x 184 of 360 -> 276 of 432) for a wider message column; message 11.5 pt
@@ -96,9 +102,12 @@ def draw_back_card(c, x=0, y=0):
     paragraphs = [
         'Dinners take hours here and nobody rushes, which suits me fine.',
         'Rurik supposedly ruled from right here, if the old chronicles are true.',
-        'I climbed up on the fortress wall for a look at the whole river bend.',
-        'Nobody warned me how far this feels from anywhere else.',
-        'Keeping up with new puzzles for you is starting to be a challenge!',
+        'I climbed the fortress wall and thought of Harald Hardrada, who may have turned up here as a teenage exile before he became king of Norway.',
+        # 15 Oct 2026 (designer): N and K rewritten. N = Liv with a hot tea reading the sagas (hint at
+        # DRINK, as AD's "I've read everything" hints at BOOK); K introduces Harald and avoids "next"
+        # so nobody reads a route order into it. Still D, R, I, N, K.
+        'Nestled in a cosy corner with a hot tea, I’ve been reading about the old saga and what our potential ancestors achieved.',
+        'Knowing how far Harald still had to go makes my own trip feel short.',
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 11.5, 12.8
@@ -108,7 +117,9 @@ def draw_back_card(c, x=0, y=0):
     # 29 Sept 2026 (user): indent reduced from 10 pt to one space, then to half a space (~2.5 pt).
     # Close to the floor: "y" overhangs its origin by ~1.6 pt, so below ~2 pt the "you is starting"
     # line would sit flush with the margin.
-    INDENT = pdfmetrics.stringWidth(" ", font, size) / 2
+    # 15 Oct 2026 (designer): indent raised from half a space (~2.5 pt) to 1.5 spaces (too much), then set to half a space
+    # + 1.5 pt (~4 pt, about 2 px) so the D, R, I, N, K starts stand out a little more.
+    INDENT = pdfmetrics.stringWidth(" ", font, size) / 2 + 1.5
     full_w = divider - msg_left - 8
     for paragraph in paragraphs:
         first = wrap_text(paragraph, font, size, full_w)[0]
@@ -176,7 +187,7 @@ def draw_back_card(c, x=0, y=0):
     # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): Fun Fact rewritten. Text from the user's Postcard
     # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        'A wooden stick carved with Viking runes was found here — probably a scrap of poetry, and one of the oldest runic finds in Russia.'
+        "A rune stick found here is one of Russia's oldest runic finds."  # 15 Oct 2026 (designer, Q-057): shortened
     )
     fact_y = funfact_top - 26
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

@@ -11,8 +11,8 @@ from postcard_marks import draw_mark
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "output" / "pdf" / "Postcard_L2_Battle_Harbour_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_L2_Battle_Harbour_Letter_Print.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_L2_Battle_Harbour_Print.pdf"
+OUT_LETTER = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_L2_Battle_Harbour_Letter_Print.pdf"
 FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_L2_Battle_Harbour_Front.png"
 STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Leif_Longship_v2_flat.png"
 FONT_DIR = ROOT / "Fonts"
@@ -21,6 +21,8 @@ PAGE = (6 * 72, 4 * 72)  # 6 x 4 in since 13 Oct 2026 (was 5 x 3.5)
 W, H = PAGE
 LETTER = (8.5 * 72, 11 * 72)
 PAPER = HexColor("#EFE3C4")
+# 20 Oct 2026 (designer): no beige fill behind the back; it prints on the paper itself. True restores it.
+PAPER_BACKGROUND = False
 NAVY = HexColor("#12343C")
 TEAL = HexColor("#2F7775")
 RULE = HexColor("#A99A7B")
@@ -71,10 +73,14 @@ def draw_back_card(c, x=0, y=0):
     # past the card edge; only the sheet crop marks define trim, so this prints
     # harmlessly into the surrounding paper.
     BLEED = 1.5 / 25.4 * 72
-    c.setFillColor(PAPER)
-    c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
+    if PAPER_BACKGROUND:
+        c.setFillColor(PAPER)
+        c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.7)
+    # 14 Oct 2026 (designer): thin border back "for now" (removed 7 Oct 2026 because off-centre
+    # duplex prints made it look uneven). 12 pt in: the old 10 pt, 1.2x for the 6 x 4 card.
+    c.rect(12, 12, W - 24, H - 24, fill=0, stroke=1)
 
     # 13 Oct 2026 (designer, after playtest 1): the card is now 6 x 4 in, layout B. The divider
     # moves right (x 184 of 360 -> 276 of 432) for a wider message column; message 11.5 pt
@@ -98,7 +104,8 @@ def draw_back_card(c, x=0, y=0):
     # second by elimination -- L1 states it is first and the transition ticket out of
     # Qikiqtarjuaq proves L3 is last -- so no ordering text is needed on this card at all.
     paragraphs = [
-        "Markland today — ‘Forest Land’ in the old sagas, and they weren’t exaggerating, it is gorgeous! Trees for miles, beautiful light and no one around!",
+        # 15 Oct 2026 (designer): last sentence now ties Markland to Leif's timber.
+        "Markland today — ‘Forest Land’ in the old sagas, and they weren’t exaggerating, it is gorgeous! Trees for miles, beautiful light and no one around. No wonder Leif’s crews came here for timber.",
         # 27 Sept 2026 (playtest 1): the "something with claws" line confused a tester (read as
         # a beasts clue). Replaced with a sky line so both L2 and L3 mention the sky -- a subtle
         # nudge towards the joined top-edge 1576.
@@ -174,7 +181,7 @@ def draw_back_card(c, x=0, y=0):
     # 28 Sept 2026 (postcard update, batch 1 -- Leif + Rollo): Fun Fact rewritten. Text from the user's
     # Postcard update tab export; message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        'While the Vikings never permanently settled there, they used the Labrador coast as a medieval logging camp and named it Markland — “Forest Land” in Old Norse.'
+        'Markland means “Forest Land”: the Norse came here for timber.'  # 15 Oct 2026 (designer, Q-057): shortened
     )
     fact_y = funfact_top - 26
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

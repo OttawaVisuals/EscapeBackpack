@@ -7,7 +7,7 @@ status: decided
 # The structure beat this puzzle belongs to (one ID)
 beat: ST-006
 # Props the player needs, e.g. [PP-001]
-props: [PP-001, PP-002, PP-003, PP-004, PP-005, PP-006, PP-007, PP-008, PP-009, PP-010, PP-011, PP-012, PP-013, PP-014, PP-015, PP-016, PP-017, PP-018, PP-019, PP-020, PP-021, PP-022, PP-029, PP-032, PP-030, PP-034, PP-041, PP-039, PP-024, PP-031, PP-033, PP-036]
+props: [PP-001, PP-002, PP-003, PP-004, PP-005, PP-006, PP-007, PP-008, PP-009, PP-010, PP-011, PP-012, PP-013, PP-014, PP-015, PP-016, PP-017, PP-018, PP-019, PP-020, PP-021, PP-022, PP-029, PP-032, PP-030, PP-034, PP-039, PP-024, PP-031, PP-033, PP-036]
 # Puzzles that must be solved first, e.g. [PZ-002]
 needs: [PZ-001, PZ-002, PZ-003, PZ-004, PZ-005, PZ-006, PZ-007, PZ-008, PZ-009, PZ-010, PZ-011, PZ-012]
 # cipher | physical | search | logic | wordplay | other
@@ -17,6 +17,7 @@ difficulty: 2
 # Lock it opens: 3-digit | 4-digit | 4-letter | 3-digit-colour (blank if none)
 lock: 4-digit
 answer: 1972
+envelope_marks: ᛈᛚᚹᛉ
 # Compartment this lock closes (shown on the Locks tab)
 container: Envelope 13
 reset_display: 0000
@@ -56,12 +57,24 @@ Lock 13 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 3 of 3
 
 The code stays **1972**: the trail order and the stops are unchanged, only how players find the order. The order-reconstruction clue set (ticket dates, card statements, `Tools/final_riddle_solver.py`) is no longer needed to solve. Q-055 (decided the same day): the journal's Travel highlights are cut; the transition tickets stay as story. Difficulty is now about 2 (Claude's estimate), not 3.
 
+**17 Oct 2026 (designer, Q-062): the order comes from tickets again, the filter from one raven.** Stop order within a journey now comes from the hop tickets (decoys included, PP-039); journey order from the three flight bookings. A raven mark on the real cards (none on decoys) filters the decoys, with Liv's note "retrace only the steps relevant to our family history". The crest and the six-element order no longer apply; the hint and solution text below about the journal's caption order are superseded once the new props are built. The code stays 1972. Retest needed.
+
 ## Player notices
+**17 Oct 2026 (designer, Q-062):** the 22 postcards (18 carry Liv's small raven, the 4 decoys none), the four maps (each with its stamp), the 18 hop tickets (one page per journey, stops chain from one to the next, decoys included), ~~the three flight tickets between journeys~~ (dropped 20 Oct 2026; every hop ticket is dated), and H6's note about the family icon.
+
+**Superseded 17 Oct 2026:** the journal page with the family iconography (symbol, crest, caption order) as the way to order the stops.
+
 **12 Oct 2026 (Q-054):** the 22 postcards (18 carry a family mark, the 4 decoys carry none), the four maps (each now shows its journey's stamp), and Liv's journal page with the family iconography.
 
 **Superseded 12 Oct 2026:** All 22 postcards (18 real stops plus one decoy per trail), four laminated letter maps, a wet-erase marker, and the note in the final bundle carrying the family logo and crest. (8 Oct 2026: no wet-erase marker for now, PP-042 parked; players imagine the routes or trace them with their fingers on the maps.)
 
+**19 Oct 2026 (designer):** every hop ticket and booking now carries a departure date (PP-039, 8 Sep to 12 Dec 2025). The stop order still comes from chaining the routes; the dates also confirm it. Code stays 1972. Retest needed.
+
 ## Player does
+**17 Oct 2026 (designer, Q-062):** set aside the four cards with no raven. Put each remaining card beside the map with the same stamp. Chain the journey's travel tickets (decoys included) to get the stop order, then join the raven stops in that order on the map. Each map traces one digit; ~~the flight tickets give the order of the four journeys~~ the ticket dates give the order of the four journeys (20 Oct 2026).
+
+**Superseded 17 Oct 2026:** order by the marks on Liv's journal page (the crest and symbol caption order).
+
 **12 Oct 2026 (Q-054):** set aside the four cards with no mark. Put each remaining card beside the map that shows the same stamp. On each map, order the cards by their marks, in the order Liv's journal page lists them under each drawing (symbol: raven, longship, sun-wheel; crest: bearded axe, round shield, wolf, anchor, drinking horn, valknut), and join the stops in that order. Each trail traces one digit. Nobody needs to reread a card's text.
 
 **Superseded 12 Oct 2026:** Use the crest/logo filter to drop the four decoys. Sort the rest by stamp series to find which trail each belongs to, lay each trail’s cards beside its map in reconstructed order, then draw the legs straight onto the laminated map.
@@ -79,18 +92,18 @@ The cards work first as story and individual clues, then return as the final met
 “I crossed an ocean to find where we began. Every stop mattered. Now you have the whole journey.”
 
 ## Hints
-1. Only the postcards that carry one of the family's marks from Liv's journal page count. Four cards carry no mark: set them aside.
-2. Each map shows the stamp of its journey. Put each postcard beside the map with the same stamp.
-3. Liv met the marks in the order written under each drawing on her journal page. Put each map's cards in that order and join the stops.
+1. Liv wrote to retrace only the steps that matter to your family's history. Only the postcards with her small raven count. Four cards have no raven: set them aside.
+2. Each map shows the stamp of its journey. Put each postcard beside the map with the same stamp. The travel tickets show how Liv got from each stop to the next, so use them to put each journey's stops in order.
+3. On each map, join the raven stops in that order, skipping any stop without a raven. Each map draws one digit. The dates on the travel tickets give the order to read the four maps.
 
 ## Solution
-Set aside the four postcards with no mark. Match the rest to the maps by their stamps. On each map, join the stops in the order of their marks on the journal page: raven, longship, sun-wheel for the symbol; bearded axe, round shield, wolf, anchor, drinking horn, valknut for the crest. Leif’s map draws **1**, Rollo’s **9**, Aud’s **7** and Harald’s **2**: **1972**.
+Set aside the four postcards with no raven. Match the rest to the maps by their stamps. Chain each journey's travel tickets (each goes from one stop to the next) to put its stops in order; the decoy stops appear on the tickets too, so skip any whose postcard has no raven. On each map, join the raven stops in that order: Leif's map draws **1**, Rollo's **9**, Aud's **7** and Harald's **2**. The ticket dates put the journeys in order: Leif (September), Rollo (late September to mid October), Aud (late October), Harald (November to December): **1972**.
 
 ## Solution notes
 
 Design-side solution text, kept when the player-facing Solution above was written for the hint page (9 Oct 2026).
 
-Leif draws **1**, Rollo’s family line **9**, Aud **7** and Harald **2** — candidate code **1972**, in trail-first-appearance order. Order is reconstructed from ticket dates, postcard statements and the final bundle — never from anything printed on a card, since postmarks carry no date at all.
+Leif draws **1**, Rollo’s family line **9**, Aud **7** and Harald **2** — candidate code **1972**, in trail-first-appearance order. Order is reconstructed from ticket dates, postcard statements and the final bundle — never from anything printed on a card, since postmarks carry no date at all. **Superseded 19 Oct 2026:** tickets now carry dates (PP-039); order is still solved by chaining the routes.
 
 ## Open risks
 
@@ -117,7 +130,7 @@ Replaces old page PZ-11’s held-back cards and the plain postmark-date sort ref
 • ~~A decoy city per trail.~~ **Decided, 15 Sept 2026:** Leif = Brattahlíð/Qassiarsuk, Rollo = Walcheren, Aud = Bjarnarhöfn, Harald = Constantinople.
 • ~~Aud has no museum ticket to anchor a calendar date.~~ **Resolved** — Aud’s Treasure Museum ticket (PZ-006) is dated 13 Apr, and it carries the one relation the four tickets still prove: Aud first-appears before Harald.
 • ~~The constraint-grid solver — not started.~~ **Built and run**, 17 Sept 2026: `NorseBackpack/Tools/final_riddle_solver.py` plus `final_riddle_clues.py`. Tests 1, 2 and 4 pass. Re-run it after any change to a clue, a card’s text or the itinerary.
-• ~~The 22 dates.~~ **Decided** — a 2 Feb to 15 Dec travel year with variable stay lengths, in the Final riddle tab. Supersedes the 3-day slot grid and the 1 March–3 May window, which could not survive variable stays: re-run under the weaker semantics the old clue set gave 18+ answers.
+• ~~The 22 dates.~~ **Decided** — a 2 Feb to 15 Dec travel year with variable stay lengths, in the Final riddle tab. Supersedes the 3-day slot grid and the 1 March–3 May window, which could not survive variable stays: re-run under the weaker semantics the old clue set gave 18+ answers. **Superseded 19 Oct 2026 (designer):** one calendar, 8 Sep to 12 Dec 2025, stops of 1 day to 1 week, in PP-039 and `Props/Tickets/ticket_dates.py`.
 • ~~The five one-clause edits to already-built cards.~~ **Applied and rebuilt, 17 Sept 2026** (R1, R2, R6, H1, H4) — wording in Q-019. The solver was re-run afterwards and the answer is still unique.
 **Still open:**
 • Which specific element sits on which real stop’s card — 18 real-card assignments, and the only thing still blocking the endgame. The four decoy assignments are fixed by the two shared fake pairs.
@@ -149,3 +162,7 @@ The order in which each trail **first appears** is the order its digit is read. 
 ## Playtest evidence
 
 **Playtest 1** (feedback relayed by the designer 12 Oct 2026; playtest date, team and hint use not recorded). Going back to the postcards for travel clues was too complicated. Playtesters suggested: using the postcards only for the family mark; making the card marks look like the iconography; more tickets or a fuller journal; clearer decoys (possibly no mark); stamps on the maps. Changes above (Q-054). Retest needed.
+
+**17 Oct 2026 (designer, map cleanup review):** the existing Harald route shape is accepted as the final digit **2**. Leave the route and geography unchanged during the map cleanup. Earlier zigzag/readability concerns are not a requested redesign.
+
+**20 Oct 2026 (designer): the three itinerary receipts (flight bookings between journeys) are dropped.** Every hop ticket carries a date (19 Oct) and each journey's dates form their own block (Leif 8–17 Sep, Rollo 28 Sep – 16 Oct, Aud 24 Oct – 1 Nov, Harald 14 Nov – 12 Dec), so the hop tickets alone give both the stop order and the journey order (1-9-7-2). Fewer pieces and less reading in the finale. Hint 3 and the Solution were reworded the same day to point at the ticket dates instead of the flight tickets (Claude; wording open to the designer).

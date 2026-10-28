@@ -17,4 +17,6 @@ superseded_by:
 tags: []
 ---
 
-The bag arrives locked, with postcard L1 and two luggage tags. The first lock (PZ-001) opens the main compartment.
+**14 Oct 2026 (designer, box + envelopes, PR-007):** the box arrives with postcard L1 and the rune wheel loose on top of the envelopes; L1 gives the first code, 1021, as a worked example (PZ-001). No luggage tags.
+
+~~The bag arrives locked, with postcard L1 and two luggage tags.~~ The first lock (PZ-001) opens the main compartment.

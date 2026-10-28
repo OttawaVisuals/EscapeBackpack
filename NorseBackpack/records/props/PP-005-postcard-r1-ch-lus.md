@@ -11,6 +11,7 @@ source: print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-006
+envelope: PZ-006
 # Physical pocket/container or location; availability remains in found_in above.
 container: Envelope 5
 after_game: return
@@ -73,3 +74,7 @@ There are 22 postcards: each goes back with the lock it came from, as listed bel
 ## Replacement
 
 Reprint from the print file if damaged.
+
+**16 Oct 2026 (designer, Q-057):** Fun Fact shortened to “Richard the Lionheart, a descendant of Rollo, was shot here in April 1199 CE.” (dropped the pardon legend; “CE” added so the date reads as a year). Handwritten message unchanged. R1 is in envelope 5. Print PDFs, page images and web copies rebuilt.
+
+**16 Oct 2026 (designer, Q-057), message:** “whole” dropped from the first line and “supposed” changed to “rumoured”. Bolt carving line unchanged. Rebuilt.

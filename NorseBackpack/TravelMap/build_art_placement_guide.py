@@ -14,7 +14,7 @@ Slots are chosen LANDSCAPE, not largest-area. Maximising area produced tall narr
 was 1.62 x 4.25 in), which is the worst possible frame for a ship under sail -- the main subject.
 Aspect is constrained to roughly 1.4:1 - 2.0:1 instead, which costs some area and buys usable art.
 
-Output: output/pdf/Trail_Map_<n>_<Trail>_ART_GUIDE.pdf  (designer aid, never printed for play)
+Output: NorseBackpack/Print/_pdf_source/Trail_Map_<n>_<Trail>_ART_GUIDE.pdf  (designer aid, never printed for play)
 
 Usage: python build_art_placement_guide.py [leif|rollo|aud]
 """

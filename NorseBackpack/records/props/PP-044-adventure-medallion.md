@@ -11,6 +11,7 @@ source: 3d-print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-013
+envelope: PZ-013
 # Physical pocket/container or location; availability remains in found_in above.
 container: Envelope 13
 after_game: keep
@@ -64,6 +65,8 @@ Built-in ImageGen used the [front reference sheet](../Props/Medallion/sources/Se
 
 50 mm diameter, 4.4 mm thick; engraved back down, detailed crest up. Check underside letters and feathers on the first print. Optional one filament change for the crest. [Current STL and full specification]. No physical print or printer-profile slice yet.
 
+**17 Oct 2026 (designer):** printed and works well.
+
 ## Starting state
 
 Not recorded yet.
@@ -76,3 +79,5 @@ None needed: the team keeps the medallion (designer, 10 Oct 2026).
 
 One new medallion for every team, since each team keeps theirs (designer, 10 Oct 2026).
 
+
+**18 Oct 2026 (folder cleanup, open):** the online game's medallion is still cut from `Props/Medallion/Medallion_v2_Preview.png` (`Digital/build_final_digital_assets.py`), so its back shows the v2 lettering, not the approved v3 back. Not changed yet; `Medallion_v2_Preview.png` stays until this is decided.

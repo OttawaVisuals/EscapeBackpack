@@ -1847,7 +1847,7 @@ window.AUD_BASE = {
  ],
  "stops": [
   {
-   "name": "Dögurðarnes / Dagverðarnes · Iceland",
+   "name": "Dögurðarnes · Iceland",
    "order": 1,
    "x": 150.73,
    "y": 676.92
@@ -1859,7 +1859,7 @@ window.AUD_BASE = {
    "y": 688.9
   },
   {
-   "name": "Esjuberg / Kjalarnes · Iceland",
+   "name": "Esjuberg · Iceland",
    "order": 3,
    "x": 296.96,
    "y": 182.34
@@ -1884,18 +1884,18 @@ window.AUD_BASE = {
  "towns": [
   {
    "name": "Akranes",
-   "x": 234.55,
-   "y": 228.4
+   "x": 242.56,
+   "y": 228.39
   },
   {
    "name": "Bjarnarhöfn",
-   "x": 42.64,
-   "y": 577.45
+   "x": 43.35,
+   "y": 572.83
   },
   {
    "name": "Borgarnes",
-   "x": 269.99,
-   "y": 341.15
+   "x": 274.76,
+   "y": 335.62
   },
   {
    "name": "Búðardalur",
@@ -1903,7 +1903,7 @@ window.AUD_BASE = {
    "y": 633.35
   },
   {
-   "name": "Dögurðarnes / Dagverðarnes",
+   "name": "Dögurðarnes",
    "x": 150.73,
    "y": 676.92
   },
@@ -1916,21 +1916,6 @@ window.AUD_BASE = {
    "name": "Hvammur",
    "x": 289.18,
    "y": 688.9
-  },
-  {
-   "name": "Kambsnes",
-   "x": 294.93,
-   "y": 618.45
-  },
-  {
-   "name": "Krosshólaborg / Krosshólar",
-   "x": 297.62,
-   "y": 687.75
-  },
-  {
-   "name": "Mosfellsbær",
-   "x": 323.88,
-   "y": 151.7
   },
   {
    "name": "Reykholt",

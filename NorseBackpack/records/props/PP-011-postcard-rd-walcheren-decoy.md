@@ -11,6 +11,7 @@ source: print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-006
+envelope: PZ-006
 # Physical pocket/container or location; availability remains in found_in above.
 container: Envelope 5
 after_game: return
@@ -67,3 +68,7 @@ There are 22 postcards: each goes back with the lock it came from, as listed bel
 ## Replacement
 
 Reprint from the print file if damaged.
+
+**16 Oct 2026 (designer, Q-057):** Fun Fact shortened to “Viking fleets wintered on this coast for years before 911 CE.” Handwritten message unchanged. RD is in envelope 5. Print PDFs, page images and web copies rebuilt.
+
+**16 Oct 2026 (designer, Q-057), message:** first paragraph now “Walcheren, in the Netherlands. The old chronicles hint that Rollo himself raided this coast before he ever saw Normandy.” The fishing-boats paragraph is unchanged. Rebuilt.

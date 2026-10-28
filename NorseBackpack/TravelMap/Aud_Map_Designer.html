@@ -397,10 +397,10 @@ function planBaseLabels(){
     }
   }
   for (const s of B.stops) reserve(s.x-6, s.y-6, s.x+6, s.y+6);
-  for (const t of B.towns) reserve(t.x-2.4, t.y-2.4, t.x+2.4, t.y+2.4);
+  for (const t of B.towns) reserve(t.x-3, t.y-3, t.x+3, t.y+3);
   stopPlan = B.stops.map(s => {
     const nm = s.name.split(' \u00b7 ')[0];
-    return {s, nm, spot: findSpot(nm, s.x, s.y, 6.4, 8)};
+    return {s, nm, spot: findSpot(nm, s.x, s.y, 7.4, 8)};
   });
 }
 
@@ -587,11 +587,11 @@ function render(){
   if ($('showTowns').checked){
     const gt = el('g', {}, svg);
     for (const t of B.towns){
-      el('circle', {cx:t.x, cy:toY(t.y), r:1.6, fill:'none', stroke:'#59635D', 'stroke-width':.7}, gt);
+      el('circle', {cx:t.x, cy:toY(t.y), r:2.3, fill:'#fff', stroke:'#283B34', 'stroke-width':.9}, gt);
       /* A town that is also a stop is labelled once, by the stop -- same rule as the build. */
       if (STOP_NAMES.has(t.name)) continue;
-      const sp = findSpot(t.name, t.x, t.y, 6, 4);
-      if (sp) label(t.name, sp.lx, sp.ly, 6, '#59635D', gt, sp.anchor);
+      const sp = findSpot(t.name, t.x, t.y, 7.4, 4);
+      if (sp) label(t.name, sp.lx, sp.ly, 7.4, '#283B34', gt, sp.anchor);
     }
     for (const a of B.areas){
       const sp = findSpot(a.name, a.x, a.y, 8, 2);
@@ -663,7 +663,7 @@ function render(){
       const s = pl.s;
       el('circle', {cx:s.x, cy:toY(s.y), r:5, fill:'#B56A2A'}, gs);
       label(String(s.order), s.x, s.y-2, 6.5, '#fff', gs);
-      if (pl.spot) label(pl.nm, pl.spot.lx, pl.spot.ly, 6.4, '#283B34', gs, pl.spot.anchor);
+      if (pl.spot) label(pl.nm, pl.spot.lx, pl.spot.ly, 7.4, '#283B34', gs, pl.spot.anchor);
     }
   }
 

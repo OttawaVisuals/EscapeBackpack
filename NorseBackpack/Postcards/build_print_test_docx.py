@@ -1,6 +1,6 @@
 """
 The postcard print files -- the preferred way to print the deck (decided 25 Sept 2026: the
-printer handles these .docx margins better than the PDFs). Writes 11 files to output/docx/,
+printer handles these .docx margins better than the PDFs). Writes 11 files to NorseBackpack/Print/,
 two cards each, covering all 22 cards in deck order. Rebuild after any card changes, and
 after `python NorseBackpack/build_page_images.py` so the back images are current.
 
@@ -39,7 +39,7 @@ from PIL import Image, ImageDraw
 import io
 
 ROOT = Path(__file__).resolve().parent
-OUT_DIR = ROOT.parents[1] / "output" / "docx"      # repo-root output/, with the PDFs
+OUT_DIR = ROOT.parents[1] / "NorseBackpack" / "Print"      # repo-root output/, with the PDFs
 
 # Deck order (PC-17): trail by trail, decoy last. Paired in this order, so a pair can span two
 # trails (RD+A1, AD+H1); that only affects which sheet a card is on, not the card.
@@ -51,7 +51,7 @@ DECK = ["L1_LAnse", "L2_Battle_Harbour", "L3_Baffin_Island", "LD_Brattahlid",
         "HD_Constantinople"]
 
 CARD_ART = {card.split("_")[0]: ROOT / f"Postcard_{card}_Front.png" for card in DECK}
-CARD_TEXT = {card.split("_")[0]: ROOT / f"Postcard_{card}_Back.png" for card in DECK}
+CARD_TEXT = {card.split("_")[0]: ROOT / f"Postcard_{card}_Back_Print.png" for card in DECK}  # no beige fill since 20 Oct 2026; build_page_images.py writes these
 
 # Art is 6in x 4in landscape (5 x 3.5 until 13 Oct 2026). Rotated 90 deg it becomes 4in x 6in.
 CARD_W_IN = 4.0
@@ -59,9 +59,9 @@ CARD_H_IN = 6.0
 TOP_MARGIN_IN = 0.3
 # Two 4in cards and the gap leave 0.15in each side of a Letter page (was 0.6in). That is just
 # inside the Canon MG2900's printable area; the 3 mm back bleed past it is clipped, harmlessly.
-SIDE_MARGIN_IN = 0.15
-GAP_IN = 0.2  # between the two cards on a page
+GAP_IN = 2 / 25.4  # between the two cards on a page; was 0.2 in (5.08 mm) until 20 Oct 2026 so the sides could move off the printer's margin limit
 PAGE_W_IN = 8.5  # python-docx default template: US Letter, 8.5in x 11in
+SIDE_MARGIN_IN = (PAGE_W_IN - 2 * CARD_W_IN - GAP_IN) / 2  # 0.211 in (5.35 mm); was 0.15 in
 ROTATE_DEGREES = -90  # clockwise, applied to the art page
 # The physical flip between art and text pages is top-to-bottom (like a calendar page),
 # which inverts orientation. Confirmed on a printed test: rotating both pages the same
@@ -80,6 +80,9 @@ ART_EXTRA_ROTATE = {"A3": 180}
 # 2026-10-07: a 1.5 mm shift was tried after an R3/R4 miss and reverted; the Aud ticket printed
 # centred with 0 / 0 the same morning, so the miss was a feed problem, not a fixed offset.
 TEXT_SHIFT_X_IN = 0
+# 20 Oct 2026 (R1/R2 print test): the text-side card on the LEFT of the page (the second card of a
+# pair, e.g. R2) prints about 1.5 mm too far left. Moves only that card; the right-hand one stays.
+TEXT_LEFT_CARD_SHIFT_X_IN = 1.5 / 25.4
 TEXT_SHIFT_Y_IN = 0
 
 # PC-20: 1.5mm bleed on the back (text) side only, matching the production card-back
@@ -87,7 +90,7 @@ TEXT_SHIFT_Y_IN = 0
 # safely print past the trim line; the front is edge-to-edge photo art, so it stays at
 # exact trim size -- no bleed applied there. Grown symmetrically so the trim box stays
 # at the same absolute position.
-BLEED_IN = 3 / 25.4  # was 1.5 mm; doubled 2026-10-07 so a feed slip still leaves paper colour at the edge
+BLEED_IN = 0  # was 3 mm (beige past the trim). No beige fill since 20 Oct 2026, so there is nothing to bleed; the old bleed also pushed L2's back to x 0.03 in, inside the Canon's unprintable margin.
 
 # 2026-10-07: page 1 is the text side, page 2 the art. The flat cream back uses less ink than the
 # photo art, so printing it first leaves the sheet flatter for the second pass, which is the one
@@ -100,7 +103,7 @@ OUTLINE_ONLY = False
 OUTLINE_WEIGHT_PX = 3
 
 # Matches PAPER in every build_postcard_<ID>_pdf.py -- the back's flat background colour.
-PAPER_RGB = (0xEF, 0xE3, 0xC4)
+PAPER_RGB = (0xFF, 0xFF, 0xFF)  # was beige (EFE3C4) until 20 Oct 2026: the back has no fill now
 SOURCE_DPI = 300
 EMU_PER_IN = 914400
 
@@ -184,6 +187,8 @@ def build_page(doc, card_ids, source_map, bleed_in=0, rotate_degrees=ROTATE_DEGR
         # when the layout is centred on the page, which it isn't (0.6in left vs 0.7in right)
         # -- that left the back 2.54mm off (printed test, 2026-09-27).
         trim_x = (PAGE_W_IN - front_x - CARD_W_IN if mirror else front_x) + shift_x_in
+        if mirror and i == len(card_ids) - 1:
+            trim_x += TEXT_LEFT_CARD_SHIFT_X_IN
         trim_y = TOP_MARGIN_IN + shift_y_in
         img_x = trim_x - bleed_in
         img_y = trim_y - bleed_in

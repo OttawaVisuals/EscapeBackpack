@@ -5,7 +5,7 @@ Built-in ImageGen removed the sample 6; numbers are typeset on the blank sail.
 Two full sets on one
 US Letter sheet, so a mis-stuck or torn sticker has a spare. Print on sticker paper at 100%.
 
-Output: output/pdf/Lock_Stickers_Print.pdf
+Output: NorseBackpack/Print/_pdf_source/Lock_Stickers_Print.pdf
 """
 from pathlib import Path
 
@@ -14,7 +14,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfgen import canvas
 
 ROOT = Path(__file__).resolve().parents[3]
-OUT = ROOT / "output" / "pdf" / "Lock_Stickers_Print.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Lock_Stickers_Print.pdf"
 # Plain bold sans numerals: Cinzel's "11" read as "ll" at sticker size (8 Oct 2026).
 # Helvetica-Bold matches the Arial Bold lettering on the medallion back.
 NUMBER_FONT = "Helvetica-Bold"

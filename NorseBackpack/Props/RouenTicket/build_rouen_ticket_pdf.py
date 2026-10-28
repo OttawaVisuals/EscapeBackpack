@@ -1,3 +1,5 @@
+# SUPERSEDED FOR PRINT 17 Oct 2026 (designer): the live Rouen ticket PDF now comes from the readability redesign
+# (Props/ReadabilityDrafts/adopt_to_live.py). Running this builder overwrites it with the old layout. Kept for its data and history.
 """Build the Musee Ducal de Rouen admission ticket (PZ-15, concept stage).
 
 Unlike the L'Anse ticket (Props/MuseumTicket), there is no single baked full-bleed front
@@ -5,15 +7,15 @@ image here -- Codex supplied a standalone castle line icon (TravelMap/Art/
 Rollo_Chateau_Robert_Le_Diable_Line_v1.png, black ink, true alpha), so both faces are drawn
 with ReportLab and the castle icon is recoloured to the shared ink green at draw time.
 
-Back carries the steward's word list: two independently-shuffled columns (Saxon words
-numbered, Norman words lettered) that a solver matches word-to-word. The tag on each of the
+Back carries the steward's word list: Saxon words in number order, and shuffled Norman
+words with letter tags, that a solver matches word-to-word. The tag on each of the
 six real answer words is fixed by the map mechanism (PZ-15 / build_trail_maps_pdf.py
 ROLLO_WORDLOCK_ART) -- letter is the target grid column (A-I only), number is the target
 grid row (1-11 only) -- while the other five pairs carry arbitrary tags, two of which
 (J, K) deliberately spill outside those ranges as camouflage, the same trick PZ-12's A-Z index uses.
 
 Source: TravelMap/Art/Rollo_Chateau_Robert_Le_Diable_Line_v1.png
-Output: output/pdf/Rouen_Ticket_Print.pdf, Rouen_Ticket_Letter_Print.pdf
+Output: NorseBackpack/Print/_pdf_source/Rouen_Ticket_Print.pdf, Rouen_Ticket_Letter_Print.pdf
 """
 
 from pathlib import Path
@@ -30,8 +32,8 @@ from reportlab.pdfgen import canvas
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 FONT_DIR = ROOT / "Fonts"
-OUT = ROOT / "output" / "pdf" / "Rouen_Ticket_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Rouen_Ticket_Letter_Print.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Rouen_Ticket_Print.pdf"
+OUT_LETTER = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Rouen_Ticket_Letter_Print.pdf"
 CASTLE_SOURCE = ROOT / "NorseBackpack" / "TravelMap" / "Art" / "Rollo_Chateau_Robert_Le_Diable_Line_v1.png"
 
 # 2 x 3 in portrait -- smaller than L'Anse's 2 x 5.5 in (PZ-12 found that ticket's own dead
@@ -53,24 +55,25 @@ pdfmetrics.registerFont(TTFont("CinzelBold", str(FONT_DIR / "Cinzel" / "static" 
 
 # 11 Oct 2026 (playtest 1): cut from 15 pairs to 11 and re-jumbled. The old order lined up
 # several pairs on the same row (sheep/mutton, fight/combat, deer/venison, cow/beef), so the
-# matching solved itself. Now every pair sits at least two rows apart, and neither column's
-# tags run in order. Dropped fillers: table/board, vision/sight, escape/flee, assemble/gather.
+# matching solved itself. That revision shuffled both columns. On 20 Oct the designer
+# requested Saxon tags in 1-11 order; Norman order and all tags stay unchanged.
+# Dropped fillers: table/board, vision/sight, escape/flee, assemble/gather.
 #
 # Saxon word, its printed order on the back, and its number tag (1-11). Six of these numbers
 # are load-bearing (2, 3, 6, 7, 9, 10 -- the target grid ROWS for cow, hen, fight, folk, inn
 # and woodland); the other five are camouflage.
 SAXON = [
-    ("inn", 9),
-    ("snake", 5),
-    ("deer", 11),
-    ("fight", 6),
-    ("woodland", 10),
-    ("cow", 2),
-    ("folk", 7),
-    ("sheep", 4),
-    ("freedom", 8),
-    ("hen", 3),
     ("fire", 1),
+    ("cow", 2),
+    ("hen", 3),
+    ("sheep", 4),
+    ("snake", 5),
+    ("fight", 6),
+    ("folk", 7),
+    ("freedom", 8),
+    ("inn", 9),
+    ("woodland", 10),
+    ("deer", 11),
 ]
 assert len(SAXON) == 11
 
@@ -160,7 +163,7 @@ def draw_back_card(c, x=0, y=0):
     c.setFillColor(PAPER)
     c.rect(0, 0, W, H, fill=1, stroke=0)
 
-    header_h = 46
+    header_h = 54
     c.setFillColor(INK)
     c.rect(0, H - header_h, W, header_h, fill=1, stroke=0)
     c.setFillColor(CREAM)
@@ -170,11 +173,13 @@ def draw_back_card(c, x=0, y=0):
     c.setLineWidth(1.0)
     c.line(14, H - 25, W - 14, H - 25)
     c.setFillColor(RUST)
-    c.setFont("Helvetica-Bold", 4.6)
-    c.drawCentredString(W / 2, H - 34, "PEASANT SPEECH, NORMAN FRENCH")
+    c.setFont("Helvetica-Bold", 6.6)
+    c.drawCentredString(W / 2, H - 35, "PEASANT SPEECH, NORMAN FRENCH")
     c.setFillColor(CREAM)
-    c.setFont("Helvetica", 4.6)
-    c.drawCentredString(W / 2, H - 42, "MATCH EACH OLD WORD TO ITS NEW ONE")
+    # 17 Oct 2026 (Q-063): instruction lifted from 4.6 pt to 7 pt on two lines; the word list from 5.8 pt to 10 pt.
+    c.setFont("Helvetica", 7)
+    c.drawCentredString(W / 2, H - 44, "MATCH EACH OLD WORD")
+    c.drawCentredString(W / 2, H - 52, "TO ITS NEW ONE")
 
     c.setStrokeColor(RULE)
     c.setLineWidth(0.7)
@@ -188,10 +193,10 @@ def draw_back_card(c, x=0, y=0):
     mid = W / 2
     left_x = 10
     left_tag_x = left_x
-    left_word_x = left_x + 11
+    left_word_x = left_x + 15
     right_x = W - 10
     right_tag_x = right_x
-    right_word_x = right_x - 11
+    right_word_x = right_x - 12
 
     for i, (word, num) in enumerate(SAXON):
         row_top = col_top - i * row_h
@@ -199,12 +204,12 @@ def draw_back_card(c, x=0, y=0):
         if i % 2 == 1:
             c.setFillColor(ZEBRA)
             c.rect(6, row_bottom, mid - 6, row_h, fill=1, stroke=0)
-        baseline = row_bottom + row_h * 0.3
+        baseline = row_bottom + row_h * 0.28
         c.setFillColor(RUST)
-        c.setFont("Helvetica-Bold", 5.6)
+        c.setFont("Helvetica-Bold", 10)
         c.drawString(left_tag_x, baseline, str(num))
         c.setFillColor(INK)
-        c.setFont("Helvetica", 5.8)
+        c.setFont("Helvetica", 10)
         c.drawString(left_word_x, baseline, word)
 
     for i, (word, letter) in enumerate(NORMAN):
@@ -213,12 +218,12 @@ def draw_back_card(c, x=0, y=0):
         if i % 2 == 1:
             c.setFillColor(ZEBRA)
             c.rect(mid, row_bottom, W - 6 - mid, row_h, fill=1, stroke=0)
-        baseline = row_bottom + row_h * 0.3
+        baseline = row_bottom + row_h * 0.28
         c.setFillColor(RUST)
-        c.setFont("Helvetica-Bold", 5.6)
+        c.setFont("Helvetica-Bold", 10)
         c.drawRightString(right_tag_x, baseline, letter)
         c.setFillColor(INK)
-        c.setFont("Helvetica", 5.8)
+        c.setFont("Helvetica", 10)
         c.drawRightString(right_word_x, baseline, word)
 
     c.setStrokeColor(RULE)

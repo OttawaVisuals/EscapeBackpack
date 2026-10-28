@@ -11,6 +11,7 @@ source: print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-004
+envelope: PZ-004
 # Physical pocket/container or location; availability remains in found_in above.
 container: Envelope 4
 after_game: return
@@ -51,3 +52,5 @@ There are 22 postcards: each goes back with the lock it came from, as listed bel
 ## Replacement
 
 Reprint from the print file if damaged.
+
+**16 Oct 2026 (designer, Q-057):** Fun Fact shortened to “Aud claimed a whole valley here, then freed her thralls and gave each one land.” (was the long Dalasysla sentence). Handwritten message kept exactly as it is, including “a great museum dedicated to Aud” (no comb mention); it carries the PZ-006 clues (south, the road that followed the forest, the counting line). “Each one” is slightly stronger than the saga, which says she gave land to freed thralls; not changed. Print PDFs, page images and web copies rebuilt. A2 is in envelope 4 (PR-007).

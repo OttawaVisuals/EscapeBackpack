@@ -17,11 +17,12 @@ difficulty: 2
 # Lock it opens: 3-digit | 4-digit | 4-letter | 3-digit-colour (blank if none)
 lock: 3-digit
 answer: 562
+envelope_marks: ᛈᛏᛟᛇ
 # Compartment this lock closes (shown on the Locks tab)
 container: Envelope 6
 reset_display: 000
 # What players call this lock on the hint page, e.g. "The luggage tag" (spoiler-free)
-hint_title: Just opened ᚷᛉᛟᛇ
+hint_title: Just opened ᛈᚹᛟᛇ
 # Explicit opt-in for the PUBLIC hint page. Candidates are never published.
 publish_hints: yes
 # Independent of design/build status: untested | passed | changes-needed
@@ -123,3 +124,7 @@ Lock as recorded: Three-digit lock. Old page status: Decided.
 ## Playtest evidence
 
 **Playtest 1** (feedback relayed by the designer 11 Oct 2026; playtest date, team and hint use not recorded). “911” was confusing as a year. Walcheren could not be found on the map. Changes above; test_status stays untested until retested.
+
+**16 Oct 2026 (designer, Q-057):** Fun Fact text pass on R1, R6 and RD, all shortened, with “CE” after each year so players read them as dates (RD “before 911 CE”, R6 “In 911 CE”, R1 “April 1199 CE”; a non-breaking space keeps the year and CE on one line). The sort order and the counts (5, 3 doubled to 6, 2 = 562) are unchanged. Handwritten messages not changed yet. The designer's playtest 1 wording “the year 911” is replaced by “911 CE”.
+
+**16 Oct 2026 (designer, Q-057):** handwritten messages of R1, R6 and RD tightened (see PP-005, PP-010, PP-011). The counted objects (bolts, boars, boats) are still mentioned in passing, and R6 keeps the doubling hint. PZ-009 text pass done; not retested on paper.

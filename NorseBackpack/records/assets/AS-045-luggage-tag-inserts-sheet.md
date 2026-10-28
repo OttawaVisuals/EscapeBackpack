@@ -3,7 +3,7 @@ id: AS-045
 title: Luggage Tag Inserts Sheet
 type: asset
 # idea | candidate | decided | built | parked
-status: built
+status: parked
 # image | audio | text | print
 kind: image
 # The prop this asset is for (one ID)
@@ -18,5 +18,7 @@ links: []
 superseded_by:
 tags: []
 ---
+
+**14 Oct 2026 (designer, box + envelopes, PR-007):** **parked:** the luggage tag insert sheet is no longer in the game. Postcard L1 gives the opening code `1021` as a worked example of the rune wheel instead (PZ-001, Q-047). The bought tags and the builder are kept.
 
 Render of the print PDF made by `build_page_images.py`. Not a generated image.

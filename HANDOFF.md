@@ -1,10 +1,686 @@
 # Project Handoff
 
+## 2026-10-27 Notes boxes on the Print costs page Claude
+
+Added an editable Notes box to every priced row on the Print costs tab (print products, envelopes/packs, boxes, made parts). Defaults live in `NOTES` in `NorseBackpack/Tools/build_full_adventure.py` (seeded: flyer 5.5 x 8.5 · 1 side, the cheapest-quote spec). Edits save in the browser (localStorage); "Copy all notes" copies item + note so they can be pasted into `NOTES` to keep them. Checked in the browser over HTTP: 19 boxes, typing saves, reset clears; no new console errors. Next: send the other cheapest-quote specs to add to `NOTES`.
+
+## 2026-10-21 Full_Adventure gets Production and Next steps tabs Claude
+- New record Q-064 (playtesting outreach in Ottawa: Ottawa Strategy Games, Studio Staja, Level One, ProtoTO, Reddit post draft; Black Suit Games as publisher lead). Reddit wording is Claude's draft, not posted.
+- `NorseBackpack/Tools/build_full_adventure.py` now builds three tabs in `Full_Adventure.html`: Design (unchanged), Production (parts list read from `Production/Norse_Parts_List.xlsx`, the print-costs calculator, Kickstarter plan phases 2 and 5), Next steps (plan short version, open records Q-064/Q-063/Q-053, rest of the plan). Hash links like `#costs` and `#PZ-013` switch tab. Checked over local HTTP at port 8741: tabs, cost totals, 29 parts rows, no console errors.
+- NOT done: publishing to escapepack.ca (needs the designer's OK; design pages are noindex and spoiler-heavy) and archiving `Norse_Brainstorm.html` (still linked from ~15 scripts and records; PR-006 says some tabs are not yet in records).
+- Next: designer decides publish and archive; then copy the page and `Web/` images into `escapepack-site/design/` and add a card to `design/index.template.html`.
+
+## 2026-10-21 Comb and ruler on one Letter page Claude
+- Designer asked for the comb and ruler on one heavy-paper page. New `NorseBackpack/Props/Comb/build_comb_ruler_sheet.py` builds `NorseBackpack/Print/_pdf_source/Comb_And_Ruler_Print.pdf` (Letter, one page): comb drawn from `build_comb.py` geometry read from the live AD print PDF (6 x 4 in card; 100.7 x 87.8 mm, 14 teeth, holes 81.1 mm apart, BOOK check passes) plus the 2 x 6 in ruler from `Props/LivRuler/build_ruler_pdf.py` (120 mark, current Rollo map), crop marks and a 50 mm check bar. Rendered and inspected; PP-028 updated. The half-Letter-map ruler (71.33 mm) was not used.
+- Word version: `NorseBackpack/Print/Print_CombAndRuler.docx` (added to `Props/build_printables_docx.py`; the page is a 300 dpi picture of the PDF, same as the other Print_*.docx). Not rendered through Word here (no LibreOffice).
+- Postcards H2 to H6 for the bottom strip of already-printed pair sheets: `Postcards/build_bottom_postcard_docx.py` writes `Print/PrintBottom_L2.docx` and `PrintBottom_H2..H6.docx` (one card each, landscape 6 x 4 in, centred, at the TOP of the page and rotated 180 degrees, because the designer feeds the sheet turned 180 degrees so the free strip prints first; page 1 text, page 2 art). Not rendered in Word, not printed; the bottom of the page was the unreliable alignment zone in earlier tests.
+- Next: print at Actual size on heavy paper, check the 50 mm bar, cut the comb, lay it on AD and confirm BOOK.
+
+## 2026-10-20 Paired museum cut borders front only Codex
+- User requested cut border only on page 1. Updated build_pairs() in Props/build_museum_bookmarks.py and both Print_Museums_Aud_Rouen_2x6.docx / Print_Museums_Oslo_Brattahlid_2x6.docx. Front cut outlines retained; reverse cut outlines suppressed with 0.5 pt PDF edge clipping, no scale or placement change. Inner decorative frames and all ticket content retained. Individual museum masters/files unchanged.
+- Both paired documents exported through Microsoft Word fallback, four pages rendered and visually inspected. Checked two Letter pages per file, front-only stroke operations and reverse clips. QA: output/museum-2x6/*_FrontBorder_QA.png. Prior paired DOCX and builder archived/logged under Norse_Archive/NorseBackpack/Props/MuseumBookmarks/Before_FrontOnly_CutBorder_20261020/.
+- Next: print at Actual size, long-edge duplex and test alignment; physical test remains open. No HTML changes or publication.
+
+## 2026-10-20 Rouen Saxon list ordered 1 to 11 Codex
+- User requested first part of Rouen match game in numeric order. Reordered SAXON data in Props/RouenTicket/build_rouen_ticket_pdf.py, preserving all word-number assignments and Norman list order/tags. Updated stale comments. Current 2x6 builder imports this data; rebuilt Rouen source/Letter PDF, named Word/PrintTest copy and paired Word files. Aud-Rouen is the intended paired deliverable.
+- Three regenerated Word files exported through Microsoft Word fallback (known absent LibreOffice), all six pages visually inspected. Exact extracted Saxon sequence 1-11 and unchanged Norman sequence asserted; two Letter pages per file. Puzzle tags/answers unchanged. Rouen web PDFs/previews refreshed directly without changing HTML. PP-033 updated; replaced outputs and images archived/logged under Norse_Archive/NorseBackpack/Props/MuseumBookmarks/Before_Rouen_Number_Order_20261020/.
+- Next: print Aud-Rouen pair at Actual size, long-edge duplex. Physical duplex alignment remains untested. QA: output/museum-2x6/*_Sorted_QA.png. No publication or commit.
+
+## 2026-10-20 Mixed museum pairs corrected Codex
+- User clarified two tickets means different museums together. Created Print/Print_Museums_Aud_Rouen_2x6.docx and Print/Print_Museums_Oslo_Brattahlid_2x6.docx. Each has two different horizontal 6 x 2 inch fronts near top, matching backs on page 2, no external text, cut borders retained. These paired files are the intended set for one copy of each museum; earlier duplicate sheets remain available.
+- Added build_pairs() to Props/build_museum_bookmarks.py; normal build refreshes paired files too. All four Word-exported pages visually inspected; two Letter pages each, exact ticket rectangles and no extra text checked. Microsoft Word fallback used because packaged renderer lacks LibreOffice as previously diagnosed. QA at output/museum-2x6/*_Paired_QA.png. Next: print paired files at 100%, long-edge duplex; physical alignment remains untested. No website changes or publication.
+
+## 2026-10-20 Horizontal two-copy museum Word print sheets Codex
+- User requested removal of extra text, horizontal tickets near the top and two tickets per file. Updated Props/build_museum_bookmarks.py and all four Print_Museum_*_2x6.docx files, four PrintTest aliases and two tan-stock aliases. Two identical tickets per Letter page: front page then matching back page, 6 x 2 inches, x1.25, top edges 0.5 and 2.75 inches. Reverse rotated oppositely for long-edge duplex. Only card art and cut borders; heading/instructions/ruler removed. Card masters/content and Oslo white background retained.
+- All four documents exported through Microsoft Word (packaged renderer previously diagnosed missing LibreOffice), eight pages rendered and visually inspected. Automated checks confirm exact sheet rectangles, no external text, two Letter pages per Word file, puzzle data and Oslo source bytes/scale. Current Letter PDFs copied to Web/pdf; individual adventure faces unchanged. QA: output/museum-2x6/*_TwoUp_QA.png and verification.json.
+- Prior Word files, Letter PDFs and builder archived in Norse_Archive/NorseBackpack/Props/MuseumBookmarks/Before_Horizontal_TwoUp_20261020/; README logged. Records PP-024/031/033/036 updated. Next: test one sheet at Actual size, duplex long edge, and check physical front/back alignment. No publication or commit.
+
+## 2026-10-20 Museum cut borders and white Oslo reverse Codex
+- Added continuous exact-trim cut borders to all four 2 x 6 museum faces and Letter sheets in Props/build_museum_bookmarks.py. Four Print_Museum_*_2x6.docx files and existing compatibility copies rebuilt.
+- Oslo beige reverse substrate removed using a PDF colour-key mask; blank areas render white. Original embedded artwork bytes, translation-only placement, grid scale, five pieces and corner marks preserved. Oslo print instruction now white stock; other museums retain tan stock.
+- All eight Word-exported pages visually inspected; dimensions, puzzle data, original Oslo image bytes/transform and white blank pixels verified. QA in output/museum-2x6/. Physical duplex alignment and read-through remain untested. Print Actual size, long-edge duplex.
+- Replaced masters/Word/previews archived and logged in Norse_Archive/NorseBackpack/Props/MuseumBookmarks/Before_CutBorder_White_Oslo_20261020/. Records PP-024/031/033/036 updated. Current museum web PDFs copied and all adventure previews rebuilt successfully. General build_web_assets.py subsequently stopped on missing pymupdf for another source; museum copies/previews are current. Browser recheck remains unavailable as recorded below.
+
+## 2026-10-20 Liv notes cut border Codex
+- Added the requested 0.5 pt grey dashed outline to page 1 of `NorseBackpack/Print/Print_LivNotesCard.docx`, at the exact 4 × 6 inch trim (x 2.25 in, y 0.5 in). Decorative border stays inside. Reverse has no extra cut line. Both Word builders preserve this guide.
+- Word-exported two pages visually checked; outline verified on front only. Prior Word document archived in `C:/EscapeBackpack/Norse_Archive/NorseBackpack/Props/LivNotes/Before_Cut_Border_20261020/`. Cut along the outer dashed rectangle at Actual size.
+
+## 2026-10-20 Four museum tickets rebuilt at 2 by 6 inches Codex
+- Browser preview recheck unavailable: in-app tab reported connection refused despite local HTTP responding 200 after server restart. Generated museum previews and eight Word-exported pages were inspected directly; no claim of a successful browser recheck. Existing 141 kit migration warnings unchanged.
+- User requested new 2 × 6 museum layouts. Added Props/build_museum_bookmarks.py; rebuilt Brattahlíð, Aud, Rouen and Oslo source/Letter PDFs and four Print_Museum_{Brattahlid,Aud,Rouen,Oslo}_2x6.docx files. Refreshed existing four PrintTest aliases and two tan-stock Word copies. Two Letter pages per museum, front/back aligned at x234/y288 pt, 100% size, crop marks and one-inch ruler.
+- All functional data checked: A–Z rooms/WOLF 4865, seven coins/values, six original directions, Rouen independent order/tags and I6/F7/A3/B9. Original source artworks reused; Brattahlíð uses earlier tall nine-site illustration clipped to exclude old header/serial. Oslo original smudged reverse bytes retained with translation only, nominal 0.4-inch cells matching CURRENT Letter map. Does not match the independent resized half-Letter proof scale.
+- Reused immutable coin-art/Oslo-reverse source PDFs in Props/MuseumBookmarks/Sources. Prior masters/Word/previews archived and logged at Norse_Archive/NorseBackpack/Props/MuseumBookmarks/Before_2x6_20261020/. Aud designer answer copy remains in archived original PDF and is excluded from player outputs. PP-024/031/033/036 updated.
+- Packaged renderer failed due absent LibreOffice; all four documents exported successfully through Microsoft Word, exactly two Letter pages each. All eight rendered pages visually inspected; verified dimensions/content/source hashes/transforms. QA in output/museum-2x6/verification.json and verify_museums.py. Physical print/readability/duplex/Oslo registration tests unperformed.
+- Refreshed local adventure museum previews and web PDFs. No publication. Next: print four DOCX files on tan stock at actual size, long-edge duplex, test ruler/alignment and Oslo map registration.
+
+## 2026-10-20 Liv notes background removed and Word placement raised Codex
+- Designer requested no background on the front of the Liv notes / QR document, and pictures nearer the top. Removed only the full-card cream vector fill from the front master; all text, colours and fine border retained. QR back artwork/content unchanged.
+- Current `NorseBackpack/Print/Print_LivNotesCard.docx`: both 4 × 6 faces at x 2.25 in, y 0.5 in on Letter (was y 2.5). Current two-page card PDF, front source and previews refreshed. Updated `Props/LivNotes/build_liv_notes_back.py` to strip cream backgrounds on future rebuild/refresh; generic `Props/build_printables_docx.py` also retains the upper placement for this document.
+- Prior two-page PDF, Word, front source, builder and previews saved under `C:/EscapeBackpack/Norse_Archive/NorseBackpack/Props/LivNotes/Before_No_Background_Top_20261020/`. PDF front text verified identical, reverse content stream unchanged, front corner is unprinted white, both Word anchors verified y 0.5 in. Word-exported two pages inspected (`output/liv-notes-top-qa/`); packaged renderer lacks LibreOffice, used Word fallback. Physical scan/duplex alignment still untested.
+
+## 2026-10-20 Matching Leif Rollo Harald half-Letter proofs Codex
+- User requested the other maps in the Aud half-Letter direction. Separate proofs built by `NorseBackpack/TravelMap/build_other_half_letter_proofs.py`; all current Letter player/answer map masters and prototype ruler/Word files retained. Outputs under `C:/EscapeBackpack/output/other-maps-half-letter/`.
+- Three fronts: 5.5 × 8.5 in trim, 0.125 in bleed (Media/BleedBox 414 × 630 pt; TrimBox [9,9,405,621]), title strips removed, identifiers in upper-right cartouches, proportional pictograms, 7.2 pt place names / 6.8 pt grid. All 18 Leif / 29 Rollo / 14 Harald town labels retained. Reflowed captions and labels; circular compasses. Existing art centers keep their grid squares; Harald's A,C,E,I,K,N,R,T,V and all 12 rune stems retained, labels kept clear of them.
+- Harald print-shop/trim/Letter-test PDFs have two pages. Reverse board and note retained at 100% (font/text/origin translation checked against original), preserving the Oslo ticket scale. Current Letter master unchanged.
+- Matching 2 × 6 production-proof ruler included: independent measurements in final PDFs give Rollo's Châlus–Saint-Clair-sur-Epte distance 71.3284 mm and LONGSHIP 0→120 tick distance 71.3285 mm. Answer stays 120; SPEAR reads 75. Original 83.126 mm prototype ruler unchanged. New ruler must only accompany the resized proof map.
+- Deliverables: individual clean `*_PrintShop_Proof.pdf` files, `All_Maps_5.5x8.5_Print_Test_Pack.pdf` (6 Letter pages: four fronts, Harald reverse, ruler), `Maps_And_Matching_Ruler_PrintShop_Proofs.zip` (all four maps + matching ruler + README), `Other_Maps_5.5x8.5_Overview.png`. Combined review pack is single-sided; separate two-page Harald Letter test can be printed duplex, long edge. Print at 100% / Actual size; use inch / 50 mm check bars.
+- Validation: all safe areas, labels, artwork centers, source hashes, independent map/ruler PDF measurements, Harald reverse text/fonts and all 12 stem cells checked. Full pages and targeted details inspected. Reports: validation.json / verification.json; QA helper verify_proofs.py. PP-029/032/034, PP-025 and PZ-011 updated. No live print adoption, website publish, commit or push.
+- Next: designer reviews and prints the proof pack; test readability, animal identification, branch counts, tracing and ruler measurement physically before production adoption.
+
+## 2026-10-20 Cost tab: magnifier, small parts and made parts Claude
+- `Tools/build_full_adventure.py`: bought-in-packs rows added (magnifier Kronabelle 200 for $54.37, brass fastener, paper clips ×4, hnefatafl pieces ×26; last three unpriced); new MADE list and "Made parts" form (per box, one-time cost, price each @250/500/1,000, link): die-cut sheet (wheel + tally + comb), hnefatafl board, coins ×12, medallion; total row "Made parts" (one-time ÷ quantity + price each); copy-packaging TSV now 12 rows × 9 columns. xlsx packaging block rebuilt (rows 30–41, totals 43–44; backup `%TEMP%\claude\ks\Norse_Parts_List_before_made.xlsx`).
+- Checks: page and Excel both give $25.45 / $24.25 / $17.82 at 250 / 500 / 1,000 with a test die-cut quote ($300 one-time + $1.20/0.90/0.70), test values not kept; no console errors. Q-052 records the pricing approach (ganged die-cut sheet quote; board size depends on piece size).
+- Next: designer decides wooden pawns vs punch-out tokens; then a die-line PDF for the ganged sheet can be made for a Newprint quote.
+
+## 2026-10-20 Packaging entry forms on the cost tab Claude
+- `Tools/build_full_adventure.py`: PACKAGING replaced by ENVELOPES (per box, items per pack, pack price, link → price each) and BOXES (price each @250/500/1,000 + link, radio picks the counted box); section 5 total = printing + envelopes + box (100 column uses the box's 250 price); "Copy packaging for spreadsheet" button (4 TSV rows, paste at A30). Links turn the item name into a link. xlsx Print quotes packaging block rebuilt at rows 28–37 with the same columns (backup `%TEMP%\claude\ks\Norse_Parts_List_before_pack2.xlsx`; builder backup `%TEMP%\claude\ks\build_full_adventure_before_pack.py`).
+- Checks over localhost: defaults ($0.153 / $0.929 each), box prices typed at 250/1,000 flow into the totals, link appears, box switch, reload keeps values, copy output verified with a stubbed clipboard; test values cleared. Excel recalculated: same $22.47 per box at 500 (box A, no map prices yet).
+- Next: designer types box quotes (250/500/1,000) and envelope packs on the page, then uses the copy button to keep them in the xlsx.
+
+## 2026-10-20 Aud half-Letter professional-print proof Codex
+- User requested a potential legible 5.5 × 8.5 in Aud map, supplied Newprint template, and suggested dropping the bottom title and moving the identifier into the legend. Built a separate proof only; current Letter player/answer PDFs, Word master and feature JSON unchanged.
+- Source: `NorseBackpack/TravelMap/build_aud_half_letter_proof.py`. Outputs: `C:/EscapeBackpack/output/aud-half-letter/` — `Aud_Map_5.5x8.5_PrintShop_Proof.pdf`, trimmed proof, Actual-size Letter test sheet, PNG preview, validation JSON and README. Print-shop PDF Media/BleedBox 414 × 630 pt, TrimBox [9,9,405,621], matching supplied template (0.125 in bleed). Important content inset another 0.125 in from trim.
+- Taller schematic geography frame; original pictograms retain proportions and corresponding positions. Bottom title removed, comb moved to legend header. Place names reset at 7.2 pt, legend at 6.5 pt, grid at 6.8 pt; 11 town names and 25 key entries. Source remains 102 features / 12 bridges / 5 fords / 7 gates. Repositioned Búðardalur/Eiríksstaðir labels for clearance; compass kept circular. No AI-generated replacement geography.
+- Checked page boxes, text sizes, full-page and detail renders; source master SHA-256 unchanged. This proof is not adopted. Physical reading, crossing counts and final route tracing at 5.5 × 8.5 remain untested.
+- Next: designer reviews the preview and prints the Letter test at 100% / Actual size (one-inch check bar), especially the 6.5 pt legend and small crossings.
+
+## 2026-10-20 Cost tab: packaging and flyer maps Claude
+- Designer decided production maps 5.5 × 8.5 (6 × 9 envelopes; prototype keeps Letter prints; Codex redoes Aud's map first, the other maps wait for that design). Recorded in Q-049, PP-029/030/032/034, PP-025 (ruler must follow Rollo's new scale).
+- `Tools/build_full_adventure.py` cost tab: Letter products replaced by 5.5 × 8.5 flyer products (prices blank, to come); old Letter quotes shown for reference; new section 3 Packaging (6 × 9 clasp ×5 at $0.153, small string-tie ×10 at $0.93, box A 11.75 × 1 × 10 at $3.88, box B 10 × 8 × 2 price blank; radio picks the box) and section 4 Total per box. xlsx Print quotes: map rows switched to flyers with old prices in the notes, packaging block at rows 28–35 (backup `%TEMP%\claude\ks\Norse_Parts_List_before_packaging.xlsx`). Page and Excel agree: printing $8.53 at 500 without maps, packaging about $13.95.
+- Next: designer enters the 5.5 × 8.5 flyer quotes and the 10 × 8 × 2 box price.
+
+## 2026-10-20 Box and map-size questions Claude
+- Designer is choosing a box: Newprint "Sales Presentation Box" 11.75 × 1 × 10 in, 18 pt SBS, $3.88 at 500 (9 × 12 envelopes do not fit; 1 in depth unmeasured). Canada Post Lettermail checked: oversized max 380 × 270 × 20 mm, 500 g, and no goods to the US, so the game ships as a parcel. Now considering half-letter maps + 6 × 9 envelopes. All recorded in Q-049 (no decision).
+- Made a paper scale test (not a print master): `C:\EscapeBackpack\output\map-half-letter\Map_HalfLetter_ScaleTest.pdf` — the four map fronts at 66 % on 5.5 × 8.5 frames, Harald's back at 100 %, 2-up on Letter. Measured: maps use 7.98 × 10.21 in now; smallest text 6.4 pt → 4.2 pt at 66 %.
+- Next: designer prints the scale test at 100 % and measures the packed prototype's height and weight.
+
+## 2026-10-20 Print quotes entered Claude
+- Designer pasted online-quote prices (10 rows × 100/250/500/1,000, same order as the xlsx Print quotes tab). Entered in `Production/Norse_Parts_List.xlsx` (saved through Excel, so values are calculated) and built into `Tools/build_full_adventure.py` as PRINT_QUOTES: the cost tab now opens pre-filled, has a "Whole print order" row and "Reset to quotes"; localStorage key bumped to v2; unused 2-sided business-card product removed.
+- Result: $29.77 / $14.66 / $10.17 / $7.87 per box at 100 / 250 / 500 / 1,000 (53 pieces); whole order $2,977 / $3,665 / $5,085 / $7,868. Excel and page agree; page edit/revert tested, no console errors. Recorded in Q-052 and the Kickstarter plan (2b).
+- Next: ask the printer for a ganged quote (22 postcard designs × 500, 18 business-card designs × 500).
+
+## 2026-10-20 Itinerary receipts dropped Claude
+- Designer decision: drop the 3 itinerary receipts (flight bookings between journeys). The hop-ticket dates already give stop and journey order (each journey's dates are a separate block), so the code 1972 is unchanged.
+- Changed: `Tools/build_full_adventure.py` (receipt previews and cost row removed), `Tools/build_repacking_sheet.py` (envelope 12 line) + rebuilt `Raven_Inheritance_Repacking_Letter.pdf` and `Print/Print_RepackingLetter.docx`, `Props/build_printables_docx.py` (Print_TransitionTickets entry retired), xlsx Print quotes (10 rows, 53 pieces) and Parts list row. `Print/Print_TransitionTickets.docx` moved to `Norse_Archive/NorseBackpack/Print/Itinerary_Receipts_Dropped_20261020/` (logged). `build_transition_tickets_pdf.py` and its PDFs stay: `build_nordic_air_sage.py` reads the booking data from it.
+- Records: PP-039 (note, reset_name), PR-007 env 12 row, PZ-013 (Player notices/does, Hint 3 and Solution reworded to the ticket dates; wording is Claude's, open to the designer), AS-057–059 retired, Q-062, Q-052.
+- Checks: page shows no receipt previews, env 12 shows the four hop sheets, PZ-013 hint 3/solution text verified, cost tab 53 pieces, no console errors; repacking letter text checked (no booking line). kit.py check: no new problems. Not updated: published hint site (escapepack.ca/help/norse), cypher wheel packing key PDF, digital game.
+- Next: designer reads PZ-013 hint 3 and the Solution on Full_Adventure.html#env12 and adjusts the wording if wanted.
+
+## 2026-10-20 Liv's ruler as a 2 × 6 bookmark Claude
+- Designer asked to do the ruler resize here (PP-025, Q-052). `Props/LivRuler/build_ruler_pdf.py`: card 152.4 × 50.8 mm (2 × 6 in), scales unchanged (LONGSHIP 120 mark = 83.126 mm, SPEAR reads 75, ranges 0–150 / 0–110), rebus pictures right-aligned in the 0.125 in safe zone, numbers 7.4 pt, ticks 5 / 7 mm, raven 19 mm, 0.125 in green bleed. New print-shop file `Print/_pdf_source/Liv_Ruler_2x6_PrintShop.pdf` (6.25 × 2.25 in); home sheet `Liv_Ruler_Print.pdf` and `Print/Print_LivRuler.docx` rebuilt (docx via `build_printables_docx.build()` for this one entry only). Note: the session brief said the target was 100; the records and builder say 120 (designer, 15 Oct), which was kept.
+- Checks: builder layout assertions (pictures clear of last number, inside safe zone); 0→120 tick distance measured in the PDF = 83.126 mm; shop PDF size and fonts checked; previews inspected. Not paper-tested. Digital ruler not changed.
+- Archived the 160 × 40 mm preview, PDF, docx and builder at `Norse_Archive/NorseBackpack/Props/LivRuler/Before_Bookmark_20261020/` (logged). PP-025, PZ-011, cost tab and xlsx notes updated; Full_Adventure rebuilt; build_web_assets.py run.
+- Next: print `Print/Print_LivRuler.docx` at 100 %, check the 50 mm bar, then measure Châlus to Saint-Clair on Rollo's printed map.
+
+## 2026-10-20 Raven's path card at business-card size Claude
+- Designer asked to do the raven's path card resize here (PP-038, Q-052). `Props/RavenFlights/build_raven_flights_pdf.py`: card 3.5 × 2 in, one side; same 8 perches / 12 flights stretched (separate x/y scales) to fill a 0.125 in safe zone; digits Cinzel 11 pt and letters Cinzel Bold 12 pt unchanged; perch rings 0.28 in; narrower digit gap on the 3 vertical flights. `build_docx()` revived: new home-print sheet `Print/Print_RavenFlights_Card.docx` (card at 100 % with crop marks). The card no longer prints from `Print_LuggageTags.docx` (tags parked; that sheet still shows the old 4 × 3 card).
+- Checks: HRAFN → 2648 assertion passes; PDF one page, exactly 3.5 × 2 in, 12 digits, content 0.125 in from every edge, fonts as above; preview and the docx's embedded picture (4 × 2.5 in at 300 dpi, crop marks outside trim) inspected. Microsoft Word PDF export of the docx did not finish (Word left open, possibly the designer's own window; not closed). Not paper-tested. Digital copy (`Digital/build_raven2_assets.py`) not rebuilt.
+- Archived the 4 × 3 preview, PDF and builder at `Norse_Archive/NorseBackpack/Props/RavenFlights/Before_Business_Card_20261020/` (logged). PP-038 and PZ-012 notes added; cost tab and xlsx row note say "Built 20 Oct"; Full_Adventure rebuilt, build_web_assets.py run.
+- Next: print `Print/Print_RavenFlights_Card.docx` at 100 % and check the short vertical flights (7, 6, 1) read as links.
+
+## 2026-10-20 Liv notes help reverse adopted Codex
+- Designer approved the transparent reverse and requested all documents updated. Liv's 4 × 6 in notes card is now two-sided: original names/glossary front retained; back has warm help wording, supplied QR in a Norse frame, simple page border and all 13 code formats in current PR-007 envelope order. No answers. Art: `NorseBackpack/Props/LivNotes/Liv_Notes_Back.png`; raw ImageGen output, exact prompt and original QR in `Props/LivNotes/Sources/`. QR inserted mechanically to preserve its pattern.
+- Updated current `Print/Print_LivNotesCard.docx` (two Letter pages, 4 × 6 card centered at x 2.25 / y 2.5 in) and `Print/_pdf_source/Liv_Notes_Card_Print.pdf` (two 4 × 6 pages). Print Word at Actual size, duplex, flip on long edge. Builder: `Props/LivNotes/build_liv_notes_back.py`; front master retained in Sources. Readability adoption script now retains the reverse. Old PDF, Word and quote workbook archived in `C:/EscapeBackpack/Norse_Archive/NorseBackpack/Props/LivNotes/Before_Help_Back_20261020/`.
+- PP-048, Q-052, Kickstarter plan and Full Adventure updated. Full Adventure shows both faces with Word/PDF links. Print costs and workbook Print quotes now group 23 two-sided designs (22 postcards + notes) and 1 single-sided memo; 12 rows retained. Only six label/count/reference cells changed in XLSX; prices, formulas, styles and all other package parts preserved.
+- Validation: PDF front preserved; Word exported through Microsoft Word and both pages visually inspected (packaged renderer lacks LibreOffice). Transparent artwork checked. Browser shows both faces. Web PDF copied intact from full-quality master to preserve QR; web-assets build completed after bypassing unavailable PyMuPDF resizing for this PDF. `kit.py check`: 141 existing lock-kit/config migration warnings, none on PP-048. No commit, push or publication.
+- Next: print one card duplex; test QR scan, readability and front/back alignment before batch printing. Physical scan and registration remain untested.
+
+## 2026-10-20 Travel business-card prototype DOCX complete Codex
+- User requested home-print Word sheets using 3.5 by 2 inch cards. Updated fancy_travel_ticket.py and all four carrier builders: all 18 cards now 252 by 144 points, two columns per Letter sheet, pale exact-size cutting rectangles, one-inch rulers, original data/design identities preserved. Air now also uses shared layout.
+- Current four Word master filenames retained in Print/; corresponding source PDFs and former VikingRail filename compatibility copy refreshed. Previous four previews/builders archived under Norse_Archive/NorseBackpack/Props/Tickets/Before_Business_Cards_20261020 and logged. PP-039 records adoption, superseding previous sizes for hop tickets only.
+- Verified all 18 unique hops, text and exact dimensions through output/check_fancy_travel.py. Microsoft Word exported each of four DOCX files to one Letter PDF page; all rendered sheets visually inspected, no clipping. Physical printing untested; standard renderer still requires absent LibreOffice. Not a pre-perforated business-card template.
+- Refreshed Full_Adventure travel previews/size note and current web PDF copies. Other agent's print-cost tab preserved.
+- Next: print on sage/coral/yellow/dark-green Letter paper at 100%, verify ruler, cut pale outlines.
+
+## 2026-10-20 Norse Kickstarter plan Claude
+- Designer asked for a full Kickstarter plan for the Norse box (cypher + envelopes): playtesting, costs and cheaper designs, timing, awards, wording. Wrote `NorseBackpack/Production/Kickstarter_Plan.md`; added a pointer paragraph to Q-052. No game files, props or prices in the parts list changed.
+- Proposed dates: blockers to 8 Nov, blind playtests to 20 Dec, quotes to 15 Jan, pre-launch 15 Jan, campaign Tue 2 Mar to Tue 23 Mar 2027 (before Easter), delivery June/July 2027. Cost ranges are Claude's ballpark guesses, labelled so. Web facts (Kickstarter fees, late pledges, 32% follower conversion, awards, tariffs) from 20 Oct searches, sources listed in the plan; Canadian fee rates and US duty status need checking on official pages.
+- Checks: dates/weekdays and subtitle length computed. `kit.py check` not run (one paragraph appended to Q-052, no front-matter change).
+- Follow-up: designer chose plain bulk envelopes + 3D-printed rune stamps, and packing boxes themselves (punching parts out). Recorded in Q-052; plan sections 2c/2d updated with stamp notes, a standard-size table for tickets (sizes read from the print PDFs, may include bleed) and Ottawa printers (Newprint, ASAP PM, Artext; die-cutting confirmed only for Newprint).
+- Follow-up 2: designer decided standard print sizes (Newprint/LoudMouth stock products, ~$0.08–0.14 each): postcard 4 × 6, business card 3.5 × 2 (18 hop tickets), bookmark 2 × 6 (Oslo ticket, 3 transition receipts, plane ticket). Table in Q-052; one dated line added to PP-024/031/033/035/036/038/039/043. Hnefatafl setup insert size still open. Nothing rebuilt. kit.py check: only the existing lock-kit migration warnings.
+- Follow-up 3: designer reopened museum and travel ticket sizes (want smaller, each group one size); postcards stay 4 × 6. Proposal in Q-052 (museum 2 × 6 bookmarks, setup insert 4 × 6 with 0.3 in squares, all travel 3.5 × 2); prop lines marked reopened. Three resize session cards withdrawn.
+- Follow-up 4: added "How many copies to plan for" to the plan: base 300 backers, good 600, upside 1,000; print after the campaign; packing time is the ceiling. Card vs bookmark prices noted in Q-052.
+- Follow-up 5: added a "Print quotes" tab to `NorseBackpack/Production/Norse_Parts_List.xlsx` (12 print rows, yellow price cells @100/250/500/1,000 per design, per-box formulas, totals). Formulas tested in Excel with sample values (18 x 83.10 / 1,000 = 1.50), not saved. Backup of the previous file: `%TEMP%\claude\ks\Norse_Parts_List_backup_20261020.xlsx`. `build_parts_list.py` does not know about this tab; do not rerun it with --force.
+- Follow-up 6: "Print costs" tab added to `NorseBackpack/Full_Adventure.html#costs` via `Tools/build_full_adventure.py` (PRINT_PRODUCTS / PRINT_ITEMS lists, costs_html(), CSS, script). Price inputs per product (7) × quantity (100/250/500/1,000), cost per box per item and totals, saved in browser localStorage only; "Copy for spreadsheet" gives 12 TSV rows for the xlsx Print quotes tab at G4. Rebuilt page, ran build_web_assets.py (links repointed). Checked over http://localhost:8741: 18 × 83.10 / 1,000 = $1.50, totals, missing counts, reload keeps prices, no console errors; test prices cleared. Clipboard copy not tested (needs a user click). The pane rendered only partly for screenshots.
+- Follow-up 7: cost tab and xlsx Print quotes tab narrowed to the designer's printable list (10 rows, 55 pieces): postcards, Liv's note (2 sides), final Liv note (1 side), raven's path card, museum tickets, hop tickets (3.5 × 2, Codex), itinerary receipts, ruler (bookmark suggested), 3 maps front only, Harald's map 2 sides. No prices had been typed (checked). Excel test 18 × 83.10 / 1,000 = 1.50 not saved; page checked over localhost, test prices cleared. Q-052 updated.
+- Follow-up 8: designer decided all travel tickets 3.5 × 2 business cards (hops, 3 itinerary receipts, final plane ticket), raven's path card 3.5 × 2, ruler 2 × 6 bookmark. Recorded in Q-052 + PP-025/038/039/043. Cost tab and xlsx Print quotes tab now 11 rows, 56 pieces (plane ticket added back). Checked over localhost and in Excel (not saved); test prices cleared. Receipts, plane ticket, raven card and ruler not rebuilt.
+- Next: designer types prices from the online quote system into Full_Adventure.html#costs.
+
+## 2026-10-19 Full adventure travel section updated Codex
+- User requested Full_Adventure.html#env1 refreshed with ticket designs. Travel prop PP-039 remains in envelope 12. Source builder now shows four new carrier sheets before the three existing itinerary receipts, current Word/PDF print links and paper/scale instructions. Travel card spans full content width for readable previews.
+- Modified build_full_adventure.py, all four carrier builders (persistent Letter PDF output paths), generated Full_Adventure.html, Web/adventure previews, four Web/pdf sheets and generated .gitignore. New Letter PDF masters under Print/_pdf_source match the previously verified print sheets. PP-039 records update.
+- Missing pymupdf initially blocked build; full adventure rendering now uses bundled pypdfium2. Web copies supplied as full-quality PDF bytes, then build_web_assets.py completed. A workspace-local dependency installation attempt was stopped; no system package changes made.
+- Verified four Word/four PDF links and all seven travel preview targets exist, old mixed-hop previews absent. Browser checked over localhost; screenshot output/fancy-travel/adventure-ticket-update.png. All carrier sheet previews render correctly. No publication.
+- Next: refresh Full_Adventure.html and use PP-039 under envelope 12 for current travel printing.
+
+## 2026-10-19 All fancy hop tickets complete Codex
+- User adopted all four fancy carrier designs. Completed rail/bus/ferry through fancy_travel_ticket.py and their existing builders; air fancy sheet retained. Four current Word masters in Print: Print_NordicAir_Flights_Sage_Paper.docx, Print_NordmarkRail_Trains_Coral_Paper.docx, Print_NorthwayBuses_Yellow_Paper.docx, Print_LongshipFerries_Green_Paper.docx. Previous VikingRail Word filename is a refreshed compatibility copy. Source PDF/preview rail filenames remain stable but display Nordmark.
+- New selected Nordmark B transparent logo, raw ImageGen extraction and full prompt saved in Tickets/Sources; reused Northway B and Longship A v3. Pre-fancy previews/builders archived under Norse_Archive/NorseBackpack/Props/Tickets/Before_Fancy_20261019 and logged. PP-039 records adoption.
+- Verified all 18 unique hops against ticket_dates.py, route/passenger/service/date text, exact PDF dimensions and unprinted backgrounds. All four Word exports are one Letter page each and visually inspected; all new coloured proofs inspected. Packaged renderer unavailable due to missing LibreOffice; Microsoft Word export succeeded. QA script/results: C:/EscapeBackpack/output/check_fancy_travel.py and output/fancy-travel/verification.json.
+- Ran build_web_assets.py; no publication. Connecting itinerary receipts and final boarding pass not redesigned. Physical printing untested.
+- Next: print four sheets on sage, coral, golden-yellow and dark-green Letter paper at actual size, verify the one-inch rulers, then assess contrast.
+
+## 2026-10-19 Fancy ferry ticket preview Codex
+- Generated and visually inspected Longship Ferries fancy concept with adopted dragon longship A, navy/copper on green, matching approved air style. Existing Bayeux to Winchester / LF 204 / 10 OCT 2025 / Liv Ericson used.
+- Saved preview/full prompt to Tickets/Sources/Longship_Ferries_Fancy_Ticket_Concept_v1*; PP-039 records proposal. Ferry production files unchanged. Generated proportions wider than target 3.5 by 1.75 inches; physical printing untested.
+- Next: designer reviews ferry direction before production typesetting.
+
+## 2026-10-19 Fancy bus ticket preview Codex
+- Generated and visually inspected Northway Buses fancy preview with selected B coach/star, navy/green on yellow, matching the air-ticket family. Existing Hvammur to Bjarnarhofn / LB 47 / 26 OCT 2025 / Liv Ericson used.
+- Saved board/full exact prompt to Tickets/Sources/Northway_Buses_Fancy_Ticket_Concept_v1* and recorded proposal in PP-039. No production bus files changed. Generated proportions wider than target 3.5 by 1.75 inches; physical printing untested.
+- Next: designer reviews fancy bus direction before production typesetting.
+
+## 2026-10-19 Fancy rail ticket preview Codex
+- Generated and visually inspected Nordmark Rail concept matching the approved fancy air family, selected B train/mountains on coral with navy/burgundy. Existing Walcheren to Chalus, VR 6120, 28 SEP 2025, Liv Ericson used.
+- Saved board/full prompt under Tickets/Sources/Nordmark_Rail_Fancy_Ticket_Concept_v1*; PP-039 records proposal. No production rail files changed. Generated proportions wider than 3.5 by 1.75 inches; physical printing untested.
+- Next: designer reviews the rail concept before exact-size production typesetting.
+
+## 2026-10-19 Approved fancy air tickets applied Codex
+- Applied approved Nordic Air fancy layout and bird B to all four air hops in build_nordic_air_sage.py. Updated stable Word/PDF/sage-preview paths; existing routes/services/dates preserved. Logo B v2, raw ImageGen output and exact extraction prompt saved in Tickets and Sources. PP-039 records adoption.
+- Archived former sage preview at Norse_Archive/NorseBackpack/Props/Tickets/Nordic_Air_Sage_Before_Fancy_20261019.png and logged. Older logo kept for remaining older sources.
+- PDF data/dimensions/no-background assertions pass. Inspected sage proof, all four tickets on Letter sheet and the one-page Microsoft Word export. Packaged renderer fails due to absent LibreOffice; Word export provides visual verification. Physical printing untested.
+- Ran build_web_assets.py; generated .gitignore/web updates are local, no publishing. Connecting itineraries/final boarding pass not redesigned.
+- Next: print Print/Print_NordicAir_Flights_Sage_Paper.docx on sage Letter paper at actual size and check the 1-inch ruler.
+
+## 2026-10-19 Fancy Nordic Air ticket concept Codex
+- Requested preview generated with built-in ImageGen and selected bird B reference. Saved concept and exact prompt under Props/Tickets/Sources/Nordic_Air_Fancy_Ticket_Concept_v1*. Proposal recorded in PP-039; production masters unchanged.
+- Visually inspected: navy/copper on sage, serif route names, double border, flight path, service/date stub. Generated proportions are wider than production 4 by 1.75 inches. Physical printing untested.
+- Next: designer reviews fancy direction; if adopted, typeset to exact ticket dimensions and verify all routes.
+
+## 2026-10-19 Travel carrier logo selections recap Codex
+- Designer selected Nordic Air B: navy flying bird with copper accent. Recorded selection in PP-039; flight print master application pending.
+- Recovered confirmed Nordmark Rail B (train/mountains) from the failed chat. Checked build_viking_rail.py: still uses old Viking Rail name/logo, so application remains pending. Updated PP-039 to correct its stale unselected status.
+- Other selections already applied per PP-039: Northway Buses B (coach/north star), Longship Ferries A (dragon longship/copper sail).
+- Changed records and handoff only; checked against prior chat and actual rail builder. Next: apply selected air and rail identities and verify rendered ticket sheets. Physical printing untested.
+
+## 2026-10-19 Dates on every travel ticket Claude
+- Designer asked for dates on every ticket, stops of 1 day to 1 week, no "couple of years". New calendar 8 Sep to 12 Dec 2025 in `NorseBackpack/Props/Tickets/ticket_dates.py` (shifted into autumn for cards L3 northern lights and R4 "freezing"; Oslo a full week for card H1). Details and table in PP-039.
+- Changed: `build_hop_tickets_pdf.py`, `build_nordic_air_sage.py`, `build_viking_rail.py`, `build_transition_tickets_pdf.py`; rebuilt their PDFs/Word files and `Print_HopTickets.docx`, `Print_TransitionTickets.docx` via `Props/build_printables_docx.py`.
+- Checks: builders' own text/route assertions pass; hop, rail, sage and transition previews viewed. Date split over two lines on the polished stubs (one line was clipped). Not paper-tested.
+- Later same day: L1 now says "months" (PP-001); museum ticket dates were never printed, nothing to change. Open: the dates make the order easier; ferry and bus tickets still undesigned; web copies (`Tools/build_web_assets.py`) not rerun.
+- Next: designer decides the L1 wording and the museum dates.
+
+
+## 2026-10-19 Viking Rail train tickets on coral Codex
+- User requested trains next and chose coral #E57E6B. Created `NorseBackpack/Print/Print_VikingRail_Trains_Coral_Paper.docx`, six 3.5 × 1.75 inch hop tickets on one Letter page (2 columns × 3 rows). Builder `Props/Tickets/build_viking_rail.py`; source PDF `Print/_pdf_source/Viking_Rail_Trains_Coral_Paper.pdf`; preview `Props/Tickets/Viking_Rail_Coral_Final_Preview.png`. PP-039 updated.
+- Modern family matching flights, charcoal text, burgundy rules/wordmark, separate train/V logo with copper detail (built-in ImageGen, raw source and prompt retained). No printed background; preview alone shows coral. Endpoint names 14 pt, carrier 12 pt, labels 9 pt, service/date 10 pt. All six original routes/services and scrambled print order retained; DATE OPEN. Dated connecting itineraries unchanged.
+- Checks: 6 exact-size PDF pages, route/service/date assertions, no overflow or paper fill. One-page Word export visually reviewed. Canonical renderer unavailable (LibreOffice absent); Word fallback succeeds. QA `C:\EscapeBackpack\output\viking-rail`. Physical paper/contrast/logo reproduction untested.
+- Next: designer reviews train design, then bus/ferry carriers. Print coral Letter paper, 100%, single-sided.
+
+## 2026-10-19 Polished Nordic Air with existing services and dates Codex
+- Designer supplied authoritative hop/booking tables. Hop flights carry original services and DATE OPEN; three dated multi-mode bookings retain existing routes, booking refs and segment dates. No new calendar dates assigned.
+- Created `NorseBackpack/Print/Print_NordicAir_Flights_Sage_Paper.docx`, four 4 × 1.75 inch hops on one Letter page. Builder `Props/Tickets/build_nordic_air_sage.py`; source PDF `Print/_pdf_source/Nordic_Air_Flights_Sage_Paper.pdf`; preview `Props/Tickets/Nordic_Air_Sage_Final_Preview.png`. Navy/teal/copper, actual Source Sans type, separate transparent bird/aircraft logo extracted with built-in ImageGen (raw source and exact prompt alongside). No printed paper fill; sage preview simulates #ADBD98. PP-039 updated.
+- Checks: exact dimensions, unchanged route/order/service and OPEN date values; background-free production PDF; transparent logo; all four print tickets visually reviewed in one-page Word export. Canonical renderer unavailable (no LibreOffice), Word succeeds. QA `C:\EscapeBackpack\output\nordic-air-sage`. Physical contrast/print readability untested. Original monochrome sheet and connecting bookings retained.
+- Next: designer checks new dated-status/service layout; print on sage Letter paper at 100%, single-sided. Other transport redesigns and connecting receipts still pending.
+
+## 2026-10-19 Nordic Air paper colour selected Codex
+- Designer selected light sage green paper, sampled #ADBD98, for flights. Recorded in PP-039. This is the physical substrate: retain an unprinted background and dark navy text for the polished colour/logo direction.
+- The bird/aircraft colour concept is still a mockup. Existing `Print_NordicAir_Flights.docx` remains the earlier black/grey background-free print sheet; no claim that its coloured-logo production layout has been completed.
+- Next: typeset the polished Nordic Air identity on a background-free 4 × 1.75 inch ticket for sage stock when requested.
+
+## 2026-10-19 Nordic Air flight tickets final typesetting Codex
+- Created `NorseBackpack/Print/Print_NordicAir_Flights.docx`: one Letter sheet with all four existing air-hop tickets at 4 × 1.75 inches. Exact-size PDF `Print/_pdf_source/Nordic_Air_Flights_Redesign.pdf`; preview `Props/Tickets/Nordic_Air_Final_Preview.png`; builder `Props/Tickets/build_nordic_air_flights.py`. PP-039 updated.
+- Modern Source Sans 3, black on white, grey rules, native plane icon. Carrier 12 pt, routes 14 pt, other text 9 pt. No arbitrary dates/numbers. Endpoints and existing scrambled order verified unchanged. Existing mixed hop master, connecting itineraries and final boarding pass unchanged.
+- Four exact-size PDF pages checked, no place-name overflow; final one-page Word export visually reviewed. Canonical renderer unavailable (no LibreOffice), Word succeeds. QA `C:\EscapeBackpack\output\nordic-air-final`. Physical readability untested.
+- Next: designer reviews flights before train, bus and ferry. Print at 100%, single-sided, white Letter paper.
+
+## 2026-10-19 Tally fits small envelope by narrowing sleeve Codex
+- User correctly proposed keeping six-inch sliders and narrowing the viewing sleeve to four inches. Compact builder now makes a **4 × 2 inch sleeve** and 6 inch strips; stored footprint is **4 × 6 inches at 0000**, intended for the user's 6.7 × 4.5 inch envelope. Digit height remains 7.62 mm. Narrower strips/rails/channels/windows all redrawn together; original full-size mode retained.
+- Current files: `NorseBackpack/Print/Print_Paper_Treasure_Tally_Compact_4x6_Envelope.docx` (2 pages) and `Paper_Treasure_Tally_Illustrated_Instructions_Compact_4x6_Envelope.docx` (3). Earlier compact file open/locked, so new explicit filenames used; prior files and safety copies retained. Builder `Props/SoleTally/build_paper_slider.py --compact`; PP-026 updated.
+- Geometry/full-travel/rotation/stored-footprint checks pass; all five Word-exported pages visually reviewed. Canonical renderer absent (no LibreOffice); Word export succeeds. QA in `C:\EscapeBackpack\output\paper-tally-compact`. Physical fit/grip/durability untested. Mixed settings protrude farther: reset to 0000 to pack.
+- Next: print at 100%, dry-fit and check the actual envelope opening with paper clips attached. No commit or publication.
+
+## 2026-10-19 Compact paper tally Codex
+- User requested smaller tally strips. Added compact mode to `NorseBackpack/Props/SoleTally/build_paper_slider.py` (`--compact`); created `Print/Print_Paper_Treasure_Tally_Compact.docx` and `Print/Paper_Treasure_Tally_Illustrated_Instructions_Compact.docx`. Original files retained. PP-026 updated.
+- Six-inch strips replace eight-inch strips (25% shorter); digit height 0.3 inches / 7.62 mm, pitch 0.4 inches. Sleeve and rails now 6 × 2 inches, windows 0.58 × 0.38 inches; same strip/channel/tab widths. Tab height 0.125 inches, extreme-setting clearance still 0.075 inches. Do not mix original sleeve and compact strips.
+- Checks: full travel, clearances, neighbouring digits excluded and 3705 → SOLE verified digitally. All 2 template + 3 instruction pages Word-exported and visually reviewed. Canonical renderer unavailable (no LibreOffice), Word fallback succeeds. QA `C:\EscapeBackpack\output\paper-tally-compact`. Physical movement/readability/durability remain untested.
+- Next: print compact templates at 100% and dry-fit one slider before gluing. No commit or publication.
+
+## 2026-10-19 Paper treasure tally print pack Codex
+- Created `NorseBackpack/Print/Print_Paper_Treasure_Tally.docx` (2 Letter pages) and `Paper_Treasure_Tally_Illustrated_Instructions.docx` (3 Letter pages, 7 diagrams). Builder `NorseBackpack/Props/SoleTally/build_paper_slider.py`. PP-026 records design and limits; 3D-print files retained.
+- Page 1 tan cardstock: 6 × 2.5 inch front/back plus ten rails (five double-layer stacks); page 2 green/white cardstock: four 8-inch strips with captive tabs. Four small paper clips hold selected digits. Templates black only, 100% single-sided; 1-inch scale checks on both pages. Shorter sleeve is required for full travel; long strips remain exposed. Guide contains maker-only solution, not player material.
+- Checks: geometry assertions for clearance, full 0–9 travel, no tab interference, strict seven-segment 3705 → SOLE. Final 2 + 3 pages exported through Word and visually inspected, no clipping or extra pages. Canonical renderer unavailable (no LibreOffice); Word export succeeded. QA/diagrams in `C:\EscapeBackpack\output\paper-tally`. Physical fit, friction, paper-clip grip and durability untested.
+- Next: print at 100%, measure the calibration lines and dry-fit one slider before permanent assembly. No commit or publication.
+
+## 2026-10-19 Liv memo text added Codex
+- Created `NorseBackpack/Print/Print_LivFinalMemo_4x6.docx`, one Letter print sheet with the approved 4 × 6 inch Archive memo and trim outline. Builder `NorseBackpack/Props/Tickets/build_liv_final_memo.py`; exact-size source `Print/_pdf_source/Liv_Final_Memo_4x6_Print.pdf`. Current final letter wording reused verbatim, including the decoy question and signature. PP-043 updated. Prior letter retained; no web outputs rebuilt.
+- Layout: original Bureau logo and family raven, actual Cormorant header, copper rules, no Correspondence label, white paper, 12.5 pt handwriting / 16 pt leading. All source paragraphs text-checked; final signature at 71 pt above bottom. Exact-size preview and one-page Microsoft Word export visually reviewed. Canonical renderer fails because LibreOffice absent; Word export succeeded. QA at `C:\EscapeBackpack\output\liv-final-memo`.
+- Next: designer reviews wording/layout and prints at 100%; physical handwriting readability and envelope fit remain untested.
+
+## 2026-10-19 Liv final note stationery Codex
+- Designer selected Archive Sheet option 3, removing “Correspondence”. Created blank preview `NorseBackpack/Props/Tickets/Bureau_Memo_Archive_No_Label_v1_Preview.png`, raw source and exact prompt alongside it; choice recorded in PP-043. Original printed letter unchanged; text deliberately pending.
+- Visual check passed: white paper, burgundy Bureau header, copper rules, black raven stamp top right, small footer envelope, no body text or Correspondence label. Generated preview is a design reference; production should use original logo/raven and exact typography.
+- Next: agree the final note wording before rebuilding the Word print master.
+- Follow-up: final memo trim size is now **4 × 6 inches, portrait**, requested to fit the small envelope; replaces half-Letter. Recorded in PP-043. The concept PNG and existing production letter have not been resized; apply the new dimensions when creating the final Word layout.
+
+## 2026-10-19 Norse museum tickets for tan paper Codex
+- Created `NorseBackpack/Print/Brattahlid_Museum_Ticket_Tan_Paper.docx` and `Aud_Museum_Ticket_Tan_Paper.docx`, two Letter pages each, using adopted 3.5 × 6 inch ticket masters and existing manual-flip placements. Builder: `NorseBackpack/Props/build_tan_museum_docx.py`. Durable notes in PP-024 and PP-031.
+- Removed printed cream fills. Brattahlid also loses solid title band and index striping; pale cream map ground masked at PDF level, preserving underlying artwork bytes and numbered sites. Aud preserves coin colours/values and excludes the designer answer page. Original print masters retained.
+- Checks: all four source texts preserved exactly, two pages each, Word-exported render visually reviewed for all four final pages, trim outline included. Standard `render_docx.py` fails because LibreOffice is absent; Microsoft Word COM export used successfully. QA in `C:\EscapeBackpack\output\tan-tickets`. Physical contrast and duplex alignment untested.
+- Next: print one ticket front/back at 100% on tan stock using the existing ticket flip, check alignment before trimming. No commit or publication.
+
+## 2026-10-19: Hiking release committed, pushed and published (Codex)
+- **Done:** source commit `ca0a291` pushed to `OttawaVisuals/EscapeBackpack` main; website commit `d5a4eaa` pushed to `Escape-Backpack/escapepack-site` main. Cloudflare Pages check succeeded for the website commit (deployment `b44ec77b-0e54-4ef1-a5bf-4f9578dffd0b`). Live: https://escapepack.ca/play/hiking/.
+- **Checks:** all 39 game/Lego/experience tests pass; packaging succeeds (71 assets). Live title/interface and the local 3D bottle engine verified in the in-app browser with no errors/warnings. Design record remains stripped from the player build. Direct Python HTTP checking received 403 from the site, so verification used the normal browser. Third-party Three.js source retains its original whitespace (one vendor indentation warning); first-party changes pass whitespace checks.
+- **Scope:** source release created from remote main in a temporary clean worktree to keep the already-unpublished Bureau commit local. Primary checkout then merged that published source commit; every Hiking file was hash-checked against the original release files, and unrelated working-tree status was verified unchanged. The old empty Git index lock was confirmed stale (dated 14 Oct, no Git process) and removed to allow this merge. Temporary worktree and verified safety stash removed. Primary main keeps the pre-existing Bureau commit and its local integration merge unpublished. No unrelated uncommitted changes were staged or pushed.
+- **Files:** Hiking source/player files, website packaging script and README committed; this handoff updated locally alongside the existing uncommitted session notes. Published screenshot: `C:\EscapeBackpack\output\hiking-polish\published.png`.
+- **Next:** designer reviews the published game. Prior fresh-player/audio/real-device testing limits still apply.
+
+## 2026-10-18: Hiking digital game — presentation and play flow (Codex)
+- **Done locally:** cinematic title card using the existing camp artwork; forest camp interface; visible ten-lock trail progress; clearer selection and new-find animations; optional synthesised effects/ambience (off by default); pause/settings with reduced motion; timer stops in utility menus and at the title; ending recap, final-lock rating and result copy; phone navigation between table, backpack/lock and finds. Existing puzzle rules, answers and save format retained. Nothing committed, pushed or published.
+- **Source files:** `Hiking_Trip/Digital/index.html`, `game.js`, `later.js`; new `experience.css`, `experience.js`, `experience.test.cjs`, `vendor/three/` (pinned Three.js 0.160.0, two addons and MIT licence). The engine is now local; web fonts remain optional remote requests. Durable decisions are DG-H40 in the source page (`?design=1`). Updated sibling `escapepack-site/tools/build_hiking.cjs` and README; rebuilt its `play/hiking/` from the current source, including source changes that had not previously been packaged.
+- **Checks:** 39 Node tests pass (game, Lego, preferences and timer gates); JS syntax and scoped diff whitespace checks pass; packaging succeeds with 71 assets and validates local engine imports/licence. In-app browser over HTTP: all ten unlocks, wrong-code handling, 3- and 4-wheel/letter locks, save export/import, reload/resume, pause time staying fixed, Escape pause/resume, saved preferences, reduced motion, final puzzle rating and result copy. Local bottle, square Lego and cube views render without console errors. Visual checks at 1280×720, 1024×768 and 390×844; phone has no horizontal overflow or broken loaded images.
+- **Preview:** `http://localhost:8735/escapepack-site/play/hiking/` (server rooted at `C:\EscapeBackpack`). Review screenshots: `C:\EscapeBackpack\output\hiking-polish\`. Browser test progress was synthetic; its completion time is not a playtest duration.
+- **Limits:** no fresh-player playtest, physical touch device, screen reader or cross-browser review; audio controls were exercised, but sound was not audibly evaluated. No service-worker/offline installation; fonts/feedback still use the network. All unrelated existing changes preserved.
+- **Next:** designer plays the local preview and identifies any props/interactions that still feel awkward before publication.
+
+## 2026-10-18: Norse digital game V2, box + envelopes + cypher wheel (Claude Code)
+- **Done:** `NorseBackpack/Digital/Raven_V2.html` (new; V1 `Leif.html` untouched). Box of 13 rune-marked envelopes in the side panel, on-screen cypher arm (4 rings, code and rune windows), new order and codes, new props (notes card, Liv's ruler card, hop tickets, flight bookings, plane ticket, last letter), 19 dark Hnefatafl pieces, magnifier from envelope 2. Props are rendered from the live print PDFs by `Digital/build_raven2_assets.py` into `Digital/assets/v2/` (+ `raven2-sizes.js`). Choices and gaps are recorded in Q-051.
+- **Checks:** `node --test NorseBackpack/Digital/raven2.test.cjs` 13/13 (labels = PR-007 runes, contents = Full_Adventure, layout no overlaps, whole game deals onto the table). In the in-app browser over local HTTP: opening dialog, first puzzle (wrong envelope refused, 1021 opens envelope 1), start at puzzles 11 and 13 (piles, maps, board, magnifier), no console errors. Not checked: touch, room play, a full playthrough, 120 on the ruler by measuring on screen.
+- **Next:** play it through once from the start (`Raven_V2.html`, add `?envelope=N` locally to jump) and say what to change; publishing (`escapepack-site`) not done.
+
+## 2026-10-18: Norse print files in one folder, all as docx (Claude Code)
+- **Done (designer approved the layout):** every Norse print file now lives in `NorseBackpack/Print/`: `.docx` files at the top, source PDFs and PDF draft folders in `Print/_pdf_source/` (moved from `output/pdf` and `output/docx`). All builders, `build_web_assets.py`, `Full_Adventure` builder, records, AGENTS.md and the frozen Norse page were repointed by script. `Norse_Snapshots` paths were left alone. `output/` still holds the Cryptic Bureau one-pager, `medallions/`, `mock/`, `visualizations/` (not Norse print files).
+- **New docx:** `Print_CypherWheel` (pieces re-laid closer together and centred), `Print_PlaneTicket`, `Print_LivFinalLetter`, `Print_LivNotesCard`, `Print_LivRuler`, `Print_HopTickets` (4 pages), `Print_RepackingLetter`. Rebuilt from the live PDFs: `PrintTest_MuseumTicket/RouenTicket/AudTicket/HnefataflTicket` (ticket sizes now read from the PDF, since the 17 Oct redesign changed them) and `Norse_Trail_Maps_Print`. `PrintTest_RavenFlights.docx` moved to `Norse_Archive/Print/` (card is on the luggage-tag sheet). Postcard docx unchanged.
+- **Checks:** all modified scripts compile; `build_printables_docx.py`, `build_ticket_print_test_docx.py`, `build_trail_maps_docx.py` and `build_full_adventure.py` ran from the new paths. Not run: the PDF builders themselves, `build_web_assets.py`. docx files not opened in Word or printed. Aurora files touched by the script were restored.
+- **Next:** print the new docx on your printer (ticket sheets first, sizes changed) and report what is off.
+
+## 2026-10-18: Repacking labels revised for players (Codex)
+- **Done:** replaced every postcard shorthand (AD, L2, etc.) with the name printed on the art side. Verified all 22 art-side label strips; notably Baffin Island and Sicily, rather than Qikiqtarjuaq and Aci Castello. Replaced personal map names with the four printed titles: The Island Settlement, The Western Lands, The Granted Lands, The Varangian Road. Added where to find these labels.
+- **Files changed:** `NorseBackpack/Tools/build_repacking_sheet.py`, regenerated `NorseBackpack/Print/_pdf_source/Raven_Inheritance_Repacking_Letter.pdf`, Q-050, this handoff.
+- **Checks:** source inventory assertions pass; rendered PDF visually checked; still one US Letter page, no clipped text or overlapping rows. Map titles verified in production PDFs. No paper print test.
+- **Next:** print at Actual size and test the revised checklist with the physical set.
+
+
+## 2026-10-18: Letter repacking insert (Codex)
+- **Done:** user-requested one-page reset checklist for the large decoy envelope. Output: NorseBackpack/Print/_pdf_source/Raven_Inheritance_Repacking_Letter.pdf; editable builder: NorseBackpack/Tools/build_repacking_sheet.py. Rune labels and prop IDs verified against Full_Adventure.html; no adventure content changed. Large-decoy use recorded in Q-050; decoy labels and small-decoy contents remain open.
+- **Checks:** source adventure viewed over localhost HTTP in the in-app browser. PDF confirmed one US Letter page (612 x 792 pt), rendered and visually inspected: rune glyphs, table, checkboxes and footer clear. No physical print or envelope-fit test.
+- **Files changed:** new builder, local PDF output, Q-050 and this handoff. Existing unrelated changes preserved.
+- **Next:** print the sheet single-sided at Actual size, fold text inward and test in the large decoy envelope.
+
+
+## 2026-10-18: One-page full adventure (Claude Code)
+- **Done:** new `NorseBackpack/Full_Adventure.html`, built from the records by `NorseBackpack/Tools/build_full_adventure.py` (run from the repo root). Per envelope (box + 13): contents with images, the puzzle that opens it (uses, logic, hints folded one by one, solution and code folded). Printed props are rendered from the live `NorseBackpack/Print/_pdf_source` print files into `NorseBackpack/Web/adventure/`; postcards use their asset webp. Rune strings come from the envelope table in PR-007. Linked from the root `index.html`.
+- **Checks:** page served on local HTTP, 76 images load with no broken ones, hints/solutions toggle, envelope 6 and 10 viewed. Not checked: every envelope visually, mobile width.
+- **Gaps:** PP-027 magnifier has no picture. Coins, comb, tally and medallion use older preview images. Hint 'logic' text is taken from each puzzle's How it works / Player does sections, so it follows record edits after a rebuild.
+- **Next:** rebuild after prop changes with `python NorseBackpack/Tools/build_full_adventure.py`.
+
+## 2026-10-18: Repair Norse archive links (Codex)
+- **Done:** updated the five broken href/src attributes in `NorseBackpack/Norse_Brainstorm.html` to `../../Norse_Archive/` at their preserved relative paths. Review link labels now explicitly say archived. No artwork restored to live folders.
+- **Checks:** all five targets exist and return HTTP 200; in-app browser confirms all three archived images load, and the main page renders. PDF link retains target/rel attributes. Tested over localhost port 8735 serving `C:\EscapeBackpack` so both sibling folders are reachable.
+- **Limit:** these are local archive links; keep `Norse_Archive` beside the repository. A server restricted to the repository root (including the usual port 8734 preview) cannot serve that sibling folder; use a preview rooted at `C:\EscapeBackpack` for this historical page. No hosted archive published.
+- **Files changed:** `NorseBackpack/Norse_Brainstorm.html`, this handoff.
+- **Next:** review remaining unnamed images when ready.
+
+## 2026-10-18: Norse folder-cleanup review (Codex)
+- **Status:** reviewed cleanup only; no assets, builders, records or folder locations changed.
+- **Finding:** five literal links in the frozen `NorseBackpack/Norse_Brainstorm.html` now point to archived files: lines 268 (review page), 2613 (Harald review PDF), 3365 (old museum-ticket art), 3417 and 3419 (icon option SVGs). The root index still directs users to this page. Recommend marking these entries archived or providing an archive access route; do not silently revive superseded art.
+- **Checks:** all 123 tracked deletions exist at matching paths in `C:\EscapeBackpack\Norse_Archive\`; contents match HEAD after normalizing CRLF/LF (nine have newline-only differences). All asset-record `file:` targets exist. Snapshot source `Norse_2026-10-17_PreReadability/output/pdf/Aud_Ticket_Print.pdf` exists at the updated adoption-script path. Read-only file audit reproduces 39 unnamed images, 9 older versions, 6 duplicate groups and 1 reported cache folder. Kit check reports 141 problems, matching the documented pre-cleanup count.
+- **Limits:** no production rebuild or browser/visual review; filename-based audit suggestions are not proof a file is disposable. Git verifies tracked archived contents only; there is no complete pre-cleanup manifest for ignored files.
+- **Files changed:** this handoff only.
+- **Next:** repair or label the five archived links before treating the cleanup as complete.
+
+## 2026-10-18: Norse folder cleanup, step 5 of 5: rule, audit script, snapshots (Claude Code)
+- **Done (designer approved each part):** rule "Norse images: one current version" added to `AGENTS.md` Working Rules. New read-only `NorseBackpack/Tools/audit_files.py` (about 3 s; reads text files only, counts name patterns like `Coin_${art}.svg` as uses). The three `Storage/` snapshots (3.2 GB) moved to `C:\EscapeBackpack\Norse_Snapshots\` (outside the repo, new `README.md` there); the empty `Storage/` folder was removed. The `.gitignore` `Storage/` line stays (harmless).
+- **First audit run** (full output: `C:\EscapeBackpack\Norse_Archive\Step5_Audit.txt`; nothing moved on it): 39 images nothing names (17 MB): 17 were named only by files step 4 archived (e.g. `Art/Diagrams/*.svg`, `Raven_Spread_Wing_Emblem_v1.png`, the plain rebus icons); 11 are step 2's group 4 (made 15–17 Oct, still the designer's call); 6 are the `aud_map_optimized_v15/` previews (known keep, step 2 group 1); 5 are `Web/` copies of drafts archived in step 3. Also 24 unnamed masters in `Sources/`/`References/` (expected), 9 older `_vN` (the rebus die v2–v4 and medallion v2, both open questions), 6 exact-duplicate groups (`SoleTally/*.stl` vs `SoleTally/STL/SOLE_*.stl`, raven postmark, medallion relief SVGs, `record_check.txt`), and 1 `__pycache__/` (`Review_2026-09-22/`).
+- **Files changed:** `AGENTS.md`, `NorseBackpack/Tools/audit_files.py` (new), records PP-024/029/030/031/032/033/034/048 (snapshot path), `Props/ReadabilityDrafts/adopt_to_live.py` (`OLD` now `../Norse_Snapshots/...`; path checked, script not run), comment in `TravelMap/build_trail_maps_pdf.py`, this handoff; outside the repo: `Norse_Archive/README.md` (step 5 section), `Norse_Snapshots/README.md`. Nothing committed.
+- **Checks:** audit runs in about 3 s; `kit.py check` shows the same 141 existing migration problems, none new.
+- **Next:** designer reads section 1 of `Norse_Archive\Step5_Audit.txt` and says which of the 39 files to archive.
+
+## 2026-10-18: Norse folder cleanup, steps 1–4 of 5 (Claude Code)
+- **Done:** `NorseBackpack/` 1.6 GB → 727 MB. Superseded files moved (not deleted) to `C:\EscapeBackpack\Norse_Archive\` (outside the repo, same relative paths); every move is listed in its `README.md`, with the reasoning in `Step2_Review.md`–`Step4_Review.md`. Step 1: old Aud render drafts v1–v14 from `TravelMap/Drafts/`. Step 2: 50 images nothing named; 11 postcard ImageGen originals moved into `Postcards/Sources/`. Step 3: 13 older versions next to the current one. Step 4: `norse-hints.html`/`styles.css`/`assets/`, `Drafts/`, `Icons/`, `Source_Info/`, `Norse_Brainstorm_Review.html`, `Norse_Ideas.pptx`, and `Review_2026-09-22/` except `review_content.py` (imported by the Raven Flights builder); 18 `__pycache__/` folders deleted.
+- **Kept on purpose:** `Travel_Map.html` (route-map entry page); live files still inside `TravelMap/Drafts/` (`aud_map_optimized_v15/`, `render_full_map_v15/`, the cleanup builders and title-band art); medallion v2 files and the four rebus die versions (open questions below); group 4 of step 2 (files made 15–17 Oct).
+- **Open (recorded as dated notes in PP-044 and PZ-011):** online medallion still built from the v2 preview; no postcard uses any rebus die version.
+- **Files changed:** records PP-030 and PZ-006 (moved paths), PP-044 and PZ-011 (open points), this handoff. 123 tracked files show as deleted in git; nothing committed.
+- **Next:** step 5 (done, entry above).
+
+## 2026-10-17 end of day: Norse envelopes 12 and 13, readability, maps, hints (Claude Code)
+- **Done today** (details in the entries below and in Q-062, Q-063, PP-021/033/024/031/039/043/044/047/048/029/030/032/034, PZ-006/008/013): envelope 12 reworked (raven only, hop and flight tickets, H6 text), envelope 13 built (plane ticket, letter with AUD puzzle, medallion printed), review fixes from Codex verified and applied, readability redesign and four cleaned maps adopted into live print files, hint page rebuilt in play order.
+- **Not done:** paper tests; decoy envelopes' contents and labels (Q-050); online AUD confirmation; digital game (Q-051); hint page shows shape codes, not runes (kit has no cipher configured).
+- **Next action:** designer's paper print and envelope-fit test (prototype envelopes and boxes arrive 18 Oct), then report what stalls.
+
+- **Update (17 Oct, hints page):** hint page rebuilt (`kit.py build`, `NorseBackpack/site/hints/index.html`, not committed or deployed). PZ-013 hints and solution rewritten for the raven marks, hop tickets and flight tickets; PZ-006 hint 3 no longer promises a direction on A2. Added an `envelope:` field (copy of `found_in`) to the 46 props that have one, so the kit now orders the hint page by real play order (PZ-001, 003, 002, 004, 006, 009, 005, 010, 007, 011, 008, 012, 013). Known gap: the page's per-envelope 'code' shows shapes (backpack.json has no cipher), not the wheel's runes. Hint titles carry the runes. Digital game still the old order (Q-051).
+
+## 2026-10-17: Current Norse state reviewed after adoption (Codex)
+- **Task/status:** completed the requested whole-game follow-up review; recommendations recorded at the top of Q-063. No game assets, rules, ordering or production outputs changed.
+- **Confirmed:** live readable tickets/notes and wide wheel arm adopted; cleaned maps and Aud comb title band live; opening packing key and all hint titles consistent; H1 turn order and refined AUD clue present.
+- **Findings:** L3 uses Baffin Island while route tickets use Qikiqtarjuaq; finale hint source still describes the retired journal mechanism. Smaller hint wording drift remains. AUD confirmation and two decoy labels/contents are unfinished. Remaining functional small print and finale workload need paper/player testing. Detailed recommendations and production/packing observations belong to Q-063.
+- **Checks:** 82 PDF pages rendered and visually inspected plus comb overlay; postcard/main prop text bounds checked; 13 unique wheel mappings and hint titles checked; hnefatafl solver confirms unique 2134, no shorter escape and fourth dark move necessary. Kit check: same 141 existing migration problems. No physical playtest, live hint-site audit or historical fact check.
+- **Files changed:** this handoff and `NorseBackpack/records/questions/Q-063-physical-game-review-readability-and-dif.md` only. Existing user/Claude changes preserved.
+- **Next:** discuss Q-063's short priority list, then test the current printed set with a fresh team; keep the present order unless that test identifies a pacing problem.
+
+- **Update (17 Oct, maps):** Leif, Rollo and Harald cleanup drafts adopted into live print and answer PDFs (old copies in `Storage/Norse_2026-10-17_PreReadability/`). Aud kept at v15 and the comb title-band draft adopted too (pillars rejected); all four maps now live in the cleaned style. Two decoy envelopes decided (Q-050), contents and runes open. Hnefatafl dark pieces in hand (PP-035). Paper test planned later by designer.
+
+- **Update (17 Oct, readability adoption):** designer adopted Codex's drafts into live: Brattahlid and Aud tickets (3.5 x 6 in), Rouen ticket (3.5 x 5.5 in), wide wheel arm (34 mm, in `build_cypher_wheel_pdf.py`); LD unchanged. Script `Props/ReadabilityDrafts/adopt_to_live.py`; old PDFs in `Storage/Norse_2026-10-17_PreReadability/`; old ticket builders marked superseded. Page images and web copies rebuilt. Liv's notes card adopted afterwards (title 14 pt, labels/headings 8 pt, text 10 pt, 2 pt between entries) via the same script. No paper tests.
+
+## 2026-10-17: Liv notes portrait revision; museum map approved (Codex)
+- **Task/status:** designer approved the full-width Brattahlid museum map and requested portrait Liv notes. Revised the note to one-sided 4 x 6 in, one column; all wording, four people and eleven terms retained, labels and handwriting still 10.5 pt / 11.5 pt leading. Museum art retained unchanged and approval recorded in PP-024.
+- **Files:** `NorseBackpack/Props/ReadabilityDrafts/build_readability_drafts.py`; existing two PDFs in `NorseBackpack/Print/_pdf_source/Readability_Redesign_Drafts/`; PP-048, PP-024 and this handoff. Separate draft outputs remain; production masters/web copies unchanged.
+- **Checks:** built both PDFs; puzzle assertions pass. Review has 9 pages, Letter pack 10. All note text retained and within page bounds; review page 5 is 288 x 432 pt. Every other prop page pixel-identical to pre-revision PDFs. Letter page 6 card area blank. Rendered note and affected Letter pages 5-6 visually inspected. Physical print readability untested.
+- **Next:** review the portrait note on page 5; print Letter page 5 alone at 100% / Actual size for a paper check. Museum map design is approved.
+- **Repository validation:** kit check still reports existing migration/schema problems unrelated to this layout; targeted `git diff --check` passes.
+
+## 2026-10-17: Readability drafts corrected after designer review (Codex)
+- **Status:** corrected three requested points. Liv's notes now one-sided 6 x 4 in landscape, all original wording retained, 10.5 pt labels/handwriting. LD enlargement/deeper footer rejected and removed; both draft faces are now identical to the live postcard, including the intentionally hidden 6 pt corner imprint (magnifier allowed). Brattahlid front now has a full-width illustrated map and dark museum heading band.
+- **Accepted:** designer says the remaining changes are OK. Aud, wheel and Brattahlid reverse remain pixel-identical to the preceding draft. All work still in separate review/print drafts; no live production outputs changed.
+- **Files:** updated `Props/ReadabilityDrafts/build_readability_drafts.py`; new `Brattahlid_Map_Wide_v1.png` and exact `_prompt.txt` using built-in image generation; existing two draft PDFs rebuilt; PP-024/031/048/004/047 and this handoff updated. Earlier proposals marked superseded where rejected.
+- **Checks:** all note content retained on one page; PDF text in bounds; accepted faces/wheel previews pixel-identical; LD front/back pixel-identical to current production PDF; notes reverse cut area blank. New museum art visually checked for markers 1-9 once each, aspect ratio preserved. Revised prop faces and affected Letter pages visually inspected. Kit check remains at 141 pre-existing migration problems. No paper print or physical assembly test.
+- **Navigation:** review now 9 pages: Brattahlid 1-2, Aud 3-4, notes 5, original LD 6-7, wheel previews 8-9. Letter pack still 10 pages: Brattahlid 1-2, Aud 3-4, notes 5/blank 6, LD 7-8, replacement arm 9/blank 10. Print page 5 alone for the single-sided note.
+- **Next:** designer reviews revised notes and full-width Brattahlid front before adoption into live print/web outputs.
+
+## 2026-10-17: Five more readability drafts (Codex)
+- **Task/status:** completed designer-requested drafts for Brattahlid index, Aud directions, wheel steps, glossary labels and LD imprint. Separate proposals; live production files remain unchanged.
+- **Design:** Brattahlid/Aud tickets 3.5 x 6 in (11 pt index, 11.5 pt directions); glossary remains 4 x 6 in, now two-sided with 11.5-12 pt labels; LD remains 6 x 4 in with 10 pt imprint and 8 pt credit; wheel replacement arm 34 mm tall with 12/10.5 pt steps and blank-first reminder, unchanged windows and centre.
+- **Files:** new `NorseBackpack/Props/ReadabilityDrafts/build_readability_drafts.py`; two 10-page PDFs in `NorseBackpack/Print/_pdf_source/Readability_Redesign_Drafts/`; notes appended to PP-024, PP-031, PP-048, PP-004 and PP-047; this handoff. Existing user/Claude changes preserved.
+- **Checks:** 20 pages rendered and visually reviewed (all prop faces enlarged, Letter pages checked as a contact sheet, arm sheet separately enlarged); all PDF text in bounds. Verified 26 index entries, six directions, four people and eleven terms; Aud coin values/grouping preserved; LD text retained and front pixel-identical. Eight wheel apertures match original geometry and all 104 window renders across 13 current codes match the live arm. WOLF 4865, Aud 532/3705 and blank-532 mapping assertions pass. Kit check: same 141 existing migration problems. Poppler reports optional Symbol/ArialUnicode display-font warnings; all used text/glyphs visibly render.
+- **Limits:** no paper print, envelope fit, duplex registration or wheel-turning test. LD imprint is more noticeable and needs discovery-difficulty feedback. Drafts were not adopted into live web/print files.
+- **Next:** designer reviews `Readability_Drafts_Review.pdf`; use `Readability_Drafts_Letter_Print.pdf` at 100%, long-edge duplex for physical checks (pages 1-2 Brattahlid, 3-4 Aud, 5-6 glossary, 7-8 LD, 9 arm/10 blank reverse).
+
+## 2026-10-17: Rouen museum ticket redesign draft (Codex)
+- **Task/status:** designer requested a fresh ticket layout after the enlarged type in the 2 x 3 in version proved unsatisfactory. Built a separate 3.5 x 5.5 in draft with a heritage museum front, clearer columns, 12 pt words, 11.5 pt tags and 11 pt instruction. Draft awaits visual approval and paper test; live ticket untouched.
+- **Files:** new `NorseBackpack/Props/RouenTicket/build_rouen_ticket_redesign.py`; two PDFs and preview in `NorseBackpack/Print/_pdf_source/Rouen_Redesign_Draft/`; design recorded in PP-033; this handoff. Unrelated Claude/user changes preserved.
+- **Checks:** all four PDF pages rendered with Poppler and visually inspected; word widths and I6/F7/A3/B9 coordinate assertions pass; PDF page dimensions and word/tag extraction checked. Kit check remains at 141 pre-existing migration problems. Poppler reports missing optional Symbol/ArialUnicode display fonts; actual ticket text and accents render correctly. No physical print, duplex alignment or envelope fit test.
+- **Next:** review the draft with the designer, then print the Letter version at 100% and check readability/duplex alignment before adopting it into live print/web outputs.
+
+- **Update (17 Oct, contents list):** packing key fixed: the eight props of envelopes 1-3 got the right `found_in` (PZ-001/003/002), PR-007 row 5 now `_532` / `ᛈᚹᛟᛇ`, PZ-009 hint title updated, PP-047 leading-zero line corrected; envelope 12 = H6 + travel tickets (PP-040/041 parked), envelope 13 = plane ticket, letter, medallion. `Cypher_Wheel_Print.pdf` rebuilt (key page checked, no warnings). Verified Codex's review (Q-063) item by item; other fixes (small text, hnefatafl turn order, AUD clue, A2 "south" claim in PZ-006) still open.
+
+## 2026-10-17: Norse physical-game review (Codex)
+- **Task/status:** whole-game readability, puzzle fit, sequence and playability review completed. Full findings and unadopted proposals are in **Q-063**. No props, rules, artwork or release order changed.
+- **Files changed this session:** new `NorseBackpack/records/questions/Q-063-physical-game-review-readability-and-dif.md`; this handoff. Existing working changes preserved.
+- **Confirmed priorities:** wheel PDF packing key has old envelope 1-3 contents because `found_in` disagrees with `container`; PR-007 still lists 521 instead of 532, PZ-009 has the old hint label, and envelope 12 packing/finale hints still reference retired journal/crest material. Player instructions omit blank-first entry for three-digit codes. Routine ticket text is small. Hnefatafl needs explicit puzzle turn rules; finale needs a physical sorting test. Recommendations, not edits.
+- **Checks:** 82 PDF pages rendered; all 22 card fronts/backs and relevant maps, tickets, instructions and physical-prop previews visually reviewed. Raven close-up audit confirms 18 real cards marked/four decoys unmarked (initial overview suspicion disproved). Wheel check: 13 unique labels, stale PZ-009 hint title; leading zero differs from blank. Existing hnefatafl solver confirms unique 2134, no shorter escape, fourth black move required. Kit check has the same 141 pre-existing problems; no Q-063 problem.
+- **Limits:** no new physical playtest, print/assembly verification, live web/hint audit, historical fact check or measured timing. Cleanup-map drafts remain unadopted. This review does not override earlier designer approvals.
+- **Next:** discuss Q-063's proposed middle order (counting → wolf → Aud route → coins); reconcile the confirmed packing/key/hint mismatches before preparing another unattended physical test.
+
+- **Update (17 Oct, evening):** H6 text and Fun Fact applied (PP-021, sword checked). Envelope 13: plane ticket (`Plane_Ticket_Print.pdf`) and Liv's final letter (`Liv_Final_Letter_Print.pdf`, AUD puzzle = the unmarked decoy cards, only AD mentions family) built; medallion printed and works. Not done: page images/web copies for the ticket and letter, online confirmation page for AUD, hints and digital game (after the physical game), paper tests.
+
+- **Update (17 Oct, later):** ravens wired in: framed small raven (`Raven_Profile_Pencil_28pt_Frame_v1.png`) on the 18 real cards, large v2 raven on H6, decoys unmarked; all 22 card PDFs rebuilt (`postcard_marks.py`, `build_postcard_H6_pdf.py`). H6 text and Fun Fact applied (PP-021), 2018 sword checked; envelope 13 letter and AUD puzzle still open.
+
+## 2026-10-17: Norse envelope 12 props reworked: hop tickets built (Claude Code)
+- **Task/status:** designer's direction (Q-062): only the **raven** stays as family iconography (large detailed raven on H6 with Liv's note; small sketch on the 18 real cards; decoys none; Codex to redraw both, not started). Order now comes from **tickets**: one hop ticket per move, **decoys included**, one page per journey (Leif, Rollo, Aud, Harald) plus the three flight bookings (journey order, digits 1-9-7-2). Built `NorseBackpack/Props/Tickets/build_hop_tickets_pdf.py` to `NorseBackpack/Print/_pdf_source/Hop_Tickets_Print.pdf`; operators Nordic Air, Viking Rail, Longship Buses, Longship Ferries (invented). Decoy positions approved (Harald: Oslo, Staraya Ladoga, Kyiv, Constantinople, Hedeby, Aci Castello, Patara). Map plot: `NorseBackpack/Art/FinalPuzzle/Journeys_With_Decoys_Draft.png`. Page images and web copies rebuilt; records updated (Q-062, PP-039, PP-040, PP-041, PZ-013).
+- **Not done:** raven artwork (Codex) and the raven marks on the 18 cards; Liv's raven note and the H6 note; envelope 13 letter (designer's wording, AUD teaser) and the optional AUD puzzle; H6 Fun Fact and "Nearly there" (held); hop tickets not paper-tested; the journal page and crest note still exist as files, superseded.
+- **Next:** send the raven briefs to Codex (large for H6, small for card marks), then rebuild the 18 cards with the raven mark.
+
+## 2026-10-17: Harald reverse white background and extended smudge (Codex)
+- **Task/status:** corrected Harald cleanup draft reverse to white for printing; extended smudge over I/J/K headings and both right-hand corner marks to match the ticket's transferred strip. Only faint dragged traces remain. Front/final 2 unchanged.
+- **Files:** `TravelMap/Drafts/build_harald_cleanup.py`, both draft PDFs/page previews, PP-034. Live outputs and ticket artwork unchanged.
+- **Checks:** rebuilt both PDFs; white page sample verified; both reverse pages render identically; visual reverse inspection; front-map pixel and note-wording assertions pass. No physical print test.
+- **Next:** designer reviews the corrected reverse before adoption of cleaned maps.
+
+
+## 2026-10-17: Harald cleanup draft created (Codex)
+- **Task/status:** transparent enlarged axe on blue title band; larger/darker reverse note and captions; pencil-style arrows/number rings. Designer accepts final 2 as is; route unchanged. Separate player/answer drafts in `NorseBackpack/Print/_pdf_source/Harald_Cleanup_Draft/`; live PDFs unchanged.
+- **Files:** new `TravelMap/Drafts/build_harald_cleanup.py`, transparent axe and exact generation prompt; draft PDFs/page previews; PP-034 and PZ-013 updated.
+- **Checks:** all four output pages rendered and inspected. Front map above title band pixel-identical at 144 dpi; front text and Liv note wording preserved. Board/stain/pieces and arrow endpoints use canonical source geometry. No physical print test.
+- **Next:** review the four cleaned map drafts before adopting into live print/web outputs.
+
+
+## 2026-10-17: Leif cleanup draft created (Codex)
+- **Task/status:** darker animal illustrations, adjusted Labrador/Newfoundland town labels, and larger transparent blue longship on the title band. Separate player/answer PDFs and previews in `NorseBackpack/Print/_pdf_source/Leif_Cleanup_Draft/`; live PDFs unchanged.
+- **Files:** new `TravelMap/Drafts/build_leif_cleanup.py`, transparent PNG and exact generation prompt, output drafts/previews/notes; PP-029 updated.
+- **Checks:** 18 place labels retained without collision drops; text-content and geometry assertions. Player/answer PDFs rendered and inspected; Rigolet label revised east of its dot to avoid the Labrador caption. No physical print/player test.
+- **Next:** designer reviews the Leif draft alongside Aud and Rollo before live adoption.
+
+
+## 2026-10-17: Aud draft title-band symbol revised (Codex)
+- **Task/status:** applied Rollo's title-band treatment to Aud as a separate draft: transparent purple pillars on blue, enlarged. Player/answer PDFs in `NorseBackpack/Print/_pdf_source/Aud_Stamp_Cleanup_Draft/`; live PDFs unchanged.
+- **Files:** `TravelMap/Drafts/build_aud_stamp_cleanup.py`, transparent PNG and exact generation prompt; output PDFs and previews; PP-030 updated.
+- **Checks:** both PDFs rendered and visually inspected; text preserved, map above the title band pixel-identical at 144 dpi against the current source PDFs. No physical print test.
+- **Next:** designer reviews Aud and Rollo drafts before adoption into live print/web outputs.
+
+
+## 2026-10-17: Rollo draft title-band symbol revised (Codex)
+- **Task/status:** designer asked for the same blue background and a larger symbol. Removed cream stamp backing via built-in image_gen; transparent comet and figures now fill more of the blue title band. Draft player/answer PDFs rebuilt; live PDFs unchanged.
+- **Files:** new transparent PNG and exact prompt in `TravelMap/Drafts/`; draft builder updated; shared builder gains optional stamp path/height/inset parameters, defaults preserve existing maps; PP-032 updated.
+- **Checks:** rendered player and answer PDFs, inspected both and the enlarged title-band crop; 29 labels retained; geometry assertions pass. Physical print not tested.
+- **Next:** designer reviews the revised Rollo draft before live adoption.
+
+
+## 2026-10-17: Rollo cleanup draft created (Codex)
+- **Task/status:** created a separate player and answer draft in `NorseBackpack/Print/_pdf_source/Rollo_Cleanup_Draft/`. Darker existing icons, separate Rouen/Roumare forest labels with a fine leader, Normandy caption moved down. Live map PDFs and shared builder unchanged.
+- **Files:** new `NorseBackpack/TravelMap/Drafts/build_rollo_cleanup.py`; draft PDFs, preview PNG and notes JSON; dated draft note in PP-032; this handoff.
+- **Checks:** both PDFs rendered and visually inspected; all 29 town labels retained with no collision drops. Builder asserts unchanged projection/frame, town data and art boxes. No physical print or ruler test.
+- **Next:** review the draft visually with the designer before adopting it as the live Rollo map.
+
+
+## 2026-10-17: Four Norse trail maps reviewed (Codex)
+- **Task/status:** reviewed the four current player PDFs in NorseBackpack/Print/_pdf_source, all answer overlays, and Harald's reverse. Recommendations only; no map, puzzle or design-record changes.
+- **Findings:** Aud is the strongest visual reference; Rollo needs stronger icon contrast and clearer spacing around Rouen/Roumare forest; Leif needs minor label/art consistency refinements; Harald needs a more legible reverse and a player check of its final digit (currently zigzag-shaped). Preserve puzzle coordinates, rune strokes, Rollo measurement scale, and Aud crossings in any proposed restyle.
+- **Checks:** rendered all ten player/answer pages with Poppler and visually inspected them; read current puzzle records and recent map-pass notes. No physical print or player test. Temporary renders: C:/EscapeBackpack/tmp/pdfs/map_review/. Existing unrelated working changes preserved.
+- **Next:** discuss a Rollo visual-cleanup proposal before editing artwork; separately test recognition of Harald's final digit without an answer label.
+
+
+## 2026-10-17: Norse envelopes 11 and 12 start; envelope 12 props moved to a new chat (Claude Code)
+- **Task/status:** envelope 11 (H4, H5, raven's flights; PZ-012) text pass done (Fun Facts shortened; H4 gets "You just have to map the correct ones to get the final value."; H4's rune table left as is on purpose: the empty last cells of rows 2 and 3 are historical, the 16-rune Younger Futhark is 6+5+5). Envelope 12 (opened by 2648): the **H6 postcard is fine as it is; the props (transition tickets PP-039, Liv's journal PP-040, crest note PP-041) are to be reworked as new props**, in a new chat; recorded as **Q-062** with the current texts. Held for H6 (not applied): softer Fun Fact about the 2018 Patara sword, and the Liv line "Nearly there. I knew you'd get this far." (Q-061).
+- **Left:** envelope 12 props (Q-062) and envelope 13 (plane ticket and letter, medallion; final puzzle PZ-013, opened by 1972).
+- **Next:** new chat on Q-062 (envelope 12 props).
+
+## 2026-10-17: Norse envelope 11 text pass: H4, H5 (Claude Code)
+- **Task/status:** envelope 11 = H4 (Hedeby), H5 (Aci Castello), the raven's flights card (PZ-012, answer 2648, opens envelope 12). H4 Fun Fact: "Harald burned Hedeby to the ground, sailing burning ships into its harbour." H5 Fun Fact: "Aci Castello's rock is lava that cooled underwater into glassy basalt pillars." H5's message unchanged; **H4's message gains “You just have to map the correct ones to get the final value.”** (the reference to the map). PDFs, page images, web copies rebuilt; renders checked. Recorded in PP-019, PP-020, PZ-012. Hedeby history not source-checked.
+- **Left:** envelope 12 (H6, transition tickets, Liv's journal, crest note; opened by 2648) and envelope 13 (plane ticket and letter, medallion; final puzzle PZ-013, opened by 1972).
+- **Next:** envelope 12.
+
+## 2026-10-17: Norse Aud map v15 adopted (Claude Code)
+- **Task/status:** checked `TravelMap/Drafts/aud_map_optimized_v15` (Codex): same 102 features as the live `aud_features.json` (no route or code change, still 532), coin icons match Aud's ticket, single place names, legend without the Marker row. Adopted as the live player map: `NorseBackpack/Print/_pdf_source/Trail_Map_3_Aud_Print.pdf` is now the v15 print PDF (old kept in `TravelMap/Drafts/`), web copy and page images rebuilt, `build_trail_maps_pdf.py aud` keeps the v15 file in place. Cave wording fixed in PZ-010 (the hunt ends in the wood beyond the ruin at I9; the only cave icon, at G1, is scenery). Recorded in PZ-006, PZ-010, PP-030.
+- **Aud answer map (17 Oct):** rebuilt on v15 (v15 print + banner, watermark, numbered route 1-2-3 = digit 7); old kept in Drafts; made by `make_aud_answer_from_v15` in `build_trail_maps_pdf.py`; it does not show the six-leg walk (the ticket's page 3 holds the tally). **Open:** paper hand-walk of the v15 print against the ticket not done; the online game still not using `Aud_Map_v15_Game_2400.webp`; nothing printed or paper-tested.
+- **Next:** envelope 11 (H4, H5, raven's flights; PZ-012, opened by 2134).
+
+## 2026-10-17: Norse Harald map base pass, Q-060 closed (Claude Code)
+- **Task/status:** Harald's sheet: single names (Staraya Ladoga, Novgorod, Constantinople, Solund), Denmark and Sweden dots dropped (unused by any puzzle or card), bolder dots and names; config in `TravelMap/build_trail_maps_pdf.py` (`harald`). Print and answer PDFs, page images and web copies rebuilt; render checked (all labels shown, the I10 shield and the branch-rune stems untouched). With Aud, Leif and Rollo done earlier, **all four sheets have the base-map pass; Q-060 is closed.** Recorded in Q-060, PP-034, PZ-012.
+- **Open:** nothing printed or paper-tested; Codex may redraw the map-back arrows in pencil; PP-035 needs 19 dark pieces; digital game still the old order (Q-051).
+- **Next:** envelope 11 (H4, H5, raven's flights; PZ-012, opened by 2134) or the Aud map redraw/restyle with Codex.
+
+## 2026-10-17: Norse production: logo-printed envelopes, cypher marking (Claude Code)
+- **Task/status:** discussion only. The designer's idea (ImprintNow storage envelopes, bought in bulk with the adventure logo, cypher stamped on afterwards) and the prices read from the page are recorded in Q-052. Nothing decided or ordered.
+- **Checks:** `kit.py check`: no problems in Q-052 (141 pre-existing warnings, mostly lock-kit fields).
+- **Also:** plain string-tie envelope suppliers searched (Q-052): office-shop ones are mostly interoffice with printed grids; Alibaba custom-logo ones are about US $0.03–0.35 each (MOQ ~1,000) but standard C4 is too long for the box.
+- **Prototype envelopes (Q-049):** NEETUE 4.5 × 6.7 in (40, $16) fits the postcard-size contents; VANRA letter jacket (5, $18.98) may be ~2 mm longer than the box inside, measure on arrival.
+- **Cheaper large option (Q-049):** designer prefers FungLam 9 × 12 clasp envelopes, 20 for $9.99, no logo (listing also shows 9 × 6 in, measure on arrival); Mr. Pen, 18 for $9.85, was the first find; string-tie 9 × 12 on Amazon.ca are interoffice (grid, holes) or out of stock.
+- **Prototype shopping (Q-049, PP-027):** Fresnel card added (ZUNOXAZ 3 × 2 in, 10 for $11.77); box suggestion PHAREGE 13 × 10 × 2 in (inside 12.4 × 9.8 × 1.9), 25 for $45.79; "12 × 9 × 2" boxes are too small inside. More 13 × 10 options (2 in and 3 in deep) listed in Q-049.
+- **Prototype order (Q-049):** arrives 18 Oct: Fkereg 6.7 × 4.5 string-tie (20), FungLam 9 × 12 clasp (20), American Greetings shirt boxes (6), Fresnel cards (10). Still needed from home: cardstock, brass fastener, sticker paper or glue.
+- **Next:** on arrival, measure FungLam envelopes and the box inside, then pack a full set and measure the stack height (2 in production depth). Supplier quotes later.
+- **Earlier next (kept):** request quotes for 9 × 12 in and 6 × 9 in plain kraft string-and-button envelopes with logo and per-envelope rune labels (ImprintNow and an Alibaba supplier).
+
+## 2026-10-17: Norse PZ-008 (envelope 10): the 4-move design with dark moves, built (Claude Code)
+- **Task/status:** the king's escape is now **four king moves with four dark moves before them (B K B K B K B K), answer 2134**, 19 dark and 6 light. Dark: E1-E6, H2-H5, H10-H11, K10-I10 (the last move frees column K, so without it there is no escape); king F6-H6-H7-K7-K11 (legs 2, 1, 3, 4). Solver (`Props/Hnefatafl/hnefatafl_solver.py`, run against `board_layout.py`) confirms one escape, none in fewer moves, none without the last move. Delivery: arrows 1 and 2 numbered on the map-back board; move 3 is Liv's riddle in her smudge note ("The attacker on the second-highest row steps up to the top row"); move 4 is the hand-drawn shield icon (Codex) at **I10** on Harald's map and on the ticket, no caption.
+- **Built:** `board_layout.py` (old kept), `build_board_setup_pdf.py` (old kept; arrows are placeholder pencil lines drawn in code, note, taller page), Harald's map page 2 and icon at I10, ticket front (icon, "move first", king-capture line) and strip (I6, I8, I9, K4, K10), H1 "exactly 4 moves", PZ-008 (answer 2134, lock 4-digit, new hints and solution), cypher wheel (envelope 11 = 2134, runes ᛚᚹᚲᛏ; PR-007 and PZ-012 updated), `Digital/leif-data.js` + tests (40 of 40), PP-035/034/036/016, Q-056 answered. GIF `black_moves_solution_2134.gif` and the board tool button show the same design.
+- **Ticket strip done (17 Oct):** Codex's `Hnefatafl_Ticket_Back_Smudged_2134_v1.png` checked (five squares at K10, K4, I9, I8, I6, none on K8) and used by `build_ticket_pdf.py`; the older `..._Smudged_v1/v2.png` show the old layout and are not used. **Open:** Codex may redraw the arrows in pencil (placeholders are drawn in code); PP-035 physical set needs 19 dark pieces; nothing printed or paper-tested; (Harald base-map pass done 17 Oct, see below; Q-060 closed); the digital game still follows the old order (Q-051).
+- **Next:** envelope 11 (H4, H5, raven's flights; PZ-012, code 2134) or the Q-060 Harald base-map pass.
+
+## 2026-10-16: Norse envelope 10: H1 text, black-move design work, board tool (Claude Code)
+- **17 Oct 2026 (Claude, PZ-008 black moves, not built):** adopted design (final on 17 Oct, K10 version): 4 king moves, 4 black moves, answer **2134**, **19 dark pieces** (I8, I9 and K10 added), black **E1-E6, H2-H5, H10-H11, K10-I10** (the last move opens the escape); king F6-H6-H7-K7-K11. The shield icon on Harald's map is now at **I10** (moved from I11, PDFs rebuilt). Solver-checked (one escape, none in fewer moves, the last black move is needed). Stopping on H7, not the top, is the difficulty. (An earlier 2233 version with I7 and I9 was replaced.) Board tool has a button for this layout. **Delivery decided (17 Oct):** arrows 1 and 2 numbered on the map-back board (Codex, pencil); move 3 as the riddle in the map-back note (“The attacker on the second-highest row flees the king and goes to safety between his colleagues” = H10-F10, so black is E1-E6, H2-H5, H10-F10, I9-I11); move 4 as the hand-drawn shield icon on Harald's map at I11, **already built** (map + ticket front, no caption). **Not yet built:** the map-back note and arrows, ticket strip and smudge. (Older text:) (needs the piece, not only the square; Harald's map has no J column). **Build list awaiting approval:** `board_layout.py`, map back, ticket strip + smudge, ticket rules line, H1 ("exactly 4 moves"), answer 2233 with the wheel and envelope 11's runes, hint page, `Digital/leif-data.js` and tests, PP-035, PP-036. Records: PZ-008, Q-056.
+
+- **Task/status:** envelope 10 (H1, Harald's map, board, Oslo ticket; PZ-008, code 253). H1 message now ends "...Count how far he travels each time. I've set up the board for you, good luck!" (PP-016). **Direction chosen, not built:** add black-piece moves: two arrows on the back of Harald's map (start to end of two dark pieces), a cryptic note giving their order, and the last black position given by a puzzle (option B: a named place on Harald's map whose grid reference is a board square; the map's columns A, C, E, I, K match board columns, so Aci Castello = I9, Dürnstein = I6, Sigtuna = I3, Nissan estuary = I4, Oslo = E3, Hedeby = E4); the king should escape east so the ticket strip (I-K) is needed. HD stays unchanged in envelope 3. The ticket back smudge: Codex files `Hnefatafl_Ticket_Back_Smudged_v1/v2.png` and `TICKET_TRANSFER_SMUDGE_v1/v2.md` already exist in `Props/Hnefatafl` (not reviewed by me).
+- **Solver and tool:** `Props/Hnefatafl/hnefatafl_solver.py` (current setup has exactly one escape, F6 H6 H11 K11, 253). Findings: a unique design with the order mattering exists for black moves A8-D8 then H5-H7 (code 154, king goes west), but any east escape using the place squares gives the code 253 again (legs 2, 5, 3 via column H), and none where the last move is needed. `board_designer.html` updated with a Puzzle run mode so the designer can try positions and moves by hand (backup of the old one kept).
+- **Open:** east-going design with a code other than 253 (needs the black moves to change the king's route or hidden-column pieces); the exact arrows, order note and last-move puzzle; code change ripples (envelope 11 runes, digital game, hints, ticket, map back); Harald map base-map pass (Q-060); nothing printed.
+- **Also:** the designer wants the puzzle at **4 king moves** (PZ-008 note); the board tool now has king-move (3 or 4) and black-move (0 to 4) selectors. Code would become 4 digits when adopted.
+- **Next:** the designer tries lines in the board tool; then decide the arrows and last position.
+
+## 2026-10-16: Norse envelope 9: R5 longship, ruler moved (Claude Code)
+- **Task/status:** envelope 9 = R3, R4, R5 and now the ruler (PZ-011, answer 120, opens envelope 10). **R5:** the SCALE 1:125 rebus replaced by Codex's longship drawing (`Postcards/RebusIcons/Rebus_Longship_Pencil_Codex_v1.png`, made from the attached image: transparent graphite PNG); message ends "Good thing I packed my old ruler: my maps only make sense when I pick the right side." **Ruler PP-025** moved from envelope 4 to envelope 9 (found_in PZ-007); PR-007 table, Q-046, Q-049 updated. R3 bolt rebus kept. PZ-011 hint 3 and Solution rewritten for the longship edge and 120. Also fixed stale rune strings for envelope 10 (`_120`, ᛁᛉᚲᛇ) in PR-007 and PZ-008. Cypher wheel rebuilt, R5 PDFs, page images, web copies rebuilt; R5 render checked.
+- **Open:** (R3 and R5 Fun Facts applied afterwards, R4 kept) the LivRuler PDF should be checked against the longship edge when printed; digital game still old order and 1:125/104 (Q-051); Harald base-map pass (Q-060). Not printed or paper-tested.
+- **Next:** decide the R3 and R5 Fun Facts, then envelope 10 (PZ-008, opened by `_120`).
+
+## 2026-10-16: Norse envelope 8 text pass and Rollo map pass (Claude Code)
+- **Task/status:** envelope 8 = R2 (Rouen), Rollo's map (large envelope), Rouen ticket; PZ-007 (answer 1486, opens envelope 9). R2 Fun Fact now "Rouen Cathedral holds the heart of Richard the Lionheart, King of England and Duke of Normandy." (not source-checked); message unchanged. Ticket already cut to 11 pairs and re-jumbled on 11 Oct (PP-033), no change. **Rollo base-map pass applied (Q-060):** Portsmouth and Saint-Malo dropped, Walcheren kept, icon towns kept, bold dots and names, fixed label for Roumare forest. PDFs, page images, web copies rebuilt; renders checked. Recorded in PP-006, PP-032, PZ-007, Q-049, Q-060.
+- **Also this session:** A1 Fun Fact set to the source-checked wording (PP-012).
+- **Open:** Harald's base-map pass (Q-060) still to do; nothing printed or paper-tested; digital game still the old order.
+- **Next:** envelope 9 (PZ-004's follow-ups: opened by `1486`) or the Harald map pass.
+
+## 2026-10-16: Norse envelope 7 text pass: A1, A3 (Claude Code)
+- **Task/status:** envelope 7 = A1, A3, coin hoard, treasure tally (PZ-010, opened by `4865`, answer SOLE). A1 Fun Fact: "Dögurðarnes is named after dögurður, the Old Norse day-meal, probably a settler's first meal here." (source-checked, PP-012) A3 Fun Fact: "Esjuberg is where Laxdæla saga has Aud meet her brother Helgi, and turn down his offer to settle." A3 message now ends "I added it all up on my trusty old counter, and my head is still spinning." (so players know the four-wheel tally is for the total). Messages otherwise unchanged. PDFs, page images, web copies rebuilt; renders checked. Recorded in PP-012, PP-014, PZ-010.
+- **Open (not changed):** the card messages say the coins came "at the end of the treasure hunt" but the hoard is in envelope 7 (the hunt ends in envelope 5); the puzzle needs Aud's ticket and map from envelope 4 kept out; the dögurður meaning is not verified; handwriting spells "Dogurdarnes" (font draws ð badly). Hoard, tally and ticket not touched.
+- **Next:** envelope 8 (PZ-011, opened by `SOLE`) or the Rollo and Harald base-map passes (Q-060).
+
+## 2026-10-16: Norse envelope 6: LD text pass, PZ-005 moved to the wolf, code 4865 (Claude Code)
+- **Task/status:** envelope 6 = LD, Leif's map (needs the large envelope), Brattahlíð ticket; puzzle PZ-005. Players struggled with it, so the card's pointer moved from F1 (bear) to **A6 (wolf)**: LD imprint now `Vinland Editions · Series A, No. 6`; answer **WOLF 4865** (W 4, O 8, L 6, F 5 on the ticket index; ticket and map art unchanged). Envelope 7 is now opened by `4865` (runes ᚺᛏᛏᚦ). LD: comma added in the first line, Fun Fact shortened to "Leif's mother built Greenland's first church here, a tiny turf one." (saga tradition, not source-checked); "Brattahlid" kept without í/ð in the handwriting because the font draws ð badly. "spell" underline and "a few steps" line unchanged.
+- **Files changed:** `Postcards/build_postcard_LD_pdf.py`; records PZ-005 (answer, hints, solution, dated note), PP-004, PP-024, PR-007 (envelope 7 row), PZ-010 (hint_title runes), Q-061; `Digital/leif-data.js` and `leif.test.cjs` (4865, wolf hints). Rebuilt: LD PDFs, page images, web copies, cypher wheel (`PYTHONUTF8=1`), kit site/hint page. Not touched: old archive HTML, Review and Storage copies still say 3212.
+- **Checks:** Leif tests 40/40; `kit.py check` no errors; no duplicate puzzle answers; LD back render inspected. Not retested with players or on paper.
+- **Leif base-map pass applied (Q-060, approved):** `leif` config in `TravelMap/build_trail_maps_pdf.py`: six towns dropped, single name Brattahlíð, bold dots and names; PDFs and web copies rebuilt. Rollo and Harald sheets still to do (remind the designer at their puzzles). The digital game still uses the old order.
+- **Next:** envelope 7 (A1, A3, coin hoard, treasure tally; PZ-010, opened by `4865`) or the Leif base-map pass.
+
+## 2026-10-16: Aud map redraw installed, treasure code 521 -> 532 (Claude Code)
+- **Task/status:** checked the designer's redrawn Aud symbol layer (102 features) and installed it as `NorseBackpack/TravelMap/aud_features.json` (previous file: `aud_features.2026-10-16_before_redraw.json`). The unchanged ticket now walks to 5 bridges, 3 fords, 2 gates (new ford C6 on leg 3, new wall gate H7 on leg 5); the designer chose to adopt **532**.
+- **Files changed:** `TravelMap/aud_features.json`; `Props/AudTicket/build_aud_ticket_pdf.py` (`ANSWER`, `PER_LEG`); records PZ-006 (answer, solution, risks, dated note), PP-047 (example code), PP-037 (reference); `Digital/leif-data.js` (answer + last hint), `Digital/leif.test.cjs`. Rebuilt: Aud print/answer map PDFs, ticket PDFs, cypher wheel (envelope 5 now `_532`, runes ᛈᚹᛟᛇ: its envelope label changes), page images, web copies, kit site.
+- **Checks:** crossing audit (all 25 road/path crossings carry the right symbol, none stray, no landmark at sea); new map render and ticket answer page inspected (ANSWER 5 3 2); Leif tests 40/40; `kit.py check` 142 older warnings, no new ones. Not done: paper hand-walk of the new map.
+- **Open:** the three `marker` points (`coin1`, `Coincorretc`, `Coin2`) print as unlabelled orange dots plus a Marker legend row; one sits in the leg-6 wood. Print or not is undecided (noted in PZ-006). Codex is restyling the map with the new JSON.
+- **Next:** decide the markers, then hand-walk a print of Codex's restyled map against the ticket.
+
+## 2026-10-16: Norse envelopes 4 and 5 start, Aud map base pass (Claude Code)
+- **Task/status:** (1) **A2 (envelope 4, PZ-006):** Fun Fact shortened ("Aud claimed a whole valley here, then freed her thralls and gave each one land."); handwritten text kept. Envelope 4 needs the large 9 x 12 in envelope (Q-049). (2) **Aud map base pass** in `TravelMap/build_trail_maps_pdf.py` (`aud` config): one name per place, Kambsnes, Mosfellsbær, Krosshólaborg dropped, Bjarnarhöfn, Akranes, Borgarnes moved ashore (`PLOT_NUDGE`), bolder dots and names (`bold_towns`, halo labels). `export_aud_base.py` and `Aud_Map_Designer.html` match. Print and answer PDFs and web copies rebuilt. Five dots (Reykjavík, Bjarnarhöfn, Akranes, Borgarnes, Stykkishólmur) are on land but within 0 to 3 pt of the coast; the designer said it looked right after a hard reload. (3) **PZ-009 (envelope 5: R1, R6, RD) text pass done:** Fun Facts shortened with "CE" after each year (non-breaking space; the three `wrap_text` functions now split on plain spaces); messages tightened (R6 keeps the boar-doubling hint). PDFs, page images and web copies rebuilt, renders checked. Recorded in PP-005, PP-010, PP-011, PZ-009.
+- **Opened:** **Q-060** base-map pass for the Leif, Rollo and Harald sheets (proposal, not approved: drop lists, single names, bold style). **Remind the designer when working on those maps' puzzles.** **Q-061** Liv speaking about the puzzles (liked lines held; LD already has one; placement waits for the Q-057 pass).
+- **Superseded during this session by the entry above:** the designer's redrawn map was installed into `aud_features.json` by another session and the treasure code is now **532** (not 521), so envelope 5 opens with 532. My Aud base pass (names, dropped towns, ashore dots, bold style) is still in the build. Codex is restyling from the new JSON; the earlier style test files are in `TravelMap/Drafts/` (draft JSON, `CODEX_BRIEF_aud_style_test.md`, baseline render).
+- **Checks:** `kit.py check` no errors (older migration warnings only). Not printed or paper-tested; digital game, hint page and Flow tab still follow the old order (Q-051).
+- **Next:** envelope 6 (LD, ticket; PZ-009 opens it with `562`) or the Codex-restyled Aud map (hand-walk it, see the entry above). Note LD writes "Brattahlid" without í and ð.
+
+## 2026-10-16: Aud map review (Codex)
+- **Task/status:** reviewed the current Aud player/answer map PDFs, ticket directions, A2 builder and PZ-006/PZ-010/PZ-013 records. Proposal only; no artwork, puzzle rules or design records changed. Existing unrelated working changes preserved.
+- **Findings:** dense symbol/legend hierarchy; landmarks sometimes offset from their route; near-vertical final digit downstroke. PZ-006 says A2 supplies southward direction, but current A2 text supplies only the forest-road detail. The map also supplies the cache mark for the later coin puzzle.
+- **Checks:** rendered and visually inspected the current player map, answer map and ticket back; read editable sources. Existing 521 paper hand-walk confirmation is recorded for 26 Sept; no new physical test performed. Temporary renders: tmp/pdfs/aud-review/. Poppler reported fallback-font warnings; relevant rendered pages were readable.
+- **Next:** discuss whether to clean the existing sheet or rebuild its puzzle layer; recommendations in chat remain unapproved.
+
+
+## 2026-10-15: Norse envelopes 1 to 3: reorder and text pass, closing summary (Claude Code)
+- **Task/status:** moved to the envelope format one envelope at a time. Nothing printed or paper-tested; digital game still plays the backpack order (Q-051).
+  1. **Order (PR-007):** envelope 1 `1021` = AD + Aud's comb; envelope 2 `BOOK` = L2, L3, magnifier; envelope 3 `1576` = H2, H3, HD. Codes 4 to 13 unchanged. PZ-001..004 `needs`/`container`/`hint_title` and PP containers updated; Q-001, Q-005, Q-046, Q-049 have dated notes. New **Q-059** (scrambling the legs so players sort cards back later) is open.
+  2. **AD (PP-015):** Fun Fact "Hákarl is Greenland shark, cured for months. It smells as bad as it sounds."; handwritten message rewritten to introduce Aud, museum dropped. Aud lines fact-checked (Laxdæla saga, Wikipedia). **Comb rebuilt** for B (line 1), O (line 2, "to"), O (line 5, "of"), K (line 8, "like"); full-card overlay reads BOOK; B tooth is a 0.74 mm stub. Lower comb mark moved to y 250 pt. Digital comb rebuilt, `leif.test.cjs` 40/40. `build_comb.py` preview now shows the whole card.
+  3. **Envelope 2 (PZ-002 kept):** L2/L3 Fun Facts shortened; L2 gained "No wonder Leif's crews came here for timber." (final, unchecked by design); **Saga** added to Liv's notes card (PP-048).
+  4. **Envelope 3 (PZ-004):** H2 introduces Harald (I sentence, "may have turned up" is Claude's softening after a fact check), N is Liv sipping tea reading the saga (DRINK nudge), K is "Knowing how far Harald still had to go makes my own trip feel short"; hanging indent half a space + 1.5 pt. HD lead-in "Here's another riddle in pictures, sketched for me in a little shop here:". H2/H3/HD Fun Facts shortened. Riddles, acrostic and rebus unchanged.
+- **Files changed:** `Postcards/build_postcard_AD_pdf.py`, `_L2_`, `_L3_`, `_H2_`, `_H3_`, `_HD_`; `Props/Comb/build_comb.py`; `Props/LivNotes/build_liv_notes_pdf.py`; Digital comb assets; records PR-007, PZ-001..004, PP-002, 003, 015, 017, 018, 022, 027, 028, 048, Q-001, 005, 046, 049, 057, new Q-059. Print PDFs, page images and web copies rebuilt (other cards' page images were re-rendered by the pipeline).
+- **Checks:** every changed card rendered and inspected as PNG; `kit.py check` 142 older warnings, no new errors; Leif tests 40/40. Not run: paper print of any card or the comb.
+- **Not done:** retest PZ-003/PZ-004 with players; comb and AD print at 100% (B stub, letter tails); HD rebus reader test; hint page, digital game, Flow tab text and Q-057's remaining rows (A1, A2, A3, transition ticket 1, R1..R6, H1, H4..H6) still follow the old order or old text.
+- **Next (one action):** open a new session on envelope 4 only (A2, Aud's map, Aud's Treasure Museum ticket, ruler; opened by `MEAD`), or on Q-059 if the designer wants the scrambling decided first.
+
+
+## 2026-10-15: Norse playtest 2 feedback, closing summary (Claude Code)
+- **Task/status:** designer feedback: the ruler puzzle is weak, players did not know "crossbow bolt" and struggled with "mead". Designed and built mock-ups in chat; nothing is final or printed. Decisions: (1) **Liv's notes card** (PP-048) comes with L1: four full names plus ten words (chainmail, crossbow bolt, ford, hoard, longship, mead, rune, runestone, spear, tapestry); (2) **ruler redesign** (PP-025, PZ-011): cheap printed card, forest green, two edges with picture rebuses, LONGSHIP (long + sheep, correct) and SPEAR (S + pear, decoy, printed turned 180° so it reads upright when flipped), free scales so the Châlus to Saint-Clair distance (83.126 mm, calculated) lands on the **120** mark, raven crest in the middle; (3) PZ-004 mead is handled by the notes card, no change to its riddles.
+- **Files changed:** new `records/props/PP-048-liv-s-notes-card.md`; dated notes in `PP-025`, `PZ-011`, `PZ-004`; PZ-011 `answer` and the code rows in Q-001 and Q-005 now 120; new `Props/LivNotes/build_liv_notes_pdf.py` (4 × 6 in card, `NorseBackpack/Print/_pdf_source/Liv_Notes_Card_Print.pdf`); new `Props/LivRuler/build_ruler_pdf.py` and `prepare_icons.py` (`NorseBackpack/Print/_pdf_source/Liv_Ruler_Print.pdf`, preview PNG, `Icons/`). Codex supplied the rebus drawings and the light raven.
+- **Checks:** both cards checked in their PNG renders only; `kit.py check` shows no new errors for these records (older warnings remain). The 83.126 mm distance comes from `pt()` in `build_trail_maps_pdf.py`. Nothing printed on paper.
+- **Next (one action):** open a new session on **PZ-011 alone**: replace the Battle card (R5) "SCALE 1:125" rebus with a longship drawing and reword its "right scale" line. Other leftovers, kept in the records: sweep for remaining `104` / `10.4 m` mentions (rune markings in PR-007 and PP-047, print files, hints); paper print test of the ruler at 100%; PP-048 facts check (Rollo, Harald lines) and mead wording; crossbow bolt wording on R1 and the Bayeux rebus (option to drop the lightning bolt) still undecided; the digital ruler (Q-044, `Digital/assets/Ruler_Face_*.svg`) not updated; Codex prompts for the pear, S, sheep, long arrow and the latest raven edit not recorded.
+
+
+## 2026-10-15: Norse ruler raven crest without compass (Codex)
+- **Task/status:** removed the compass wheel; retained the raven and knotwork border in ivory on transparency.
+- **Files changed:** `NorseBackpack/Props/LivRuler/Family_Symbol_Raven_Crest_Light_v1.png`; refreshed derived ruler icon, PDF and preview; added a dated note to `PP-025`.
+- **Checks:** icon preparation and PDF build succeeded; generated crest visually checked. Physical print remains untested.
+- **Next:** test crest legibility at actual print size (12 mm) with the ruler printed at 100%.
+
+
+## 2026-10-15: Norse ruler raven crest simplified (Codex)
+- **Task/status:** removed the lower-left longship, sail, dragon prows and waves from the ivory raven crest; the knotwork ring continues through that area. Raven, compass, linework, ivory colour and transparency retained.
+- **Files changed:** updated `NorseBackpack/Props/LivRuler/Family_Symbol_Raven_Crest_Light_v1.png`; refreshed derived `Icons/raven.png`, ruler PDF and `Liv_Ruler_Preview.png`; recorded the exact edit prompt in `PP-025`.
+- **Checks:** icon preparation and PDF build completed. Visually inspected the ruler preview; the simplified crest reads clearly on the green at screen size. Physical print remains untested.
+- **Next:** test the crest at actual print size (12 mm) with the ruler printed at 100%.
+
+## 2026-10-15: Norse ruler raven contrast (Codex)
+- **Task/status:** generated a light ivory version of the raven crest so it reads on the dark green ruler. Kept the crest composition and made the foreground light; the source art remains unchanged.
+- **Files changed:** new `NorseBackpack/Props/LivRuler/Family_Symbol_Raven_Crest_Light_v1.png`; `prepare_icons.py` now trims this light version for the ruler; updated `PP-025` with the decision and exact generation prompt. Rebuilt `Props/LivRuler/Icons/raven.png`, the print PDF and `Liv_Ruler_Preview.png`.
+- **Checks:** icon preparation and ruler PDF build completed. Visually inspected the preview: the crest reads against green at screen scale. Physical 12 mm print legibility remains untested.
+- **Next:** print the ruler at 100% and check the raven at its actual size.
+
+## 2026-10-15: Norse playtest feedback: ruler, crossbow bolt, mead (Claude Code)
+- **Task/status:** designer feedback said the ruler puzzle is weak and players did not know "crossbow bolt" or "mead". Decided in chat, recorded, nothing built. Ruler becomes a cheap printed card with picture-rebus edges (LONGSHIP correct, SPEAR decoy, free scales so the 83.1 mm Châlus to Saint-Clair distance lands on a numbered mark). New Liv's notes card comes with L1 and defines the words.
+- **Files changed:** new `NorseBackpack/records/props/PP-048-liv-s-notes-card.md`; dated notes in `PP-025`, `PZ-011`, `PZ-004`. No art, PDFs or scripts touched.
+- **Checks:** `kit.py check` reports no new errors for these records (existing warnings only: PZ-004 shapes cipher, PZ-011 code length, lock-based fields on older props).
+- **Notes card mock-up built:** `NorseBackpack/Props/LivNotes/build_liv_notes_pdf.py` writes `NorseBackpack/Print/_pdf_source/Liv_Notes_Card_Print.pdf` and a PNG preview (4 × 6 in, checked in the PNG render only, not printed).
+- **Ruler mock-up built:** `NorseBackpack/Props/LivRuler/build_ruler_pdf.py` writes `NorseBackpack/Print/_pdf_source/Liv_Ruler_Print.pdf` and a PNG preview. LONGSHIP edge lands the 83.126 mm Châlus to Saint-Clair distance on the 100 mark; SPEAR edge lands it between 70 and 80. Distance is calculated from `pt()` in `build_trail_maps_pdf.py`, not measured on paper. Checked in the PNG render only.
+- **Ruler restyled and Codex icons in (later 15 Oct):** forest green card with cream marks, raven crest in the middle, rebus icons in the right corners, SPEAR edge printed turned 180° so it reads upright when flipped, pictures S + pear. `prepare_icons.py` trims Codex's four rebus drawings from `Postcards/RebusIcons/` into `Props/LivRuler/Icons/`. Open: raven is dark on dark green (needs a light version), Codex prompts not recorded, no paper print test, PZ-011 code and R5's rebus not yet updated.
+- **Next:** see the closing entry above for this session; the remaining work is listed there and in PZ-011, PP-025 and PP-048.
+
+## 2026-10-14: Clue library dark mode committed and pushed (Codex)
+- **Task/status:** added persistent dark-mode toggle, following the device setting until a choice is saved. Committed and pushed the full approved clue-library work (envelope additions, Bureau identity and dark mode) to `Escape-Backpack/escapepack-site` main as `b4ad5aa`.
+- **Files changed:** sibling `design/clues/` catalogue/UI/docs/assets, including new `library-theme.js`; this local continuity entry. Existing unrelated EscapeBackpack work preserved and not included in the site commit.
+- **Checks:** theme behavior checks passed for device changes, saved choice, aria-pressed state and blocked storage. Browser verified light/dark switching, reload persistence, dark cards/dialogs/diagrams and 390px mobile without overflow or console errors. Staged whitespace check passed after trimming trailing spaces in bundled OFL text. Push succeeded; site working tree clean and remote main verified. Hosting deployment has not been independently verified.
+- **Next:** check the hosted library after the automatic deployment completes. Physical puzzle prototypes remain untested.
+
+## 2026-10-14: Norse opening for the box: no luggage tags, L1 gives 1021 (Claude Code)
+- **Task/status:** reworking Norse to fit the box + rune-marked envelopes (PR-007), starting with the opening. Pre-box version archived first: `Storage/Norse_2026-10-14_PreBox/` (git-ignored; NorseBackpack, output/pdf+docx, escapepack-site copy, README) and local tag `norse-prebox-2026-10-14` in both repos (not pushed). Designer chose option 2: L1 (loose on top with the wheel) tells the story and gives `1021` as a worked example; the wheel's arm prints the three steps. Luggage tags dropped. Not committed.
+- **Files changed:** `Postcards/build_postcard_L1_pdf.py` (new message), `Props/CypherWheel/build_cypher_wheel_pdf.py` (arm: "1 SET THE CODE", "2 READ THE RUNES", "3 OPEN THE ENVELOPE WITH THESE RUNES"); records PZ-001 (now a worked example; old tag text kept as superseded), Q-047 (answered: no tags), PP-023 + AS-045 (parked), PP-001, PP-047, PR-007, PR-001, ST-001. Print and web copies rebuilt.
+- **Checks:** L1 back and the assembled arm rendered and inspected (text fits, arm text clears every window). Full build pipeline ran clean. `kit.py check`: still 142, all migration warnings. The wheel builder's final console print fails on cp1252 without `PYTHONIOENCODING=utf-8` (PDFs are written first). Not done: the digital game still plays tags + locks (Q-051), and the web L1 image now shows the new text.
+- **Later the same day:** H4's "turning south" line removed (`build_postcard_H4_pdf.py`, PP-019; back rendered and inspected; pipeline rerun clean). Two to-dos the designer parked for later, as records: Q-056 (hnefatafl: add black-piece moves defined by Liv) and Q-057 (more of Liv's text about each card's puzzle, done with the rest of the text review). `kit.py check` still 142.
+- **AD:** “alongside the coins” dropped (`build_postcard_AD_pdf.py`, PP-015). The message lost a line, so `Props/Comb/build_comb.py` now targets “keep” mid-line 7 and expects 11 lines; comb rebuilt (still BOOK, 100.7 × 75.1 mm, overlay inspected), digital comb assets rebuilt, `node --test Digital/leif.test.cjs` 40/40, PZ-003 + PP-028 noted. Comb test print still pending.
+- **Next:** go through the rest of the text review (H2, A1, transition ticket 1) against the new envelope order (Q-057).
+
+## 2026-10-14: Clue library styled as The Cryptic Bureau (Codex)
+- **Task/status:** applied the established Archive identity at the designer's request: approved envelope/keyhole logo with hidden flap lettering, burgundy/ivory/copper palette, Cormorant Garamond 600 and Source Sans 3 400/600. Updated header, title/favicon/footer, cards, filters, dialogs, guidance panels and diagrams. Local library only; existing content and shortlist keys preserved.
+- **Files changed:** `../escapepack-site/design/clues/index.html`, `library.css`, `library.js`, `README.md`; new `assets/` with unchanged approved raster logo, local fonts, OFL licences and provenance README; this handoff. Public `site.css` unchanged; library no longer depends on it or remote fonts. Previous envelope-library edits preserved. No commit, push or publication.
+- **Checks:** logo copy verified byte-for-byte; local asset references, JS syntax and git whitespace checks passed. In-app browser over local HTTP: desktop finder, diagrams and dialog inspected; search opens the new slider brief. 390px mobile header/filters inspected with no horizontal overflow. No console warnings/errors; viewport restored. Screen preview uses the approved raster concept, not a new vector master; physical print not tested.
+- **Preview:** `C:/Users/simon/.codex/visualizations/2026/10/14/01a13ba0-dbcc-73e1-a280-587ee049a6e2/clue-library-bureau.jpg`. Browser left at `http://127.0.0.1:8734/design/clues/#find`.
+- **Next:** designer reviews the Bureau-styled library locally before deciding on publication.
+
+## 2026-10-14: Clue library updated for envelope adventures (Codex)
+- **Task/status:** implemented the designer-approved review suggestions in the active sibling library. Added four briefs (paper sliders, weaving, multiple-view reconstruction, narrative timeline), fit/reset/solo-group filters, detail/export guidance, and a shortlist variety check. Design notes hold the recommended technique pool and full envelope/pacing/reuse suggestions. Corrected digit-sum validation examples and adapted burst/one-digit/fold examples. Editorial guidance is not playtest evidence.
+- **Files changed:** `../escapepack-site/design/clues/`: new `library-envelope.js`; updated `index.html`, `library.js`, `library.css`, `library-data.js`, `README.md`; this handoff. Legacy `clues.html` and game records unchanged. Existing work preserved. No commit, push or deployment.
+- **Checks:** Node syntax, catalogue integrity (215 unique entries; 54 specific briefs; valid guide links/profiles), unique illustrative timeline/view arrangements, and git diff whitespace passed. In-app browser at `http://127.0.0.1:8734/design/clues/`: combined filters, empty/clear, detail, brief clipboard export, shortlist persistence/removal, repeated-action warning and filter-independent variety counts, coverage and guide links passed; no console warnings/errors. Desktop and 390px mobile visually inspected; corrected mobile select width. Test shortlist entries removed; viewport restored. Local HTTP server session 91950 serves the sibling site on port 8734.
+- **Preview:** `C:/Users/simon/.codex/visualizations/2026/10/14/01a13ba0-dbcc-73e1-a280-587ee049a6e2/clue-library-envelopes.jpg`.
+- **Next:** use the library to shortlist a varied set for one adventure, then prototype the selected mechanisms. Physical fit, printing, durability and enjoyment still need actual tests.
+
+## 2026-10-14: Clue library review for envelope adventures (Codex)
+- **Task/status:** reviewed the active catalogue in `../escapepack-site/design/clues/` for technique coverage, reusable-envelope fit and variety in player actions. Recommendations are proposals, not adopted design rules; library unchanged.
+- **Files changed:** this continuity entry only; existing changes preserved.
+- **Checks/findings:** loaded catalogue, expansion and guidance in Node: 211 unique entries, 13 technique categories, 50 specific briefs. Reviewed all technique descriptions and targeted examples/guidance; checked proposed gaps against catalogue text. Consulted Puzzled Pint authoring guidance. Strong existing coverage for arranging, comparison, overlays, deduction, maps and parallel tasks. Proposed additions: paper sliders, weaving and reconstruction from multiple views; expand narrative timeline guidance rather than claim ordering is absent. `validator-pairing` incorrectly claims digit sum distinguishes 1972 from 1927 (both total 19). Many examples still refer to locks or old game states.
+- **Limitations:** editorial review, not physical testing or a complete correctness audit of every example/reference. No HTML or game artifacts changed; no render check required.
+- **Next:** discuss the proposed envelope-suitability tags and small set of new technique briefs with the designer before editing the library.
+
+## 2026-10-14: Current adventure structure summary (Codex)
+- **Task/status:** summarized the current Cryptic Bureau series, envelope/cipher game format, packaging and record-based design structure. No new design decisions.
+- **Files changed:** this continuity entry only; existing work preserved.
+- **Checks:** read README, recent handoff entries, git status/history, and the current sibling `Cryptic-Bureau/Bureau_Bible.md`, `Cryptic-Bureau/ROADMAP.md`, `backpack-kit/README.md` and `backpack-kit/GUIDE.md`. Older repository guidance still describes the former backpack format; the current guide and bible define the new format. No artifact changes requiring render checks.
+- **Next:** map Norse puzzles and props to the new envelopes, following the roadmap. Small-envelope size, outer bag choice and physical box fit remain open.
+
+## 2026-10-13: Norse rectangular fireside box cover (Codex)
+- **Task/status:** designer requested a rectangular box to fit an envelope carrying letter-size paper, retaining the raven, title and font. Generated a landscape cover with a cozy fireside wood table, kraft envelopes, current L1/Oslo postcard references, magnifier and notepad. New artwork awaits review; no supplier dimensions chosen.
+- **Files changed:** `NorseBackpack/Art/Box/Raven_Inheritance_Box_Cover_Fireside_v2.png`; new kit asset AS-065 with exact prompt and references; AS-064 marked superseded; PR-007 and PP-045 updated for rectangular format; Q-049 notes old square-box fit assumptions are historical. `.gitignore` updated via `build_web_assets.py`; this handoff. Existing postcard/playtest work preserved.
+- **Checks:** full generated image visually inspected: correct title/credit, requested objects and recognizable postcards. Raster reinterpretation, not exact pasted postcard or raven art. `kit.py check` before and after: same 142 pre-existing migration issues, no added issues. Web-assets script completed; `git diff --check` passed. Physical envelope fit, box depth, dieline, bleed and print proof unverified. No commit or publication.
+- **Next:** designer reviews the cover; measure the intended document envelope before selecting actual internal box dimensions (Q-049).
+
 ## 2026-10-13: Norse postcards go 6 × 4 in, layout B (Claude Code)
 - **Task/status:** the designer's parents found the text too small; the designer chose a 6 × 4 in card with layout B (wider message column, from a mock-up of L1 and AD in `output/mock/`). All 22 cards converted and rebuilt. Message 11.5 pt (was 9.5), Fun Fact 10 pt (was 9), divider x 276 of 432, stamp/postmark/mark 1.2×. Not committed or deployed.
 - **Files changed:** all 22 `Postcards/build_postcard_*_pdf.py` (conversion script kept in the session scratchpad; per-card fixes: L1 P.S. under the signature, AD comb marks, H4 key compacted with notes beside the grid, HD rebus 1.25×, R3–R5 icons 1.2×, LD imprint); `postcard_marks.py` (mark at 304,185, 28 pt); `build_postcard_front_images.py` (1800 × 1200 fronts: 50 rows cut per source, per-card `TOP_TRIM`, AD `SCENE_CUT`); `build_postcard_sheet_pdf.py` (2-up portrait, all 22 cards); `build_print_test_docx.py` (4 × 6 in, 0.15 in side margins); `build_postcard_collection.py`; `build_topedge_test_sheet.py`; `build_page_images.py` docstring; `Props/Comb/build_comb.py` (new targets c**o**uld / s**o** / **k**eep, still BOOK; comb 101 × 75 mm, 90 mm teeth); `Digital/table-layout.js` (6 × 4 card slots, table 56 × 31.75 in, comb slot), `leif-data.js` (comb holes, BOOK hint), `leif.test.cjs` (real postcard size); digital comb/coin assets rebuilt. Records: PR-004, Q-012, PP-001, PP-019, PP-028, PZ-002, PZ-003, Q-049.
 - **Checks:** all 22 backs rendered and inspected; a text-position check confirms every message and Fun Fact clears its floor. All 22 fronts inspected (contact sheet; AD cross and R3 border whole). L2/L3 joined top edge checked on screen: 1576 lines up, digits 1.2×. Comb builder validated BOOK and printed STL; overlay image inspected. `node --test Digital/leif.test.cjs`: 40/40. `kit.py check`: 142 problems, all from the 2026-10-12 backpack-kit envelope migration (container/found_in/lock fields, cipher), none from these edits. Digital game opened locally at lock 9 (escapebackpack-static): 6 × 4 cards, comb close-up and comb seated on AD look right; `Table_Full_Layout.html` shows no overlaps (its size label updated). Web copies rebuilt. Not checked: any physical print (font size, 1576 join, comb fit).
 - **Next:** print L1, AD and the comb at 100% and check legibility and comb fit.
+
+## 2026-10-13: Bureau one-pager and origin story (Codex)
+- **Task/status:** created the requested one-page Bureau overview: premise, members, new origin story and approved identity. Updated the bible with the designer's Canadian spy / Cambridge / Turing's work / pilot / family package ritual story, superseding the prior retired-or-disappeared outline. No invented dates, agency, Turing meeting, names or family links.
+- **Files changed:** `C:\EscapeBackpack\Bureau_Bible.md` sections 3 and 9; `Brand/CrypticBureau/build_onepager.py`; actual fonts, OFL licenses and source notes in `Fonts/CrypticBureau/`; `NorseBackpack/Print/_pdf_source/Cryptic_Bureau_One_Pager.pdf`; this handoff. Preview in `tmp/pdfs/`. Existing `output/mock/` and other changes preserved.
+- **Checks:** pypdf confirms one page and correct extracted content; Poppler render visually inspected, no clipping/overlap. Fonts embedded from actual Cormorant Garamond and Source Sans 3 files. Approved raster logo retained; print and small-size logo reproduction untested. Documentation diff checked. No commit or publication.
+- **Next:** designer reviews the one-pager's wording and member roles; unspecified names and family links remain open in the bible.
+
+## 2026-10-13: Hidden lettering in logo B flaps (Codex)
+- **Task/status:** user approved CB-L02-H01: "Great, that works well." Logo B now includes CRYPTIC and BUREAU in the light left/right V seam, with the Archive style. Retain the lettering as shown; the suggested subtler treatment was not adopted. Approval recorded in the bible; no artwork changed on approval.
+- **Files changed:** `Brand/CrypticBureau/LogoConcepts/CB_Logo_B_Archive_Hidden_Flaps_v1.png`; shared `C:\EscapeBackpack\Bureau_Bible.md` section 9 records CB-L02-H01, exact prompt, link, review and CB-Q01; this handoff.
+- **Checks:** visually inspected full image: correct spelling, words inside light seams, separate keyhole, no cropping. Saved copy verified; documentation diff checked. Lettering is prominent rather than deeply hidden; small-size printing untested. No commit or publication.
+- **Next:** prepare a production master matching the approved concept, then check small-size readability. CB-Q01 answered for the main logo; small-size adaptations undecided.
+
+## 2026-10-13: Archive style selected for logo B (Codex)
+- **Task/status:** user chose 01 — Archive (CB-S01 v2) for selected envelope/keyhole logo B. Recorded burgundy/ivory/copper and Cormorant Garamond Semibold + Source Sans 3 as the chosen direction in the shared bible.
+- **Files changed:** `C:\EscapeBackpack\Bureau_Bible.md` section 9 and this handoff only. No artwork regenerated.
+- **Checks:** verified selection against the existing B preview record; checked documentation diff. Generated fonts/colours remain approximate; no production typesetting or print check performed.
+- **Next:** prepare an accurately typeset version of B in the Archive palette for review.
+
+## 2026-10-13: Logo selection corrected to B (Codex)
+- **Task/status:** user clarified "I meant B for the logo." B — Secret dispatch (envelope/keyhole, CB-L02) is selected; C selection superseded. Regenerated all three font/colour examples using B. Palette and typography remain open.
+- **Files changed:** three `CB_Style_*_Logo_B_v2.png` files in `Brand/CrypticBureau/StyleConcepts/`; `C:\EscapeBackpack\Bureau_Bible.md` section 9 has corrected selection, current v2 links and exact prompts, with C examples marked superseded; this handoff. Original images preserved.
+- **Checks:** all three generated boards visually inspected at full size: envelope/keyhole at both sizes, correct wording and labels, no clipping. Copies verified; fonts/colours and geometry are illustrative, not production masters. No print or small-size test. No commit or publication.
+- **Next:** choose a font and colour direction from the B examples before exact typesetting.
+
+## 2026-10-13: Bureau font and colour examples (Codex)
+- **Task/status:** user requested font and colour examples for selected logo C. Created 01 Archive (burgundy/ivory/copper), 02 Field Office (forest/cream/ochre), 03 Modern Bureau (midnight/grey/teal). All are unselected proposals; recommended 02 for discussion.
+- **Files changed:** three PNGs in `Brand/CrypticBureau/StyleConcepts/`; shared `C:\EscapeBackpack\Bureau_Bible.md` section 9 records CB-S01–CB-S03, font pairings, colour targets, exact prompts and links; this handoff. Original C image preserved.
+- **Checks:** visually inspected all generated boards; readable wording and labels, no clipping. Copies verified. Fonts/colours are ImageGen approximations, not exact font specimens or print proofs; 01 and 02 serif lettering is similar. No physical print or small-size test. No commit or publication.
+- **Next:** designer chooses a palette and font direction, which can come from different examples, before exact typesetting.
+
+## 2026-10-13: Cryptic Bureau logo concepts (Codex)
+- **Task/status:** generated three monochrome candidates with built-in ImageGen: A CB monogram seal, B envelope/keyhole, C geometric puzzle/frame. User selected C — Hidden path (CB-L03) as the preferred direction. Recorded the selection in the bible; current artwork remains a draft, with final geometry, palette and type open.
+- **Files changed:** three PNGs in `Brand/CrypticBureau/LogoConcepts/`; candidate IDs CB-L01–CB-L03, file links and exact prompts recorded in `C:\EscapeBackpack\Bureau_Bible.md` section 9; this handoff. Old logos preserved.
+- **Checks:** generated images visually inspected; correct brand wording, unclipped marks, opaque white backgrounds. File copies verified. Raster concepts only; no vector or physical stamp/print validation. No commit or publication.
+- **Next:** propose refinements to C's geometry and wordmark, including a small-size seal check, before changing the artwork.
+
+## 2026-10-13: Cryptic Bureau bible review (Codex)
+- **Task/status:** read and summarized `C:\EscapeBackpack\Bureau_Bible.md` (outside this Git repository), the new shared brand/series source of truth. No edits to the bible, game records or artwork.
+- **Files changed:** this continuity entry only.
+- **Checks:** read README, latest handoff, git status and recent history; read the complete bible. Summary distinguishes recorded decisions from open alternatives and research assertions. Did not independently verify market figures, name/domain availability, trademarks or playtest metrics.
+- **Next:** use the bible to define the Bureau's shared visual identity before revising Norse packaging. Resolve the pitch's two-raven reference with the designer when choosing imagery; do not invent its story/mechanism.
 
 ## 2026-10-12: Norse finale reworked after playtest 1 (Claude Code)
 - **Task/status:** playtesters found the final puzzle (PZ-013) too much work: rereading postcards for travel clues. Proposal in Q-054; designer chose "marks give the order" and "decoys carry no mark". Built: card marks reassigned so each trail's n-th stop carries the n-th element in the journal page's caption order; decoys unmarked; marks are now crops of the iconography drawings (new `Art/FinalPuzzle/build_iconography_marks.py` → `PostcardMarks/*_Iconography_v1.png`); journal intro states both rules; each map shows its trail's stamp in the title band. Code still 1972. Q-054 answered; new open Q-055 (keep the transition tickets and Travel highlights as flavour, or cut them).
@@ -50,7 +726,7 @@
 
 ## 2026-10-11 (night): Norse rune cypher wheel prototype (Claude Code)
 - **Status:** friends suggested dropping padlocks for marked envelopes plus a 4-wheel cypher; designer chose rune labels. Printable prototype built; not printed, not committed. Locks are not yet replaced in the records (PP-047 is `candidate`).
-- **Files:** new `NorseBackpack/Props/CypherWheel/build_cypher_wheel_pdf.py` → `output/pdf/Cypher_Wheel_Print.pdf` (5 pages: wheels I–IV, arm, 13 envelope labels, designer key) and `output/pdf/Cypher_Wheel_Assembled_Preview.pdf`; new record PP-047.
+- **Files:** new `NorseBackpack/Props/CypherWheel/build_cypher_wheel_pdf.py` → `NorseBackpack/Print/_pdf_source/Cypher_Wheel_Print.pdf` (5 pages: wheels I–IV, arm, 13 envelope labels, designer key) and `NorseBackpack/Print/_pdf_source/Cypher_Wheel_Assembled_Preview.pdf`; new record PP-047.
 - **Checks:** `kit.py check` 180 OK; all PDF pages rendered and inspected; assembled preview for locks 1 and 5 shows the code in the left windows and the label's runes in the right windows; 13 labels distinct (asserted in the builder).
 - **Next:** print `Cypher_Wheel_Print.pdf` at 100% on cardstock and assemble one wheel.
 
@@ -144,10 +820,10 @@
 
 ## 2026-10-08: Norse longship lock stickers in Word (Codex)
 - Request/status: designer selected longship C and requested every existing number in the Word file. Completed two sets of 1–13, 26 stickers, 13 mm wide on one Letter sheet.
-- Files: updated `output/docx/Print_LockStickers.docx`, source `NorseBackpack/Props/LockStickers/build_lock_stickers_pdf.py`, `output/pdf/Lock_Stickers_Print.pdf`, `Props/_Renders/Lock_Stickers_Sheet.png`; new `Props/LockStickers/Longship_Blank_Sail.png`; PP-046 and AS-061/062/063 record selection, superseded shield and exact ImageGen prompt. Original concepts retained.
+- Files: updated `NorseBackpack/Print/Print_LockStickers.docx`, source `NorseBackpack/Props/LockStickers/build_lock_stickers_pdf.py`, `NorseBackpack/Print/_pdf_source/Lock_Stickers_Print.pdf`, `Props/_Renders/Lock_Stickers_Sheet.png`; new `Props/LockStickers/Longship_Blank_Sail.png`; PP-046 and AS-061/062/063 record selection, superseded shield and exact ImageGen prompt. Original concepts retained.
 - Method: built-in ImageGen removed sample 6; ReportLab typesets numbers with two-digit width fitting. Bundled PDFium rendered at 300 dpi, replacing only the DOCX embedded sheet and preserving its exact OOXML page/anchor layout. Shared DOCX builder remains usable in its normal PyMuPDF environment; bundled runtime lacks that package.
 - Checks: both 1–13 sequences verified from PDF text; full sheet and embedded Word artwork visually inspected, including two-digit fit. `kit.py check`: 179 records, no problems. `build_web_assets.py` completed and refreshed binary retention. `render_docx.py` cannot render: no LibreOffice or Microsoft Word installed. No physical print.
-- Next: print `output/docx/Print_LockStickers.docx` at 100% on sticker paper and check readability on locks. No commit, push or publication.
+- Next: print `NorseBackpack/Print/Print_LockStickers.docx` at 100% on sticker paper and check readability on locks. No commit, push or publication.
 
 ## 2026-10-07: Norse moved to backpack-kit records (Claude Code)
 - **Status:** User asked to organise the Norse page like the newer backpacks. Chosen in chat: records inside `NorseBackpack/`, current design only, six beats (opening, Leif, Rollo, Aud, Harald, finale), new kit IDs with the old ID as an `old-…` tag. Not committed.
@@ -157,7 +833,7 @@
 - **Next:** answer Q-045 (where the magnifier starts) so the Flow tab resolves.
 - **8 Oct 2026:** Q-045 answered by the designer: the magnifier travels with L2 and L3 in the same front pocket (lock 1). PP-027 `found_in: PZ-001`; container noted on PP-027/PP-002/PP-003 (which front pocket is open, Q-001, which also notes the ruler/tally now need a place). `kit.py check` OK; Flow resolves through lock 12, only the finale stays blocked by the wet-erase marker (PP-042, no `found_in`). Next: decide where the wet-erase marker is packed.
 - **8 Oct 2026, later:** designer dropped the marker for now (players imagine or trace with fingers): PP-042 parked, removed from PZ-013's props, note in PZ-013. Flow tab now resolves with no unresolved items. Lock stickers and hint-page names proposed in chat (13 locks), not yet recorded.
-- **Lock stickers (designer chose a Norse icon, option B):** round shield with the number in the boss, 1.3 cm, two sets of 1–13 on a Letter sheet. New `Props/LockStickers/build_lock_stickers_pdf.py` → `output/pdf/Lock_Stickers_Print.pdf`, Word `output/docx/Print_LockStickers.docx` (entry added to `Props/build_printables_docx.py`), render `Props/_Renders/Lock_Stickers_Sheet.png` (entry added to `build_page_images.py`). Records PP-046 (prop) and AS-061 (render). `Tools/build_web_assets.py` now also keeps files named by the records' asset `file:` fields (`record_files()`), so record-only images are not git-ignored. `kit.py check` OK (177 records). Renders inspected; no sticker-paper print. Hint-page names still awaiting the designer; no hint-page QR sticker yet (address not known until Norse is published).
+- **Lock stickers (designer chose a Norse icon, option B):** round shield with the number in the boss, 1.3 cm, two sets of 1–13 on a Letter sheet. New `Props/LockStickers/build_lock_stickers_pdf.py` → `NorseBackpack/Print/_pdf_source/Lock_Stickers_Print.pdf`, Word `NorseBackpack/Print/Print_LockStickers.docx` (entry added to `Props/build_printables_docx.py`), render `Props/_Renders/Lock_Stickers_Sheet.png` (entry added to `build_page_images.py`). Records PP-046 (prop) and AS-061 (render). `Tools/build_web_assets.py` now also keeps files named by the records' asset `file:` fields (`record_files()`), so record-only images are not git-ignored. `kit.py check` OK (177 records). Renders inspected; no sticker-paper print. Hint-page names still awaiting the designer; no hint-page QR sticker yet (address not known until Norse is published).
 
 ## 2026-10-07: Norse — release order by difficulty, trails mixed (Claude Code)
 - **Status:** ST-06 decided in chat and recorded in `NorseBackpack/Norse_Brainstorm.html`. New 13-lock order: tags 1021 → join 1576 (now read with the magnifier, not held to the light) → comb BOOK → horn MEAD → beasts 3212 → treasure 521 → word chain 1486 → king's escape 253 → counting 562 → coin tally SOLE → rebus 104 → raven 2648 → final 1972. PC-18 marked superseded (table kept as history). Committed and pushed 2026-10-07 at the user's request (this session's files only).
@@ -165,13 +841,13 @@
 - **Checks:** browser over local HTTP (port 8741): journey grid shows the new 1–13 order, ST-06 table renders, 14 puzzle cards, no console errors, no horizontal overflow at 1024 px.
 - **Open (in ST-06):** magnifier start location; ST-01 pocket remap; story order (treasure route no longer opens the coin cache; AD's "comb alongside the coins"); hint page and online version still follow the old order and the light.
 - **Next:** decide where the magnifier starts, then remap pockets (ST-01).
-- **Later same day:** standalone hnefatafl board-setup insert now prints with no background colour (user). `Props/Hnefatafl/build_board_setup_pdf.py` gains `draw_grid(c, background=True)`; the standalone PDF passes False, Harald's map back (already paper tone edge to edge) is unchanged. Rebuilt `output/pdf/Hnefatafl_Board_Setup_Insert.pdf`, `output/docx/Print_HnefataflBoardSetupInsert.docx`, `Props/_Renders/Hnefatafl_Board_Setup_Insert_Insert.png`, web copy; note added to the page's hnefatafl prop. Render inspected; Word file not opened in Word, no paper print.
+- **Later same day:** standalone hnefatafl board-setup insert now prints with no background colour (user). `Props/Hnefatafl/build_board_setup_pdf.py` gains `draw_grid(c, background=True)`; the standalone PDF passes False, Harald's map back (already paper tone edge to edge) is unchanged. Rebuilt `NorseBackpack/Print/_pdf_source/Hnefatafl_Board_Setup_Insert.pdf`, `NorseBackpack/Print/Print_HnefataflBoardSetupInsert.docx`, `Props/_Renders/Hnefatafl_Board_Setup_Insert_Insert.png`, web copy; note added to the page's hnefatafl prop. Render inspected; Word file not opened in Word, no paper print.
 - **Then:** grid lines under the stain faded (user: too visible while the pieces are erased). `build_board_setup_pdf.py` draws a page-colour wash shaped by the smear's alpha (`LINE_FADE = 0.88`) before the smear; applies to the insert and Harald's map back. Rebuilt the insert PDF/docx, all trail map PDFs (`build_trail_maps_pdf.py`; only Harald's back changed in content), `Norse_Trail_Maps_Print.docx`, renders of the insert and Harald back, web copies. Zoomed renders inspected; no paper print.
 - **Then:** user wanted the lines under the stain smudged, not straight. `build_board_setup_pdf.py` now erases them fully (boosted smear alpha as mask, `LINE_FADE = 1.0`) and draws `_smudged_lines` (wavy, dragged, blurred, broken; seed 1171). Same rebuild chain as above; insert and Harald back renders inspected zoomed. No paper print.
 
 ## 2026-10-07: Norse postcard print docx, wider bleed, no back border (Claude Code)
 - **Request:** R3/R4 prints landed 1.5 mm off, but the Aud ticket printed centred the same morning with shift 0 / 0, so a fixed offset was ruled out. A 1.5 mm shift I had added was reverted. The user then asked for a much wider bleed and no border on the text side.
-- **Changed:** `NorseBackpack/Postcards/build_print_test_docx.py`: shift back to 0 / 0, `BLEED_IN` 1.5 mm to 3 mm (the docx pads the back image with paper colour; the ticket script imports the same value, so tickets get 3 mm on their next rebuild). All 22 `build_postcard_*_pdf.py`: removed the outer frame `c.rect(10, 10, W - 20, H - 20, ...)` from the back. Rebuilt the 22 print PDFs, back PNGs (`build_page_images.py`), the 11 `output/docx/PrintTest_*` card files, and the web copies (`build_web_assets.py`). Inner boxes (address, fun fact, divider) are unchanged.
+- **Changed:** `NorseBackpack/Postcards/build_print_test_docx.py`: shift back to 0 / 0, `BLEED_IN` 1.5 mm to 3 mm (the docx pads the back image with paper colour; the ticket script imports the same value, so tickets get 3 mm on their next rebuild). All 22 `build_postcard_*_pdf.py`: removed the outer frame `c.rect(10, 10, W - 20, H - 20, ...)` from the back. Rebuilt the 22 print PDFs, back PNGs (`build_page_images.py`), the 11 `NorseBackpack/Print/PrintTest_*` card files, and the web copies (`build_web_assets.py`). Inner boxes (address, fun fact, divider) are unchanged.
 - **Checked:** R3/R4 docx anchors: art 1.52 / 10.92 cm x, 0.76 y; back bleed boxes 9.49 x 13.30 cm at y 0.46, centred on the art. Viewed the embedded R3 back: no frame, flat paper colour to the edge. Nothing printed. Not viewed: the other 21 backs.
 - **Printer recorded:** Canon PIXMA MG2900 series (rear tray only, 105 gsm plain-paper limit) and the corrected print path (long-edge flip, 3 mm bleed, no shift) are in the print-path note in `Norse_Brainstorm.html` (PC print path paragraph). The page was not opened in the browser after this text edit.
 - **Text first (user request, same session):** all 11 docx now have the text side as page 1 and the art as page 2 (`TEXT_FIRST` in the script). Positions are unchanged: the mirror is symmetric. Design page note updated. Not printed.
@@ -477,7 +1153,7 @@ Tests: 40/40 (lanes test and trail-stack test removed; new tests for Tidy by age
 
 **Follow-up, same session (committed and pushed separately):** R5's measuring line reworded (option B): "…Good thing I packed my old ruler: **my maps** only make sense at the right scale." ("they" pointed at the drawings). The km scale bar was removed from **all four maps** (user's call, for consistency; on Rollo's it competed with the 1:125 ruler). All four maps were rebuilt; diffing the old and new renders shows only the scale-bar corner changed on Leif, Aud and Harald. Aud's Krosshólaborg label is still dropped, as before. Fixed a stale "on hold" sentence in `PZ-14`. Files: `Postcards/build_postcard_R5_pdf.py`, `TravelMap/build_trail_maps_pdf.py`, `Norse_Brainstorm.html` (`PZ-14` note, Postcard update data, puzzle data), rebuilt R5 web back/PDF, all four maps' web PDFs and renders. R5 back viewed at 300 dpi: text fits. Map footer viewed: bar gone, compass kept. The Leif digital files and the entry above belong to another session and are not part of this work.
 
-**Print files, 2 Oct 2026:** `output/docx/Norse_Trail_Maps_Print.docx` was stale (20 Sept, no script). New `NorseBackpack/TravelMap/build_trail_maps_docx.py` rebuilds it: four Letter pages, each map cropped to its neat line and placed at exact size, margins equal to the PDF border. Exported through Word: 4 pages, and the Rollo frame lands within 1 px (0.2 mm) of the PDF's. `PrintTest_R5_R6.docx` (and the other postcard print files) were rebuilt with `build_print_test_docx.py` for the R5 rewording.
+**Print files, 2 Oct 2026:** `NorseBackpack/Print/Norse_Trail_Maps_Print.docx` was stale (20 Sept, no script). New `NorseBackpack/TravelMap/build_trail_maps_docx.py` rebuilds it: four Letter pages, each map cropped to its neat line and placed at exact size, margins equal to the PDF border. Exported through Word: 4 pages, and the Rollo frame lands within 1 px (0.2 mm) of the PDF's. `PrintTest_R5_R6.docx` (and the other postcard print files) were rebuilt with `build_print_test_docx.py` for the R5 rewording.
 
 **Code, 2 Oct 2026:** the user printed the maps docx at 100% and measured Châlus to Saint-Clair, dot to dot, at 1:125: **10.4 m → code 104**, matching the calculated 10.39 m. Recorded in `PZ-14` (pill now "Built · code 104"), the puzzle summary and the adventure step (`code:'104'`). Risk noted in the page: reading to 0.1 m is 0.8 mm on paper, and the true distance is about 0.3 mm from reading 103.
 
@@ -487,7 +1163,7 @@ Tests: 40/40 (lanes test and trail-stack test removed; new tests for Tidy by age
 
 **Task/status:** Done, not committed. Reviewed Codex's new HD rebus (dotted sugar spoon + yeast + fizzing flask), then made the fixes the user approved: spoon handle shortened to about half (icon now centred on its x), packet label lettered "Yeast" in NothingYouCouldDo 6.3 pt instead of Helvetica "YEAST", plus signs 9 → 14 pt, icons spaced evenly (12 pt margins, equal gaps) and lowered 3 pt to sit centred in the box. The ImageGen prompt that was only in a JS comment is now visible in the `PZ-20` (MEAD) entry's risk text; the comment is removed.
 
-**Files changed:** `NorseBackpack/Postcards/build_postcard_HD_pdf.py`, `NorseBackpack/Norse_Brainstorm.html` (MEAD entry note + prompt), `NorseBackpack/Web/Postcards/Postcard_HD_Constantinople_Back.webp`, `NorseBackpack/Web/pdf/Postcard_HD_Constantinople_Print.pdf`. Local-only: HD print PDFs, back PNG, `output/docx/PrintTest_H6_HD.docx`. Codex's five `HD_*.svg` files are still untracked; the page links them, so commit them with the page.
+**Files changed:** `NorseBackpack/Postcards/build_postcard_HD_pdf.py`, `NorseBackpack/Norse_Brainstorm.html` (MEAD entry note + prompt), `NorseBackpack/Web/Postcards/Postcard_HD_Constantinople_Back.webp`, `NorseBackpack/Web/pdf/Postcard_HD_Constantinople_Print.pdf`. Local-only: HD print PDFs, back PNG, `NorseBackpack/Print/PrintTest_H6_HD.docx`. Codex's five `HD_*.svg` files are still untracked; the page links them, so commit them with the page.
 
 **Checks:** Viewed an 8x zoom of the rebus from the print PDF: even spacing, icons centred, label legible. Page over http://localhost:8734: note and prompt present, all five SVG links return 200, both HD images load, no console errors.
 
@@ -542,7 +1218,7 @@ Tests: 40/40 (lanes test and trail-stack test removed; new tests for Tidy by age
 
 **Built (user approved):** A1's last sentence is now "I was mostly interested in the coins that I got at the end of the treasure hunt." The two page notes that still said H2's indent was 10 pt (`PZ-20` row, and H2's "matters" line in the Postcard update data) now say half a space, about 2.5 pt.
 
-**Files changed:** `NorseBackpack/Postcards/build_postcard_A1_pdf.py`, `NorseBackpack/Norse_Brainstorm.html`, `NorseBackpack/Web/Postcards/Postcard_A1_Dogurdarnes_Back.webp`, `NorseBackpack/Web/pdf/Postcard_A1_Dogurdarnes_Print.pdf`. Local-only: A1 print PDFs, `Postcard_A1_Dogurdarnes_Back.png`, `output/docx/PrintTest_RD_A1.docx`. The full docx run stopped at `PrintTest_L3_LD.docx` (still open in Word); only RD_A1 was rebuilt, and the others were restored from a copy taken first.
+**Files changed:** `NorseBackpack/Postcards/build_postcard_A1_pdf.py`, `NorseBackpack/Norse_Brainstorm.html`, `NorseBackpack/Web/Postcards/Postcard_A1_Dogurdarnes_Back.webp`, `NorseBackpack/Web/pdf/Postcard_A1_Dogurdarnes_Print.pdf`. Local-only: A1 print PDFs, `Postcard_A1_Dogurdarnes_Back.png`, `NorseBackpack/Print/PrintTest_RD_A1.docx`. The full docx run stopped at `PrintTest_L3_LD.docx` (still open in Word); only RD_A1 was rebuilt, and the others were restored from a copy taken first.
 
 **Checks:** Viewed the A1 back at full size: the sentence wraps to three lines and the sign-off fits with plenty of room. Page served at http://localhost:8734: new A1 text present, old text gone, both H2 notes updated, no console errors. Screenshot of the tab timed out, so it was checked as text only.
 
@@ -588,13 +1264,13 @@ Tests: 40/40 (lanes test and trail-stack test removed; new tests for Tidy by age
 
 **Git history rewritten (user-approved), same session:** `git filter-repo` removed 482 binary paths under `NorseBackpack/` and `output/` that are not in the current commit, from every commit. Text files kept their history. `main` history went from about 5.5 GB to 0.54 GB. There are now 154 commits, because one only touched stripped files. The current tree is byte-identical (tree `f5dd5c7`), and `HEAD` is `d5e0137`. It was force-pushed with a lease on `e687936`, Pages redeployed, and all 200 links on the live Norse page load. Every commit ID changed, so any other clone must re-clone and must not push its old history. Local `.git` is still 1.8 GB, because six local-only `refs/codex/turn-diffs/checkpoints/*` refs point at tree snapshots that filter-repo cannot rewrite; they were never on GitHub. Full pre-rewrite backup: `C:\EscapeBackpack\EscapeBackpack_backup.git` (6.5 GB mirror, verified; also holds the old full-size art and PDFs). GitHub's reported repo size updates lazily.
 
-**Next action:** reprint `PrintTest_H2_H3` (now local-only in `output/docx/`) to check the H2 indent.
+**Next action:** reprint `PrintTest_H2_H3` (now local-only in `NorseBackpack/Print/`) to check the H2 indent.
 
 ## Session close — 2026-09-29 — H2 (DRINK) indent cut to half a space (Claude Code)
 
 **Task/status:** Done. The user asked for less indent on the H2 Staraya Ladoga back. It went from 10 pt to one space (about 5 pt), then to half a space (about 2.5 pt). The wrapped lines and the sign-off use this indent. Half a space is close to the minimum: the "y" in "you" hangs about 1.6 pt left of where the letter starts, so that line already looks flush with the margin. The wording is unchanged. The narrower indent let "true." and "bend." move up onto the line before, so the message is now 2 lines shorter.
 
-**Files changed:** `Postcards/build_postcard_H2_pdf.py`, `output/pdf/Postcard_H2_Staraya_Ladoga_Print.pdf` and `_Letter_Print.pdf`, and `Postcards/Postcard_H2_Staraya_Ladoga_Back.png` (from `build_page_images.py`; no other image changed), and `output/docx/PrintTest_H2_H3.docx`. The other print docx files were rebuilt too but only their timestamps changed, so I restored them. `PrintTest_L3_LD.docx` could not be restored because the file is locked (probably open in Word). Its content is unchanged.
+**Files changed:** `Postcards/build_postcard_H2_pdf.py`, `NorseBackpack/Print/_pdf_source/Postcard_H2_Staraya_Ladoga_Print.pdf` and `_Letter_Print.pdf`, and `Postcards/Postcard_H2_Staraya_Ladoga_Back.png` (from `build_page_images.py`; no other image changed), and `NorseBackpack/Print/PrintTest_H2_H3.docx`. The other print docx files were rebuilt too but only their timestamps changed, so I restored them. `PrintTest_L3_LD.docx` could not be restored because the file is locked (probably open in Word). Its content is unchanged.
 
 **Checks:** Rendered the back page and viewed it. Also checked the H2 back image inside the print docx. Everything fits, and the D/R/I/N/K starts still sit on the margin. Nothing printed; no commit.
 
@@ -690,7 +1366,7 @@ The builder now asserts that each RAVEN column (R, A, V, E, N) holds exactly one
 
 **Files changed:**
 - `TravelMap/build_trail_maps_pdf.py`.
-- `output/pdf/Trail_Map_4_Harald_Print.pdf` and `_ANSWER.pdf`. The other three maps rebuilt pixel-identical, so they were restored.
+- `NorseBackpack/Print/_pdf_source/Trail_Map_4_Harald_Print.pdf` and `_ANSWER.pdf`. The other three maps rebuilt pixel-identical, so they were restored.
 - `Props/_Renders/Trail_Map_4_Harald_Front.png`, and the H2 back PNG (re-rendered by `build_page_images.py`).
 - `Norse_Brainstorm.html`: a note in `PZ-02`, the "corrected review map" note, and the Approved changes clue and risk text.
 
@@ -860,7 +1536,7 @@ Rebus, rune-key and comb space is reserved in the preview (R3/R4/R5, H4, HD). AD
 
 **Task/status:** The raven's flights card had no print file at all. The user chose 4 × 3 in on plain white paper. Built it from the approved 22 Sept spec (`RV-21`): graph data from `review_content.py`, node layout from the accepted sketch, approved title and clue, four blank answer boxes and a small raven emblem (`Art/Raven/Raven_Profile_Icon_v1.png`, in colour). No route or answer is marked. The script asserts that HRAFN reads 2648 before building.
 
-**Files changed:** new `NorseBackpack/Props/RavenFlights/build_raven_flights_pdf.py` and `Raven_Flights_Card_preview.png`; new `output/pdf/Raven_Flights_Card_Print.pdf` (4 × 3 in, one page) and `output/docx/PrintTest_RavenFlights.docx` (single page; card trim at 0.6 in from the left and 0.55 in from the top, with corner crop marks). `Norse_Brainstorm.html`: `PZ-02` pill and a dated note, plus the preview image on the lock-9 prop.
+**Files changed:** new `NorseBackpack/Props/RavenFlights/build_raven_flights_pdf.py` and `Raven_Flights_Card_preview.png`; new `NorseBackpack/Print/_pdf_source/Raven_Flights_Card_Print.pdf` (4 × 3 in, one page) and `NorseBackpack/Print/PrintTest_RavenFlights.docx` (single page; card trim at 0.6 in from the left and 0.55 in from the top, with corner crop marks). `Norse_Brainstorm.html`: `PZ-02` pill and a dated note, plus the preview image on the lock-9 prop.
 
 **Checks:** rendered the PDF and the .docx image and inspected both: all 12 flights and digits are legible, and there are no overlaps. Read the .docx anchor: 4.5 × 3.5 in picture at x 0.35 in, y 0.3 in. `node --check` passed on all 3 inline scripts, and `git diff --check` is clean. The in-app browser refused localhost again, so the page was **not** checked visually. Nothing printed; no commit.
 
@@ -870,7 +1546,7 @@ Rebus, rune-key and comb space is reserved in the preview (R3/R4/R5, H4, HD). AD
 
 **Task/status:** The user asked for postcard A3's art to print upside down. Added `ART_EXTRA_ROTATE = {"A3": 180}` to `NorseBackpack/Postcards/build_print_test_docx.py`. It applies to the art page only; the back is unchanged. Rebuilt the print files. Only `PrintTest_A2_A3.docx` changed in content. The other 10 rebuilt files were byte-for-byte the same images, so they were restored to avoid noise. The single and Letter PDFs for A3 are **not** flipped.
 
-**Files changed:** `build_print_test_docx.py`; `output/docx/PrintTest_A2_A3.docx`; `NorseBackpack/Norse_Brainstorm.html` (dated note in the A3 postcard header).
+**Files changed:** `build_print_test_docx.py`; `NorseBackpack/Print/PrintTest_A2_A3.docx`; `NorseBackpack/Norse_Brainstorm.html` (dated note in the A3 postcard header).
 
 **Checks:** compared the media in every PrintTest .docx with HEAD: only A3's art image differs. Extracted and viewed the four A2/A3 images: A3's art is rotated 180° from A2's, and both backs are unchanged. Word rendering was not checked, and nothing was printed. No commit.
 
@@ -888,14 +1564,14 @@ Rebus, rune-key and comb space is reserved in the preview (R3/R4/R5, H4, HD). AD
 
 ## Session close — 2026-09-27 — First playtest feedback on Leif's leg (Claude Code)
 
-**Task/status:** An outside playtester gave four notes on Leif's leg. First, at the user's request, froze the played version in `Storage/Norse_2026-09-27_Playtest1/`. It holds all of `NorseBackpack/` plus `output/pdf` and `output/docx`: 711 files, 1.26 GB, with a README. `Storage/` is in `.gitignore`, so it stays local. The user then approved the lock swap and chose the subtle wording for every card:
+**Task/status:** An outside playtester gave four notes on Leif's leg. First, at the user's request, froze the played version in `Storage/Norse_2026-09-27_Playtest1/`. It holds all of `NorseBackpack/` plus `NorseBackpack/Print/_pdf_source` and `NorseBackpack/Print`: 711 files, 1.26 GB, with a README. `Storage/` is in `.gitignore`, so it stays local. The user then approved the lock swap and chose the subtle wording for every card:
 - **Lock swap:** Lock 1 `1021` → L2 + L3; Lock 2 `1576` → LD + Leif's map; Lock 3 `BEAR 3212` → R2 + Rollo's map + Rouen ticket. Each container keeps its lock number. The museum ticket is still in the open back pocket from the start.
 - **L2:** the "something with claws" line is replaced with "The sky here is enormous, though somehow it always looks half finished."
 - **L3:** added "Between this sky and Markland's, I think I've finally seen the whole thing."
 - **LD:** added "Funny how a name can cast a spell like that." before "I really enjoy those small details!"
 - **Bigger sky digits (1.4×):** handed to Codex. The prompt was given to the user in chat. Not done yet.
 
-**Files changed:** `.gitignore`; `NorseBackpack/Postcards/build_postcard_L2_pdf.py`, `L3`, `LD` (text plus dated comments); their back PNGs; the L2/L3/LD single and Letter PDFs; `Norse_Postcards_Full_Print.pdf`; all `output/docx/PrintTest_*.docx` (rebuilt by the script); `NorseBackpack/Norse_Brainstorm.html` (lock-flow diagram with the old order struck through, `PC-18` release table steps 1–3, `PZ-13` note and summary, the luggage/beasts/top-edge puzzle entries, walkthrough steps 1–2).
+**Files changed:** `.gitignore`; `NorseBackpack/Postcards/build_postcard_L2_pdf.py`, `L3`, `LD` (text plus dated comments); their back PNGs; the L2/L3/LD single and Letter PDFs; `Norse_Postcards_Full_Print.pdf`; all `NorseBackpack/Print/PrintTest_*.docx` (rebuilt by the script); `NorseBackpack/Norse_Brainstorm.html` (lock-flow diagram with the old order struck through, `PC-18` release table steps 1–3, `PZ-13` note and summary, the luggage/beasts/top-edge puzzle entries, walkthrough steps 1–2).
 
 **Checks:** rendered the three new backs: all text fits, and the Fun Facts are unchanged. `node --check` passed on all three inline scripts in the page, and `git diff --check` is clean. The in-app browser refused navigation to localhost again, so the page was **not** checked visually. Nothing was printed. No commit.
 
@@ -905,19 +1581,19 @@ Rebus, rune-key and comb space is reserved in the preview (R3/R4/R5, H4, HD). AD
 
 **Task/status:** The user asked for the ticket prints to use the postcard print settings. They chose the museum, Rouen and Hnefatafl tickets. Rewrote `NorseBackpack/Props/build_ticket_print_test_docx.py` to match `Postcards/build_print_test_docx.py`: floating absolute-positioned pictures (it reuses that script's `add_floating_picture` and rotation/bleed constants); back mirrored from the right edge, same top; no back shift (was 1.5mm); 1.5mm back-only bleed, made by edge-replicating pixels because ticket backs are not flat colour. Added the Hnefatafl ticket. The user then asked to add Aud's ticket (3 × 4 in). It prints pages 1 and 2 of `Aud_Ticket_Print.pdf` as front and back. Page 3 is the answer copy and is never printed. It writes `PrintTest_AudTicket.docx`. Commits `7294a2d` and `114557e` (postcard work) are pushed; this ticket work is not committed.
 
-**Files changed:** `NorseBackpack/Props/build_ticket_print_test_docx.py`; `output/docx/PrintTest_MuseumTicket.docx`, `PrintTest_RouenTicket.docx`, new `PrintTest_HnefataflTicket.docx` and `PrintTest_AudTicket.docx`; `NorseBackpack/Norse_Brainstorm.html` (dated notes on `PR-17` and `PR-18`). The user chose to leave the untracked SoleTally STLs and `PrintTest_L1_L2_Outline.docx` uncommitted.
+**Files changed:** `NorseBackpack/Props/build_ticket_print_test_docx.py`; `NorseBackpack/Print/PrintTest_MuseumTicket.docx`, `PrintTest_RouenTicket.docx`, new `PrintTest_HnefataflTicket.docx` and `PrintTest_AudTicket.docx`; `NorseBackpack/Norse_Brainstorm.html` (dated notes on `PR-17` and `PR-18`). The user chose to leave the untracked SoleTally STLs and `PrintTest_L1_L2_Outline.docx` uncommitted.
 
 **Checks:** read the anchor positions from all four .docx files. The front is at 15.24mm from the left, y 7.62mm. Each back's bleed box is 13.74mm from the right, y 6.12mm, and its size is the trim size plus 3mm. Extracted the museum and Aud back images and looked at them (Aud's is the player copy, with only leg 1 filled in): the bleed looks right and the orientation matches the postcard convention. Word rendering was not checked, and no ticket was printed.
 
 **Follow-up (same session):** At the user's request, removed the stub serial numbers from the museum tickets so none can be mistaken for a code. L'Anse: the number was erased from the front art as the new `Museum_Ticket_Front_300dpi_v4_transparent.png` (pixels cleared in an isolated box; v3 kept) and removed from the back. Rouen: removed from the front. Aud: removed from the front. Hnefatafl had none. Rebuilt those PDFs (single + Letter), `build_page_images.py` and the 4 ticket .docx files. PDF text search found no "No." in any of them, and rendered checks of all four faces show no number. Added dated superseded notes in `Norse_Brainstorm.html` (`PZ-17` stub-number note; the museum front ImageGen prompt).
 
-**Luggage tags (same session):** The inserts are single-sided, so no duplex fix is needed. At the user's request, removed the cream background fill from `NorseBackpack/Props/build_luggage_tag_inserts_pdf.py` because the user will print them on coloured paper. The inner rule, text and crop marks are unchanged. Rebuilt `output/pdf/Luggage_Tag_Inserts_Print.pdf` and the page render, and checked the render visually.
+**Luggage tags (same session):** The inserts are single-sided, so no duplex fix is needed. At the user's request, removed the cream background fill from `NorseBackpack/Props/build_luggage_tag_inserts_pdf.py` because the user will print them on coloured paper. The inner rule, text and crop marks are unchanged. Rebuilt `NorseBackpack/Print/_pdf_source/Luggage_Tag_Inserts_Print.pdf` and the page render, and checked the render visually.
 
 **Luggage tags resized (29 Sept 2026):** The user measured the tag's paper slot at 9 cm x 5.4 cm (was 3.5 x 2 in). Cut size in `build_luggage_tag_inserts_pdf.py` is now exactly 9 x 5.4 cm; fonts raised (boilerplate 8.5 to 10.5 pt, hotel and city 12 to 16 pt, street 14 to 19 pt) and lines respaced. Rebuilt the PDF and `Luggage_Tag_Inserts_Sheet.png`; checked the render visually. Not yet test-printed and cut against the real tag.
 
-**Word versions of remaining printables (29 Sept 2026):** New `NorseBackpack/Props/build_printables_docx.py` writes `output/docx/Print_LuggageTags.docx`, `Print_JournalFamilyIconography.docx`, `Print_TransitionTickets.docx`, `Print_HnefataflBoardSetupInsert.docx` (each rasterised from its own PDF, one floating picture at exact size, centred on Letter). Exported all four through Word to PDF and checked page counts (1 each) and two renders visually. Trail maps already have `Norse_Trail_Maps_Print.docx`; postcards, double-sided tickets and Raven's Flights already had `PrintTest_*.docx`. Rerun the script after any source PDF changes.
+**Word versions of remaining printables (29 Sept 2026):** New `NorseBackpack/Props/build_printables_docx.py` writes `NorseBackpack/Print/Print_LuggageTags.docx`, `Print_JournalFamilyIconography.docx`, `Print_TransitionTickets.docx`, `Print_HnefataflBoardSetupInsert.docx` (each rasterised from its own PDF, one floating picture at exact size, centred on Letter). Exported all four through Word to PDF and checked page counts (1 each) and two renders visually. Trail maps already have `Norse_Trail_Maps_Print.docx`; postcards, double-sided tickets and Raven's Flights already had `PrintTest_*.docx`. Rerun the script after any source PDF changes.
 
-**Raven's flights moved onto the luggage-tag sheet (29 Sept 2026):** At the user's request the card is now path only (no title, instructions, answer boxes or raven emblem), drawn with no white fills so it works on coloured paper (lines stop at the perch outlines and break around each digit). Graph enlarged (3.4 in wide, digits 11 pt). It prints on the same Letter landscape page as the two luggage tags, below them, still on a 4 x 3 in trim with crop marks: `build_luggage_tag_inserts_pdf.py` imports `draw_card` from `RavenFlights/build_raven_flights_pdf.py`. Rebuilt `Luggage_Tag_Inserts_Print.pdf`, `Print_LuggageTags.docx`, `Luggage_Tag_Inserts_Sheet.png` and the raven preview PNG; checked the PDF render visually. Removed the stand-alone `output/docx/PrintTest_RavenFlights.docx`; `Raven_Flights_Card_Print.pdf` remains but is no longer the print file. Norse page text updated the same day (PZ-02 built note and new user note, RV-21 card description, release note, PR-26 table row, runes status); old wording kept as "superseded". Div balance checked; browser preview navigation was refused, so not checked visually. Not test-printed.
+**Raven's flights moved onto the luggage-tag sheet (29 Sept 2026):** At the user's request the card is now path only (no title, instructions, answer boxes or raven emblem), drawn with no white fills so it works on coloured paper (lines stop at the perch outlines and break around each digit). Graph enlarged (3.4 in wide, digits 11 pt). It prints on the same Letter landscape page as the two luggage tags, below them, still on a 4 x 3 in trim with crop marks: `build_luggage_tag_inserts_pdf.py` imports `draw_card` from `RavenFlights/build_raven_flights_pdf.py`. Rebuilt `Luggage_Tag_Inserts_Print.pdf`, `Print_LuggageTags.docx`, `Luggage_Tag_Inserts_Sheet.png` and the raven preview PNG; checked the PDF render visually. Removed the stand-alone `NorseBackpack/Print/PrintTest_RavenFlights.docx`; `Raven_Flights_Card_Print.pdf` remains but is no longer the print file. Norse page text updated the same day (PZ-02 built note and new user note, RV-21 card description, release note, PR-26 table row, runes status); old wording kept as "superseded". Div balance checked; browser preview navigation was refused, so not checked visually. Not test-printed.
 
 **Sheet now US Letter portrait (29 Sept 2026):** The user found the landscape docx did not read as Letter. `Luggage_Tag_Inserts_Print.pdf` and `Print_LuggageTags.docx` are now 8.5 x 11 in portrait, one centred column: tag, tag, raven card (all with crop marks). Verified in Word: page size 8.5 x 11, 1 page, render checked. Earlier notes above that say "Letter landscape" are superseded.
 
@@ -928,19 +1604,19 @@ Rebus, rune-key and comb space is reserved in the preview (R3/R4/R5, H4, HD). AD
 
 **Task/status:** On the L1/L2 print test, the back text sat off-centre from the front art, shifted right. Cause: the back page measured card positions from the left and only swapped the card order. That mirrors correctly only on a centred layout, and this layout isn't centred (0.6in left margin vs 0.7in right). The error was 2.54mm. Fixed using the user's rule: each back card sits the same distance from the RIGHT edge as its front sits from the LEFT, minus the 1.5mm bleed. Y is unchanged under a long-edge flip, minus the bleed. The bleed is kept.
 
-**Files changed:** `NorseBackpack/Postcards/build_print_test_docx.py` (new `PAGE_W_IN`; `build_page(..., mirror=True)` for the back page, replacing `reversed(card_ids)`). Rebuilt all 11 `output/docx/PrintTest_*.docx`. `PrintTest_L1_L2_Outline.docx` was untracked and was not touched.
+**Files changed:** `NorseBackpack/Postcards/build_print_test_docx.py` (new `PAGE_W_IN`; `build_page(..., mirror=True)` for the back page, replacing `reversed(card_ids)`). Rebuilt all 11 `NorseBackpack/Print/PrintTest_*.docx`. `PrintTest_L1_L2_Outline.docx` was untracked and was not touched.
 
 **Checks:** read the anchor positions from `PrintTest_L1_L2.docx`. L1 front: 15.24mm from the left. L1 back: 13.74mm from the right, 91.9 × 130mm, y 6.12mm (front y 7.62mm). L2 matches in the same way. The .docx was not rendered visually; the geometry was checked from the XML only. No commit or push.
 
 **Follow-up (same session):** The user reprinted L1/L2 and confirmed the alignment works. These settings are now final: the back page mirrors from the right edge and has a 1.5mm bleed. The other 18 `build_postcard_<ID>_pdf.py` scripts (A*, H*, R*) had no bleed, so each `draw_back_card` now gets the same 1.5mm PAPER bleed as L1/L2/L3/LD. Their Letter sheets were already centred horizontally, so they needed no mirroring. Rebuilt all 22 card PDFs (single + Letter), `build_page_images.py` (22 backs), `Norse_Postcards_Full_Print.pdf` (44 pages) and all 11 print .docx files. Rendered the R1 Letter back page and checked it: the bleed extends past the crop marks. The back PNGs are unchanged because the single-card page clips the bleed; the .docx pads its own bleed.
 
-**Next action:** print the remaining sheets from `output/docx/PrintTest_*.docx`.
+**Next action:** print the remaining sheets from `NorseBackpack/Print/PrintTest_*.docx`.
 
 ## Session close — 2026-09-27 — Roumare Forest boar correction (Codex)
 
 **Task/status:** Fixed the small background boar on postcard R6. Its rear looked like a second head; it now has a rounded rump, two hind legs and a short curled tail. Three boars remain countable.
 
-**Files changed:** added `NorseBackpack/Postcards/Postcard_R6_Roumare_Forest_Illustration_v3.png`; updated `build_postcard_front_images.py` to use it; rebuilt `Postcard_R6_Roumare_Forest_Front.png`, both R6 print PDFs and `output/pdf/Norse_Postcards_Full_Print.pdf`. Recorded the exact correction prompts in `NorseBackpack/Norse_Brainstorm.html`. Existing untracked SoleTally STL files were left alone.
+**Files changed:** added `NorseBackpack/Postcards/Postcard_R6_Roumare_Forest_Illustration_v3.png`; updated `build_postcard_front_images.py` to use it; rebuilt `Postcard_R6_Roumare_Forest_Front.png`, both R6 print PDFs and `NorseBackpack/Print/_pdf_source/Norse_Postcards_Full_Print.pdf`. Recorded the exact correction prompts in `NorseBackpack/Norse_Brainstorm.html`. Existing untracked SoleTally STL files were left alone.
 
 **Checks:** inspected the corrected boar at enlarged size, the full 1500 × 1050 front and the rendered R6 print PDF. Opened the Postcards tab over local HTTP and checked the R6 layout; browser console had no errors. `git diff --check` passed. No commit or push.
 
@@ -1022,7 +1698,7 @@ Rebus, rune-key and comb space is reserved in the preview (R3/R4/R5, H4, HD). AD
 
 **Task/status:** user selected visual-review item 3, standardize postcard titles. Implemented in the shared builder: 84 px Cinzel ExtraBold, common title/subtitle baselines, actual ink-bound centring and baseline-aligned accented glyphs. Bjarnarhöfn and Walcheren now clear their dividers. Existing illustration sources, title-band textures, names, card dimensions and backs are preserved. Full design record added to PC-19 in the main project page.
 
-**Files changed:** `NorseBackpack/Postcards/build_postcard_front_images.py`; all 22 `Postcard_*_Front.png` outputs; 44 individual/Letter PDFs, eight existing four-up sheets and the full-deck preview in `output/pdf/`; eleven `output/docx/PrintTest_*.docx` pairs; `NorseBackpack/Norse_Brainstorm.html`; this handoff. No ImageGen call: typography is editable native code and existing illustrations are reused. No new artwork prompt.
+**Files changed:** `NorseBackpack/Postcards/build_postcard_front_images.py`; all 22 `Postcard_*_Front.png` outputs; 44 individual/Letter PDFs, eight existing four-up sheets and the full-deck preview in `NorseBackpack/Print/_pdf_source/`; eleven `NorseBackpack/Print/PrintTest_*.docx` pairs; `NorseBackpack/Norse_Brainstorm.html`; this handoff. No ImageGen call: typography is editable native code and existing illustrations are reused. No new artwork prompt.
 
 **Checks:** all 22 front renders inspected as a set; Bjarnarhöfn inspected at full size. All upper illustration pixels (through y=834, including the L2/L3 edge puzzle) match their prior images. Word print files retain identical non-media XML, including layout and duplex offsets. Packaged `render_docx.py` could not run because LibreOffice is absent; exported all eleven files through installed Word instead, rendered and inspected all 22 pages. In-app browser loaded the postcard gallery over HTTP; screenshot capture timed out, so HTML layout could not be visually verified. No JavaScript changed. All 44 individual/Letter PDFs retain identical page sizes and pixel-identical backs. Six of eight four-up backs also match; the two Leif sheets now pick up the existing approved 2 mm back bleed from their source builders (only four background rectangles changed; text is identical). All 44 updated individual/Letter front pages, all 16 four-up pages and all 44 full-deck preview pages rendered and inspected. HTML inline scripts, builder syntax and `git diff --check` passed. The full-deck PDF is the compressed preview; individual PDFs and Word pairs remain print masters.
 
@@ -1032,7 +1708,7 @@ Rebus, rune-key and comb space is reserved in the preview (R3/R4/R5, H4, HD). AD
 
 **Task/status:** completed the user's requested handwritten board, retained smudge, “ticket was still wet” note and matching mirrored ticket. User approved the result and requested documentation updates. Project page now records approval, links all five current PDFs, labels older studies superseded and sets PR-09 to “Artwork approved · print test open”. Corrected old setup notes about seven columns, 0.5-inch pitch, missing map composition and the former prototype route count. This consolidates the two earlier artwork handoffs.
 
-**Files changed across the artwork and documentation work:** `NorseBackpack/Props/Hnefatafl/hand_drawn_board.py` (new); both `build_board_setup_pdf.py` and `build_ticket_pdf.py`; approved `Hnefatafl_Glue_Smear_v1.png` and `_prompt.txt` (new, original asset name retained); `NorseBackpack/Norse_Brainstorm.html`; `NorseBackpack/TravelMap/README.md` (rebuild commands and output inventory); three `_Renders` previews (insert, Harald back, ticket back); five PDFs in `output/pdf/` (insert, Harald Print/ANSWER, ticket Print/Letter_Print); this handoff. Exact ImageGen prompt remains unchanged; a provenance note records the superseded glue explanation. Durable design details stay in the project page at `#view-design/hnefatafl-glue-smear`.
+**Files changed across the artwork and documentation work:** `NorseBackpack/Props/Hnefatafl/hand_drawn_board.py` (new); both `build_board_setup_pdf.py` and `build_ticket_pdf.py`; approved `Hnefatafl_Glue_Smear_v1.png` and `_prompt.txt` (new, original asset name retained); `NorseBackpack/Norse_Brainstorm.html`; `NorseBackpack/TravelMap/README.md` (rebuild commands and output inventory); three `_Renders` previews (insert, Harald back, ticket back); five PDFs in `NorseBackpack/Print/_pdf_source/` (insert, Harald Print/ANSWER, ticket Print/Letter_Print); this handoff. Exact ImageGen prompt remains unchanged; a provenance note records the superseded glue explanation. Durable design details stay in the project page at `#view-design/hnefatafl-glue-smear`.
 
 **Artwork checks, previous turn:** inspected all nine rebuilt PDF pages, with larger views of the insert and ticket reverse. Page sizes unchanged; both map fronts and both ticket fronts have pixel-identical rendered hashes to their prior PDFs. Checked 1,724 vector path points: reflecting the ticket back matches canonical drawing coordinates within 0.001 pt. Hidden attackers remain I6/K4/K8, with K1/K11 corners. No “wet with glue” text remains in the produced PDFs. Documentation-only follow-up did not alter the PDFs or image assets.
 
@@ -1080,7 +1756,7 @@ Checks: every replace matched exactly once, and tag counts are unchanged apart f
 
 **Dropped (user, same session):** the red filter and the UV pen/blacklight are out of the kit. Marked in: PR-03, the prototype card, the tool card, the reader-tools list, the blacklight buy link and the priority block. HI-04 is dropped too, since there is no rune-stick prop. ST-05's UV option is left as it is. Tag counts are balanced.
 
-**Next action:** print `output/docx/PrintTest_A2_A3.docx` and test-print `NorseBackpack/Props/Comb/Aud_Comb.stl` (unchanged from the Aud session below).
+**Next action:** print `NorseBackpack/Print/PrintTest_A2_A3.docx` and test-print `NorseBackpack/Props/Comb/Aud_Comb.stl` (unchanged from the Aud session below).
 
 ## Session close — 2026-09-24/25 — Aud's leg reworked end to end (Claude Code)
 
@@ -1099,7 +1775,7 @@ Checks: every replace matched exactly once, and tag counts are unchanged apart f
 - New `NorseBackpack/Props/Comb/build_comb.py` → `Aud_Comb.scad/.stl`, `comb_geometry.json`, `Aud_Comb_on_AD.png`. Reads AD's print PDF, asserts BOOK, refuses any gap under 0.75 mm. Handle carved after AD's stamp; knotwork is a placeholder twist until `Props/Comb/knotwork.svg` exists (Codex prompt in the comb prop). Handle corners rounded 2.5 mm.
 - New `NorseBackpack/build_page_images.py` — re-renders all 22 postcard backs and all 18 prop/map renders the page shows.
 - `NorseBackpack/Postcards/build_postcard_collection.py` — full-deck preview PDF now has all 22 cards (JPEG-compressed to 18 MB; GitHub rejects >100 MB).
-- `NorseBackpack/Postcards/build_print_test_docx.py` — **the preferred print path (user, 25 Sept)**: 11 two-card docx files for all 22 cards in `output/docx/` (was writing inside `NorseBackpack/output/`).
+- `NorseBackpack/Postcards/build_print_test_docx.py` — **the preferred print path (user, 25 Sept)**: 11 two-card docx files for all 22 cards in `NorseBackpack/Print/` (was writing inside `NorseBackpack/output/`).
 - `NorseBackpack/Norse_Brainstorm.html` — all of the above recorded (hoard prop, comb prop, PZ-03, PZ-17, PR-19, PR-23, PC-18, postcard entries, Puzzles-tab comb and coin entries); stale weighing / optional-comb / lock-order text superseded; PZ-04 marked stale; "Bayeux–Winchester" corrected to Châlus–Saint-Clair; a doubled `<b>` that bolded every later tab fixed.
 - Also committed at the user's request: Leif card bleed (PC-20, another session), `Props/Medallion/` and `Props/SoleTally/` (other sessions).
 
@@ -1117,7 +1793,7 @@ Checks: every replace matched exactly once, and tag counts are unchanged apart f
 
 **Uncommitted:** `NorseBackpack/Props/SoleTally/base.stl`, `endcap.stl`, `ring_body.stl` — another session's work in progress, left alone. `result.json` deleted at the user's request.
 
-**Next action:** print `output/docx/PrintTest_A2_A3.docx` and test-print `NorseBackpack/Props/Comb/Aud_Comb.stl`; lay the comb on the printed AD and check the dots sit in the holes, only lines 1/3/8/9 show, and the 52 mm teeth survive.
+**Next action:** print `NorseBackpack/Print/PrintTest_A2_A3.docx` and test-print `NorseBackpack/Props/Comb/Aud_Comb.stl`; lay the comb on the printed AD and check the dots sit in the holes, only lines 1/3/8/9 show, and the 52 mm teeth survive.
 
 Last updated: 2026-09-25 by Claude Code (SOLE tally session)
 
@@ -1250,7 +1926,7 @@ script — there is no code path that ever wrote those pixels out to `_Back.png`
 separate, one-off render that drifted out of sync every time a card's text was revised afterward
 (confirmed: re-rendering all 22 changed all 22 — none matched their current PDF).
 
-**Fix:** rendered page 2 (the back) of each `output/pdf/Postcard_*_Print.pdf` to PNG with PyMuPDF at
+**Fix:** rendered page 2 (the back) of each `NorseBackpack/Print/_pdf_source/Postcard_*_Print.pdf` to PNG with PyMuPDF at
 300dpi (matching the existing 1500×1050 convention exactly) and overwrote the corresponding
 `NorseBackpack/Postcards/Postcard_*_Back.png` in place — same filenames, so no HTML changes needed.
 This makes the print PDF the one source of truth for both artifacts going forward; any future text
@@ -1381,7 +2057,7 @@ to update `Norse_Brainstorm.html` so printable props show as images inline, sinc
 the puzzle sequence today from another computer and PDFs are harder to check at a glance than images.
 
 **Part 1 — commit/push.** ~107 modified/new files were sitting uncommitted (all 22 postcard build
-scripts, `TravelMap/`, `Tools/`, every `output/pdf/*` and the new `output/docx/*`). One blocker:
+scripts, `TravelMap/`, `Tools/`, every `NorseBackpack/Print/_pdf_source/*` and the new `NorseBackpack/Print/*`). One blocker:
 `NorseBackpack/TravelMap/NUL` — a 0-byte Windows-reserved filename, almost certainly created by a
 stray `> NUL` redirect run under cmd.exe instead of PowerShell — was blocking `git add -A`. Deleted
 it (untracked, empty, not real content) and committed everything else in one batch
@@ -1391,7 +2067,7 @@ session between the commit and the next status check (`Norse_Brainstorm.html` +1
 and unrelated to investigate further.
 
 **Part 2 — image previews.** Postcards already had front/back PNGs embedded (83 files, pre-existing).
-The actual gaps, found by diffing every `output/pdf/*` against the HTML for a nearby `<img>`:
+The actual gaps, found by diffing every `NorseBackpack/Print/_pdf_source/*` against the HTML for a nearby `<img>`:
 - Aud's and Harald's trail-map gallery entries had no images (Harald's entry still read "Not built
   yet" even though `Trail_Map_4_Harald_Print.pdf` exists and is tracked — confirmed via
   `build_trail_maps_pdf.py` that page 2 really is the hnefatafl board-setup insert composited onto
@@ -1421,7 +2097,7 @@ exists for this session, not a pixel-level look.
 **Files changed:** `NorseBackpack/Norse_Brainstorm.html` (CSS + 9 edit sites), 15 new PNGs under
 `NorseBackpack/Props/_Renders/`, plus the full batch from Part 1.
 
-**Not done:** did not touch the `output/pdf/Postcard_Sheet_*` print-layout sheets, the `*_ANSWER.pdf`
+**Not done:** did not touch the `NorseBackpack/Print/_pdf_source/Postcard_Sheet_*` print-layout sheets, the `*_ANSWER.pdf`
 trail-map keys, `Postcard_L2_L3_TopEdge_Test.pdf`, or `Trail_Map_1_Leif_ART_GUIDE.pdf` — judged as
 production/test/internal-reference files rather than props a player-facing review needs to see, but
 this was a judgment call and worth confirming if wrong.
@@ -1559,7 +2235,7 @@ final laminated object, so they were the only documents that needed this fix.
 **Files changed:** `NorseBackpack/TravelMap/build_trail_maps_pdf.py` (per-side margins, rescaled
 art boxes, Aud legend position, extra label-placement fallback tier), `NorseBackpack/TravelMap/
 aud_features.json` (814 page points, rescaled twice), `NorseBackpack/TravelMap/aud_base.js`
-(regenerated), all eight `output/pdf/Trail_Map_*.pdf`.
+(regenerated), all eight `NorseBackpack/Print/_pdf_source/Trail_Map_*.pdf`.
 
 **Diagnostic finding (between passes 2 and 3), worth keeping:** the user sent a screenshot of the
 Canon IJ print preview after pass 2. Measured it pixel-by-pixel (locating the paper edge via its
@@ -1592,7 +2268,7 @@ confirmed harmless by rendering. Final margins verified in mm: left 6.900, right
 **Printer issue confirmed resolved by the user** via the Canon print preview after pass 3/4's
 margins landed. The docx cross-check was then extended into its own small deliverable: the user
 asked for a docx of all four maps for printing, then asked to keep it permanently. Saved at
-`output/docx/Norse_Trail_Maps_Print.docx` — one page per trail (Leif, Rollo, Aud, Harald, in that
+`NorseBackpack/Print/Norse_Trail_Maps_Print.docx` — one page per trail (Leif, Rollo, Aud, Harald, in that
 order), each page cropped from the corresponding `Trail_Map_*_Print.pdf` at 300dpi and placed
 with the identical page size and margins as the PDFs. Harald's hnefatafl board-setup back page
 (page 2 of his PDF) is deliberately not included — it's a separate design not tied to the map
@@ -1626,12 +2302,12 @@ paper-efficient two-pass workflow:
    Letter sheet.
 4. **Final trim to exact card size.**
 
-Rebuilt accordingly and replaced the wrong pair: `output/docx/Postcard_L1_L2_Art_Letter_Print.docx`
+Rebuilt accordingly and replaced the wrong pair: `NorseBackpack/Print/Postcard_L1_L2_Art_Letter_Print.docx`
 (1 Letter page, both cards' art, rasterized from the reference `scratch_art_letter.pdf` at 300dpi)
-and `output/docx/Postcard_L1_L2_Back_4x6_Print.docx` (2 pages, each a true 6×4in landscape page —
+and `NorseBackpack/Print/Postcard_L1_L2_Back_4x6_Print.docx` (2 pages, each a true 6×4in landscape page —
 verified in the XML: `pgSz w=8640 h=5760 orient="landscape"` — rasterized from
 `scratch_back_4x6.pdf`). The superseded `Postcard_L1_LAnse_Letter_Print.docx` and
-`..._L2_Battle_Harbour_Letter_Print.docx` were deleted from `output/docx/` (never committed —
+`..._L2_Battle_Harbour_Letter_Print.docx` were deleted from `NorseBackpack/Print/` (never committed —
 untracked — so no history was lost).
 
 **Not verified:** the two reference PDFs live in another session's scratch directory outside this
@@ -1650,7 +2326,7 @@ durable production decisions belong in the project page, not just chat/HANDOFF):
 **Decided**. It records the corrected margin numbers, why the old `Support.xlsx`-sourced side
 margin was wrong, the exact rescale mechanics (same scale-and-shift transform used throughout this
 session), the Dögurðarnes label-fallback fix, and the new "build a docx twin to isolate PDF-vs-
-driver behaviour" practice with pointers to all three files now in `output/docx/`.
+driver behaviour" practice with pointers to all three files now in `NorseBackpack/Print/`.
 
 **Check not fully run:** tried to open the page in the in-app browser per the usual HTML
 validation step, but the `static-preview` server (`python -m http.server`) got stuck at
@@ -1688,7 +2364,7 @@ preserved exactly) so height gets exactly 5.5mm top/bottom (`312` dxa) and width
 that same scale factor leaves on left/right (8.25mm, `468` dxa — more than the checked minimum,
 which is fine since only the right edge was actually confirmed clipped). Verified in the docx XML:
 `pgMar top=312 right=468 bottom=312 left=468`, image extent 5.350in × 3.567in (exact 1.5:1).
-Rebuilt, overwrote `output/docx/Postcard_L1_L2_Back_4x6_Print.docx`, resent.
+Rebuilt, overwrote `NorseBackpack/Print/Postcard_L1_L2_Back_4x6_Print.docx`, resent.
 
 **Not done:** the art-side `Postcard_L1_L2_Art_Letter_Print.docx` was left untouched — no clipping
 was reported on that pass, only the back. If it turns out fine on Letter paper via the front tray,
@@ -1800,7 +2476,7 @@ stands as Ericson.
 **Task:** build the last props the endgame needs — the three tickets that chain the four legs.
 
 **Built:** `NorseBackpack/Props/Tickets/build_transition_tickets_pdf.py` →
-`output/pdf/Transition_Tickets_Print.pdf` (one per page, 5.4 × 2.5 in) and `..._Letter_Print.pdf`
+`NorseBackpack/Print/_pdf_source/Transition_Tickets_Print.pdf` (one per page, 5.4 × 2.5 in) and `..._Letter_Print.pdf`
 (all three centred on one sheet with trim guides). Machine-set in Helvetica on near-white stock —
 these are agency paperwork and should look nothing like the postcards or the journal page.
 
@@ -1858,7 +2534,7 @@ maps, the journal page and the three tickets — since every piece now exists fo
 **Task:** build the endgame's keystone prop — the page carrying both the decoy filter and four of the
 ordering clues.
 
-**Built:** `NorseBackpack/Props/Journal/build_journal_page_pdf.py` → `output/pdf/
+**Built:** `NorseBackpack/Props/Journal/build_journal_page_pdf.py` → `NorseBackpack/Print/_pdf_source/
 Journal_Family_Iconography_Print.pdf` (A5, prints two-up on Letter) and `..._Letter_Print.pdf` (with a
 trim guide). Her handwriting throughout on the deck's paper colour — it is her notebook, not a printed
 form. Top half: `PR-22`'s two reference drawings as they stand, the crest's blank banner left blank.
@@ -2441,7 +3117,7 @@ The exact three prompts are recorded in `Norse_Brainstorm.html`.
 
 **Files changed:** new `Postcards/Stamps/Stamp_Aud_Comb_v1.png`,
 `Stamp_Harald_Dane_Axe_v1.png`, `Art/FinalPuzzle/PostcardMarks/Crest_Round_Shield_HandDrawn_v2.png`
-and its source; eleven postcard builder scripts; 22 rebuilt PDFs in `output/pdf/`;
+and its source; eleven postcard builder scripts; 22 rebuilt PDFs in `NorseBackpack/Print/_pdf_source/`;
 `Norse_Brainstorm.html`; this handoff.
 
 **Checks:** visually inspected all three generated assets. Rendered and inspected all eleven unique
@@ -2496,7 +3172,7 @@ the crest. So **L2's "Second stop: Markland" was rewritten to "Markland today"**
 matching L3's earlier change this session.
 
 **Files changed:** `NorseBackpack/Postcards/build_postcard_L2_pdf.py` (opener plus a comment),
-`output/pdf/Postcard_L2_Battle_Harbour_Print.pdf` and `..._Letter_Print.pdf` (rebuilt),
+`NorseBackpack/Print/_pdf_source/Postcard_L2_Battle_Harbour_Print.pdf` and `..._Letter_Print.pdf` (rebuilt),
 `NorseBackpack/Norse_Brainstorm.html` (the decision, the rule, Leif's new leg table, the stale
 warning and the new-work warning).
 
@@ -2610,7 +3286,7 @@ on this leg must be checked with a probe, not with the answer count alone.
 - `NorseBackpack/Norse_Brainstorm.html` — dropped the L3 row from the clue-set table; reworded the
   Leif row in the constraint worksheet; corrected the "positions 1–3 are locked" note to 1–2; added
   the decision note and the L2 warning to the Final riddle tab; updated the quoted message in `PZ-05`
-- `output/pdf/Postcard_L3_Baffin_Island_Print.pdf` and `..._Letter_Print.pdf` — rebuilt
+- `NorseBackpack/Print/_pdf_source/Postcard_L3_Baffin_Island_Print.pdf` and `..._Letter_Print.pdf` — rebuilt
 
 **Checks run:** solver re-run (TEST 1 PASS, TEST 2 PASS 3 answers without bundle, TEST 4 PASS;
 TEST 3 still NOT RUN, geometric as before). Reversed-order probe run on both the drop-L3 and
@@ -2804,7 +3480,7 @@ to print duplex and laminate as one object.
 `PR-19`, `PR-20`, `PR-21` added; `hnefatafl` puzzle-card entry and `PZ-09`'s own text updated for
 the compositing fix); `NorseBackpack/TravelMap/build_trail_maps_pdf.py` (new import block, new
 `draw_harald_board_back` function, one hook in the per-trail save sequence);
-`output/pdf/Trail_Map_4_Harald_{Print,ANSWER}.pdf` (rebuilt, now 2 pages each).
+`NorseBackpack/Print/_pdf_source/Trail_Map_4_Harald_{Print,ANSWER}.pdf` (rebuilt, now 2 pages each).
 
 **Checks run:** rebuilt Harald's two PDFs in isolation, then reran the full `build_trail_maps_pdf.py`
 with no argument to confirm all four trails (Leif, Rollo, Aud, Harald) still build cleanly with no
@@ -2853,7 +3529,7 @@ steps — always have."
 under the map-mechanic section, `PZ-15`'s full entry rewritten, the `wordlock` puzzle-card data
 object, the Rollo lockflow diagram, and R2's quoted message under `PZ-05`);
 `NorseBackpack/Postcards/build_postcard_R2_pdf.py` (forest/cow sentence replaced with the new
-rule-line, comment updated); `output/pdf/Postcard_R2_Rouen_{Print,Letter_Print}.pdf` (rebuilt).
+rule-line, comment updated); `NorseBackpack/Print/_pdf_source/Postcard_R2_Rouen_{Print,Letter_Print}.pdf` (rebuilt).
 
 **Checks run:** rebuilt R2's PDFs and read them back — text fits the card, no overflow, message
 reads correctly in Liv's voice with the new line, solve order (fight, people, poultry, inn) intact.
@@ -2886,17 +3562,17 @@ entry already carries that final state.
 an explicit final-styling note pointing at the canonical PDFs and the Drafts folder. Rendered and
 checked for console errors after the edit.
 
-## Session Close — 2026-09-19 — H6 built (all 22 postcards complete); output/pdf cleanup
+## Session Close — 2026-09-19 — H6 built (all 22 postcards complete); NorseBackpack/Print/_pdf_source cleanup
 
 **Task:** draft and build the last unwritten postcard (H6, Patara), then a full inventory check of
-`output/pdf/` turned up map/ticket drift from a concurrent Codex session working the same files.
+`NorseBackpack/Print/_pdf_source/` turned up map/ticket drift from a concurrent Codex session working the same files.
 
 **H6 built:** `build_postcard_H6_pdf.py` (new, from the H5 template), message and Fun Fact per the
 user's draft, `Postcard_H6_Patara_Print.pdf`/`_Letter_Print.pdf`/`_Back.png` built and checked.
 `Norse_Brainstorm.html`'s gallery card, `PZ-05` and `PC-07` pills updated: **18 of 18 real cards,
 22 of 22 total, complete.**
 
-**`output/pdf/` inventory turned up drift, not caused by this session:** a concurrent Codex
+**`NorseBackpack/Print/_pdf_source/` inventory turned up drift, not caused by this session:** a concurrent Codex
 session (see the entries below) was iterating on Aud's map styling in parallel and had left three
 undecided variants (`OPTION_A`, `HYBRID`, `REFINED`) alongside the canonical
 `Trail_Map_3_Aud_Print.pdf`/`_ANSWER.pdf`, none referenced from `Norse_Brainstorm.html`. Also
@@ -2914,13 +3590,13 @@ rebuilt canonical PDF.
 **Moved to `NorseBackpack/Drafts/2026-09-19_Aud_map_style_options/`** (with a README, same pattern
 as the 17 Sept split-panel drafts): `Trail_Map_3_Aud_OPTION_A_{Print,ANSWER}.pdf`,
 `_HYBRID_{Print,ANSWER}.pdf`, `_REFINED_{Print,ANSWER}.pdf`, `Aud_Map_Legend_Options.pdf`, and
-`Trail_Map_1_Leif_Print_UPDATED.pdf`. `output/pdf/` now holds exactly one Print/ANSWER pair per
+`Trail_Map_1_Leif_Print_UPDATED.pdf`. `NorseBackpack/Print/_pdf_source/` now holds exactly one Print/ANSWER pair per
 trail map.
 
 **Files changed:** `NorseBackpack/Postcards/build_postcard_H6_pdf.py` (new);
-`output/pdf/Postcard_H6_Patara_{Print,Letter_Print}.pdf` (new);
+`NorseBackpack/Print/_pdf_source/Postcard_H6_Patara_{Print,Letter_Print}.pdf` (new);
 `NorseBackpack/Postcards/Postcard_H6_Patara_Back.png` (new); `Norse_Brainstorm.html` (H6 gallery
-card, PZ-05/PC-07 pills); `output/pdf/Trail_Map_3_Aud_{Print,ANSWER}.pdf` (rebuilt in place, same
+card, PZ-05/PC-07 pills); `NorseBackpack/Print/_pdf_source/Trail_Map_3_Aud_{Print,ANSWER}.pdf` (rebuilt in place, same
 filenames); 8 files moved to the new Drafts folder (not tracked by git yet, so plain `mv`, not
 `git mv`).
 
@@ -3027,10 +3703,10 @@ art only until now, no back, no print PDF.
   the long-dead `467` code.
 - `NorseBackpack/Props/AudTicket/build_aud_ticket_pdf.py` &mdash; `LEGS`/`PER_LEG`/`ANSWER` updated
   to the merged 6-leg, `521` route; docstring updated to match.
-- `output/pdf/Aud_Ticket_Print.pdf`, `Aud_Ticket_Letter_Print.pdf` &mdash; rebuilt.
+- `NorseBackpack/Print/_pdf_source/Aud_Ticket_Print.pdf`, `Aud_Ticket_Letter_Print.pdf` &mdash; rebuilt.
 - `NorseBackpack/Postcards/build_postcard_A2_pdf.py` (new) &mdash; back-of-card builder, same
   pattern as A3/AD.
-- `output/pdf/Postcard_A2_Hvammur_Print.pdf`, `Postcard_A2_Hvammur_Letter_Print.pdf` (new).
+- `NorseBackpack/Print/_pdf_source/Postcard_A2_Hvammur_Print.pdf`, `Postcard_A2_Hvammur_Letter_Print.pdf` (new).
 
 **Checks run:** the ticket script's own `assert` (per-leg tallies sum to `ANSWER`) passed on
 rebuild. Both ticket PDFs rendered to PNG and inspected &mdash; 6 rows, `ANSWER 5 2 1` visible, leg
@@ -3110,7 +3786,7 @@ walking-tick footpaths remain clear on the intended printer.
 replacement families, so the user can choose item by item.
 
 **Built:** `NorseBackpack/TravelMap/build_aud_legend_options_pdf.py` and
-`output/pdf/Aud_Map_Legend_Options.pdf`. The two-page letter PDF covers all 25 items currently
+`NorseBackpack/Print/_pdf_source/Aud_Map_Legend_Options.pdf`. The two-page letter PDF covers all 25 items currently
 shown in the legend. Each row has Current, Option A (Survey) and Option B (Saga), using vector
 marks in the existing palette. This is a selection sheet only; the production map is unchanged.
 
@@ -3183,7 +3859,7 @@ gallery back PNG; joke unchanged.
 **Files changed:**
 - `NorseBackpack/Tools/final_riddle_solver.py`, `final_riddle_clues.py` (both new)
 - `NorseBackpack/Postcards/build_postcard_L2_pdf.py`, `Postcard_L2_Battle_Harbour_Back.png`
-- `output/pdf/Postcard_L2_Battle_Harbour_{Print,Letter_Print}.pdf`
+- `NorseBackpack/Print/_pdf_source/Postcard_L2_Battle_Harbour_{Print,Letter_Print}.pdf`
 - `NorseBackpack/Norse_Brainstorm.html` — Final riddle tab: section 2 replaced with the itinerary
   and clue set, ticket/statement panels rewritten, constraint worksheet resolved, Validation
   section now records the run. `PZ-18` and `PZ-08` updated; `PZ-05`'s quoted L2 message synced.
@@ -3289,7 +3965,7 @@ panels were measured against the real font metrics before editing rather than af
   the paragraph was tightened by a few words instead of moving the table.
 
 **Files changed in the addendum:** `build_postcard_{R1,R2,R6,H1,H4}_pdf.py`, their ten
-`output/pdf/Postcard_*_{Print,Letter_Print}.pdf`, their five `Postcard_*_Back.png` gallery
+`NorseBackpack/Print/_pdf_source/Postcard_*_{Print,Letter_Print}.pdf`, their five `Postcard_*_Back.png` gallery
 images, and `NorseBackpack/Norse_Brainstorm.html` (`PZ-05` records the exact printed wording and
 both layout limits; `PZ-18` moves the five edits to its closed list; the clue-set note in the
 Final riddle tab now reads as applied).
@@ -3513,7 +4189,7 @@ sheet rendered at 140 dpi and the stop-1 area cropped at 420 dpi and inspected �
 clearly on the headland. Page sizes confirmed 612x792 for all four. Artifact republished (version
 4) so the hosted designer carries the corrected `aud_base.js`.
 
-**Side effect, a good one:** rebuilding replaced `output/pdf/Trail_Map_3_Aud_*.pdf`, which had been
+**Side effect, a good one:** rebuilding replaced `NorseBackpack/Print/_pdf_source/Trail_Map_3_Aud_*.pdf`, which had been
 stuck as the rejected **landscape two-panel** version since the file was locked by an open viewer.
 That blocker is now closed.
 
@@ -3521,7 +4197,7 @@ That blocker is now closed.
 live edit from today — the comb grille lock gaining a candidate answer `BOOK`, with the comb now
 planned as 3D-printed. My `PZ-17` note about this fix is in the same file. Both are on disk and
 correct; the file was left for its author to commit rather than folded into a commit of mine. Also
-still uncommitted: the eight `output/pdf/_*.png` scratch renders.
+still uncommitted: the eight `NorseBackpack/Print/_pdf_source/_*.png` scratch renders.
 
 **Next action:** unchanged — continue the map southward against the brief. Fix the road's last
 vertex (10.5 pt from the Hvammur pin), join the two paths through the ditch, draw the watercourses
@@ -3583,7 +4259,7 @@ watercourses early, then use "Place crossings".
 **Blockers / open questions:** unchanged — lock mechanic still undecided (A/B/C/D, A recommended,
 A1 vs A2 open); labels stay empty by design; `aud_features.json` still holds the superseded first
 layer and is not read by `build_trail_maps_pdf.py`; the zoomed frame is exporter-only; four
-decorative labels fall outside it; and `output/pdf/Trail_Map_3_Aud_*.pdf` are still the rejected
+decorative labels fall outside it; and `NorseBackpack/Print/_pdf_source/Trail_Map_3_Aud_*.pdf` are still the rejected
 landscape version — run `python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud`.
 
 ## Session Close — 2026-09-17 (latest 8) — Everything committed and pushed; designer made mobile-friendly
@@ -3599,7 +4275,7 @@ usable on a phone.
 - `b620ac2` `PZ-17` build brief and handoff
 - `5e708fb` mobile support for the designer
 
-**Left uncommitted on purpose:** eight scratch QA renders in `output/pdf/` (`_H1_Oslo_p0.png`,
+**Left uncommitted on purpose:** eight scratch QA renders in `NorseBackpack/Print/_pdf_source/` (`_H1_Oslo_p0.png`,
 `_harald_print_preview.png` and similar). Referenced by nothing, and no `_*.png` has ever been
 tracked. Flagged to the user rather than added.
 
@@ -3646,7 +4322,7 @@ the watercourses early, then use "Place crossings".
 **Blockers / open questions:** unchanged — lock mechanic still undecided (A/B/C/D, A recommended,
 A1 vs A2 open); labels stay empty by design; `aud_features.json` still holds the superseded first
 layer and is not read by `build_trail_maps_pdf.py`; the zoomed frame is exporter-only; four
-decorative labels fall outside it; and `output/pdf/Trail_Map_3_Aud_*.pdf` are still the rejected
+decorative labels fall outside it; and `NorseBackpack/Print/_pdf_source/Trail_Map_3_Aud_*.pdf` are still the rejected
 landscape version — run `python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud`.
 
 ## Session Close — 2026-09-17 (latest 7) — Aud map rebuild reviewed; 5 symbols and crossing automation added
@@ -3718,7 +4394,7 @@ recommended, A1 vs A2 open); labels stay empty by design, though the user has on
 `marker` reading "Port" (flagged as fine for a start anchor, not as a pattern); `aud_features.json`
 still holds the superseded first layer and is still not read by `build_trail_maps_pdf.py`; the
 zoomed frame is exporter-only; four decorative labels fall outside it; and
-`output/pdf/Trail_Map_3_Aud_*.pdf` are still the rejected landscape version — run
+`NorseBackpack/Print/_pdf_source/Trail_Map_3_Aud_*.pdf` are still the rejected landscape version — run
 `python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud`.
 
 ## Session Close — 2026-09-17 (latest 6) — Designer label fix and live build-brief scorecard
@@ -3781,7 +4457,7 @@ green while keeping D at zero. Then export and paste back for an independent re-
 undecided (options A/B/C/D put to the user, A recommended, A1 vs A2 sub-choice open); labels stay
 empty by design; `aud_features.json` still not read by `build_trail_maps_pdf.py`; the zoomed frame
 is still exporter-only; four decorative labels still fall outside it; and
-`output/pdf/Trail_Map_3_Aud_*.pdf` are still the rejected landscape version — run
+`NorseBackpack/Print/_pdf_source/Trail_Map_3_Aud_*.pdf` are still the rejected landscape version — run
 `python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud`.
 
 ## Session Close — 2026-09-17 (latest 5) — Aud map build brief written; first symbol layer superseded
@@ -3853,7 +4529,7 @@ clearances, on-land sampling) and report what is still short before any route le
   `build_trail_maps_pdf.py`.
 - The zoomed frame is still exporter-only; the printed sheet uses the shipped wider frame.
 - `ÍSLAND`, `DENMARK STRAIT`, `FAXAFLÓI` and `Snæfellsnes` still fall outside the zoomed frame.
-- `output/pdf/Trail_Map_3_Aud_*.pdf` are **still the rejected landscape two-panel version**
+- `NorseBackpack/Print/_pdf_source/Trail_Map_3_Aud_*.pdf` are **still the rejected landscape two-panel version**
   (792x612). Files are writable; the rebuild was not run. Run
   `python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud`.
 
@@ -3910,7 +4586,7 @@ single blocker, unchanged.
 - `aud_features.json` is still not read by `build_trail_maps_pdf.py`. Nothing drawn reaches paper.
 - The zoomed frame is still exporter-only; the printed sheet uses the shipped wider frame.
 - `ÍSLAND`, `DENMARK STRAIT`, `FAXAFLÓI` and `Snæfellsnes` still fall outside the zoomed frame.
-- `output/pdf/Trail_Map_3_Aud_*.pdf` are **still the rejected landscape two-panel version**
+- `NorseBackpack/Print/_pdf_source/Trail_Map_3_Aud_*.pdf` are **still the rejected landscape two-panel version**
   (792x612). The file lock from the previous session is gone — the files are writable now — but
   the rebuild was not run this session. Run
   `python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud` to replace them.
@@ -3933,7 +4609,7 @@ Letter sheet" layout the user wants.
   `draw_back_card` from each existing card's own build script (via `importlib`, no duplication of
   card content) and lays 4 cards 2x2 on a landscape Letter sheet, with the same crop-mark style as
   the existing scripts. Chunks all 14 currently-built cards (`CARD_CODES` list in the script) into
-  4-per-sheet groups (last group has 2). Outputs to `output/pdf/Postcard_Sheet_0N_*.pdf`.
+  4-per-sheet groups (last group has 2). Outputs to `NorseBackpack/Print/_pdf_source/Postcard_Sheet_0N_*.pdf`.
 - **Duplex flip ambiguity:** Staples's online order tool only offers "double sided," no flip-edge
   detail. Rather than guess, the script builds both variants per sheet — `..._LongEdge_Print.pdf`
   and `..._ShortEdge_Print.pdf` — so the user can test-print page 1 of each and keep whichever
@@ -4114,7 +4790,7 @@ km long in real terms, and that is fine — it is a puzzle prop, not a survey.
 - All four trail maps rebuild; page sizes confirmed 612x792 for every one.
   `build_art_placement_guide.py` still runs.
 - Aud rebuilt to a temp directory and inspected at 130 dpi: single portrait map, digit 7 trace
-  intact. (The real `output/pdf/Trail_Map_3_Aud_*.pdf` could not be overwritten — see blockers.)
+  intact. (The real `NorseBackpack/Print/_pdf_source/Trail_Map_3_Aud_*.pdf` could not be overwritten — see blockers.)
 - Designer served over local HTTP and driven in the browser: loads with no console errors, 20
   imported features of every symbol type render correctly, a real click placed a Well at grid E5
   and populated the properties panel, zoom and layout verified, then test data cleared.
@@ -4132,7 +4808,7 @@ drawn on the map until it is known what the route has to produce.
 
 **Blockers / open:**
 
-- `output/pdf/Trail_Map_3_Aud_Print.pdf` is **locked by another process** (open in a viewer), so
+- `NorseBackpack/Print/_pdf_source/Trail_Map_3_Aud_Print.pdf` is **locked by another process** (open in a viewer), so
   the shipped Aud PDFs are still the landscape two-panel version. Close it and re-run
   `python NorseBackpack/TravelMap/build_trail_maps_pdf.py aud` to replace them.
 - The decorative labels `ÍSLAND`, `DENMARK STRAIT`, `FAXAFLÓI` and `Snæfellsnes` fall outside the zoomed
@@ -4208,7 +4884,7 @@ build it.
   `AUD_MAIN_SCALE` is computed (0.7596) rather than hardcoded 0.67; `AUD_DETAIL_ART` and the old
   `draw_aud_detail_panel` are replaced by `_aud_offset` / `_aud_glyph` / `_aud_hachures` and a
   rewritten panel that imports its data from `aud_detail_panel.py`.
-- `output/pdf/Trail_Map_3_Aud_{Print,ANSWER}.pdf` — rebuilt, landscape.
+- `NorseBackpack/Print/_pdf_source/Trail_Map_3_Aud_{Print,ANSWER}.pdf` — rebuilt, landscape.
 - `NorseBackpack/Norse_Brainstorm.html` — PZ-17 rewritten with the new mechanic, the two rules,
   the route table and the prop consolidation; the old digits-in-art design, the `4816` code, the
   ImageGen prompt set and the split-panel diagram caption are all **marked superseded in place**,
@@ -4292,7 +4968,7 @@ icons. Museum-ticket and postcard clue copy were explicitly out of scope.
 - <code>NorseBackpack/TravelMap/normalize_aud_vignettes.py</code> (new)
 - <code>NorseBackpack/TravelMap/Art/Aud_*_v1.png</code> and
   <code>TravelMap/Art/Sources/Aud_*_ImageGen_Source.png</code> (new)
-- <code>output/pdf/Trail_Map_3_Aud_Print.pdf</code> and <code>Trail_Map_3_Aud_ANSWER.pdf</code>
+- <code>NorseBackpack/Print/_pdf_source/Trail_Map_3_Aud_Print.pdf</code> and <code>Trail_Map_3_Aud_ANSWER.pdf</code>
 - <code>NorseBackpack/Norse_Brainstorm.html</code>
 
 **Checks:** rebuilt both Aud PDFs; rendered and visually inspected both at 160 dpi; the right
@@ -4920,7 +5596,7 @@ fixed to match the rebuilt back.
 ### Files changed
 
 - `NorseBackpack/Postcards/build_postcard_{R1,R6,RD}_pdf.py` — new.
-- `output/pdf/Postcard_{R1_Chalus,R6_Roumare_Forest,RD_Walcheren}_{Print,Letter_Print}.pdf` — new.
+- `NorseBackpack/Print/_pdf_source/Postcard_{R1_Chalus,R6_Roumare_Forest,RD_Walcheren}_{Print,Letter_Print}.pdf` — new.
 - `NorseBackpack/Postcards/Postcard_{R1_Chalus,R6_Roumare_Forest,RD_Walcheren}_Back.png` — new.
 - `NorseBackpack/Norse_Brainstorm.html` — sections listed above.
 
@@ -4980,7 +5656,7 @@ still untouched.
 
 - `NorseBackpack/Norse_Brainstorm.html` — sections listed above.
 - `NorseBackpack/Postcards/build_postcard_L1_pdf.py` — postmark date removed, place text re-centred.
-- `output/pdf/Postcard_L1_LAnse_{Print,Letter_Print}.pdf` — rebuilt.
+- `NorseBackpack/Print/_pdf_source/Postcard_L1_LAnse_{Print,Letter_Print}.pdf` — rebuilt.
 - `NorseBackpack/Postcards/Postcard_L1_LAnse_Back.png` — rebuilt.
 
 ### Checks run
@@ -5171,7 +5847,7 @@ Still an accepted known risk from an earlier session, not fixed and not worsened
 - `NorseBackpack/Norse_Brainstorm.html` — three prose mentions (`PZ-09`'s build note, the trail
   map caption, and the Travel routes tab's static source-citation list item, which duplicates
   `stops.js` content by hand per an earlier session's finding that it isn't runtime-driven).
-- `output/pdf/Trail_Map_4_Harald_{Print,ANSWER}.pdf` — rebuilt with Patara's real coordinates.
+- `NorseBackpack/Print/_pdf_source/Trail_Map_4_Harald_{Print,ANSWER}.pdf` — rebuilt with Patara's real coordinates.
 
 ### Checks run
 
@@ -5215,7 +5891,7 @@ separate sync step was needed, just folding it into the rename.
 **Renamed on disk** (`git mv` for tracked files, plain `mv` + `git add` for Codex's untracked new
 files, since `git mv` refuses untracked paths): every postcard front/back/illustration/ImageGen
 source PNG, the two Leif hold-to-light joint files (`Postcard_02_03_*` → `Postcard_L2_L3_*`), all
-built print PDFs in `output/pdf/`, the References folder's ImageGen source copies, and all eight
+built print PDFs in `NorseBackpack/Print/_pdf_source/`, the References folder's ImageGen source copies, and all eight
 `build_postcard_0X_pdf.py` scripts → `build_postcard_{L1,L2,L3,LD,R2,R3,R4,R5}_pdf.py`. Two
 superseded dev-prototype files (`Postcard_01_Harbor_Base.png`, `Postcard_01_Prototype.html`) were
 deliberately left unrenamed — they're not part of the live card pipeline.
@@ -5258,7 +5934,7 @@ deliberately left unrenamed — they're not part of the live card pipeline.
 ### Files changed
 
 - ~90 renamed/added files under `NorseBackpack/Postcards/`, `Postcards/References/`, and
-  `output/pdf/` (see `git status` — every rename shows as `R` or `RM`, nothing was deleted and
+  `NorseBackpack/Print/_pdf_source/` (see `git status` — every rename shows as `R` or `RM`, nothing was deleted and
   re-added blind).
 - `NorseBackpack/Postcards/build_postcard_{L1,L2,L3,LD,R2,R3,R4,R5}_pdf.py`,
   `build_postcard_collection.py`, `build_postcard_front_images.py`, `build_topedge_test_sheet.py`.
@@ -5546,7 +6222,7 @@ BY 2.0), which had art but no credit entry yet.
 
 - `NorseBackpack/Postcards/build_postcard_04_pdf.py` — new.
 - `NorseBackpack/Postcards/Postcard_04_Brattahlid_Back.png` — new, rendered from the built PDF.
-- `output/pdf/Postcard_04_Brattahlid_{Print,Letter_Print}.pdf` — new.
+- `NorseBackpack/Print/_pdf_source/Postcard_04_Brattahlid_{Print,Letter_Print}.pdf` — new.
 - `NorseBackpack/Postcards/References/README.md` — new Brattahlíð section; five stale card-number
   mentions fixed.
 - `NorseBackpack/Norse_Brainstorm.html` — sections listed above.
@@ -5599,7 +6275,7 @@ onward, and to do that renumbering now rather than defer it.
 **Renumbered (highest-first via `git mv` to avoid collisions), rebuilt, and verified:**
 - Châlus 04→05, Rouen 05→06, Bayeux 06→07, Winchester 07→08, Battle 08→09, Oslo 13→14 — front/back/
   illustration PNGs, `References/*_ImageGen_Source.png`, `build_postcard_0X_pdf.py` scripts (OUT
-  paths, FRONT paths, `setTitle` strings), `output/pdf/*.pdf`, `build_postcard_front_images.py`'s
+  paths, FRONT paths, `setTitle` strings), `NorseBackpack/Print/_pdf_source/*.pdf`, `build_postcard_front_images.py`'s
   `CARDS` list, and `References/README.md`'s file-name mentions.
 - Rebuilt the four PDFs that have build scripts (Rouen, Bayeux, Winchester, Battle) plus Leif's
   01–03 (imprint removal); Châlus and Oslo are front-art-only, no PDF to rebuild.
@@ -5636,7 +6312,7 @@ as newly open in `PZ-13`.
 - `NorseBackpack/Postcards/*` — renamed image/reference files (see above), edited build scripts
   (`build_postcard_0{1,2,3,6,7,8,9}_pdf.py`, `build_postcard_front_images.py`).
 - `NorseBackpack/Postcards/References/README.md` — renumbered filename mentions.
-- `output/pdf/Postcard_{01,02,03,06,07,08,09}_*.pdf` — rebuilt.
+- `NorseBackpack/Print/_pdf_source/Postcard_{01,02,03,06,07,08,09}_*.pdf` — rebuilt.
 - `NorseBackpack/Norse_Brainstorm.html` — sections listed above.
 
 ### Checks run
@@ -5869,7 +6545,7 @@ left empty per its own comment, cards 05+ aren't wired into it; pre-existing, no
 
 - `NorseBackpack/Postcards/build_postcard_02_pdf.py`, `build_postcard_03_pdf.py` — stamp path
   updated to `_v2_flat`.
-- `output/pdf/Postcard_02_Battle_Harbour_{Print,Letter_Print}.pdf`,
+- `NorseBackpack/Print/_pdf_source/Postcard_02_Battle_Harbour_{Print,Letter_Print}.pdf`,
   `Postcard_03_Baffin_Island_{Print,Letter_Print}.pdf`, `Norse_Postcards_Full_Print.pdf` — rebuilt.
 
 ### Checks run
@@ -5906,7 +6582,7 @@ fix, still outstanding.
 - `NorseBackpack/Postcards/Stamps/Stamp_{Leif_Longship,Rollo_Comet,Aud_Pillars,Harald_Labrys}_v2_flat.png` — new transparent-background overlays.
 - `NorseBackpack/Postcards/build_postcard_{01,05,06,07,08}_pdf.py` — built cards now consume v2 assets.
 - `NorseBackpack/Norse_Brainstorm.html` — gallery points to v2; treatment and exact prompts added.
-- `output/pdf/Postcard_01_LAnse_{Print,Letter_Print}.pdf`, `Norse_Postcards_Full_Print.pdf`, and
+- `NorseBackpack/Print/_pdf_source/Postcard_01_LAnse_{Print,Letter_Print}.pdf`, `Norse_Postcards_Full_Print.pdf`, and
   `Postcard_{05_Rouen,06_Bayeux,07_Winchester,08_Battle}_{Print,Letter_Print}.pdf` — rebuilt.
 
 ### Checks run
@@ -5926,7 +6602,7 @@ Run the planned physical print-size check (`PR-05`) before producing the remaini
 
 **Task:** the user reported the Rouen postcard "missing." Investigated rather than rebuilding
 blind — `Postcard_05_Rouen_Front.png`, `build_postcard_05_pdf.py`, and both
-`output/pdf/Postcard_05_Rouen_{Print,Letter_Print}.pdf` already exist and are complete (message,
+`NorseBackpack/Print/_pdf_source/Postcard_05_Rouen_{Print,Letter_Print}.pdf` already exist and are complete (message,
 Fun Fact, address, stamp, postmark placeholder, word-lock order clue), committed in `e96d06d`. The
 postcard itself was never missing.
 
@@ -6019,7 +6695,7 @@ contradicting its own answer key.
   match.
 - `NorseBackpack/TravelMap/build_trail_maps_pdf.py` — `BLOCKED` emptied; new `harald` entry in
   `TRAILS` (frame, parallels, title, band colour, minimal/empty regions-areas-waters-extra_towns).
-- `output/pdf/Trail_Map_4_Harald_Print.pdf`, `Trail_Map_4_Harald_ANSWER.pdf` — new.
+- `NorseBackpack/Print/_pdf_source/Trail_Map_4_Harald_Print.pdf`, `Trail_Map_4_Harald_ANSWER.pdf` — new.
 - `NorseBackpack/Norse_Brainstorm.html` — `PZ-09` (Harald's sheet now built, shape risk noted),
   `PZ-11` (Aldeigjuborg hold-back flagged stale, needs re-test against the real projection), `PZ-06`
   (the "loosest of the four" note updated to reflect the real zigzag), the postcard-gallery Harald
@@ -6134,7 +6810,7 @@ anywhere it could be mistaken for current.
 - `NorseBackpack/Props/Hnefatafl/build_board_setup_pdf.py` — rebuilt for 11×11, attacker/defender
   token distinction.
 - `NorseBackpack/Props/Hnefatafl/build_ticket_pdf.py` — rebuilt for 11×11, same token distinction.
-- `output/pdf/Hnefatafl_Board_Setup_Insert.pdf`, `Hnefatafl_Ticket_Print.pdf`,
+- `NorseBackpack/Print/_pdf_source/Hnefatafl_Board_Setup_Insert.pdf`, `Hnefatafl_Ticket_Print.pdf`,
   `Hnefatafl_Ticket_Letter_Print.pdf` — rebuilt in place.
 - `NorseBackpack/Norse_Brainstorm.html` — `PZ-01` (finalized 11×11 solution/code, pill back to
   Decided), `PZ-07` (rebuilt-panel details, 3-column split), `PR-08` (11×11 target, piece-count
@@ -6202,13 +6878,13 @@ for **Harald's trail**, not Leif's (reassigning `PZ-07`/`PZ-09`).
 - `NorseBackpack/Props/Hnefatafl/board_layout.py` — the 14 fixed blocker squares, throne and
   corners, pulled from the exact `blocks` set in this page's own interactive prototype (not
   re-derived by eye). Also the map/ticket split: columns A–E visible, F–G hidden.
-- `NorseBackpack/Props/Hnefatafl/build_board_setup_pdf.py` → `output/pdf/Hnefatafl_Board_Setup_Insert.pdf`
+- `NorseBackpack/Props/Hnefatafl/build_board_setup_pdf.py` → `NorseBackpack/Print/_pdf_source/Hnefatafl_Board_Setup_Insert.pdf`
   — the map-back panel: grid, throne, corners and the 10 visible blockers, with an irregular stain
   over columns F–G and Liv's margin apology beside it. **Real bug caught and fixed**: the first
   version painted the stain as a translucent overlay, so the hidden blockers showed through as
   darker patches — visually defeating the "hidden" strip entirely. Fixed by never drawing tokens
   in the hidden columns at all, so the stain covers blank paper, not a disguised token.
-- `NorseBackpack/Props/Hnefatafl/build_ticket_pdf.py` → `output/pdf/Hnefatafl_Ticket_Print.pdf`
+- `NorseBackpack/Props/Hnefatafl/build_ticket_pdf.py` → `NorseBackpack/Print/_pdf_source/Hnefatafl_Ticket_Print.pdf`
   (+ `_Letter_Print.pdf`) — front: museum branding, a decorative (non-puzzle) mini board icon, and
   the real-rules text. Back: the reconstruction-caveat line plus the mirrored two-column offset
   panel (columns printed G, F — reversed from the map's own F, G order — at the same 0.5in cell
@@ -6222,7 +6898,7 @@ for **Harald's trail**, not Leif's (reassigning `PZ-07`/`PZ-09`).
 - `NorseBackpack/Props/Hnefatafl/board_layout.py` — new.
 - `NorseBackpack/Props/Hnefatafl/build_board_setup_pdf.py` — new.
 - `NorseBackpack/Props/Hnefatafl/build_ticket_pdf.py` — new.
-- `output/pdf/Hnefatafl_Board_Setup_Insert.pdf`, `Hnefatafl_Ticket_Print.pdf`,
+- `NorseBackpack/Print/_pdf_source/Hnefatafl_Board_Setup_Insert.pdf`, `Hnefatafl_Ticket_Print.pdf`,
   `Hnefatafl_Ticket_Letter_Print.pdf` — new.
 - `NorseBackpack/Norse_Brainstorm.html` — `PZ-01`, `PZ-05` (Oslo message + Fun Fact), `PZ-07`
   (reassigned to Harald, both panels marked built), `PZ-09` (hnefatafl job moved off Leif's map
@@ -6243,7 +6919,7 @@ for **Harald's trail**, not Leif's (reassigning `PZ-07`/`PZ-09`).
 - Served over local HTTP (another session's `static-preview` on port 8734, joined directly since
   it serves the same repo checkout) and inspected the Puzzle details tab: heading, rules text and
   prototype caption all show the updated ticket/Harald wording; no console errors.
-- Deleted temporary preview PNGs from `output/pdf/` after inspection; the three new production
+- Deleted temporary preview PNGs from `NorseBackpack/Print/_pdf_source/` after inspection; the three new production
   PDFs are left in place.
 
 ### Next action
@@ -6867,7 +7543,7 @@ just a two-box nudge.
 
 - `NorseBackpack/TravelMap/build_trail_maps_pdf.py` — `ROLLO_ART` treaty-scroll and ducal-coronet
   box positions.
-- `output/pdf/Trail_Map_2_Rollo_{Print,ANSWER}.pdf` — rebuilt with the fix.
+- `NorseBackpack/Print/_pdf_source/Trail_Map_2_Rollo_{Print,ANSWER}.pdf` — rebuilt with the fix.
 - `NorseBackpack/Postcards/RebusIcons/` (Codex, this session) — 5 rebus icons, v1 and v2, plus
   ImageGen source renders.
 - `NorseBackpack/TravelMap/Art/Rollo_*_v1.png` (Codex, this session) — 7 map icons; see Codex's
@@ -6923,7 +7599,7 @@ guide; the Travel routes gallery now describes the illustrated Rollo sheet.
 - `NorseBackpack/TravelMap/Art/Sources/Rollo_*_v1_ImageGen_Source.png` — seven untouched renders.
 - `NorseBackpack/TravelMap/normalize_rollo_vignettes.py` — reproducible cleanup step.
 - `NorseBackpack/TravelMap/build_trail_maps_pdf.py` — Rollo placement table and compositing.
-- `output/pdf/Trail_Map_2_Rollo_{Print,ANSWER}.pdf` — rebuilt map and designer answer key.
+- `NorseBackpack/Print/_pdf_source/Trail_Map_2_Rollo_{Print,ANSWER}.pdf` — rebuilt map and designer answer key.
 - `NorseBackpack/Norse_Brainstorm.html` — PR-11 state, gallery and exact prompts.
 - `HANDOFF.md` — this session record.
 
@@ -7058,9 +7734,9 @@ cards × front+back) and regenerated both cards' gallery back PNGs from the real
   dedicated scripts); `main()` updated to assemble from all three.
 - `NorseBackpack/Postcards/Postcard_01_LAnse_Back.png`, `Postcard_03_Baffin_Island_Back.png` —
   regenerated from the real builds.
-- `output/pdf/Postcard_01_LAnse_{Print,Letter_Print}.pdf` — rebuilt with the corrected imprint.
-- `output/pdf/Postcard_03_Baffin_Island_{Print,Letter_Print}.pdf` — new.
-- `output/pdf/Norse_Postcards_Full_Print.pdf` — rebuilt, 6 pages.
+- `NorseBackpack/Print/_pdf_source/Postcard_01_LAnse_{Print,Letter_Print}.pdf` — rebuilt with the corrected imprint.
+- `NorseBackpack/Print/_pdf_source/Postcard_03_Baffin_Island_{Print,Letter_Print}.pdf` — new.
+- `NorseBackpack/Print/_pdf_source/Norse_Postcards_Full_Print.pdf` — rebuilt, 6 pages.
 - `NorseBackpack/Norse_Brainstorm.html` — `PZ-05` (card 03 content, card 01 bug note), `PC-07`
   (3 of 18), Postcards gallery toolbar note and card 03's caption/alt text.
 
@@ -7073,7 +7749,7 @@ cards × front+back) and regenerated both cards' gallery back PNGs from the real
 - Served over local HTTP: no console errors; confirmed via `find` (cache-busted query string needed
   — the shared server this session is attached to cached an earlier response once) that both `PZ-05`
   and the gallery captions show the new text.
-- Deleted temporary preview PNGs from `output/pdf/` after inspection.
+- Deleted temporary preview PNGs from `NorseBackpack/Print/_pdf_source/` after inspection.
 
 ### Next action
 
@@ -7123,7 +7799,7 @@ and updated the Postcards gallery tab's caption and alt text to match.
 - `NorseBackpack/Postcards/build_postcard_collection.py` — card 02 removed from `CARDS`; assembler
   now references the dedicated script's PDF output.
 - `NorseBackpack/Postcards/Postcard_02_Battle_Harbour_Back.png` — regenerated from the real build.
-- `output/pdf/Postcard_02_Battle_Harbour_Print.pdf`, `Postcard_02_Battle_Harbour_Letter_Print.pdf` —
+- `NorseBackpack/Print/_pdf_source/Postcard_02_Battle_Harbour_Print.pdf`, `Postcard_02_Battle_Harbour_Letter_Print.pdf` —
   new.
 - `NorseBackpack/Norse_Brainstorm.html` — `PZ-05` (final message + Fun Fact + build status), `PC-07`
   (2 of 18), Design guide's Tone & voice section (new "Liv's postcard voice" card), Postcards gallery
@@ -7142,7 +7818,7 @@ and updated the Postcards gallery tab's caption and alt text to match.
 - Served over local HTTP (port 8734): no console errors; confirmed via `find` + screenshot (not
   `get_page_text`, which locks onto the journey article regardless of hash) that the Postcards
   gallery caption and back image updated correctly.
-- Deleted temporary preview PNGs from `output/pdf/` after inspection; real outputs left in place.
+- Deleted temporary preview PNGs from `NorseBackpack/Print/_pdf_source/` after inspection; real outputs left in place.
 
 ### Next action
 
@@ -7335,7 +8011,7 @@ nothing now since 15 cards are unbuilt and 02/03 are still placeholders.
   print PDF and a letter-sheet version with crop marks.
 - `NorseBackpack/Props/MuseumTicket/Museum_Ticket_Back_300dpi_v2.png` — regenerated to match the v2
   front's ticket number after Codex's fix.
-- `output/pdf/Museum_Ticket_Print.pdf`, `Museum_Ticket_Letter_Print.pdf` — rebuilt against the v2
+- `NorseBackpack/Print/_pdf_source/Museum_Ticket_Print.pdf`, `Museum_Ticket_Letter_Print.pdf` — rebuilt against the v2
   front.
 
 ### Checks run
@@ -7389,7 +8065,7 @@ are recorded in the Design guide tab.
 - `NorseBackpack/Props/MuseumTicket/Museum_Ticket_Back_300dpi_v2.png` — refreshed back preview.
 - `NorseBackpack/Props/MuseumTicket/build_museum_ticket_pdf.py` — now uses the version-2 front and
   prints `No. 084726` on the back.
-- `output/pdf/Museum_Ticket_Print.pdf` and `Museum_Ticket_Letter_Print.pdf` — rebuilt.
+- `NorseBackpack/Print/_pdf_source/Museum_Ticket_Print.pdf` and `Museum_Ticket_Letter_Print.pdf` — rebuilt.
 - `NorseBackpack/Norse_Brainstorm.html` — current previews, feature mapping and revision prompt.
 - `HANDOFF.md` — this session record.
 
@@ -7458,16 +8134,16 @@ entries stale against finished work:
   actually still open: which of the 18 cards carries the pointer, and a true-size bear-vs-wolf
   legibility check.
 - **The opening puzzle** (`clue 1`, decided): risk said the luggage tags were "not yet purchased or
-  physically test-printed" — but `output/pdf/Luggage_Tag_Inserts_Print.pdf` already exists. Updated.
+  physically test-printed" — but `NorseBackpack/Print/_pdf_source/Luggage_Tag_Inserts_Print.pdf` already exists. Updated.
 - **The route hidden in plain sight** (final puzzle): status was `'decided · shape only'` and risk
   said card-mounting method was still open — but `PZ-06` (same file) already decided laminated
-  wet-erase sheets, and print-ready PDFs exist for 3 of 4 trails (`output/pdf/Trail_Map_{1,2,3}_*`;
+  wet-erase sheets, and print-ready PDFs exist for 3 of 4 trails (`NorseBackpack/Print/_pdf_source/Trail_Map_{1,2,3}_*`;
   Harald's sheet doesn't exist yet). Updated status to `'decided · 3 of 4 maps built'` and rewrote
   risk to drop the resolved parts.
 
 **Fix 4 — added a "Travel routes" tab gallery** for the print-ready trail map PDFs and Leif's beast
 art (bear/orca thumbnails), so this specific gap — finished assets with no gallery entry — can't
-recur silently. Links: `output/pdf/Trail_Map_{1_Leif,2_Rollo,3_Aud}_Print.pdf`; Harald shows an
+recur silently. Links: `NorseBackpack/Print/_pdf_source/Trail_Map_{1_Leif,2_Rollo,3_Aud}_Print.pdf`; Harald shows an
 explicit "not built yet" pill instead of a dead link.
 
 ### Files changed
@@ -7531,7 +8207,7 @@ No known distortion or size-mismatch bugs remain in the three build scripts.
 - `NorseBackpack/Postcards/build_topedge_test_sheet.py` — new DPI/size constants (Codex).
 - `NorseBackpack/Norse_Brainstorm.html` — `PC-09`, `PC-11`, `PC-13`, `PC-14`, `PZ-10`, `PZ-11` and
   the Design spec's new card-back standard section.
-- `output/pdf/Postcard_0{1,2,3}_*`, `Norse_Postcards_Full_Print.pdf` — rebuilt, final state.
+- `NorseBackpack/Print/_pdf_source/Postcard_0{1,2,3}_*`, `Norse_Postcards_Full_Print.pdf` — rebuilt, final state.
 
 ### Next action
 
@@ -7569,8 +8245,8 @@ Files changed this session:
 - `NorseBackpack/Postcards/Postcard_02_03_Aligned_Preview.jpg` and
   `Postcard_02_03_1576_Alignment_Proof.png` — rebuilt at the new aspect/scale.
 - `NorseBackpack/Postcards/build_topedge_test_sheet.py` and
-  `output/pdf/Postcard_02_03_TopEdge_Test.pdf` — updated/rebuilt.
-- `output/pdf/Postcard_01_LAnse_Print.pdf` and `Postcard_01_LAnse_Letter_Print.pdf` — rebuilt by
+  `NorseBackpack/Print/_pdf_source/Postcard_02_03_TopEdge_Test.pdf` — updated/rebuilt.
+- `NorseBackpack/Print/_pdf_source/Postcard_01_LAnse_Print.pdf` and `Postcard_01_LAnse_Letter_Print.pdf` — rebuilt by
   the guarded Card 01 builder.
 - `NorseBackpack/Norse_Brainstorm.html`, `NorseBackpack/Postcards/References/README.md`.
 
@@ -7642,12 +8318,12 @@ back to a neutral until that trail is defined — it should get `#467444`.
   strips before the neat line; grid references reversed to white.
 - `NorseBackpack/Postcards/build_postcard_01_pdf.py` — publisher's imprint added, then the whole
   right column reflowed and the type scaled up (see below);
-  `output/pdf/Postcard_01_LAnse_Print.pdf`, `Postcard_01_LAnse_Letter_Print.pdf` and
+  `NorseBackpack/Print/_pdf_source/Postcard_01_LAnse_Print.pdf`, `Postcard_01_LAnse_Letter_Print.pdf` and
   `Norse_Postcards_Full_Print.pdf` rebuilt (cards 02/03 regenerated mechanically from unchanged
   inputs by the collection builder).
 - `NorseBackpack/Norse_Brainstorm.html` — `PZ-06` extended with the band decision, the
   white/natural cardstock rule and its reasoning, and the 5 mil pouch note.
-- `output/pdf/Trail_Map_{1_Leif,2_Rollo,3_Aud}_{Print,ANSWER}.pdf` — rebuilt.
+- `NorseBackpack/Print/_pdf_source/Trail_Map_{1_Leif,2_Rollo,3_Aud}_{Print,ANSWER}.pdf` — rebuilt.
 
 ### Checks
 
@@ -7753,7 +8429,7 @@ surfaced and are recorded rather than silently resolved:
 
 - `NorseBackpack/Postcards/Image_Credits.html` — entries added for Postcards 02 and 03.
 - `NorseBackpack/Postcards/build_postcard_collection.py` — cards 02/03 printed credits reduced to
-  one line each; `output/pdf/Postcard_02_*`, `Postcard_03_*` and `Norse_Postcards_Full_Print.pdf`
+  one line each; `NorseBackpack/Print/_pdf_source/Postcard_02_*`, `Postcard_03_*` and `Norse_Postcards_Full_Print.pdf`
   rebuilt.
 
 **`PC-13` decided: 5 × 3.5 in** (360 × 252 pt, 10:7) is the standard for all eighteen cards. Cards
@@ -7831,8 +8507,8 @@ The animal list in the design page now uses LOON instead of the earlier CROW can
   `Art/processed/` derivatives — new transparent animal assets.
 - `NorseBackpack/Norse_Brainstorm.html` — placement state, LOON substitution and exact generation
   prompt structure recorded.
-- `output/pdf/Trail_Map_1_Leif_ANSWER.pdf` — rebuilt answer key.
-- `output/pdf/Trail_Map_1_Leif_Print_UPDATED.pdf` — rebuilt player map. The normal stable print
+- `NorseBackpack/Print/_pdf_source/Trail_Map_1_Leif_ANSWER.pdf` — rebuilt answer key.
+- `NorseBackpack/Print/_pdf_source/Trail_Map_1_Leif_Print_UPDATED.pdf` — rebuilt player map. The normal stable print
   filename could not be replaced because PID 25340 (`PDFgear`) has it open.
 
 ### Checks
@@ -7869,7 +8545,7 @@ the web preview instead of being rebuilt separately. No hidden edge code was add
 - `NorseBackpack/Postcards/Postcard_01_LAnse.html`, `Postcard_01_LAnse_Style_Study.html`,
   `Image_Credits.html`, `References/README.md`, and `NorseBackpack/Norse_Brainstorm.html` —
   full-bleed source/status and adaptation notes recorded.
-- `output/pdf/Postcard_01_LAnse_Print.pdf`, `Postcard_01_LAnse_Letter_Print.pdf`, and
+- `NorseBackpack/Print/_pdf_source/Postcard_01_LAnse_Print.pdf`, `Postcard_01_LAnse_Letter_Print.pdf`, and
   `Norse_Postcards_Full_Print.pdf` — rebuilt. Cards 02 and 03's individual PDFs were mechanically
   regenerated from unchanged inputs by the collection builder.
 
@@ -8223,7 +8899,7 @@ build log (Makkovik, Red Bay, Rigolet) are decoys, checked by name against the r
 - `NorseBackpack/Norse_Brainstorm.html` — `PR-13` added as Decided; `PR-11` updated with what was
   actually built and the placement-search method; stale "Chosen for Leif" line (old Baffin/Nuuk
   positions) corrected to match.
-- `output/pdf/Trail_Map_1_Leif_{Print,ANSWER,ART_GUIDE}.pdf` — rebuilt. Rollo and Aud rebuilt too,
+- `NorseBackpack/Print/_pdf_source/Trail_Map_1_Leif_{Print,ANSWER,ART_GUIDE}.pdf` — rebuilt. Rollo and Aud rebuilt too,
   as a regression check on the shared guard code; both unchanged (still digits 9 and 7).
 
 ## Checks
@@ -8287,7 +8963,7 @@ of the project.
   image fitting, opacity and label-box reservation.
 - `NorseBackpack/Norse_Brainstorm.html` — `PR-11` marked built / test print; chosen composition,
   placement rule and exact prompts recorded.
-- `output/pdf/Trail_Map_1_Leif_Print.pdf` and `Trail_Map_1_Leif_ANSWER.pdf` — rebuilt with decoration.
+- `NorseBackpack/Print/_pdf_source/Trail_Map_1_Leif_Print.pdf` and `Trail_Map_1_Leif_ANSWER.pdf` — rebuilt with decoration.
 
 ## Checks
 
@@ -8373,7 +9049,7 @@ in the Labrador Sea — filling all three would read as one block, so the brief 
   `landscape_rects` (prefix-sum, aspect-constrained); docstring and legend updated.
 - `NorseBackpack/Norse_Brainstorm.html` — `PR-12` added as Decided; `PR-11` slot figures replaced
   and the aspect change recorded; `PR-09` extended with the reverse ghosting direction.
-- `output/pdf/` — all six trail-map PDFs rebuilt (`Trail_Map_{1,2,3}_*_{Print,ANSWER}.pdf`) and
+- `NorseBackpack/Print/_pdf_source/` — all six trail-map PDFs rebuilt (`Trail_Map_{1,2,3}_*_{Print,ANSWER}.pdf`) and
   `Trail_Map_1_Leif_ART_GUIDE.pdf` regenerated.
 
 ## Checks
@@ -8522,7 +9198,7 @@ the only thing in the bag that would make the closing line a payoff rather than 
 - `NorseBackpack/TravelMap/build_art_placement_guide.py` — new. Legal art areas for Codex.
 - `NorseBackpack/TravelMap/Norse_Aunt_Route_Plan.json` — Leif's stops 2 and 3 replaced.
 - `NorseBackpack/TravelMap/README.md` — Leif's route line rewritten with the reasoning.
-- `output/pdf/` — `Trail_Map_1_Leif_{Print,ANSWER,ART_GUIDE}.pdf`,
+- `NorseBackpack/Print/_pdf_source/` — `Trail_Map_1_Leif_{Print,ANSWER,ART_GUIDE}.pdf`,
   `Trail_Map_2_Rollo_{Print,ANSWER}.pdf`, `Trail_Map_3_Aud_{Print,ANSWER}.pdf`.
 - Deleted `NorseBackpack/TravelMap/build_trail_map_leif_pdf.py`, folded into the general builder.
 
@@ -8588,14 +9264,14 @@ Built `NorseBackpack/Postcards/build_topedge_test_sheet.py` — a standalone scr
 the real card builds) that crops just the top ~1.2 in of each front at the same 256 dpi the
 final cards use, lays them on one small PDF sized for a 100%-scale print, with a "cut here = true
 top edge" line on each strip and a 6.00 in reference ruler to catch silent printer rescaling.
-Output: `output/pdf/Postcard_02_03_TopEdge_Test.pdf`. Sent to the user to print and test by hand.
+Output: `NorseBackpack/Print/_pdf_source/Postcard_02_03_TopEdge_Test.pdf`. Sent to the user to print and test by hand.
 
 **User printed it and confirmed: it works.** The zero-margin risk did not materialize in
 practice. This closes the open question from Codex's "Next action" below — no further print
 testing needed before finalizing these two fronts.
 
 Files changed this session: `NorseBackpack/Postcards/build_topedge_test_sheet.py` (new),
-`output/pdf/Postcard_02_03_TopEdge_Test.pdf` (new, test artifact). Also removed four stray
+`NorseBackpack/Print/_pdf_source/Postcard_02_03_TopEdge_Test.pdf` (new, test artifact). Also removed four stray
 `_qa_*.png` scratch crops from `NorseBackpack/Postcards/` left over from the review.
 
 Next action: the front-art mechanic is now physically validated. Move on to writing and
@@ -8636,9 +9312,9 @@ Files changed by this session:
 - `NorseBackpack/Postcards/Postcard_02_03_1576_Alignment_Proof.png`
 - `NorseBackpack/Postcards/References/README.md`
 - `NorseBackpack/Norse_Brainstorm.html`
-- `output/pdf/Postcard_02_Battle_Harbour_Print.pdf`
-- `output/pdf/Postcard_03_Baffin_Island_Print.pdf`
-- `output/pdf/Norse_Postcards_Full_Print.pdf`
+- `NorseBackpack/Print/_pdf_source/Postcard_02_Battle_Harbour_Print.pdf`
+- `NorseBackpack/Print/_pdf_source/Postcard_03_Baffin_Island_Print.pdf`
+- `NorseBackpack/Print/_pdf_source/Norse_Postcards_Full_Print.pdf`
 
 Checks:
 
@@ -8691,7 +9367,7 @@ Done, part 2 — closing PC-12 and building card 01:
 7. Rebuilt `NorseBackpack/Postcards/build_postcard_01_pdf.py`'s back-of-card layout: address
    block shrunk into a bordered box, a new bordered, titled "FUN FACT" block added underneath it
    with the butternut-wood text (typeset). Front card and handwritten message untouched.
-8. Regenerated `output/pdf/Postcard_01_LAnse_Print.pdf`, `output/pdf/Postcard_01_LAnse_Letter_
+8. Regenerated `NorseBackpack/Print/_pdf_source/Postcard_01_LAnse_Print.pdf`, `NorseBackpack/Print/_pdf_source/Postcard_01_LAnse_Letter_
    Print.pdf`, and `NorseBackpack/Postcards/Postcard_01_LAnse_Back.png` (1500×1050) from the
    rebuilt script. First render had the "Canada" address line overflowing into the Fun Fact
    title — found and fixed by resizing both boxes, re-rendered clean.
@@ -8725,7 +9401,7 @@ Done, part 3 — flipping Leif's trail order:
 - `NorseBackpack/Postcards/build_postcard_01_pdf.py` — back-card layout: address box shrunk,
   Fun Fact block added with the butternut-wood text; new `FUNFACT` colour constant.
 - `NorseBackpack/Postcards/Postcard_01_LAnse_Back.png` — regenerated.
-- `output/pdf/Postcard_01_LAnse_Print.pdf`, `output/pdf/Postcard_01_LAnse_Letter_Print.pdf` —
+- `NorseBackpack/Print/_pdf_source/Postcard_01_LAnse_Print.pdf`, `NorseBackpack/Print/_pdf_source/Postcard_01_LAnse_Letter_Print.pdf` —
   regenerated.
 - `TravelMap/Norse_Aunt_Route_Plan.json` — Leif's trail order flipped.
 - `TravelMap/README.md` — candidate-plan summary updated to match.
@@ -8809,3 +9485,187 @@ paper, then solve family D (`PC-05`).
 **Limits:** Source DOCX rendering was unavailable (LibreOffice missing); extracted document XML/crop metadata, unchanged embedded artwork and existing photos were checked instead. No source documents were edited. Prior download-completion/file-picker and phone/touch limitations remain; pasted save text and autosave were verified. The later annotation conflict is tracked as DG-H10, not resolved by assumption.
 
 **Preview/next:** Existing loopback server remains at `http://127.0.0.1:8740/Hiking_Trip/Digital/`. Next action: user playtests the four-lock flow before further extension. Resolve DG-H10 before implementing lock 5.
+
+## 2026-10-16: Aud icon concept sheet (Codex)
+- Generated Art/MapIcons/Aud_Icon_Concepts_v1.png: six illustrated symbols, large and small. Exact prompt recorded in PP-030. Concept visually inspected; map unchanged; actual print-size legibility untested.
+- Next: review icon style before preparing individual map assets.
+
+## 2026-10-16: Additional Aud perspective icons (Codex)
+- Generated seven separate PNGs in NorseBackpack/Art/MapIcons/: landing, standing stone, village, cave, farm, mill, cairn. Exact prompts in GENERATION.md; decision recorded in PP-030.
+- Designer prefers perspective; crossing variants deferred until map layout is ready. Map unchanged. Previews visually checked; soft edge halos and actual-size print checks remain.
+- Next: designer revises map, then request crossing orientations for the new layout.
+
+## 2026-10-16: Landing with boat (Codex)
+- Added a moored open wooden boat in sibling asset Art/MapIcons/Aud_Landing_Boat_v2.png using built-in ImageGen. Original landing retained. Prompt recorded in GENERATION.md; PP-030 updated.
+- Preview visually checked: jetty and boat clear; soft halo persists. No map edits or physical print test.
+- Next: review boat variant at intended map size.
+
+## 2026-10-16: Terrain concepts on yellow (Codex)
+- Generated Art/MapIcons/Aud_Terrain_Concepts_Yellow_v1.png via built-in ImageGen: wall, river/stream, wood, hedge, field, marsh, moor, road/path. Prompt in GENERATION.md; proposal recorded in PP-030.
+- Visually checked: contrasting greens, teal and greys on yellow. Concept only; print-size clarity untested; map unchanged.
+- Next: designer reviews terrain style before map integration.
+
+## 2026-10-16: Aud draft renderer style proof (Codex)
+- Rendered supplied 20-feature draft using isolated TravelMap/Drafts/render_style_test.py. Final PDF and PNG beside baseline.png in render_baseline; methodology/limitations in STYLE_TEST_NOTES.md; PP-030 updated.
+- Checked draft/live renderer hashes unchanged, crossing directions preserved, all 20 input features loaded. Final full page visually inspected. Poppler fallback-font warnings; labels readable. No print test.
+- Procedural terrain and provisional crossing/chapel/ruin drawings approximate approved style; remaining landmarks use PNGs. Small icon detail and top-edge clearance need review. No live map changes.
+- Next: designer reviews PDF at 100% before further styling or integration.
+
+## 2026-10-16: Aud full-style map and comparison (Codex)
+- Built full illustrated draft and comparison PDFs/PNGs in TravelMap/Drafts/render_baseline, filenames ending v2. New isolated renderer render_full_style.py. Eight new ImageGen assets; exact prompts in Art/MapIcons/FULL_STYLE_GENERATION.md; PP-030 updated.
+- All draft point icons and vegetation use generated artwork. Crossing placements preserve existing directions with upright posts. JSON/live sources verified unchanged, 20 features loaded. Both PDF pages visually checked. Poppler fallback-font warnings; visible labels readable.
+- Limits: steep crossings narrow at retained size, fine detail needs paper test; no live integration. Details in Drafts/FULL_STYLE_NOTES.md.
+- Next: designer reviews full style and crossing readability at actual print size.
+
+## 2026-10-16: Aud v3 correction to match terrain concept (Codex)
+- Designer rejected repeated single tree/plain river, grid over artwork, distorted bridge; requested non-bridge icons +30%. New mixed birch/conifer/broadleaf, river current and bank detail, field/path detail, grid below terrain. New isolated render_terrain_v3.py; new birch/conifer/bridge PNGs. Method/prompts in Drafts/TERRAIN_V3_NOTES.md; PP-030 updated.
+- Draft v3 and v2-v3 comparison PDFs/PNGs in render_baseline. Non-bridge map dimensions 1.3x; bridge deck span remains 16pt, no shear. Live builder reordered in memory only. All four source hashes unchanged, 20 features and crossing directions retained. Both final PDFs visually checked; no paper test. Poppler fallback-font warnings; labels readable.
+- Next: designer reviews v3 at actual print size, especially river bridge and enlarged icons near top edge.
+
+## 2026-10-16: Aud hedge/gate-only v4 (Codex)
+- Replaced disjoint hedge strips with connected tangent-aligned foliage and a clear passage. New open two-rail gate uses uniform scale/rotation, no shear, original passage anchor. Other v3 styling retained. Gate artwork fits below top frame; legend swatch fitted.
+- New PNGs in Art/MapIcons; exact prompts/method in Drafts/HEDGE_GATE_V4_NOTES.md. Renderer render_hedge_gate_v4.py; full draft and enlarged comparison PDFs/PNGs in render_baseline; PP-030 updated.
+- Checked 20 features and four source hashes unchanged. Both final PDF pages visually inspected. Poppler fallback warnings; labels readable. Physical print untested.
+- Next: designer reviews hedge/gate detail before integrating any style into the live map.
+
+## 2026-10-16: Aud field-only v5 (Codex)
+- Updated field with wheat wash, curved paired furrows and dry grass border; farmhouse clearance. V4 hedge/gate and other art retained. New isolated render_field_v5.py and Field_Grass_v5 PNG; exact prompt/method in Drafts/FIELD_V5_NOTES.md; PP-030 updated.
+- Full draft and close-up comparison PDFs/PNGs in render_baseline (Aud_Field_*_v5). Both final pages rendered and visually inspected. 20 input features, four source hashes unchanged. Poppler fallback warnings; visible labels readable. No physical print test.
+- Next: designer reviews field treatment at actual size.
+
+## 2026-10-16: Aud landing on shoreline v6 (Codex)
+- Enlarged landing (target 26pt visible width), new artwork; jetty attached to coast vertex (220.38,752.98), boat on water. Draft renderer override shifts from inland JSON position; JSON retained unchanged. Bay caption moved west in scratch config; legend updated. Other v5 art retained.
+- New render_landing_v6.py, PNG in Art/MapIcons, method/exact prompt in Drafts/LANDING_V6_NOTES.md, PP-030 updated. Full draft and close-up PDFs/PNGs in render_baseline.
+- 20 features, five source hashes unchanged, six hull samples verified on sea. Both pages visually inspected, label overlap corrected. Poppler fallback warnings; labels readable. No paper test; no live route change.
+- Next: designer reviews landing placement before applying any change to the live map.
+
+## 2026-10-16: Aud six landmark sizes v7 (Codex)
+- Matched chapel, ruin, village, cave, mill and farm to approved landing's visible width (~25.69pt), preserving aspect ratios/centers. Other v6 elements and legend sizes retained. New isolated render_landmarks_v7.py; method in LANDMARKS_V7_NOTES.md; PP-030 updated.
+- Output render_baseline/Aud_Landmarks_Draft_v7.pdf and landmarks-map-v7.png. All six bounds checked within frame; enlarged label reservations. 20 features and five source hashes unchanged. Final page rendered and visually inspected. Poppler fallback warnings; labels readable. No physical print proof.
+- Next: designer reviews consistent landmark sizing at actual print size.
+
+## 2026-10-16: Aud dry ditch v8 (Codex)
+- Approved dry-ditch treatment built: rough brown banks, dark recessed bed, sparse existing grass PNG, reduced detail at bridge. Centreline/bridge unchanged, matching legend; other v7 art retained.
+- New render_ditch_v8.py and DITCH_V8_NOTES.md; PP-030 updated. Full draft and close-up PDFs/PNGs in render_baseline. Both pages rendered and visually inspected. 20 features, crossing directions and five source hashes unchanged. Poppler fallback warnings; visible labels readable. No physical print proof.
+- Next: designer reviews ditch at actual print size.
+
+## 2026-10-16: Aud full 102-feature layout v9 (Codex)
+- Rendered user JSON into TravelMap/Drafts/render_full_map_v9/Aud_Full_Map_v9.pdf + PNG. Exact source copy aud_features_full_2026-10-16.json; new renderer render_full_map_v9.py; method/asset prompts FULL_MAP_V9_NOTES.md; PP-030 updated.
+- Marker labels mapped: coin1=camel, Coincorretc=exact ticket Fehu, Coin2=fleur. Original ticket assets/function used; no marker source labels/correctness printed. Added standalone well/ford/wall artwork; all approved styling applied. Four boats checked on sea. Four edge-artwork fits recorded. Decorative country label moved into clear land.
+- Checks: all 102 features; marker set exact; source copy byte-identical; five source hashes unchanged; one page rendered and visually inspected. Poppler fallback warnings; labels readable. Full route/ticket counting not hand-walked; previous 521 NOT assumed. No paper proof or live integration.
+- Next: designer reviews full map, then hand-walks ticket directions and crossing totals.
+
+## 2026-10-16: Aud seven PDF crossing comments v10 (Codex)
+- Addressed annotated gates/bridges using pose-guided upright native assets (bridge 90/75/14 degrees; shallow gate). Whole-image rotation removed at those sites; bridge sizes retained. Five fords enlarged 13 to 18pt, road/path/track ink clipped beneath stones while water stays visible.
+- New render_crossings_v10.py, make_crossing_guides_v10.py, four ImageGen PNGs. Exact prompts/method in CROSSINGS_V10_NOTES.md; PP-030 updated. Revised full PDF and seven-region before/after review in render_full_map_v10 (both with PNGs).
+- Checks: all annotated sites use upright views, all five ford road exclusions, 102 features/marker mapping/five hashes unchanged. Both one-page PDFs visually inspected; marker labels absent from player copy. Poppler fallback warnings, visible labels readable. No physical print or route-count proof.
+- Next: designer reviews crossing correction sheet and actual print-size legibility.
+
+## 2026-10-16: Aud v11 annotated refinements (Codex)
+- **Task/status:** addressed v10 comments in isolated `NorseBackpack/TravelMap/Drafts/render_refinements_v11.py`: connected water joins/mouths, canopy above roads, one stone moved left 8pt, larger right-column legend icons. PP-030 records the method.
+- **Outputs:** `TravelMap/Drafts/render_full_map_v11/Aud_Full_Map_v11.pdf`, `Aud_Changes_Review_v11.pdf`, PNGs and validation JSON. V10 retained.
+- **Checks:** full input/live-source hash preservation, 102 features, original crossing totals and exact ticket markers; nine open coast/lake mouths. Rendered visual review; no paper hand-walk.
+- **Next:** review v11 at print size, then paper-count against the ticket before live integration. Existing unrelated working changes preserved; no commit/push.
+- **Record validation:** kit.py check reports the same 142 existing migration/configuration warnings noted before this pass; no new record fields introduced.
+
+## 2026-10-16: Aud v12 five PDF corrections (Codex)
+- **Task/status:** enlarged crossing symbols in legend; replaced water fade with shared solid water fill; horizontal gate and local wall adjustment at (465.4,513.12); larger connected wall clusters throughout; denser marked southeastern wood. Isolated `NorseBackpack/TravelMap/Drafts/render_corrections_v12.py`; method recorded in PP-030.
+- **Outputs:** `TravelMap/Drafts/render_full_map_v12/Aud_Full_Map_v12.pdf`, `Aud_Changes_Review_v12.pdf`, PNG previews and validation/style JSON. Earlier versions retained.
+- **Checks:** 102 features, original crossing totals and exact three ticket markers, nine open coast/lake mouths, source/live hashes unchanged; rendered page/review inspection. No paper route count or print test. No commit/push.
+- **Next:** review solid water treatment and wall/gate details at print size.
+- **Record check:** same 142 existing migration/configuration warnings; logged in render_full_map_v12/record_check.txt.
+
+## 2026-10-16: Aud v13 continuous wall, coast and legend corrections (Codex)
+- **Task/status:** replaced wall stamps with continuous vector masonry, aligned the chapel gate/wall; joined river banks and coastline via shared land/water geometry; enlarged legend to 199 x 248pt with 6.5pt labels and reduced padding; removed terrain backgrounds for wood/marsh/moor in key only. Sea label moved beside legend to avoid overlap.
+- **Files:** isolated `NorseBackpack/TravelMap/Drafts/render_continuous_v13.py`; full map/review PDFs, PNGs and logs under `render_full_map_v13/`. PP-030 records methodology. Earlier versions and unrelated work preserved.
+- **Checks:** 102 features, 12 bridges/5 fords/7 gates, exact three ticket markers, nine joined mouths, three continuous wall surfaces; source/live hashes unchanged. Full page and close-up review inspected. No paper count or physical print test; no commit/push.
+- **Next:** designer reviews v13 wall treatment and larger legend at print size before live integration.
+- **Record validation:** kit.py check retains 142 pre-existing migration/configuration warnings; logged in render_full_map_v13/record_check.txt.
+
+## 2026-10-16: Aud v14 water borders and moor/marsh scatter (Codex)
+- **Task/status:** unified all water border colours to coastline #59635D, including key. Replaced neat terrain rows with deterministic irregular clusters/gaps and varied existing icon sizes in both moors and marsh. No new artwork. Retains v13 wall, joined water, enlarged legend and tree layering.
+- **Files:** isolated `NorseBackpack/TravelMap/Drafts/render_terrain_v14.py`; full map and three-region before/after review PDFs/PNGs plus logs in `render_full_map_v14/`; PP-030 records the method. Earlier outputs and unrelated work preserved.
+- **Checks:** 102 features, 12 bridges/5 fords/7 gates and exact markers; source/live hashes unchanged; three terrain areas use irregular size-varied scatter. Full page and close-up renders checked. No paper count/print test. No commit/push.
+- **Next:** review water border consistency and terrain scatter at print size.
+- **Record validation:** same 142 pre-existing migration/configuration warnings; logged in render_full_map_v14/record_check.txt. First build detected an external builder-file update during rendering; fresh build and final hash check passed.
+
+## 2026-10-16: Aud v15 water stroke and finishing corrections (Codex)
+- **Task/status:** fixed the remaining water-weight discrepancy by replacing filled river casings and separate outlines with one shared 0.55pt #59635D boundary stroke; same weight in key. Removed tiny land remnant below legend. Comb cutout shows over blue title band.
+- **Files:** isolated `NorseBackpack/TravelMap/Drafts/render_finish_v15.py`; comb cutout and exact ImageGen prompts in `FINISH_V15_NOTES.md`; full/review PDFs and PNGs/logs in `render_full_map_v15/`. PP-030 updated. Original stamp and unrelated work preserved.
+- **Checks:** 102 features, original crossing totals and markers; nine mouths/three terrain scatters retained; input/live hashes unchanged. Full/review visual checks; same 142 older record warnings. No physical print/count test, no commit/push.
+- **Next:** designer reviews consistent water outline and finishing details at print size.
+
+## 2026-10-16: Approved Aud v15 - optimized delivery copies (Codex)
+- **Task/status:** designer selected v15 as winner and requested smaller files. Created `NorseBackpack/TravelMap/Drafts/optimize_aud_map_v15.py`; outputs in `aud_map_optimized_v15/`: 300dpi print PDF 908,594 bytes; 200dpi web PDF 762,687 bytes; 2400 x 3106 WebP 616,636 bytes. Original master 33,918,855 bytes retained. PP-030 records approval and delivery method.
+- **Method:** resample embedded images at their largest displayed size with alpha intact, retain text/vectors, compress and remove unused objects. A broken shared-image rewrite trial was discarded; final previews show correct artwork/transparency.
+- **Checks:** original source hash unchanged; both PDFs retain identical text, page dimensions and 751 vector paths. Full pages and enlarged icon details inspected. No physical print test. No live integration, publishing or commit.
+- **Next:** use WebP for game display and optimized print PDF for downloads when integrating the approved style.
+
+## 2026-10-16: Oslo ticket reverse smudge preview (Codex)
+- User requested light smudging to show ink transfer from the back of the map. Created Props/Hnefatafl/Hnefatafl_Ticket_Back_Smudged_v1.png with built-in ImageGen; exact prompt/method in TICKET_TRANSFER_SMUDGE_v1.md; PP-036 updated.
+- Visually checked three columns, eleven rows, three pieces, two diamonds and mirrored letters. Original artwork, vector builder and print PDFs retained. Physical alignment/read-through untested.
+- Next: review smudge treatment; preserve shared grid geometry when integrating into print.
+
+## 2026-10-16: Oslo ticket stronger smudge v2 (Codex)
+- User requested a lot more smudging. Created Hnefatafl_Ticket_Back_Smudged_v2.png with built-in ImageGen; exact prompt/method in TICKET_TRANSFER_SMUDGE_v2.md; PP-036 updated.
+- Visually checked eleven rows/three columns, three dark piece cells and both diamonds. Stronger sideways ink dragging and patchy transfer; prior versions retained. Preview only; print PDFs unchanged, registration/read-through unchecked.
+- Next: review v2 treatment before print integration.
+
+## 2026-10-16: Oslo ticket v2 design approved and recorded (Codex)
+- User approved stronger smudge v2 and requested recording. PP-036 now identifies v2 as selected design and v1 as superseded; AS-051 points to Hnefatafl_Ticket_Back_Smudged_v2.png and records ImageGen provenance. Approval also added to TICKET_TRANSFER_SMUDGE_v2.md.
+- Print builder/PDF integration remains pending; exact map registration and physical read-through unchecked. Original artwork retained.
+- Validation: kit.py check reports the same 142 existing migration/configuration problems; no new record fields introduced.
+- Next: integrate approved v2 treatment into the print ticket while preserving shared grid dimensions.
+
+## 2026-10-17: 2134 ticket smudge v1 (Codex)
+- Used clean 2134 strip as edit target, old v2 as style only; saved requested Props/Hnefatafl/Hnefatafl_Ticket_Back_Smudged_2134_v1.png. Exact prompt/method in TICKET_TRANSFER_SMUDGE_2134_v1.md; PP-036 updated.
+- Visual check: five pieces in requested cells, both corner diamonds, 3 columns/11 rows and mirrored letters retained. No builder/PDF changes; precise physical registration/read-through unchecked.
+- Next: review new five-piece artwork before print integration.
+
+## 2026-10-19 Dated flight and train print verification Codex
+- User asked to apply the newly assigned dates. The current builders and DOCX masters already contain the shared ticket_dates.py calendar; preserved those updates.
+- Verified all four Nordic Air and six Viking Rail source PDF tickets against their service dates, with no OPEN dates remaining.
+- Exported both current DOCX masters through Word to output/ticket-date-verification and visually inspected their single Letter pages. Dates and routes fit without clipping. Used Word because the packaged renderer lacks LibreOffice in this environment.
+- No ticket content or design changes needed. Deliver the sage flights and coral trains at 100 percent actual size.
+- Next action: continue the remaining carrier designs when requested.
+
+## 2026-10-19 Longship Buses ticket design Codex
+- Created build_longship_buses.py, Print_LongshipBuses_Yellow_Paper.docx and its source PDF and colour preview. Four 3.5 by 1.75 inch tickets on one Letter page, existing routes/order and dates preserved. PP-039 documents the design. Golden-yellow paper proposed for user review.
+- Simple vector bus/prow logo, dark olive rules and charcoal text, matching the flight/train family. No background printed.
+- Builder assertions passed for four routes, services, dates, exact trim dimensions and no paper fill. Word proof exported and visually reviewed, one clean Letter page. Packaged renderer failed because LibreOffice is absent; Word fallback succeeded. Physical print untested. QA output/longship-buses.
+- First preview archived in Norse_Archive before correcting the print scale ruler. Current preview is unchanged artwork with corrected Word sheet.
+- Next: user reviews buses, then requests ferries when ready.
+- Record validation: kit.py check reports the same 141 existing schema problems. No new count increase. Website copies not regenerated in this print-design review.
+
+## 2026-10-19 Longship Ferries ticket design Codex
+- Created build_longship_ferries.py, Print_LongshipFerries_Green_Paper.docx, source PDF and dark-green preview. Four 3.5 by 1.75 inch ferry hops, original filtered print order and confirmed dates retained. PP-039 updated. Dark-green paper proposed for user review.
+- Near-black text and rules, vector ship/prow and waves logo. Production background unprinted. Same typography and size as buses/trains.
+- Route/service/date/size/no-background assertions passed. Word PDF exported and one-page layout visually inspected; long route names fit. Packaged render_docx.py failed because LibreOffice is absent; Word fallback succeeded. Physical print untested. QA: output/longship-ferries.
+- Next: user reviews ferry design. No connecting-itinerary redesign performed. Website copies not regenerated in this print-design review.
+
+## 2026-10-19 Ferry icon options Codex
+- User requested alternative ferry icons. Created a vector comparison PDF and rendered PNG in output/longship-ferries/icon-options/Longship_Ferries_Icon_Options_v1 with four directions: A modern ferry, B Norse longship, C prow and waves, D LF monogram. Includes enlarged marks and small ticket-wordmark previews on simulated green stock. Visually checked.
+- Existing ticket master untouched. These are proposals pending user choice, not adopted design decisions.
+- Next: apply the selected icon to the ferry builder and regenerate/verify the Word print sheet.
+2026-10-19: User requested fancier coloured ferry icons. Built-in ImageGen produced three concept directions: A dragon longship copper/navy, B raven sail ochre/navy, C maritime seal copper/navy. Preview and exact prompt retained in Props/Tickets/Sources/Longship_Ferries_Colour_Concepts_v1*. No design adopted or print master changed. Next: user chooses direction.
+
+## 2026-10-19 Northway Buses identity options Codex
+- User chose ferry logo A (navy/copper dragon longship), then renamed bus carrier Northway Buses and requested icon options. Recorded both selections in PP-039.
+- Built-in ImageGen comparison: A road/N/arrow, B coach/north star, C compass/road. Raw comparison and exact prompt retained in Props/Tickets/Sources/Northway_Buses_Colour_Concepts_v1*. Visually reviewed inline.
+- Print masters not rebuilt while bus icon choice is pending. Existing LB codes retained. Next: apply selected bus icon and chosen ferry A to their production tickets, render and verify.
+
+## 2026-10-19 Selected bus and ferry identities applied Codex
+- User chose Northway Buses B. Applied coach/star logo and new name in build_longship_buses.py; created Print_NorthwayBuses_Yellow_Paper.docx and matching source PDF/preview. Earlier LongshipBuses Word file is obsolete for redesigned bus hops.
+- Applied previously chosen ferry A in build_longship_ferries.py; regenerated its stable Word/PDF/preview paths. Logos and raw ImageGen attempts plus exact prompts retained in Tickets and Tickets/Sources. Archived former simple ferry preview before replacing it.
+- All eight routes/dates/services preserved. Builders pass route/date/service/dimension/no-background assertions. Northway text checked on every bus PDF ticket. Both Word exports have one clean Letter page; visually inspected each. Packaged renderer still fails without LibreOffice; Word export fallback succeeds. Physical printing untested.
+- PP-039 records adoption. Existing generic mixed-hop and connecting-itinerary outputs still carry the older bus name and have not been rebuilt; this session delivered the redesigned hop sheets. Website copies not regenerated.
+- Next: use current Northway and ferry masters for printing; update old generic/connecting carrier naming when those sheets are revised.
+
+## 2026-10-19 Nordmark Rail icon options Codex
+- User accepted Nordmark Rail name, replacing Viking Rail, and requested icons. Generated and visually reviewed three coloured concepts on coral stock: A N/track monogram, B train/mountain, C compass/track. Raw ImageGen comparison and exact prompt retained in Tickets/Sources/Nordmark_Rail_Colour_Concepts_v1*; decision recorded in PP-039.
+- Existing VR services/dates retained. Print files untouched pending icon choice. Next: apply chosen Nordmark icon and name, then render and verify the train Word sheet.
+## 2026-10-19 Nordic Air logo options recovered in new chat
+- Recovered the failed chat request and generated three options with built-in ImageGen: A wing/N, B bird/copper, C north-star/flight arc, on sage #ADBD98. Visually inspected; C resembles compass/arrow more than aircraft. No logo selected or ticket master changed.
+- Saved board and exact prompt to NorseBackpack/Props/Tickets/Sources/Nordic_Air_Colour_Concepts_v2*; documented exploration in PP-039.
+- Next: user chooses Nordic Air direction. Physical printing untested. The earlier Nordmark B application was interrupted and remains a separate unfinished action.
+

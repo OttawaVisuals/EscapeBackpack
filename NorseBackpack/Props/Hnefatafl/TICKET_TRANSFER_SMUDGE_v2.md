@@ -1,0 +1,11 @@
+# Stronger ticket transfer smudge
+
+**Design approved by the user, 16 Oct 2026.** V2 is the selected ticket reverse; v1 is superseded. Recorded in PP-036 and AS-051. Print integration and physical registration/read-through checks remain pending.
+
+16 Oct 2026. User requested much more smudging after v1. Built-in ImageGen edit of `Hnefatafl_Ticket_Back_Smudged_v1.png`, saved as `Hnefatafl_Ticket_Back_Smudged_v2.png`. Earlier versions preserved.
+
+Visual check: substantially stronger sideways drags, patchy ink at grid intersections, smears around three dark pieces and orange diamonds. Three columns and eleven rows remain countable, all three pieces and both diamonds retain their cells. Artwork preview only; exact print registration and physical read-through not checked. No print PDFs changed.
+
+## Exact prompt
+
+Edit this ticket reverse to make the board drawing MUCH MORE HEAVILY SMUDGED than the reference. The previous light feathering is far too subtle. Make unmistakable wet-ink contact transfer from a map: strong irregular charcoal-green sideways ink drags, smeared and doubled grid-line edges, broad short streaks originating at actual grid lines, patchy partial transfer and broken ink on portions of the grid, substantial soft rubbed ink halos and streaks around ALL THREE dark square pieces. Smears should extend roughly a quarter to half a cell from some inked marks, with variations in pressure, several conspicuous messy dark patches at intersections, and faint ghost impressions nearby. Some orange pigment should drag sideways from the two corner diamonds too. This should visibly read as a wet drawing pressed against paper and slid slightly, with significant imperfect transfer, not a crisp drawing with a tiny blur. Keep enough original skeleton to count every cell and identify the three occupied squares. Preserve exactly THREE columns and ELEVEN rows; preserve all three dark squares in their current cells, the two orange corner diamonds, mirrored handwritten letters at top, the underlying board scale, location and tall ticket proportions. No new pieces or symbols. Keep the beige paper and thin outside border clean; concentrate mess on and around actual drawing. Flat print artwork, no perspective, no photography, no added text.

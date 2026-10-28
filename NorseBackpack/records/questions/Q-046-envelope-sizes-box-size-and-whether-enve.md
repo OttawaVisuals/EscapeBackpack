@@ -21,9 +21,9 @@ Opened 11 Oct 2026 with PR-007 (box and envelopes instead of a backpack and lock
 
 **Not flat:** several envelopes hold objects, not just paper. Each needs an envelope (padded, gusseted, or a small marked pouch) big enough for:
 
-- Envelope 1: magnifier (PP-027; candidate is 90 mm with a wooden handle)
-- Envelope 2: Aud's comb (PP-028)
-- Envelope 4: architect's scale ruler (PP-025; length not recorded)
+- Envelope 2: magnifier (PP-027; candidate is 90 mm with a wooden handle)
+- Envelope 1: Aud's comb (PP-028)
+- Envelope 9: architect's scale ruler (PP-025; length not recorded)
 - Envelope 7: coin hoard (PP-037) and the four-wheel treasure tally (PP-026)
 - Envelope 10: hnefatafl board and 23 pieces (PP-035)
 - Envelope 13: adventure medallion (PP-044)
@@ -36,3 +36,5 @@ Opened 11 Oct 2026 with PR-007 (box and envelopes instead of a backpack and lock
 2. Envelopes 6 and 8–12 inside envelope 4, as before (keeps "the big one holds the rest").
 
 Puzzle records still carry `container_in: PZ-004` for 6 and 8–12 until this is answered.
+
+**16 Oct 2026 (designer):** the ruler (PP-025) is now in envelope 9 with R3, R4 and R5, not envelope 4.

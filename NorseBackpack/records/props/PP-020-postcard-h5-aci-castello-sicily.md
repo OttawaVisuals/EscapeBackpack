@@ -11,6 +11,7 @@ source: print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-008
+envelope: PZ-008
 # Physical pocket/container or location; availability remains in found_in above.
 container: Envelope 11
 after_game: return
@@ -51,3 +52,5 @@ There are 22 postcards: each goes back with the lock it came from, as listed bel
 ## Replacement
 
 Reprint from the print file if damaged.
+
+**17 Oct 2026 (designer, Q-057):** Fun Fact shortened to “Aci Castello's rock is lava that cooled underwater into glassy basalt pillars.” (the last sentence is gone). Message unchanged, including the capitals RAVEN that drive the puzzle. H5 is in envelope 11. Rebuilt.

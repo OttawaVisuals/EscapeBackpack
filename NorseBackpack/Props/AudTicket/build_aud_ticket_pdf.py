@@ -1,3 +1,5 @@
+# SUPERSEDED FOR PRINT 17 Oct 2026 (designer): the live Aud ticket PDF now comes from the readability redesign
+# (Props/ReadabilityDrafts/adopt_to_live.py). Running this builder overwrites it with the old layout. Kept for its data and history.
 """Aud's Treasure Museum ticket -- the sheet the treasure hunt is written on (PZ-17).
 
 Unlike the L'Anse ticket this one has no ImageGen front art, so both faces are drawn as vector.
@@ -27,8 +29,8 @@ from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
 
 ROOT = Path(__file__).resolve().parents[3]
-OUT = ROOT / "output" / "pdf" / "Aud_Ticket_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Aud_Ticket_Letter_Print.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Aud_Ticket_Print.pdf"
+OUT_LETTER = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Aud_Ticket_Letter_Print.pdf"
 FONT_DIR = ROOT / "Fonts"
 COINS = ROOT / "NorseBackpack" / "Props" / "Coins"
 
@@ -66,7 +68,7 @@ LEGS = [
     "Where the road ends at the ruin, search the wood beyond.",
 ]
 WORKED = (1, 0, 0)          # leg 1: one bridge, no ford, no gate
-ANSWER = (5, 2, 1)          # the full tally, for the answer copy only
+ANSWER = (5, 3, 2)          # the full tally, for the answer copy only (532 since the 16 Oct 2026 redraw)
 
 
 def wrap(c, text, font, size, width):
@@ -317,7 +319,8 @@ def draw_back_card(c, x=0, y=0, answer=False):
 
 
 # per-leg answers, used only on the designer copy
-PER_LEG = [(1, 0, 0), (1, 2, 0), (1, 0, 0), (1, 0, 0), (1, 0, 1), (0, 0, 0)]
+# 16 Oct 2026 redraw: leg 3 gains the C6 ford just before the landing, leg 5 the H7 wall gate.
+PER_LEG = [(1, 0, 0), (1, 2, 0), (1, 1, 0), (1, 0, 0), (1, 0, 2), (0, 0, 0)]
 assert tuple(sum(p[i] for p in PER_LEG) for i in range(3)) == ANSWER
 
 

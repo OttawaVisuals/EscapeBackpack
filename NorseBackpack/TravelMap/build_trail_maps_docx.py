@@ -1,4 +1,4 @@
-"""Word copy of the four trail maps, one Letter page each: output/docx/Norse_Trail_Maps_Print.docx.
+"""Word copy of the four trail maps, one Letter page each: NorseBackpack/Print/Norse_Trail_Maps_Print.docx.
 
 Each map's Print.pdf page 1 is rasterised at 300 dpi, cropped to the sheet's neat line (NEAT in
 build_trail_maps_pdf.py), and placed inline at its exact printed size, with page margins equal to
@@ -23,8 +23,8 @@ sys.path.insert(0, str(HERE))
 from build_trail_maps_pdf import NEAT, PAGE_W, PAGE_H  # noqa: E402
 
 ROOT = HERE.parents[1]
-PDF_DIR = ROOT / "output" / "pdf"
-OUT = ROOT / "output" / "docx" / "Norse_Trail_Maps_Print.docx"
+PDF_DIR = ROOT / "NorseBackpack" / "Print" / "_pdf_source"
+OUT = ROOT / "NorseBackpack" / "Print" / "Norse_Trail_Maps_Print.docx"
 MAPS = ("Trail_Map_1_Leif_Print", "Trail_Map_2_Rollo_Print",
         "Trail_Map_3_Aud_Print", "Trail_Map_4_Harald_Print")
 DPI = 300

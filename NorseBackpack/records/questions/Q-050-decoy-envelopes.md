@@ -24,3 +24,12 @@ Open: how many, and what's inside. Options for what a decoy does:
 3. **Story extras:** a decoy holds a bonus souvenir or fact card, with runes no code reaches. Opening it early does no harm.
 
 Any decoy must not carry runes that a correct code shows (the builder already guarantees the 13 real labels are distinct; decoys would need the same check). Decoys add reset work: they must be resealed too.
+
+**17 Oct 2026 (designer): two decoy envelopes, one of each size used.** Contents and rune labels not decided yet (options above; labels must differ from the 13 real ones, and runes off the wheel's 20 would guarantee no code ever produces them).
+
+**Proposed, not chosen (17 Oct 2026, Claude):** decoy contents = a short kind note from Liv (“Not this one yet, put it back!”); rune labels from runes that are not on the wheel's 20, so no code can ever show them. Alternative: labels from a plausible wrong code so a team that mis-sets the wheel finds a decoy.
+
+
+**18 Oct 2026 (designer request, Codex): repacking insert for the large decoy envelope.** Created a single-sided US Letter reset checklist at NorseBackpack/Print/_pdf_source/Raven_Inheritance_Repacking_Letter.pdf, built by NorseBackpack/Tools/build_repacking_sheet.py. It lists the 13 current rune labels and envelope inventories from Full_Adventure.html, the tally reset to 0000, the loose starting items, and returning the folded sheet to the large decoy. Source asserts each listed envelope matches the adventure page. No decoy rune labels or small-decoy contents assigned. Render visually checked; physical print and envelope fit untested.
+
+**18 Oct 2026 (designer correction):** repacking sheet now identifies postcards by the place names printed at the bottom of the art side, with no internal card codes; maps use their printed bottom titles. Added a sentence explaining where to find both. All 22 front labels inspected; Baffin Island and Sicily match the art. One-page Letter output rebuilt and visually checked.

@@ -11,6 +11,7 @@ source: print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-012
+envelope: PZ-012
 # Physical pocket/container or location; availability remains in found_in above.
 container: Envelope 12
 after_game: return
@@ -51,3 +52,5 @@ There are 22 postcards: each goes back with the lock it came from, as listed bel
 ## Replacement
 
 Reprint from the print file if damaged.
+
+**17 Oct 2026 (designer, Q-062): H6 text applied.** Message: “This is the last stop of my travels for now. / I had so much fun exploring the Viking and Norse historical travels! / For your university summer break, I would love for you to join me on my next adventure. You have one more puzzle to solve! / Along the way, I found our family icon: the raven! / Now you should have all you need to retrace my steps that matter to our family history!” (designer's text; changes: “one more puzzle” for the typed “more one puzzle”; “crest” became “icon” and “university” was added back at the designer's request; “you will get your rewards!” dropped for space). Fun Fact: “A Viking sword was found at Patara in 2018, possibly from a soldier of the Varangian Guard.” **Checked** against Daily Sabah, 19 Nov 2018 (the card's own credit line): a Viking sword, 9th–10th century, found at Patara; a Turkish researcher linked it to Byzantine naval service; the reports say it is unclear whether it belonged to a Varangian. Print PDFs, page images and web copies rebuilt; H6 render checked.

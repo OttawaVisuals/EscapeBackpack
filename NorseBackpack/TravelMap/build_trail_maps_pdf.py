@@ -1,3 +1,6 @@
+# 17 Oct 2026 (designer): the live Leif, Rollo and Harald print and answer PDFs are now the cleanup drafts built by
+# TravelMap/Drafts/build_{leif,rollo,harald}_cleanup.py (copied over NorseBackpack/Print/_pdf_source/). Running this builder for those three
+# maps overwrites them with the old style; old copies are in ../Norse_Snapshots/Norse_2026-10-17_PreReadability/ (outside the repo). Aud keeps v15.
 """Build the printable trail maps (letter, portrait), one per trail.
 
 Style B from the design discussion: flat screen-print poster, limited palette shared with the
@@ -39,7 +42,7 @@ from reportlab.pdfgen import canvas
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 FONT_DIR = ROOT / "Fonts"
-OUT_DIR = ROOT / "output" / "pdf"
+OUT_DIR = ROOT / "NorseBackpack" / "Print" / "_pdf_source"
 SOURCE_ART_DIR = HERE / "Art"
 ART_DIR = SOURCE_ART_DIR / "processed"  # Leif's alpha-hole-filled derivatives
 
@@ -127,6 +130,12 @@ TRAILS = {
                      ("Pangnirtung", 66.15, -65.71), ("Nuuk", 64.18, -51.72),
                      ("Sisimiut", 66.94, -53.67), ("Paamiut", 61.99, -49.67),
                      ("Narsarsuaq", 61.16, -45.43), ("Qaqortoq", 60.72, -46.03)],
+        # 16 Oct 2026 (designer, Q-060): fewer towns where they cluster (St. Anthony 6 pt from
+        # L'Anse aux Meadows, Narsarsuaq 1 pt from Brattahlíð), one name per place, bolder dots.
+        omit_towns=["St. Anthony", "Red Bay", "Blanc-Sablon", "Narsarsuaq", "Twillingate",
+                    "Hopedale"],
+        display_names={"Brattahlíð / Qassiarsuk": "Brattahlíð"},
+        bold_towns=True,
     ),
     "rollo": dict(
         n=2, title="THE GRANTED LANDS", sub="Rollo & descendants", band="#A2562D",
@@ -162,7 +171,9 @@ TRAILS = {
         # Label spots fixed by hand, (dx, dy) from the dot to the label's baseline start.
         # Manchester's dot sits inside the cow's reserved square, so every candidate the
         # labeller tries is blocked by the box, although the drawing is 5 pt lower.
-        fixed_labels={"Manchester": (4.4, -2.8)},
+        fixed_labels={"Manchester": (4.4, -2.8),
+                      # 16 Oct 2026: the bolder labels left no free spot beside Rouen, 6 pt away.
+                      "Roumare forest": (-34.0, -19.0)},
         # Removed 1 Oct 2026 (user's call, PZ-14): none is a route stop or used by any puzzle,
         # and six of them only ever printed as nameless dots.
         # Playtest 1 (11 Oct 2026): players looked for Walcheren, the RD decoy card, and it was
@@ -174,7 +185,11 @@ TRAILS = {
         omit_towns=["Caen", "Falaise", "Chichester", "Château Gaillard", "Dives estuary",
                     "Le Havre", "Lewes", "Pevensey", "Salisbury", "Southampton",
                     "Coutances", "Évreux", "Hastings", "Amiens", "Calais", "Chartres",
-                    "Alençon", "Avranches", "Limoges", "Dover"],
+                    "Alençon", "Avranches", "Limoges", "Dover",
+                    # 16 Oct 2026 (designer, Q-060): both plot in the sea, and Portsmouth sits
+                    # 19 pt from Winchester. Walcheren (a decoy card) stays: see decoy_towns.
+                    "Portsmouth", "Saint-Malo"],
+        bold_towns=True,
     ),
     "aud": dict(
         n=3, title="THE ISLAND SETTLEMENT", sub="Aud the Deep-Minded", band="#6D528B",
@@ -191,6 +206,12 @@ TRAILS = {
                ("Kjalarnes", 64.28, -21.70)],
         # Moved south-east: at 64.45,-22.80 it printed across the legend box.
         waters=[("FAXAFLÓI", 64.242, -22.108, 0)],
+        # 16 Oct 2026 (designer): fewer towns where they cluster (Krosshólaborg sits 9 pt from
+        # Hvammur; Kambsnes 18 pt from Búðardalur; Mosfellsbær is near the edge).
+        omit_towns=["Kambsnes", "Mosfellsbær", "Krosshólaborg / Krosshólar"],
+        # One name per place, the one the cards use (A1, A3), instead of "X / Y".
+        display_names={"Dögurðarnes / Dagverðarnes": "Dögurðarnes", "Esjuberg / Kjalarnes": "Esjuberg"},
+        bold_towns=True,
         # APPROX -- typed from general knowledge, not source-checked. See PR-10.
         extra_towns=[("Reykjavík", 64.15, -21.94), ("Akranes", 64.32, -22.08),
                      ("Borgarnes", 64.54, -21.92), ("Búðardalur", 65.11, -21.76),
@@ -211,6 +232,15 @@ TRAILS = {
         areas=[],
         waters=[],
         extra_towns=[],
+        # 17 Oct 2026 (designer, Q-060): one name per place (Staraya Ladoga, Novgorod, Constantinople
+        # and Solund, the names the cards use), Denmark and Sweden dropped (country dots no puzzle
+        # or card uses, and their labels crowded Hedeby and Sigtuna), bolder dots and names.
+        omit_towns=["Denmark", "Sweden"],
+        display_names={"Aldeigjuborg / Staraya Ladoga": "Staraya Ladoga",
+                       "Holmgard / Novgorod": "Novgorod",
+                       "Constantinople / Istanbul": "Constantinople",
+                       "Solund / Sognefjord mouth": "Solund"},
+        bold_towns=True,
         # Harald-only grid override (PZ-02 x PZ-09): the branch-rune puzzle's reading order
         # comes from spelling RAVEN against the column letters, so this sheet's columns are
         # relettered A,C,E,I,K,N,R,T,V instead of the shared A-I run. The other three trail
@@ -573,6 +603,12 @@ PLOT_NUDGE = {
     # its own correct coordinate plots 16 pt -- about 3.4 km -- offshore. Same cause as
     # Dogurdarnes, same remedy: the drawing moves, stops.js and the config do not.
     "Stykkishólmur": (-0.0324, -0.0480),
+    # 16 Oct 2026 (designer): town dots plotted in the sea on Aud's sheet, moved ashore (nearest
+    # land point at least 250 m from the 50m coastline, measured, not guessed). Bjarnarhöfn moves
+    # east, away from the west edge, so it stays on the sheet.
+    "Bjarnarhöfn": (-0.0090, 0.0036),
+    "Akranes": (0.0, 0.0360),
+    "Borgarnes": (-0.0108, 0.0216),
     "D\u00f6gur\u00f0arnes / Dagver\u00f0arnes \u00b7 Iceland": (0.02448, 0.04800),  # (dlat, dlon)
 }
 
@@ -746,6 +782,16 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
         print("        symbol layer: %d features from aud_features.json" % len(_feats))
         draw_aud_cache_mark(c)
 
+    # 17 Oct 2026 (PZ-008): the hand-drawn hnefatafl shield (Codex) marks the grid square of the
+    # last black move on Harald's sheet, I10 (column I is the 4th letter, A C E I K N R T V; rows
+    # count from the top; moved from I11 on 17 Oct 2026 when the last move became K10-I10). The Hnefatafl Museum ticket shows the same icon, with no caption.
+    if key == "harald":
+        _cw, _ch = (MX1 - MX0) / GRID_COLS, (MY1 - MY0) / GRID_ROWS
+        _icx, _icy = MX0 + 3.5 * _cw, MY1 - 9.5 * _ch
+        _is = 0.6 * min(_cw, _ch)
+        c.drawImage(ImageReader(str(HERE.parent / "Props" / "Hnefatafl" / "Hnefatafl_Shield_Icon_HandDrawn_v1.png")),
+                    _icx - _is / 2, _icy - _is / 2, _is, _is, mask="auto")
+
     # Reference grid: over the land, so a settlement can be given a square reference -- but under
     # every label drawn below, so no line printed here can ever sit on top of a clue.
     c.saveState()
@@ -869,26 +915,45 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
 
     stop_names = [s_["name"].split(" · ")[0] for s_ in stops]
     ordered = stop_names + sorted(n for n in towns if n not in stop_names)
+    bold = cfg.get("bold_towns", False)
+    dot_r = 2.3 if bold else 1.7
+    lab_size = 7.4 if bold else 6.6
+    lab_ink = INK if bold else INK_SOFT
     for name in ordered:
         lat, lon = towns[name]
+        shown = cfg.get("display_names", {}).get(name, name)
         x, y = pt(lon, lat)
-        c.setStrokeColor(INK_SOFT)
+        c.setStrokeColor(INK if bold else INK_SOFT)
         c.setFillColor(WHITE)
-        c.setLineWidth(0.6)
-        c.circle(x, y, 1.7, stroke=1, fill=1)
+        c.setLineWidth(0.9 if bold else 0.6)
+        c.circle(x, y, dot_r, stroke=1, fill=1)
         lab.reserve_centred(x, y, 5, 5, pad=0.5)
         if name in cfg.get("fixed_labels", {}):
             dx, dy = cfg["fixed_labels"][name]
             spot = (x + dx, y + dy)
             lab.reserve(spot[0] - 1.4, spot[1] - 1.4,
-                        spot[0] + pdfmetrics.stringWidth(name, "Plex", 6.6) + 1.4,
-                        spot[1] + 6.6 * 0.86 + 1.4)
+                        spot[0] + pdfmetrics.stringWidth(shown, "Plex", lab_size) + 1.4,
+                        spot[1] + lab_size * 0.86 + 1.4)
         else:
-            spot = lab.place(name, x, y, "Plex", 6.6)
+            spot = lab.place(shown, x, y, "Plex", lab_size)
         if spot:
-            c.setFillColor(INK_SOFT)
-            c.setFont("Plex", 6.6)
-            c.drawString(spot[0], spot[1], name)
+            if bold:
+                # thin white halo so the name stays readable over the map layer
+                t = c.beginText(spot[0], spot[1])
+                t.setFont("Plex", lab_size)
+                t.setTextRenderMode(2)
+                c.setStrokeColor(WHITE)
+                c.setLineWidth(1.6)
+                c.setFillColor(WHITE)
+                t.textOut(shown)
+                t.setTextRenderMode(0)    # the mode persists in the graphics state: reset it
+                c.drawText(t)
+            c.setFillColor(lab_ink)
+            t = c.beginText(spot[0], spot[1])
+            t.setFont("Plex", lab_size)
+            t.setTextRenderMode(0)
+            t.textOut(shown)
+            c.drawText(t)
 
     if answer:
         # The solved route, drawn where a player would draw it with the wet-erase marker.
@@ -965,10 +1030,12 @@ def build(key, cfg, plan, corpus, answer=False, _return_geometry=False):
     # so each postcard can be matched to its map by stamp. This deliberately reverses part of the
     # "no pre-sorting" rule above: playtest 1 found sorting the deck too much work. The digit
     # order is still not given. Same files the postcards print (Postcards/Stamps).
-    stamp = ImageReader(str(TRAIL_STAMPS[key]))
-    st_h = TITLE_H - 6
-    st_w = st_h * 20 / 24                      # the cards' 20 x 24 mm stamp proportion
-    c.drawImage(stamp, NEAT[2] - 12 - st_w, NEAT[1] + 3, st_w, st_h,
+    stamp = ImageReader(str(cfg.get("stamp_path", TRAIL_STAMPS[key])))
+    st_h = cfg.get("stamp_height", TITLE_H - 6)
+    stamp_ratio = stamp.getSize()[0] / stamp.getSize()[1] if cfg.get("stamp_path") else 20 / 24
+    st_w = st_h * stamp_ratio
+    c.drawImage(stamp, NEAT[2] - cfg.get("stamp_right_inset", 12) - st_w,
+                NEAT[1] + (TITLE_H - st_h) / 2, st_w, st_h,
                 preserveAspectRatio=True, anchor="c", mask="auto")
 
 
@@ -1058,6 +1125,92 @@ def main():
             continue
         build(key, TRAILS[key], plan, corpus)
         build(key, TRAILS[key], plan, corpus, answer=True)
+        if key == "aud":
+            use_aud_v15_print()
+            make_aud_answer_from_v15(plan)
+
+
+# 17 Oct 2026 (designer): the approved Aud style is v15 (Drafts/aud_map_optimized_v15, rendered from the same
+# 102 features as aud_features.json). The player print PDF is that file; the answer copy and the vector
+# build stay as they were (the answer copy is a design check, not a print). Delete the v15 file to fall back.
+AUD_V15_PRINT = HERE / "Drafts" / "aud_map_optimized_v15" / "Aud_Map_v15_Print_300dpi.pdf"
+
+
+def make_aud_answer_from_v15(plan):
+    """17 Oct 2026: the Aud ANSWER copy in the v15 style = the v15 print with the answer overlay on top: the
+    ANSWER KEY banner, the faint diagonal watermark, and the solved route (the stops in order, joined, numbered).
+    The stop positions are the plotted ones from aud_base.js, the same ones the designer and the old answer copy use."""
+    if not AUD_V15_PRINT.exists():
+        return
+    import json as _json
+    from io import BytesIO as _BytesIO
+    import pymupdf
+    raw = (HERE / "aud_base.js").read_text(encoding="utf-8")
+    base = _json.loads(raw[raw.index("{"): raw.rindex("}") + 1])
+    stops_ = sorted(base["stops"], key=lambda s_: s_["order"])
+    route = [(s_["x"], s_["y"]) for s_ in stops_]
+    digit = next((d["digit"] for d in plan.get("digitOrder", []) if d["trip"] == "aud"), "?")
+    buf = _BytesIO()
+    c = canvas.Canvas(buf, pagesize=(PAGE_W, PAGE_H))
+    c.setStrokeColor(WHITE)
+    c.setLineWidth(7)
+    c.setLineCap(1)
+    c.setLineJoin(1)
+    path = c.beginPath()
+    path.moveTo(*route[0])
+    for q in route[1:]:
+        path.lineTo(*q)
+    c.drawPath(path, stroke=1, fill=0)
+    c.setStrokeColor(RUST)
+    c.setLineWidth(3.4)
+    path = c.beginPath()
+    path.moveTo(*route[0])
+    for q in route[1:]:
+        path.lineTo(*q)
+    c.drawPath(path, stroke=1, fill=0)
+    for i, (qx, qy) in enumerate(route):
+        c.setFillColor(RUST)
+        c.setStrokeColor(WHITE)
+        c.setLineWidth(1.2)
+        c.circle(qx, qy, 6.4, stroke=1, fill=1)
+        c.setFillColor(WHITE)
+        c.setFont("CinzelBold", 7.6)
+        c.drawCentredString(qx, qy - 2.7, str(i + 1))
+    bh = 21
+    c.setFillColor(RUST)
+    c.rect(NEAT[0], NEAT[3] - bh, NEAT[2] - NEAT[0], bh, stroke=0, fill=1)
+    c.setFillColor(WHITE)
+    c.setFont("CinzelXB", 11)
+    c.drawString(NEAT[0] + 14, NEAT[3] - 14.5, "A N S W E R   K E Y")
+    c.setFont("Plex", 7)
+    c.drawString(NEAT[0] + 150, NEAT[3] - 14, "designer copy - not for the bag")
+    c.setFont("CinzelXB", 13)
+    c.drawRightString(NEAT[2] - 14, NEAT[3] - 15, "reads as  %s" % digit)
+    c.saveState()
+    c.setFillColor(HexColor("#C9A77B"))
+    c.setFillAlpha(0.28)
+    c.setFont("PlexIt", 26)
+    c.translate(PAGE_W / 2, PAGE_H / 2)
+    c.rotate(38)
+    c.drawCentredString(0, 0, "A N S W E R   K E Y")
+    c.restoreState()
+    c.showPage()
+    c.save()
+    doc = pymupdf.open(str(AUD_V15_PRINT))
+    ov = pymupdf.open(stream=buf.getvalue(), filetype="pdf")
+    page = doc[0]
+    page.show_pdf_page(page.rect, ov, 0)
+    dst = OUT_DIR / "Trail_Map_3_Aud_ANSWER.pdf"
+    doc.save(str(dst), garbage=4, deflate=True)
+    print("aud    -> Trail_Map_3_Aud_ANSWER.pdf rebuilt on the v15 map  [digit %s, %d KB]" % (digit, dst.stat().st_size // 1024))
+
+
+def use_aud_v15_print():
+    if AUD_V15_PRINT.exists():
+        import shutil
+        dst = OUT_DIR / "Trail_Map_3_Aud_Print.pdf"
+        shutil.copyfile(AUD_V15_PRINT, dst)
+        print("aud    -> Trail_Map_3_Aud_Print.pdf replaced by the approved v15 map (%d KB)" % (dst.stat().st_size // 1024))
 
 
 if __name__ == "__main__":

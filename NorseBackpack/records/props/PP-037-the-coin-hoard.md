@@ -11,6 +11,7 @@ source: 3d-print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-005
+envelope: PZ-005
 # Physical pocket/container or location; availability remains in found_in above.
 container: Envelope 7
 after_game: return
@@ -29,7 +30,7 @@ Approved replacement · 22 September 2026, coin design decided 23 September 2026
 
 ### The hoard and treasure tally
 
-After the 521 treasure-route gate, release A1/A3, three coin piles, a merchant’s value key and a labelled treasure tally. The cache mark selects one pile by currency. Convert and add that pile's coin values to **3705**; display the total, then rotate the whole device 180 degrees to read **SOLE**.
+After the 532 treasure-route gate (521 before the 16 Oct 2026 map redraw), release A1/A3, three coin piles, a merchant’s value key and a labelled treasure tally. The cache mark selects one pile by currency. Convert and add that pile's coin values to **3705**; display the total, then rotate the whole device 180 degrees to read **SOLE**.
 
 The display can be a calculator or four independently settable 0–9 wheels. Label it *“Use this to tally treasure.”* A1 must instruct adding values; A3 must refer to the tally. Revised copy is in Approved changes. There is no scale, decimal point, discarded digit or mass target.
 

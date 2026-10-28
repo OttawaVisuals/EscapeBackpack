@@ -1,0 +1,143 @@
+142 problem(s):
+  ! backpack.json: no "cipher" in backpack.json; using the "shapes" preset
+  ! records/puzzles/PZ-001-the-opening-puzzle.md: lock is from the lock-based kit; remove it: answers now give an envelope code
+  ! records/puzzles/PZ-001-the-opening-puzzle.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/puzzles/PZ-001-the-opening-puzzle.md: reset_display is from the lock-based kit; remove it: there are no locks to reset
+  ! records/puzzles/PZ-002-the-joined-top-edge.md: lock is from the lock-based kit; remove it: answers now give an envelope code
+  ! records/puzzles/PZ-002-the-joined-top-edge.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/puzzles/PZ-002-the-joined-top-edge.md: reset_display is from the lock-based kit; remove it: there are no locks to reset
+  ! records/puzzles/PZ-003-the-comb-grille.md: lock is from the lock-based kit; remove it: answers now give an envelope code
+  ! records/puzzles/PZ-003-the-comb-grille.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/puzzles/PZ-003-the-comb-grille.md: reset_display is from the lock-based kit; remove it: there are no locks to reset
+  ! records/puzzles/PZ-003-the-comb-grille.md: answer 'BOOK' uses B, K, O, which the Shapes cipher can't encode
+  ! records/puzzles/PZ-004-what-s-in-the-horn.md: lock is from the lock-based kit; remove it: answers now give an envelope code
+  ! records/puzzles/PZ-004-what-s-in-the-horn.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/puzzles/PZ-004-what-s-in-the-horn.md: reset_display is from the lock-based kit; remove it: there are no locks to reset
+  ! records/puzzles/PZ-004-what-s-in-the-horn.md: answer 'MEAD' uses A, D, E, M, which the Shapes cipher can't encode
+  ! records/puzzles/PZ-005-the-beasts-on-the-chart.md: lock is from the lock-based kit; remove it: answers now give an envelope code
+  ! records/puzzles/PZ-005-the-beasts-on-the-chart.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/puzzles/PZ-005-the-beasts-on-the-chart.md: reset_display is from the lock-based kit; remove it: there are no locks to reset
+  ! records/puzzles/PZ-006-the-treasure-route.md: lock is from the lock-based kit; remove it: answers now give an envelope code
+  ! records/puzzles/PZ-006-the-treasure-route.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/puzzles/PZ-006-the-treasure-route.md: reset_display is from the lock-based kit; remove it: there are no locks to reset
+  ! records/puzzles/PZ-006-the-treasure-route.md: answer '532' has 3 characters; envelope codes are 4 to 5 long
+  ! records/puzzles/PZ-007-the-word-lock-chain.md: lock is from the lock-based kit; remove it: answers now give an envelope code
+  ! records/puzzles/PZ-007-the-word-lock-chain.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/puzzles/PZ-007-the-word-lock-chain.md: reset_display is from the lock-based kit; remove it: there are no locks to reset
+  ! records/puzzles/PZ-008-the-king-s-unfinished-escape.md: lock is from the lock-based kit; remove it: answers now give an envelope code
+  ! records/puzzles/PZ-008-the-king-s-unfinished-escape.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/puzzles/PZ-008-the-king-s-unfinished-escape.md: reset_display is from the lock-based kit; remove it: there are no locks to reset
+  ! records/puzzles/PZ-008-the-king-s-unfinished-escape.md: answer '253' has 3 characters; envelope codes are 4 to 5 long
+  ! records/puzzles/PZ-009-counting-in-the-illustration.md: lock is from the lock-based kit; remove it: answers now give an envelope code
+  ! records/puzzles/PZ-009-counting-in-the-illustration.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/puzzles/PZ-009-counting-in-the-illustration.md: reset_display is from the lock-based kit; remove it: there are no locks to reset
+  ! records/puzzles/PZ-009-counting-in-the-illustration.md: answer '562' has 3 characters; envelope codes are 4 to 5 long
+  ! records/puzzles/PZ-010-the-hoard-and-treasure-tally.md: lock is from the lock-based kit; remove it: answers now give an envelope code
+  ! records/puzzles/PZ-010-the-hoard-and-treasure-tally.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/puzzles/PZ-010-the-hoard-and-treasure-tally.md: reset_display is from the lock-based kit; remove it: there are no locks to reset
+  ! records/puzzles/PZ-010-the-hoard-and-treasure-tally.md: answer 'SOLE' uses E, L, O, S, which the Shapes cipher can't encode
+  ! records/puzzles/PZ-011-the-rebus-distance.md: lock is from the lock-based kit; remove it: answers now give an envelope code
+  ! records/puzzles/PZ-011-the-rebus-distance.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/puzzles/PZ-011-the-rebus-distance.md: reset_display is from the lock-based kit; remove it: there are no locks to reset
+  ! records/puzzles/PZ-011-the-rebus-distance.md: answer '120' has 3 characters; envelope codes are 4 to 5 long
+  ! records/puzzles/PZ-012-branch-runes-and-the-raven-s-flights.md: lock is from the lock-based kit; remove it: answers now give an envelope code
+  ! records/puzzles/PZ-012-branch-runes-and-the-raven-s-flights.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/puzzles/PZ-012-branch-runes-and-the-raven-s-flights.md: reset_display is from the lock-based kit; remove it: there are no locks to reset
+  ! records/puzzles/PZ-013-the-route-hidden-in-plain-sight.md: lock is from the lock-based kit; remove it: answers now give an envelope code
+  ! records/puzzles/PZ-013-the-route-hidden-in-plain-sight.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/puzzles/PZ-013-the-route-hidden-in-plain-sight.md: reset_display is from the lock-based kit; remove it: there are no locks to reset
+  ! records/props/PP-001-postcard-l1-l-anse-aux-meadows.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-001-postcard-l1-l-anse-aux-meadows.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-002-postcard-l2-battle-harbour-markland.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-002-postcard-l2-battle-harbour-markland.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-003-postcard-l3-qikiqtarjuaq-baffin-island-h.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-003-postcard-l3-qikiqtarjuaq-baffin-island-h.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-004-postcard-ld-brattahl-decoy.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-004-postcard-ld-brattahl-decoy.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-005-postcard-r1-ch-lus.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-005-postcard-r1-ch-lus.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-006-postcard-r2-rouen.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-006-postcard-r2-rouen.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-007-postcard-r3-bayeux.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-007-postcard-r3-bayeux.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-008-postcard-r4-winchester.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-008-postcard-r4-winchester.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-009-postcard-r5-battle.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-009-postcard-r5-battle.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-010-postcard-r6-roumare-forest.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-010-postcard-r6-roumare-forest.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-011-postcard-rd-walcheren-decoy.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-011-postcard-rd-walcheren-decoy.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-012-postcard-a1-d-gur-arnes.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-012-postcard-a1-d-gur-arnes.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-013-postcard-a2-hvammur.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-013-postcard-a2-hvammur.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-014-postcard-a3-esjuberg.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-014-postcard-a3-esjuberg.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-015-postcard-ad-bjarnarh-fn-decoy.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-015-postcard-ad-bjarnarh-fn-decoy.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-016-postcard-h1-oslo.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-016-postcard-h1-oslo.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-017-postcard-h2-staraya-ladoga.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-017-postcard-h2-staraya-ladoga.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-018-postcard-h3-kyiv.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-018-postcard-h3-kyiv.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-019-postcard-h4-hedeby.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-019-postcard-h4-hedeby.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-020-postcard-h5-aci-castello-sicily.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-020-postcard-h5-aci-castello-sicily.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-021-postcard-h6-patara.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-021-postcard-h6-patara.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-022-postcard-hd-constantinople-decoy.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-022-postcard-hd-constantinople-decoy.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-023-luggage-tags-a-and-b.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-023-luggage-tags-a-and-b.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-023-luggage-tags-a-and-b.md: after_game must be one of: return, keep, none
+  ! records/props/PP-024-viking-museum-of-brattahl-ticket.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-024-viking-museum-of-brattahl-ticket.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-025-architect-s-scale-ruler.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-025-architect-s-scale-ruler.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-026-treasure-tally-four-wheel-counter.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-026-treasure-tally-four-wheel-counter.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-027-magnifier.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-027-magnifier.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-028-aud-s-comb.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-028-aud-s-comb.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-029-leif-s-trail-map-the-western-lands.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-029-leif-s-trail-map-the-western-lands.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-030-aud-s-trail-map-the-island-settlement.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-030-aud-s-trail-map-the-island-settlement.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-031-aud-s-treasure-museum-ticket.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-031-aud-s-treasure-museum-ticket.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-032-rollo-s-trail-map-the-granted-lands.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-032-rollo-s-trail-map-the-granted-lands.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-033-mus-e-ducal-de-rouen-ticket.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-033-mus-e-ducal-de-rouen-ticket.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-034-harald-s-trail-map-the-varangian-road.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-034-harald-s-trail-map-the-varangian-road.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-035-hnefatafl-board-and-pieces.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-035-hnefatafl-board-and-pieces.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-036-hnefatafl-museum-ticket-oslo.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-036-hnefatafl-museum-ticket-oslo.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-037-the-coin-hoard.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-037-the-coin-hoard.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-038-the-raven-s-flights-card.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-038-the-raven-s-flights-card.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-039-transition-tickets.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-039-transition-tickets.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-040-liv-s-journal.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-040-liv-s-journal.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-041-family-logo-and-crest-note.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-041-family-logo-and-crest-note.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-042-wet-erase-marker.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-042-wet-erase-marker.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-043-plane-ticket-and-letter.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-043-plane-ticket-and-letter.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-044-adventure-medallion.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-044-adventure-medallion.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-045-liv-s-field-bag.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-045-liv-s-field-bag.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-046-lock-number-stickers.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-046-lock-number-stickers.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)
+  ! records/props/PP-047-rune-cypher-wheel-and-marked-envelopes.md: container is from the lock-based kit; remove it: items go in envelopes
+  ! records/props/PP-047-rune-cypher-wheel-and-marked-envelopes.md: found_in is from the lock-based kit; rename it to envelope (start, or the puzzle whose answer opens it)

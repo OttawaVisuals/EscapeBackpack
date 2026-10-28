@@ -1,0 +1,11 @@
+Generated with built-in image_gen on 2026-10-17.
+Source: Raven_Profile_Knotwork_Frame_v1.png
+
+Use case: style-transfer.
+Asset type: alternate pencil-drawn Norse adventure raven icon.
+Input image: edit target, the established profile raven in a circular knotwork frame.
+Primary request: redraw this same emblem as a hand-drawn graphite pencil icon. Preserve the recognizable raven identity, left-facing profile, beak shape, perched pose, feather silhouette, feet and tail placement, circular Norse woven frame and its two small raven-head terminals. Keep the entire emblem visible with a little transparent margin.
+Style/medium: confident natural graphite pencil strokes, visible fine hatching and restrained crosshatching, slightly imperfect hand-drawn contours, clear readable silhouette, selective feather detail. Make it feel sketched by hand rather than engraved or mechanically traced. Simplify tiny texture enough to work as an icon while keeping the distinctive design.
+Color palette: monochrome graphite grey and dark charcoal; no green or orange.
+Background: genuinely transparent, no paper rectangle or paper texture.
+Constraints: one emblem only, no text, no runes, no extra symbols, no new objects, no watermark, no drop shadow.

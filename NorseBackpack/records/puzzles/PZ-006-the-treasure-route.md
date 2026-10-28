@@ -16,7 +16,8 @@ mechanic: search
 difficulty: 2
 # Lock it opens: 3-digit | 4-digit | 4-letter | 3-digit-colour (blank if none)
 lock: 3-digit
-answer: 521
+answer: 532
+envelope_marks: ᛈᚹᛟᛇ
 # Compartment this lock closes (shown on the Locks tab)
 container: Envelope 5
 reset_display: 000
@@ -53,11 +54,11 @@ Postcard A2 (Hvammur), Aud’s laminated journey map, and the Aud’s Treasure M
 
 ## Player does
 
-Walk the six legs on the real drawn network, from the northern chapel to the cave beyond the ruin at I9. At the merged leg 5, follow the road to the correct “village at a crossing” (H9, not the lookalike near H3/G3) — A2’s message gives the direction (south) and the forest detail needed to tell them apart. Tally bridges, fords and gates crossed across all six legs.
+Walk the six legs on the real drawn network, from the northern chapel to the wood beyond the ruin at I9. At the merged leg 5, follow the road to the correct “village at a crossing” (H9, not the lookalike near H3/G3) — A2’s message gives only the forest detail (“the road that followed the forest”) to tell them apart; it does not name a direction (corrected 17 Oct 2026, Q-063: the card never said “south”). Tally bridges, fords and gates crossed across all six legs.
 
 ## Player obtains
 
-Code **521**. Opening this lock releases PP-005, PP-010, PP-011.
+Code **532** (521 until the map redraw of 16 Oct 2026). Opening this lock releases PP-005, PP-010, PP-011.
 
 ## Story reason
 
@@ -71,21 +72,21 @@ A2’s message (rewritten 19 Sept 2026) plants both checks needed for the leg-5 
 
 1. The Island Settlement map and the Treasure Museum ticket go together: the ticket gives directions, and the Hvammur postcard says what to count on the way.
 2. Start at the northernmost chapel on the map and follow the ticket’s six steps along the roads.
-3. Keep three separate tallies as you go: bridges, fords and gates. On the fifth step, the postcard tells you which way to go and which road to follow.
+3. Keep three separate tallies as you go: bridges, fords and gates. On the fifth step, the postcard tells you which road to follow.
 
 ## Solution
 
-Six legs: chapel → chapel (1 bridge), → well (2 fords, 1 bridge), → landing (1 bridge), → standing stone (1 bridge), → village at the crossing, south along the forest road (1 gate, 1 bridge), → the cave beyond the ruin (nothing). Totals: 5 bridges, 2 fords, 1 gate: **521**.
+Six legs: chapel → chapel (1 bridge), → well (2 fords, 1 bridge), → landing (1 ford, 1 bridge), → standing stone (1 bridge), → village at the crossing, south along the forest road (2 gates, 1 bridge), → the wood beyond the ruin (nothing). Totals: 5 bridges, 3 fords, 2 gates: **532**.
 
 ## Solution notes
 
 Design-side solution text, kept when the player-facing Solution above was written for the hint page (9 Oct 2026).
 
-Six legs: chapel→chapel (1 bridge), →well (2 fords, 1 bridge), →landing (1 bridge), →standing stone (1 bridge), →village at the crossing H9 (1 gate, 1 bridge), →ruin/cave (nothing). Totals: **5 bridges, 2 fords, 1 gate → code 521**. Corrected 19 Sept 2026 from an earlier miscount (`531`) after the user spotted a leg with no ford on the printed sheet.
+Six legs: chapel→chapel (1 bridge), →well (2 fords, 1 bridge), →landing (1 bridge), →standing stone (1 bridge), →village at the crossing H9 (1 gate, 1 bridge), →ruin/cave (nothing). Totals: **5 bridges, 2 fords, 1 gate → code 521**. **Superseded 16 Oct 2026** by the redrawn map: leg 3 gains the C6 ford just before the landing, leg 5 the gate in the new H7 wall, so the totals are **5 bridges, 3 fords, 2 gates → 532** (traced by Claude on the designer's export; per-leg counts in `build_aud_ticket_pdf.py` `PER_LEG`). Corrected 19 Sept 2026 from an earlier miscount (`531`) after the user spotted a leg with no ford on the printed sheet.
 
 ## Open risks
 
-**None — verified 26 Sept 2026.** The user printed a test sheet and hand-walked all six legs by hand against the ticket; 521 is confirmed. `Props/AudTicket/build_aud_ticket_pdf.py` prints the correct `ANSWER 5 2 1`. **Superseded design, kept for reference:** the earlier Dalir split-panel sheet and its plot-number-sum mechanism (code `467`) — see `NorseBackpack/Drafts/2026-09-17_Aud_split_panel/README.md`.
+**16 Oct 2026: the redrawn map is not yet hand-walked.** 532 comes from Claude's trace of the designer's export (every road/path crossing checked against its bridge, ford or gate symbol); a printed walk-through against the ticket is still to do, ideally on Codex's restyled render. **Earlier, verified 26 Sept 2026 on the old map:** the user printed a test sheet and hand-walked all six legs by hand against the ticket; 521 is confirmed. `Props/AudTicket/build_aud_ticket_pdf.py` prints the correct `ANSWER 5 2 1`. **Superseded design, kept for reference:** the earlier Dalir split-panel sheet and its plot-number-sum mechanism (code `467`) — see `NorseBackpack/Drafts/2026-09-17_Aud_split_panel/README.md`.
 
 ## Releases (as worded on the old page)
 
@@ -231,7 +232,7 @@ Targets, not a wish list. These are what a traced-route puzzle needs in order to
 
 **Leg-5 mechanic replaced, 19 Sept 2026 — the H5 fork is no longer the puzzle.** Everything below describing the standing stone at H5 as a four-way junction, with A2 resolving which branch to take (open ground vs. the trees, wrong branch scoring `432`), is superseded. It is kept as the record of the first version of the mechanic.
 
-**The deliberate ambiguity is now leg 5, moved and rebuilt.** Legs 5 and 6 were merged into one ticket row: from the standing stone at H5, the direction is *“Follow the road to the village at the crossing”*, crossing the H5 gate and the H7–H9 bridge together (`1 gate, 1 bridge`). The standing stone at H7 is still physically on the road but is no longer named as a stop. **The village at the crossing is H9** — the cairn/church/village cluster at the real crossroads. A second village-at-a-crossing symbol sits near H3/G3, well back up the road toward the start of the route, and reads the same on the sheet. A player who loses track of position could walk to the wrong one. Card **A2** resolves it: the correct village lies **south** of H5, and the road running there passes alongside the wood at H5/H6/I5/I6 — the decoy near H3/G3 sits inside a different wood, back near the start. Both the direction and the forest detail have to agree for a player to be sure.
+**The deliberate ambiguity is now leg 5, moved and rebuilt.** Legs 5 and 6 were merged into one ticket row: from the standing stone at H5, the direction is *“Follow the road to the village at the crossing”*, crossing the H5 gate and the H7–H9 bridge together (`1 gate, 1 bridge`). The standing stone at H7 is still physically on the road but is no longer named as a stop. **The village at the crossing is H9** — the cairn/church/village cluster at the real crossroads. A second village-at-a-crossing symbol sits near H3/G3, well back up the road toward the start of the route, and reads the same on the sheet. A player who loses track of position could walk to the wrong one. Card **A2** was meant to resolve it (**17 Oct 2026 correction: the printed A2 text no longer names a direction, only the forest road; the text below describes the design intent**): the correct village lies **south** of H5, and the road running there passes alongside the wood at H5/H6/I5/I6 — the decoy near H3/G3 sits inside a different wood, back near the start. Both the direction and the forest detail have to agree for a player to be sure.
 
 **Card A2’s chapel line is superseded.** Its drafted message pointed at a chapel “inland among birches, not the one by the water”. The wood chapel is at E4 and sits 14.5 pt off the network, so it can never be a route step. **A2 has front art only — no back, no print PDF — so nothing is printed and the line was free to change,** and it has changed twice since: first to resolve the H5 fork, now to resolve the village-at-the-crossing choice below.
 
@@ -243,7 +244,7 @@ They even had a treasure hunt to find artifacts from Aud’s time.
 I was able to solve it and had a lovely time discovering the countryside. I particularly enjoyed the road that followed the forest.
 I might just have to remember how many ~~rivers~~ bridges, fords and gates I crossed. (“rivers” changed to “bridges”, 25 Sept 2026, to match the ticket’s columns)
 With love,
-Aunt Liv”* Two checks are load-bearing here, not one: the **direction** (south, away from the start) and **the forest along the road** (the wood at H5/H6/I5/I6). Neither is named outright — the letter only says she enjoyed the road, and a player has to match that against the sheet.
+Aunt Liv”* Two checks were meant to be load-bearing: the **direction** (south, away from the start) and **the forest along the road** (the wood at H5/H6/I5/I6). **As printed now, only the forest cue is on the card** (corrected 17 Oct 2026); neither was named outright — the letter only says she enjoyed the road, and a player has to match that against the sheet.
 
 **The ticket is built, 18 Sept 2026 — `Props/AudTicket/build_aud_ticket_pdf.py`.Resized 25 Sept 2026:** now 3×4 in (see the hoard prop). Same 2×5.5 in stock, palette, header band and outer rule as the museum ticket (L’Anse at the time; Brattahlíð since 28 Sept 2026), so the two read as tickets from the same world. Unlike L’Anse’s it has **no ImageGen art** — both faces are vector, so there is nothing to re-render if the wording changes. [Open PDF](../Web/pdf/Aud_Ticket_Print.pdf) · [Letter sheet](../Web/pdf/Aud_Ticket_Letter_Print.pdf)
 
@@ -520,3 +521,15 @@ Files: source renders are retained in `TravelMap/Art/Sources/Aud_*_ImageGen_Sour
 ![Aud's map sheet split into two side-by-side panels: a new zoomed detail of Dalir/Hvammur on the left with its own small grid holding the four treasure landmarks, and the existing full-region map shifted right, unchanged.](Art/Diagrams/Diagram_Aud_Map_Split.svg)**Scale problem, and the fix.** At the main map's real scale (~23 km per grid cell), all four landmarks near Hvammur would collide into about one cell — the same problem Rollo's Rouen/Roumare pair hit. Fix: split the one physical sheet into two side-by-side panels. The right panel keeps the existing full-region map exactly as built, still carrying Aud's four real postcard stops for the final digit-shape trace. The left panel is a new zoomed-in detail of just Dalir/Hvammur with its own small grid, giving the four landmarks room to land in genuinely distinct cells. **Diagram outdated, 17 Sept 2026:** the split-panel principle it shows still holds, but the sheet is now landscape rather than portrait, the detail grid is 6×10 rather than 2×4, and the panel carries about 28 terrain features and seven stops rather than five bare icons. It needs redrawing.
 
 **Open:** the six clue hops’ copy, split across two postcards (nothing written yet — drafted against the finished map, not before); the fjord still reads as a plain diagonal coastline rather than an inlet with a head, and the north river branch competes with it at similar line weight; whether the ticket gets larger pencil boxes or a spare blank record card; the three coin types and cache mark; coin quantity/design and fictional values (PP-037); a physical check that the selected coins total `3705` and the rotated tally reads `SOLE` (PP-026) without interfering with the map’s final route-tracing job; AD’s exact message text; and which words the comb needs to expose on it, and the resulting code.
+
+**16 Oct 2026 (designer, Q-057):** envelope 4 text pass started. A2 Fun Fact shortened (PP-013), message unchanged. The designer wants to rework the map (improvements not yet specified); the 521 route and ticket stay unchanged until that is decided.
+
+**16 Oct 2026 (designer): Aud map background pass, before the symbol work.** Town dots and labels on Aud's sheet (`TravelMap/build_trail_maps_pdf.py`, config `aud`): (1) one name per place, the one the cards use: Dögurðarnes (not Dagverðarnes), Esjuberg (not Kjalarnes) via a new `display_names` setting; (2) fewer towns: Kambsnes, Mosfellsbær and Krosshólaborg dropped (`omit_towns`; Krosshólaborg sat 9 pt from Hvammur, Kambsnes 18 pt from Búðardalur); (3) three dots plotted in the sea moved ashore through `PLOT_NUDGE`, measured to land at least 250 m inside the 50m coastline: Bjarnarhöfn (1 km east, still on the sheet), Akranes (1.7 km east), Borgarnes (1.6 km); (4) bolder dots and names for this sheet (`bold_towns`: dot 2.3 pt with a darker outline, name 7.4 pt in the dark ink with a thin white halo). The stops and the digit 7 did not move; the 521 route is untouched. Stykkishólmur's older nudge is unchanged. `export_aud_base.py` now skips dropped towns, so the designer no longer reserves them. Not done yet: the other three sheets (the same options exist there: double names on Leif's Brattahlíð / Qassiarsuk and four on Harald's, dots in the sea on Leif's), the coin symbols, icon sizes and label fixes inside the designer.
+
+**16 Oct 2026 (designer): redrawn map installed, code now 532.** The designer redrew the symbol layer in `Aud_Map_Designer.html` (102 features, same frame) and it replaces `TravelMap/aud_features.json`; the previous file is kept as `aud_features.2026-10-16_before_redraw.json`. Checks on the export: frame and symbol kinds match the renderer; all 25 road/path crossings of water, hedge, wall or ditch carry the right symbol within 1.2 pt and no crossing symbol is stray; no landmark at sea or off the sheet. Walking the unchanged ticket gives (bridges·fords·gates) 1·0·0, 1·2·0, **1·1·0**, 1·0·0, **1·0·2**, 0·0·0 = **532**; the designer chose to adopt 532 rather than remove the two new crossings. The G3 lookalike village (one bridge north of the standing stone) and the forest road south still work as the leg-5 trap. Leg 6 now ends in the wood beyond the I9 ruin (no cave there). Updated: ticket `ANSWER`/`PER_LEG`, this record, PP-047's example, PP-037, the digital game (`leif-data.js`, `leif.test.cjs`). Open: the three designer `marker` points (`coin1`, `Coincorretc`, `Coin2`) print as unlabelled orange dots and add a Marker legend row, one inside the leg-6 wood; whether they should print is not decided. Codex is restyling the map; no paper test yet.
+
+**17 Oct 2026 (designer): Aud map style v15 adopted as the live player map.** `TravelMap/Drafts/aud_map_optimized_v15/` (rendered from the same 102 features as `aud_features.json`: identical geometry, so the route and the code 532 are unchanged; 12 bridges, 5 fords, 7 gates; three coin icons camel, fehu and fleur-de-lis that match the Coin Room on Aud's ticket). `NorseBackpack/Print/_pdf_source/Trail_Map_3_Aud_Print.pdf` is now the v15 print file (300 dpi images, 887 KB, vectors kept); the web copy and page images were rebuilt; `build_trail_maps_pdf.py aud` copies the v15 file over the print PDF each run so a rebuild does not bring the old style back. The old-style print is kept as `TravelMap/Drafts/Trail_Map_3_Aud_Print_old_style_2026-10-16.pdf`. **The answer copy `Trail_Map_3_Aud_ANSWER.pdf` is still the old style** (it is only a design check). Cave wording fixed (PZ-010): the hunt ends in the wood beyond the ruin at I9, where the fehu mark is; the cave icon at G1 is scenery. **Open:** a paper hand-walk of the printed v15 map against the ticket (not done), the physical print test, and the online game still does not use `Aud_Map_v15_Game_2400.webp` (not rewired).
+
+**17 Oct 2026 (designer): Aud answer map rebuilt on the v15 style.** `NorseBackpack/Print/_pdf_source/Trail_Map_3_Aud_ANSWER.pdf` (and its web copy) is now the v15 print with the answer overlay on top: the ANSWER KEY banner (“designer copy - not for the bag”, “reads as 7”), the faint diagonal watermark and the solved route, the three stops in order joined and numbered (Dögurðarnes, Hvammur, Esjuberg, reading as the digit 7). The stop positions are the plotted ones from `aud_base.js` (checked against the v15 print: the numbered circles sit on the stops' dots). Made by `make_aud_answer_from_v15` in `build_trail_maps_pdf.py`, which runs with `python build_trail_maps_pdf.py aud` and needs the v15 print file. The old-style answer is kept as `TravelMap/Drafts/Trail_Map_3_Aud_ANSWER_old_style_2026-10-16.pdf`. It does not draw the six-leg walk or the crossing counts (the ticket's answer page, page 3 of `Aud_Ticket_Print.pdf`, carries the tally 5 3 2).
+
+**18 Oct 2026 (folder cleanup):** the shelved split-panel draft `NorseBackpack/Drafts/2026-09-17_Aud_split_panel/` and the 19 Sept `Drafts/2026-09-19_Aud_map_style_options/` moved to `C:\EscapeBackpack\Norse_Archive\Drafts\` (outside the repository; see its README). Paths to them earlier in this record now point there.

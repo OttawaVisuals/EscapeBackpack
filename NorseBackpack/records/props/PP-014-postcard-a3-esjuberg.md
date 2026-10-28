@@ -11,6 +11,7 @@ source: print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-005
+envelope: PZ-005
 # Physical pocket/container or location; availability remains in found_in above.
 container: Envelope 7
 after_game: return
@@ -51,3 +52,5 @@ There are 22 postcards: each goes back with the lock it came from, as listed bel
 ## Replacement
 
 Reprint from the print file if damaged.
+
+**16 Oct 2026 (designer, Q-057):** Fun Fact shortened to “Esjuberg is where Laxdæla saga has Aud meet her brother Helgi, and turn down his offer to settle.” Message last paragraph now: “Still amazed by the treasures I found! I added it all up on my trusty old counter, and my head is still spinning.” (the designer's wording; tells players the four-wheel treasure tally, PP-026, is for entering the total; “my head is spinning” in the paragraph above is kept as the turn-it-upside-down clue). A3 is in envelope 7. Rebuilt.

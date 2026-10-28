@@ -84,7 +84,10 @@ def main():
         # symbols against a coastline the sheet does not draw.
         dlat, dlon = M.plot_nudge(s["name"])
         x, y = pt(s["lng"] + dlon, s["lat"] + dlat)
-        stops.append({"name": s["name"], "order": s["order"],
+        disp = cfg.get("display_names", {})
+        sname = s["name"].split(" · ")
+        sname[0] = disp.get(sname[0], sname[0])      # one name per place, as on the printed sheet
+        stops.append({"name": " · ".join(sname), "order": s["order"],
                       "x": round(x, 2), "y": round(y, 2)})
 
     # corpus AND the sheet's own extra_towns. Exporting only the corpus is how symbols ended up
@@ -92,6 +95,8 @@ def main():
     # so its 19pt clearance check never covered them.
     towns = {}
     for name, lat, lng in list(corpus) + list(cfg["extra_towns"]):
+        if name in cfg.get("omit_towns", ()):
+            continue          # dropped from the printed sheet (16 Oct 2026), so not reserved here
         if lo0 <= lng <= lo1 and la0 <= lat <= la1:
             towns.setdefault(name, (lat, lng))
     town_list = []
@@ -99,7 +104,7 @@ def main():
         dlat, dlon = M.plot_nudge(name)
         x, y = pt(lng + dlon, lat + dlat)
         if inside(x, y, pad=0):
-            town_list.append({"name": name, "x": round(x, 2), "y": round(y, 2)})
+            town_list.append({"name": cfg.get("display_names", {}).get(name, name), "x": round(x, 2), "y": round(y, 2)})
 
     areas = []
     for name, lat, lng in dropped["areas"]:

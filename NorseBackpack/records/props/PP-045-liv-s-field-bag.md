@@ -11,6 +11,7 @@ source: buy
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: start
+envelope: start
 # Physical pocket/container or location; availability remains in found_in above.
 container: The box itself
 after_game: none
@@ -21,7 +22,7 @@ superseded_by:
 tags: []
 ---
 
-**11 Oct 2026 (designer, PR-007):** the field bag is replaced by a box, 11.5 × 11.5 × 2 in (Q-046), with every envelope loose inside. The candidate backpack and the canvas pouches below are superseded, and so are the lock purchases; there are no locks. The rest of the prop kit still stands. What fits in it: Q-049. What the box is in the story: Q-047.
+**Current format, updated 13 Oct 2026 (designer, PR-007):** a rectangular board-game box sized to fit an envelope carrying letter-size paper; exact dimensions and depth remain open (Q-049). This supersedes the 11 Oct square-box assumption of 11.5 × 11.5 × 2 in (Q-046). All envelopes remain loose inside. Cover concept: AS-065. The candidate backpack and canvas pouches below are superseded, as are the lock purchases; there are no locks. The rest of the prop kit still stands. What the box is in the story: Q-047.
 
 ## From the old Props & specs tab
 

@@ -7,16 +7,17 @@ status: decided
 # The structure beat this puzzle belongs to (one ID)
 beat: ST-001
 # Props the player needs, e.g. [PP-001]
-props: [PP-001, PP-023]
+props: [PP-001, PP-047]
 # Puzzles that must be solved first, e.g. [PZ-002]
 needs: []
 # cipher | physical | search | logic | wordplay | other
-mechanic: logic
+mechanic: other
 # 1 (easy) to 3 (hard)
 difficulty: 1
 # Lock it opens: 3-digit | 4-digit | 4-letter | 3-digit-colour (blank if none)
 lock: 4-digit
 answer: 1021
+envelope_marks: ᚷᛉᚦᛉ
 # Compartment this lock closes (shown on the Locks tab)
 container: Envelope 1
 reset_display: 0000
@@ -39,6 +40,8 @@ tags: [old-PZ-13, old-PC-01]
 
 ## How it works
 
+**14 Oct 2026 (designer, box + envelopes, PR-007):** **no longer a puzzle: a worked example.** The luggage tags are gone (PP-023 parked, Q-047 answered). Postcard L1, loose on top of the box with the rune wheel, tells the story and hands over the first code as an example of how the wheel works: “Set 1 0 2 1 on my rune wheel and open the envelope with the same runes!” The wheel's arm prints the three steps (PP-047), so the rule stays in front of players for every later code. Designer's brief in chat: the first note explains that the package is the adventure, how the cypher works and that it picks the next envelope (with an example leading to envelope 1), and the story; option 2 of three (story on L1, rule on the wheel) chosen. The tag text below is superseded.
+
 Two luggage tags on the box carry four digits between them. The first postcard says which pair comes first.
 
 Lock 1 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 1 of 3 is Claude's estimate from the mechanism (number of props and steps), not playtest data.
@@ -49,15 +52,21 @@ Lock 1 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 1 of 3 
 
 ## Player notices
 
-The first postcard, which is from L’Anse aux Meadows, and the two luggage tags attached to the box (how they attach: Q-047). Each tag has a printed “If found, please return to” line that Liv never filled in properly — instead she hand-wrote the address of a hotel she stayed at, and the street number is the only number on the tag.
+Opening the box: postcard L1 and the rune cypher wheel lie loose on top of the envelopes. L1's message introduces Aunt Liv, the adventure and the four Norse figures, then says the Norse were felling trees at this spot in 1021 and asks players to set 1 0 2 1 on the wheel.
+
+**Superseded 14 Oct 2026** (luggage tags): The first postcard, which is from L’Anse aux Meadows, and the two luggage tags attached to the box (how they attach: Q-047). Each tag has a printed “If found, please return to” line that Liv never filled in properly — instead she hand-wrote the address of a hotel she stayed at, and the street number is the only number on the tag.
 
 ## Player does
 
-Match the place named on the postcard to the tag whose hotel address is in that place. That tag’s street number is the first half of the code; the other tag’s street number is the second half.
+Turns the four rings until the left-hand windows read 1 0 2 1 (step 1 on the arm), reads the four runes in the right-hand windows (step 2) and finds the envelope with the same runes (step 3). This is the loop every later code uses.
+
+**Superseded 14 Oct 2026** (luggage tags): Match the place named on the postcard to the tag whose hotel address is in that place. That tag’s street number is the first half of the code; the other tag’s street number is the second half.
 
 ## Player obtains
 
-Code **1021**. Opening this lock releases PP-002, PP-003, PP-027. **8 Oct 2026:** also the magnifier PP-027, packed with L2 and L3 in one of the front pockets (Q-045).
+Code **1021** → runes ᚷᛉᚦᛉ → envelope 1: AD and Aud's comb (PR-007, reordered 15 Oct 2026; was L2, L3 and the magnifier).
+
+**Superseded 14 Oct 2026** (luggage tags): Code **1021**. Opening this lock releases PP-002, PP-003, PP-027. **8 Oct 2026:** also the magnifier PP-027, packed with L2 and L3 in one of the front pockets (Q-045).
 
 ## Story reason
 
@@ -65,21 +74,31 @@ The data is in plain sight on both tags; the only hidden thing is which tag goes
 
 ## Clue wording
 
-Postcard L1 names L’Anse aux Meadows as the place it comes from. **28 Sept 2026:** L1’s rewritten message no longer names the place; it says only that the card is from the first stop. L’Anse aux Meadows is now named in the typed Fun Fact, the postmark and the front art’s title.
+L1: “Start right here: the Norse were felling trees at this spot in 1021. Set 1 0 2 1 on my rune wheel and open the envelope with the same runes!” Arm: “1 SET THE CODE”, “2 READ THE RUNES”, “3 OPEN THE ENVELOPE WITH THESE RUNES”.
+
+**Superseded 14 Oct 2026** (luggage tags): Postcard L1 names L’Anse aux Meadows as the place it comes from. **28 Sept 2026:** L1’s rewritten message no longer names the place; it says only that the card is from the first stop. L’Anse aux Meadows is now named in the typed Fun Fact, the postmark and the front art’s title.
 
 ## Hints
 
-1. Everything you need is already outside the envelopes.
+1. Read the postcard on top of the box: it tells you what to set on the wheel.
+2. Turn the four rings until the left-hand windows show 1 0 2 1.
+3. Read the four runes in the right-hand windows and open the envelope marked with the same runes.
+
+**Superseded 14 Oct 2026** (luggage tags): 1. Everything you need is already outside the envelopes.
 2. Both tags carry a hand-written address. Only one of them is in a place you have seen before.
 3. The postcard names L’Anse aux Meadows. That tag goes first.
 
 ## Solution
 
-Tag A: Vinland Trail Lodge, 10 Skipper’s Wharf, L’Anse aux Meadows, NL — matches the postcard, so it reads first: 10. Tag B: Hôtel Rollon, 21 avenue Rollo, Rouen, France — reads second: 21. Code **1021**, the year tree-ring dating placed the Norse at L’Anse aux Meadows.
+Set **1021** on the wheel. The windows show ᚷᛉᚦᛉ, the runes on envelope 1.
+
+**Superseded 14 Oct 2026** (luggage tags): Tag A: Vinland Trail Lodge, 10 Skipper’s Wharf, L’Anse aux Meadows, NL — matches the postcard, so it reads first: 10. Tag B: Hôtel Rollon, 21 avenue Rollo, Rouen, France — reads second: 21. Code **1021**, the year tree-ring dating placed the Norse at L’Anse aux Meadows.
 
 ## Open risks
 
-Supersedes the earlier `0734` mechanism. The underlined `07` already printed on card L1 now has no job — see Q-006. A print-ready PDF exists (`output/pdf/Luggage_Tag_Inserts_Print.pdf`); purchase and physical assembly onto real luggage tags is not confirmed done.
+**14 Oct 2026 (designer, box + envelopes, PR-007):** the game now starts with no puzzle at all; the first real one is the joined top edge (PZ-002, envelope 1 → `1576`). **15 Oct 2026:** the first real puzzle is now the comb grille (PZ-003, envelope 1 → `BOOK`); the joined top edge is second. Untested whether that is a strong enough opening. Also untested: whether players can set the wheel from the arm's three lines alone.
+
+Supersedes the earlier `0734` mechanism. The underlined `07` already printed on card L1 now has no job — see Q-006. A print-ready PDF exists (`NorseBackpack/Print/_pdf_source/Luggage_Tag_Inserts_Print.pdf`); purchase and physical assembly onto real luggage tags is not confirmed done.
 
 ![Luggage tag inserts, print sheet](Props/_Renders/Luggage_Tag_Inserts_Sheet.png)Print sheet
 
@@ -110,3 +129,5 @@ Solving the beasts chain (identify the beast from LD's imprint, read its letters
 **The four digits of the opening code, and how each luggage tag shows its place.**
 
 Code is `1021` — the year tree-ring dating placed the Norse at L’Anse aux Meadows. Each tag is a fictional hotel luggage tag: a printed “If found, please return to” line Liv never filled in properly, with a hand-written hotel name and address instead. The street number is the only number on the tag, so it stands out without needing extra emphasis. Tag A: Vinland Trail Lodge, 10 Skipper’s Wharf, L’Anse aux Meadows, NL. Tag B: Hôtel Rollon, 21 avenue Rollo, Rouen, France.
+
+**14 Oct 2026 (designer):** L1's line now reads “Start right here, where Leif Erikson’s crew may have camped: the Norse were felling trees at this spot in 1021. Set 1 0 2 1 on my rune wheel and open the envelope with the same runes!”

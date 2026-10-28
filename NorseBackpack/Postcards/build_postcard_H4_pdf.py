@@ -11,8 +11,8 @@ from postcard_marks import draw_mark
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "output" / "pdf" / "Postcard_H4_Hedeby_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_H4_Hedeby_Letter_Print.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_H4_Hedeby_Print.pdf"
+OUT_LETTER = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_H4_Hedeby_Letter_Print.pdf"
 FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_H4_Hedeby_Front.png"
 STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Harald_Dane_Axe_v1.png"
 FONT_DIR = ROOT / "Fonts"
@@ -21,6 +21,8 @@ PAGE = (6 * 72, 4 * 72)  # 6 x 4 in since 13 Oct 2026 (was 5 x 3.5)
 W, H = PAGE
 LETTER = (8.5 * 72, 11 * 72)
 PAPER = HexColor("#EFE3C4")
+# 20 Oct 2026 (designer): no beige fill behind the back; it prints on the paper itself. True restores it.
+PAPER_BACKGROUND = False
 NAVY = HexColor("#12343C")
 TEAL = HexColor("#2F7775")
 RULE = HexColor("#A99A7B")
@@ -69,10 +71,14 @@ def draw_back_card(c, x=0, y=0):
     # card edge so a slightly-off cut or duplex registration never shows a white band; only
     # the sheet crop marks define trim. Confirmed on the L1/L2 print test, 2026-09-27.
     BLEED = 1.5 / 25.4 * 72
-    c.setFillColor(PAPER)
-    c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
+    if PAPER_BACKGROUND:
+        c.setFillColor(PAPER)
+        c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.7)
+    # 14 Oct 2026 (designer): thin border back "for now" (removed 7 Oct 2026 because off-centre
+    # duplex prints made it look uneven). 12 pt in: the old 10 pt, 1.2x for the 6 x 4 card.
+    c.rect(12, 12, W - 24, H - 24, fill=0, stroke=1)
 
     # 13 Oct 2026 (designer, after playtest 1): the card is now 6 x 4 in, layout B. The divider
     # moves right (x 184 of 360 -> 276 of 432) for a wider message column; message 11.5 pt
@@ -99,9 +105,14 @@ def draw_back_card(c, x=0, y=0):
     # taking the leg from 60 possible orders to 4 and saving a journal entry.
     # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): message rewritten. Text from the user's Postcard
     # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
+    # 14 Oct 2026 (designer, box + envelopes): "From here I'm turning south: nothing but
+    # Mediterranean weather for the rest of this trip." removed. It was an ordering clue for the
+    # old finale (see 20 Sept above); the marks give the order now, and H4 arrives in envelope 11,
+    # long after the southern cards (envelope 3).
     paragraphs = [
-        'Today: Hedeby — barely a Hedeby left. From here I’m turning south: nothing but Mediterranean weather for the rest of this trip.',
+        'Today: Hedeby — barely a Hedeby left.',
         'A woodcarver showed me how the old branch-runes worked — count the branches one way for the family, the other way for the letter.',
+        'You just have to map the correct ones to get the final value.',
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 11.5, 12.8
@@ -235,7 +246,7 @@ def draw_back_card(c, x=0, y=0):
     # 29 Sept 2026 (postcard update, batch 2 -- Aud + Harald): Fun Fact rewritten. Text from the user's Postcard
     # update tab export (small agreed fixes); message 9.5 pt / Fun Fact 9 pt (was 7.7 / 7.4).
     fact_text = (
-        'During his war with Denmark, Harald burned Hedeby to the ground — sailing burning ships straight into the harbour.'
+        'Harald burned Hedeby to the ground, sailing burning ships into its harbour.'
     )
     fact_y = funfact_top - 26
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

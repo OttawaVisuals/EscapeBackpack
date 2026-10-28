@@ -39,10 +39,12 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
+from ticket_dates import BOOKING_DATES
+
 ROOT = Path(__file__).resolve().parents[3]
 FONT_DIR = ROOT / "Fonts"
-OUT = ROOT / "output" / "pdf" / "Transition_Tickets_Print.pdf"
-OUT_SHEET = ROOT / "output" / "pdf" / "Transition_Tickets_Letter_Print.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Transition_Tickets_Print.pdf"
+OUT_SHEET = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Transition_Tickets_Letter_Print.pdf"
 
 pdfmetrics.registerFont(TTFont("CinzelBold", str(FONT_DIR / "Cinzel" / "static" / "Cinzel-Bold.ttf")))
 
@@ -67,23 +69,28 @@ PAX = "ERICSON / LIV"
 # The first `from` and the last `to` are the clue. The rest is dressing.
 TICKETS = [
     ("RX7T2Q", "014 2277 418 903", "Leif", "Rollo", [
-        ("26 SEP 2024", "Qikiqtarjuaq", "Iqaluit",      "Canadian North", "5T 501"),
-        ("26 SEP 2024", "Iqaluit",      "Ottawa",       "Canadian North", "5T 140"),
-        ("27 SEP 2024", "Ottawa",       "Amsterdam",    "KLM",            "KL 672"),
-        ("28 SEP 2024", "Amsterdam",    "Walcheren",    "NS rail",        "IC 2214"),
+        ("21 SEP 2025", "Qikiqtarjuaq", "Iqaluit",      "Nordic Air",     "NA 501"),
+        ("21 SEP 2025", "Iqaluit",      "Ottawa",       "Nordic Air",     "NA 140"),
+        ("22 SEP 2025", "Ottawa",       "Amsterdam",    "Nordic Air",     "NA 672"),
+        ("23 SEP 2025", "Amsterdam",    "Walcheren",    "Viking Rail",    "VR 2214"),
     ]),
     ("M4KD8B", "108 5514 260 771", "Rollo", "Aud", [
-        ("08 MAY 2025", "Roumare Forest", "Rouen",      "TER Normandie",  "TER 3312"),
-        ("08 MAY 2025", "Rouen",          "Paris CDG",  "TER Normandie",  "TER 3350"),
-        ("09 MAY 2025", "Paris CDG",      "Reykjavik",  "Icelandair",     "FI 543"),
-        ("09 MAY 2025", "Reykjavik",      "Dogurdarnes", "Vestfjardaleid", "CO 58"),
+        ("20 OCT 2025", "Roumare Forest", "Rouen",      "Viking Rail",    "VR 3312"),
+        ("20 OCT 2025", "Rouen",          "Paris CDG",  "Viking Rail",    "VR 3350"),
+        ("21 OCT 2025", "Paris CDG",      "Reykjavik",  "Nordic Air",     "NA 543"),
+        ("21 OCT 2025", "Reykjavik",      "Dogurdarnes", "Longship Buses", "LB 58"),
     ]),
     ("QN2V6H", "108 5514 260 984", "Aud", "Harald", [
-        ("05 JUN 2025", "Esjuberg",  "Reykjavik", "Vestfjardaleid", "CO 12"),
-        ("06 JUN 2025", "Reykjavik", "Oslo",      "Icelandair",     "FI 318"),
+        ("06 NOV 2025", "Esjuberg",  "Reykjavik", "Longship Buses", "LB 12"),
+        ("07 NOV 2025", "Reykjavik", "Oslo",      "Nordic Air",     "NA 318"),
     ]),
 ]
 
+
+
+# Keep this table and ticket_dates.BOOKING_DATES in step.
+for _ref, _etkt, _a, _b, _segs in TICKETS:
+    assert {s[4]: s[0] for s in _segs} == BOOKING_DATES[_ref], _ref
 
 def draw_ticket(c, ref, etkt, leg_from, leg_to, segs, ox=0, oy=0):
     c.saveState()

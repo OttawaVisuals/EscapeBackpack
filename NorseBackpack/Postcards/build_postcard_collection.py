@@ -9,7 +9,7 @@ from reportlab.pdfgen import canvas
 
 ROOT = Path(__file__).resolve().parents[2]
 POSTCARDS = ROOT / "NorseBackpack" / "Postcards"
-OUT = ROOT / "output" / "pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source"
 # Card is 6 x 4 in (3:2) since 13 Oct 2026 (PC-13 had 5 x 3.5 in, 10:7), matching
 # build_postcard_L1_pdf.py exactly.
 SIZE = (1800, 1200)

@@ -1,3 +1,5 @@
+# SUPERSEDED FOR PRINT 17 Oct 2026 (designer): the live Brattahlid ticket PDF now comes from the readability redesign
+# (Props/ReadabilityDrafts/adopt_to_live.py). Running this builder overwrites it with the old layout. Kept for its data and history.
 from pathlib import Path
 
 from reportlab.lib.colors import HexColor
@@ -9,8 +11,8 @@ from reportlab.pdfgen import canvas
 
 
 ROOT = Path(__file__).resolve().parents[3]
-OUT = ROOT / "output" / "pdf" / "Museum_Ticket_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Museum_Ticket_Letter_Print.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Museum_Ticket_Print.pdf"
+OUT_LETTER = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Museum_Ticket_Letter_Print.pdf"
 # v4 (27 Sept 2026): v3 with the baked-in "No. 084726" stub number erased (it sat alone on
 # transparent ground, so the pixels were simply cleared) -- serial numbers removed from all
 # museum tickets so players never mistake one for a code.

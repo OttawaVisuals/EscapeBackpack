@@ -2,7 +2,7 @@
 Ticket print files -- the postcard PrintTest technique (Postcards/build_print_test_docx.py)
 applied to the double-sided tickets: the L'Anse museum ticket (PZ-12), the Rouen ticket
 (PZ-15), the Hnefatafl museum ticket (PZ-01/PZ-07) and Aud's treasure-museum ticket (PZ-17). Writes one .docx per ticket to
-output/docx/.
+NorseBackpack/Print/.
 
 Same settings the postcards were confirmed with on the L1/L2 print test, 2026-09-27:
   * Each ticket is rotated 90 deg so its short side is the printed height, keeping it in
@@ -34,8 +34,8 @@ from docx.enum.section import WD_SECTION
 from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT_DIR = ROOT / "output" / "docx"
-PDF_DIR = ROOT / "output" / "pdf"
+OUT_DIR = ROOT / "NorseBackpack" / "Print"
+PDF_DIR = ROOT / "NorseBackpack" / "Print" / "_pdf_source"
 
 # Reuse the postcard script's absolute-position picture helper so both stay identical.
 _spec = importlib.util.spec_from_file_location(
@@ -96,6 +96,9 @@ def page_to_image_stream(pdf_path, page_index, rotate_degrees, bleed_in=0, cut_b
 
 
 def build_ticket(name, spec):
+    # Trim size comes from the live Print.pdf (the 17 Oct readability redesign changed it), not from the table.
+    page0 = fitz.open(spec["pdf"])[0]
+    spec = dict(spec, w_in=page0.rect.width / 72, h_in=page0.rect.height / 72)
     # Rotated 90 deg: printed width/height swap.
     printed_w, printed_h = spec["h_in"], spec["w_in"]
     front_x, front_y = SIDE_MARGIN_IN, TOP_MARGIN_IN

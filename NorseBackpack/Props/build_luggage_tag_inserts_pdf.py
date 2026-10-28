@@ -8,7 +8,7 @@ from reportlab.pdfgen import canvas
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "output" / "pdf" / "Luggage_Tag_Inserts_Print.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Luggage_Tag_Inserts_Print.pdf"
 FONT_DIR = ROOT / "Fonts"
 
 # Measured paper area inside the Lewis N. Clark luggage tag's insert slot: 9 cm x 5.4 cm.

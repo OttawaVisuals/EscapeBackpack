@@ -31,7 +31,7 @@ Your great-aunt Liv has been tracing the family’s Nordic origins. Her first po
 
 The final route code opens the last container. Inside is the plane ticket from your idea deck, plus: *“I could use someone who notices what everyone else walks past.”*
 
-The ticket is a fictional game prop. The candidate routes form **1972**: Leif 1, Rollo’s family line 9, Aud 7 and Harald 2. Her travel year is now dated and verified — 2 Feb to 15 Dec, variable stay lengths, in the Final riddle tab. The printed maps are now settled (PZ-013): four laminated letter sheets, drawn on with wet-erase marker. The dig is in Norway; a fifth gridded dig-site sheet was considered and dropped 26 Sept 2026 (old page ST-05) — the reveal stays pure payoff with no extra sheet. Decoy postcards and the family crest/logo filter are now part of the candidate ending too — see the [Final riddle tab].
+The ticket is a fictional game prop. The candidate routes form **1972**: Leif 1, Rollo’s family line 9, Aud 7 and Harald 2. Her travel year is now dated and verified — 2 Feb to 15 Dec, variable stay lengths, in the Final riddle tab. The printed maps are now settled (PZ-013): four laminated letter sheets, drawn on with wet-erase marker. The dig is in Norway; a fifth gridded dig-site sheet was considered and dropped 26 Sept 2026 (old page ST-05) — the reveal stays pure payoff with no extra sheet. Decoy postcards and the family crest/logo filter are now part of the candidate ending too — see the [Final riddle tab]. **Superseded 19 Oct 2026 (designer):** the travel year is now one calendar, 8 Sep to 12 Dec 2025, with each stop 1 day to 1 week (PP-039).
 
 #### Why it is locked at all
 
@@ -50,6 +50,8 @@ Settled
 Two anchors
 
 #### First puzzle · a four-digit code
+
+**14 Oct 2026 (designer, box + envelopes, PR-007):** no bag and no luggage tags: L1 lies loose on top of the box and gives `1021` as a worked example of the rune wheel (PZ-001). The tag puzzle below is superseded.
 
 The bag arrives locked, with the first postcard and **two luggage tags** attached to it. Each tag has a printed “If found, please return to” line that Liv never filled in properly — instead she hand-wrote the address of a hotel she stayed at, and the street number is the only number on the tag.
 

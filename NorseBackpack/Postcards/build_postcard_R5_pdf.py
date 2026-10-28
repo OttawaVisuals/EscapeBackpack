@@ -12,8 +12,8 @@ from postcard_marks import draw_mark
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "output" / "pdf" / "Postcard_R5_Battle_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Postcard_R5_Battle_Letter_Print.pdf"
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_R5_Battle_Print.pdf"
+OUT_LETTER = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_R5_Battle_Letter_Print.pdf"
 FRONT = ROOT / "NorseBackpack" / "Postcards" / "Postcard_R5_Battle_Front.png"
 STAMP = ROOT / "NorseBackpack" / "Postcards" / "Stamps" / "Stamp_Rollo_Comet_v2_flat.png"
 REBUS_DIR = ROOT / "NorseBackpack" / "Postcards" / "RebusIcons"
@@ -23,6 +23,8 @@ PAGE = (6 * 72, 4 * 72)  # 6 x 4 in since 13 Oct 2026 (was 5 x 3.5)
 W, H = PAGE
 LETTER = (8.5 * 72, 11 * 72)
 PAPER = HexColor("#EFE3C4")
+# 20 Oct 2026 (designer): no beige fill behind the back; it prints on the paper itself. True restores it.
+PAPER_BACKGROUND = False
 NAVY = HexColor("#12343C")
 TEAL = HexColor("#2F7775")
 RULE = HexColor("#A99A7B")
@@ -71,10 +73,14 @@ def draw_back_card(c, x=0, y=0):
     # card edge so a slightly-off cut or duplex registration never shows a white band; only
     # the sheet crop marks define trim. Confirmed on the L1/L2 print test, 2026-09-27.
     BLEED = 1.5 / 25.4 * 72
-    c.setFillColor(PAPER)
-    c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
+    if PAPER_BACKGROUND:
+        c.setFillColor(PAPER)
+        c.rect(-BLEED, -BLEED, W + 2 * BLEED, H + 2 * BLEED, fill=1, stroke=0)
     c.setStrokeColor(RULE)
     c.setLineWidth(0.7)
+    # 14 Oct 2026 (designer): thin border back "for now" (removed 7 Oct 2026 because off-centre
+    # duplex prints made it look uneven). 12 pt in: the old 10 pt, 1.2x for the 6 x 4 card.
+    c.rect(12, 12, W - 24, H - 24, fill=0, stroke=1)
 
     # 13 Oct 2026 (designer, after playtest 1): the card is now 6 x 4 in, layout B. The divider
     # moves right (x 184 of 360 -> 276 of 432) for a wider message column; message 11.5 pt
@@ -100,7 +106,7 @@ def draw_back_card(c, x=0, y=0):
         "Today I visited Battle, the village where the Battle of Hastings happened. It’s so cool to be able to see it in person, especially after seeing it on the tapestry! But it doesn't really measure up to what the tapestry depicts.",
         # 1 Oct 2026 (PZ-14): "they" became "my maps", so the hint points at the map, where dotted
         # leader lines run from each drawing to its town dot, rather than at the drawings.
-        "I hope you're enjoying my drawings! Good thing I packed my old ruler: my maps only make sense at the right scale.",
+        "I hope you're enjoying my drawings! Good thing I packed my old ruler: my maps only make sense when I pick the right side.",
     ]
     c.setFillColor(INK)
     font, size, leading = "NothingYouCouldDo", 11.5, 12.8
@@ -120,8 +126,8 @@ def draw_back_card(c, x=0, y=0):
     # divider and the postmark, above the Fun Fact box. See postcard_marks.py.
     draw_mark(c, "R5")
 
-    # Rebus icons (PZ-14): fish scales + one raised finger + colon + one-pip die + two raised
-    # fingers + Roman V. Read as SCALE 1:125, the selected architect's ruler scale.
+    # Rebus (PZ-14, replaced 16 Oct 2026): was fish scales, finger, colon, die, fingers, Roman V
+    # (SCALE 1:125); now a longship drawing. The pencil() icon helper below is kept, unused.
     def draw_rebus_icon(filename, cx, cy, size, angle):
         icon = ImageReader(pencil(REBUS_DIR / filename))  # pencil style, playtest 1
         c.saveState()
@@ -130,17 +136,14 @@ def draw_back_card(c, x=0, y=0):
         c.drawImage(icon, -size / 2, -size / 2, size, size, mask="auto")
         c.restoreState()
 
-    # 13 Oct 2026 (6 x 4 card): icons 1.2x, spread about x 146, near the wider column's centre (143).
+    # 16 Oct 2026 (designer, PZ-011 redesign): the SCALE 1:125 rebus is replaced by one drawing
+    # of a longship (Codex, already pencil style, so it skips the pencil filter). It matches the
+    # LONGSHIP edge of the ruler (PP-025), the right one for the distance.
     row_y = (y - 13) - 31
-    draw_rebus_icon("Rebus_Fish_Scale_Patch_Bayeux_v3.png", 65, row_y + 1.2, 27.6, -2)
-    draw_rebus_icon("Rebus_Hand_One_Bayeux_v1.png", 97.4, row_y, 25.2, 0)
-    # The colon is punctuation between the two scale-ratio numbers, drawn as two simple ink dots.
-    c.setFillColor(HexColor("#46474A"))   # graphite, matching the pencil icons (playtest 1)
-    c.circle(126.2, row_y + 3.6, 1.62, fill=1, stroke=0)
-    c.circle(126.2, row_y - 3.6, 1.62, fill=1, stroke=0)
-    draw_rebus_icon("Rebus_Die_1_Perspective_Bayeux_v6.png", 153.8, row_y, 22.8, 0)
-    draw_rebus_icon("Rebus_Hand_Two_Bayeux_v1.png", 186.2, row_y, 25.2, 0)
-    draw_rebus_icon("Rebus_Roman_V_Bayeux_v1.png", 221, row_y, 20.4, 0)
+    ship = ImageReader(str(REBUS_DIR / "Rebus_Longship_Pencil_Codex_v1.png"))
+    ship_w = 92.0
+    ship_h = ship_w * ship.getSize()[1] / ship.getSize()[0]
+    c.drawImage(ship, 143 - ship_w / 2, row_y - ship_h / 2, ship_w, ship_h, mask="auto")
 
     # Rollo's trail stamp (comet) -- one stamp per traveller, not per card.
     stamp_w, stamp_h = 24 / 25.4 * 72, 28.8 / 25.4 * 72
@@ -188,7 +191,7 @@ def draw_back_card(c, x=0, y=0):
     # 28 Sept 2026 (postcard update, batch 1 -- R5): Fun Fact shortened. Text from the user's Postcard update
     # tab export, with option B chosen in chat for the measuring line; 9.5 pt / 9 pt (was 7.7 / 7.4).
     fact_text = (
-        'The Bayeux Tapestry’s famous scene of Harold clutching an arrow in his eye may not be original — Victorian restorers reworked stitching in that exact spot.'
+        'The arrow in Harold’s eye on the Bayeux Tapestry may have been reworked by Victorian restorers.'
     )
     fact_y = funfact_top - 26
     for line in wrap_text(fact_text, fact_font, fact_size, box_right - address_x - 6):

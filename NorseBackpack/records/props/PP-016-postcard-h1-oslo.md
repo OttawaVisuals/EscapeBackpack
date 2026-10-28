@@ -11,6 +11,7 @@ source: print
 # The play-test page shows the body's "## Player sees" section, or this prop's image asset.
 # Where the player gets it: start (in the backpack) or the puzzle whose lock releases it, e.g. PZ-004
 found_in: PZ-011
+envelope: PZ-011
 # Physical pocket/container or location; availability remains in found_in above.
 container: Envelope 10
 after_game: return
@@ -68,3 +69,9 @@ There are 22 postcards: each goes back with the lock it came from, as listed bel
 ## Replacement
 
 Reprint from the print file if damaged.
+
+**16 Oct 2026 (designer, envelope 10 text pass):** message now ends “…Count how far he travels each time. I've set up the board for you, good luck!” (so players know a board is set up and have to find it on their own; the designer's idea, placed at the end of the message). Dashes and Fun Fact unchanged so far (my drafts for both were offered, not approved). Rebuilt; fits with about 2 spare lines.
+
+**17 Oct 2026 (designer, PZ-008):** “exactly 3 moves” is now “exactly 4 moves”. Rebuilt.
+
+**17 Oct 2026 (designer, Q-063): turn order added to H1.** After “exactly 4 moves?” the message now reads “Each round, a dark piece moves first, as my notes show, then the king.” (wording by Claude, chosen by the designer from options; the message is one line longer). Not added: “the other pieces stay where they are” (the solver assumes it; offered, not chosen). Print PDFs, page images and web copies rebuilt.

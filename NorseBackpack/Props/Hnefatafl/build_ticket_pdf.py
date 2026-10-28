@@ -1,3 +1,4 @@
+# PRINT LAYOUT SUPERSEDED 20 Oct 2026: use Props/build_museum_bookmarks.py for current 2 x 6 museum tickets.
 """Build the Hnefatafl Museum (Oslo) admission ticket -- PZ-01 / PZ-07.
 
 Front carries the museum branding and a plain-language explanation of the
@@ -18,13 +19,14 @@ never drift out of registration.
 columns of 7 to 3 columns of 11, so the panel and the page it sits on both
 grew to match.
 
-Output: output/pdf/Hnefatafl_Ticket_Print.pdf, Hnefatafl_Ticket_Letter_Print.pdf
+Output: NorseBackpack/Print/_pdf_source/Hnefatafl_Ticket_Print.pdf, Hnefatafl_Ticket_Letter_Print.pdf
 """
 
 from pathlib import Path
 
 from reportlab.lib.colors import HexColor
 from reportlab.lib.pagesizes import portrait
+from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
@@ -37,8 +39,16 @@ from board_layout import (
 from hand_drawn_board import HAND, draw_grid_ink, draw_tokens, draw_column_labels
 
 ROOT = Path(__file__).resolve().parents[3]
-OUT = ROOT / "output" / "pdf" / "Hnefatafl_Ticket_Print.pdf"
-OUT_LETTER = ROOT / "output" / "pdf" / "Hnefatafl_Ticket_Letter_Print.pdf"
+# 17 Oct 2026: the hand-drawn hnefatafl shield (Codex), also printed on Harald's map at the last
+# black move's square; shown here, without a caption, so players link the two.
+SHIELD_ICON = Path(__file__).with_name("Hnefatafl_Shield_Icon_HandDrawn_v1.png")
+# 17 Oct 2026: the ticket back uses Codex's wet-ink transfer of the strip (the same drawing as the
+# vector strip, same size and place, with the smudge) when this file exists. Delete or rename it to
+# fall back to the clean vector strip. Checked: five dark squares at K10, K4, I9, I8, I6, no piece
+# on K8, centres within about 0.5 mm of the clean strip.
+SMUDGED_BACK = Path(__file__).with_name("Hnefatafl_Ticket_Back_Smudged_2134_v1.png")
+OUT = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Hnefatafl_Ticket_Print.pdf"
+OUT_LETTER = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Hnefatafl_Ticket_Letter_Print.pdf"
 FONT_DIR = ROOT / "Fonts"
 
 pdfmetrics.registerFont(TTFont("CinzelExtraBold", str(FONT_DIR / "Cinzel" / "static" / "Cinzel-ExtraBold.ttf")))
@@ -57,8 +67,8 @@ RULES_LINES = [
     "Light pieces defend the king at the",
     "centre of the board.",
     "",
-    "Dark pieces start around the edges",
-    "and try to trap him.",
+    "Dark pieces start around the edges,",
+    "move first and try to trap him.",
     "",
     "Every piece slides any distance in a",
     "straight line, like a rook in chess.",
@@ -68,6 +78,10 @@ RULES_LINES = [
     "",
     "The king escapes by reaching a corner.",
     "The attackers win by trapping him first.",
+    "",
+    "The king is captured only when dark",
+    "pieces surround him on all four",
+    "sides (the board edge counts).",
 ]
 
 def wrap_lines(c, text, font, size, max_width):
@@ -112,13 +126,16 @@ def draw_front(c, x=0, y=0):
     c.setFont("Helvetica-Oblique", 6.6)
     c.drawCentredString(W / 2, H - 74, "the Viking game of kings and corners")
 
+    icon = 36
+    c.drawImage(ImageReader(str(SHIELD_ICON)), (W - icon) / 2, H - 80 - icon, icon, icon, mask="auto")
+
     # Capture diagram (playtest 1, 11 Oct 2026). This was a 5x5 mini-board with the king and
     # four dark pieces, which players read as a starting position to copy. Now a three-square
     # strip -- dark, light, dark -- with the light piece struck out: it shows the capture rule
     # and cannot be mistaken for a setup. Chosen in chat over removing it or a king drawing.
     gy0 = H - 150                       # rules below still hang from here, as before
     cell = 18
-    sx0, sy0 = (W - 3 * cell) / 2, gy0 + 28
+    sx0, sy0 = (W - 3 * cell) / 2, gy0 + 28 - 15     # 15 pt lower since the shield icon (17 Oct 2026)
     c.setStrokeColor(HexColor("#59635D"))
     c.setLineWidth(0.6)
     c.rect(sx0, sy0, 3 * cell, cell, fill=0, stroke=1)
@@ -144,12 +161,12 @@ def draw_front(c, x=0, y=0):
 
     # Rules, plain visitor-centre copy.
     ty = gy0 - 22
-    c.setFont("Helvetica", 7.6)
+    c.setFont("Helvetica", 7.4)
     for line in RULES_LINES:
         if line:
             c.setFillColor(INK)
             c.drawCentredString(W / 2, ty, line)
-        ty -= 10.5
+        ty -= 9.4
 
     c.setStrokeColor(RULE)
     c.setLineWidth(0.6)
@@ -176,6 +193,12 @@ def draw_mirrored_panel(c, ox, oy):
 def draw_back(c, x=0, y=0):
     c.saveState()
     c.translate(x, y)
+
+    if SMUDGED_BACK.exists():
+        # whole-card image (887 x 1774 px = 2.6 x 5.2 in), already carrying paper tone, border and strip
+        c.drawImage(ImageReader(str(SMUDGED_BACK)), 0, 0, W, H)
+        c.restoreState()
+        return
 
     c.setFillColor(PAPER)
     c.rect(0, 0, W, H, fill=1, stroke=0)

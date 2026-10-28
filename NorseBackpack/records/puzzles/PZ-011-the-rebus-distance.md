@@ -16,7 +16,8 @@ mechanic: wordplay
 difficulty: 3
 # Lock it opens: 3-digit | 4-digit | 4-letter | 3-digit-colour (blank if none)
 lock: 3-digit
-answer: 104
+answer: 120
+envelope_marks: ᛁᛉᚲᛇ
 # Compartment this lock closes (shown on the Locks tab)
 container: Envelope 10
 reset_display: 000
@@ -50,6 +51,13 @@ Lock 11 of 13 in the release order decided 7 Oct 2026 (Q-005). Difficulty 3 of 3
 
 **11 Oct 2026 (playtest 1 feedback, built same day):** **rebus icons now pencil style.** Players found the coloured icons did not read as Liv's own drawings. `Postcards/pencil_rebus.py` turns the existing icons into graphite sketches (outlines + diagonal hatching, no colour) at build time; R3, R4 and R5 use it, and R5's colon dots are graphite too. Source PNGs untouched. Chosen in chat as the quick fix for the next playtest; Codex may still redraw them as true pencil art (swap the filenames).
 
+**15 Oct 2026 (playtest feedback, designer): redesign decided, not built.** Players found the ruler step poor, and did not know "crossbow bolt". Direction chosen in chat:
+- **Ruler is a cheap printed cardboard card** (PP-025) with a scale on each long edge, labelled with a **picture rebus instead of "1:125"**. Edges for now: **LONGSHIP** (long + sheep, the correct edge) and **SPEAR** (pear + the letter S, a decoy). A second face with more edges may come later. Scales are no longer real map scales, so the ruler is built to fit the map as it is.
+- **Whole-number landing:** on the correct edge, the Châlus to Saint-Clair-sur-Epte dot-to-dot distance (83.1 mm, calculated) lands exactly on a numbered mark (the target is the 100 mark, to be fixed when the ruler is drawn). Decoy edges are spaced so the same 83 mm lands between marks, so a wrong edge looks wrong. Tolerance about ±4 mm. This replaces the 0.1 m reading (0.8 mm) in the risks below; **the code 104 and the 10.4 m reading are no longer the plan.** No map nudge is needed.
+- **Battle card (R5):** the SCALE 1:125 rebus (hand, die, Roman V) is replaced by a drawing of a **longship** that matches the right edge. R5's message line about the "right scale" will need rewording. Not drawn yet.
+- **Crossbow bolt** is defined on Liv's notes card (PP-048), which comes with L1, and R1 already uses the phrase. Simplifying the Bayeux rebus to CROSSBOW (dropping the lightning bolt) was offered and is not decided.
+- **Code set to 120, 15 Oct 2026 (designer):** 120 or 130 was preferred to 100 (too round). The ruler is built with the Châlus to Saint-Clair distance (83.126 mm) on the numbered **120** mark of the LONGSHIP edge: 6.93 mm per 10 units, about ±3.5 mm of tolerance. Switching to 130 is one constant (`TARGET` in `Props/LivRuler/build_ruler_pdf.py`, 6.39 mm per 10, about ±3.2 mm). `answer` above and the code in Q-001 and Q-005 now read 120; the old 104 and the 10.4 m reading elsewhere on this page are history. Still to check: the rune markings for this envelope (PR-007, PP-047) and any print files that show 104.
+
 ## Player notices
 
 Rollo’s Bayeux, Winchester and Battle postcards (all built), his trail map with its story icons, and the architect’s scale ruler already in the kit.
@@ -74,11 +82,11 @@ None of the three cards states its rebus outright; all three just carry the draw
 
 1. The Bayeux, Winchester and Battle postcards each end with a little picture puzzle. Read them as words.
 2. Two of the picture puzzles point to places on the Granted Lands map; the third tells you which scale of the ruler to use.
-3. Measure between those two places on the Granted Lands map, dot to dot, with the architect’s ruler on its 1:125 scale.
+3. Measure between those two places on the Granted Lands map, dot to dot, with Liv’s ruler. Use the edge that matches the drawing on the Battle postcard.
 
 ## Solution
 
-Bayeux: cross + bow + lightning bolt = CROSSBOW BOLT, so Châlus. Winchester: tree + tea = TREATY, so Saint-Clair-sur-Epte. Battle: SCALE 1:125. Châlus to Saint-Clair-sur-Epte measures 10.4 on the 1:125 scale: **104**.
+Bayeux: cross + bow + lightning bolt = CROSSBOW BOLT, so Châlus. Winchester: tree + tea = TREATY, so Saint-Clair-sur-Epte. Battle: a drawing of a longship, so use the LONGSHIP edge of the ruler (the other edge, SPEAR, is a decoy). Châlus to Saint-Clair-sur-Epte reads **120** on the LONGSHIP edge: **120**.
 
 ## Solution notes
 
@@ -123,3 +131,11 @@ See the [Puzzles tab] for the player-facing writeup of this mechanism.
 ## Playtest evidence
 
 **Playtest 1** (feedback relayed by the designer 11 Oct 2026; playtest date, team and hint use not recorded). Rebus should look hand-drawn: no colours, pencil style. Changed as above; retest needed.
+
+**16 Oct 2026 (designer, envelope 9 text pass):** the 15 Oct redesign is now built on the card side. **R5 carries a longship drawing** (Codex, pencil style, `Postcards/RebusIcons/Rebus_Longship_Pencil_Codex_v1.png`) in place of the SCALE 1:125 rebus. R5's last message line now reads “Good thing I packed my old ruler: my maps only make sense when I pick the right side.” (the designer typed “my map only make sense”; “maps” kept from the old line). **The ruler (PP-025) moves to envelope 9** with R3, R4 and R5. The crossbow-bolt rebus on R3 stays as it is (the glossary on Liv's notes card, PP-048, defines it). Player-facing hint 3 and the Solution above now describe the longship edge and 120. Fun Facts of R3, R4, R5 not yet touched (drafts offered). Not retested with players. Digital game still shows the old 1:125 / 104 version (Q-051).
+
+**18 Oct 2026 (folder cleanup, open):** `Postcards/RebusIcons/prepare_r5_scale_icons.py` still prepares four die icons (`Rebus_Die_1_Perspective_Bayeux_v2/v3/v4/v6.png`), but no postcard builder or record uses any of them. Is a die still part of the R5 rebus? The files stay until the designer decides.
+
+**20 Oct 2026:** the ruler is now a 2 × 6 in bookmark with the same scales; 120 is still 83.126 mm from 0 on the LONGSHIP edge (PP-025).
+
+**20 Oct 2026 (production-size design proof):** matching 5.5 × 8.5 Rollo map and ruler built under C:/EscapeBackpack/output/other-maps-half-letter/. New measured map distance about 71.329 mm; new ruler LONGSHIP 120 is the same distance, so the answer stays 120. Existing Letter prototype and ruler unchanged. See PP-025/PP-032. Physical reading/player test outstanding.

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex"><meta name="theme-color" content="#193B35"><title>The Raven Inheritance · Escape Backpack (V2: box and envelopes)</title>
+<!-- Play together: the escapepack-rooms worker's address, e.g. wss://rooms.escapepack.ca. Empty hides the feature. -->
+<meta name="rooms-server" content="">
+<link rel="stylesheet" href="leif.css"><link rel="stylesheet" href="raven2.css">
+<script src="raven2-sizes.js" defer></script><script src="table-layout2.js" defer></script><script src="raven2-data.js" defer></script><script src="leif-sound.js" defer></script><script src="leif-room.js" defer></script><script src="raven2.js" defer></script>
+</head>
+<body>
+<header class="masthead">
+  <svg class="emblem" viewBox="0 0 512 512" aria-hidden="true"><circle cx="256" cy="256" r="230" fill="none" stroke="#B56A2A" stroke-width="22"/><path d="M86 322q170 55 340 0" fill="none" stroke="#B56A2A" stroke-width="18"/><path d="M125 306h260l-24 30H149z" fill="#B56A2A"/><path d="M253 134v169M253 143l-89 92h89zM264 148l87 84h-87z" fill="none" stroke="#F3EFE5" stroke-width="16" stroke-linejoin="round"/><path d="M165 238q-55-15-72 25 30-5 46 7l-32 24 54-7q23-18 39-16" fill="#F3EFE5"/></svg>
+  <div class="brand"><span class="brand-kicker">Escape Backpack</span><span class="brand-title">The Raven Inheritance</span></div>
+  <div class="chapter"><span id="chapter">PUZZLE 1 OF 13</span> <span class="badge">Playtest V2</span></div>
+  <div class="head-actions">
+    <button id="room-chip" class="room-chip" hidden aria-haspopup="dialog"><span class="dots" id="room-dots"></span><span id="room-label">Room</span></button>
+    <button id="together" hidden aria-haspopup="dialog"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="3.2"/><circle cx="16.5" cy="9.5" r="2.6"/><path d="M2.5 19c.8-3.3 3-5 5.5-5s4.7 1.7 5.5 5M13.5 15.3c.9-.8 1.9-1.2 3-1.2 2.1 0 3.8 1.5 4.5 4.4"/></svg>Play together</button>
+    <div class="sound-wrap"><button id="sound-btn" aria-haspopup="true" aria-expanded="false" aria-controls="sound-menu" title="Sound"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path id="sound-waves" d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/></svg><span class="sr-only">Sound</span></button>
+      <div id="sound-menu" class="sound-menu" hidden><label><input type="checkbox" id="sound-fx"> Sound effects</label><label><input type="checkbox" id="sound-amb"> Sea and hearth ambience</label></div></div>
+    <button id="feedback-top" class="laptop-only">Feedback</button>
+    <div class="sound-wrap game-wrap laptop-only"><button id="game-btn" aria-haspopup="true" aria-expanded="false" aria-controls="game-menu">Game <span aria-hidden="true">▾</span></button>
+      <div id="game-menu" class="sound-menu game-menu" hidden><button id="menu-export">Save a copy</button><button id="menu-import">Load a copy</button><button id="menu-restart">Start again</button></div></div>
+    <button id="help">How to play</button>
+  </div>
+</header>
+<main>
+<section class="inventory" aria-label="Collected keepsakes"><div class="inventory-heading"><h2>Keepsakes <span id="item-count"></span></h2><span class="inventory-note">Click to find it or bring it out<span class="sep"> · </span><span id="save-status" role="status">Saved on this browser</span></span></div><div id="shelf"></div></section>
+<section class="workspace" aria-label="Your table">
+  <div class="toolbar"><div class="selection"><strong id="selected-name">Your table</strong><span id="selected-type">Drag to arrange · double-click to inspect</span></div><div class="actions"><button id="stow" disabled>Put away</button></div>
+    <div class="actions tools"><div class="zoom" role="group" aria-label="Table zoom"><button id="zoom-out" title="Zoom out (−)" aria-label="Zoom out">−</button><button id="zoom-fit" title="Fit the whole table (0)">Fit</button><button id="zoom-in" title="Zoom in (+)" aria-label="Zoom in">+</button></div><button aria-keyshortcuts="M" id="magnify" class="magnify" aria-pressed="false" title="Magnifying glass (M)"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg>Magnifier<kbd class="key" aria-hidden="true">M</kbd></button><button id="tidy">Tidy table</button><button id="expand" aria-pressed="false">Full screen</button></div></div>
+  <div class="table-scroll" id="table-scroll"><div id="table-size"><div id="table" class="table-surface"><div class="table-watermark" aria-hidden="true">LIV’S KEEPSAKES<br><span>Read · turn · connect</span></div></div></div>
+    <div id="unlock-banner" class="unlock-banner" role="status" hidden><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 8l9 6 9-6"/></svg><div><strong id="banner-title"></strong><span id="banner-text"></span><div class="rate" id="rate" role="group" aria-label="How was that puzzle?"><span>How was that puzzle?</span></div></div><button id="banner-close" type="button" aria-label="Dismiss">×</button></div>
+  </div>
+</section>
+<aside class="backpack" aria-label="Box and progress">
+  <div class="pack-head"><p class="eyebrow">Your box</p><span id="lock-count" class="lock-count"></span></div>
+  <div class="pack-grid">
+    <div class="pack-art"><p class="sr-only" id="box-title"></p><div id="box" class="box" role="group" aria-labelledby="box-title"></div><p class="box-note">Thirteen envelopes lie loose in the box. Each is marked with four runes.</p></div>
+    <div class="pack-lock">
+      <section id="lock-panel" aria-labelledby="lock-name"><p class="eyebrow" id="lock-number"></p><h2 id="lock-name">The cypher wheel</h2><p class="lock-nudge" id="lock-nudge"></p>
+        <div class="cypher" id="cypher">
+          <ol class="cypher-steps"><li><b>1 SET THE CODE</b></li></ol>
+          <div class="dial" id="dial" role="group" aria-label="Code windows"></div>
+          <p class="cypher-blank">Three digits? First window: leave it blank, not zero.</p>
+          <ol class="cypher-steps" start="2"><li><b>2 READ THE RUNES</b></li></ol>
+          <div class="rune-windows" id="rune-windows" role="group"></div>
+          <p class="cypher-step3"><b>3</b> Open the envelope with these runes.</p>
+        </div><input id="combination" class="sr-only" tabindex="-1" aria-hidden="true" autocomplete="off">
+        <p id="lock-message" role="status"></p><div id="attempts" class="attempts"></div><div id="hints" class="hints"></div></section>
+      <section id="complete" hidden><p class="eyebrow">The last envelope opens</p><h2>You found her route.</h2><div class="liv-hand" id="ending-letter"></div>
+        <dl class="ending-stats" id="ending-stats"></dl>
+        <label for="team-name" class="team-label">Name for the certificate</label><input id="team-name" maxlength="40" placeholder="Your name or team" autocomplete="off">
+        <div class="ending-actions"><button class="primary" id="copy-result">Copy your result</button><button id="print-cert">Print a certificate</button><button id="open-feedback-end">Tell us how it went</button><button id="review-table" class="text-button">Explore the keepsakes</button></div></section>
+    </div>
+  </div>
+  <section class="notebook" aria-labelledby="notebook-title"><div class="notebook-head"><h2 id="notebook-title">Notebook</h2><div class="tabs" role="tablist"><button role="tab" id="tab-notes" aria-selected="true" aria-controls="pane-notes">My notes</button><button role="tab" id="tab-pins" aria-selected="false" aria-controls="pane-pins">On keepsakes <span id="pin-count"></span></button></div></div>
+    <div id="pane-notes" role="tabpanel" aria-labelledby="tab-notes"><label class="sr-only" for="notes">My notes</label><textarea id="notes" maxlength="6000" placeholder="Places, observations, possible codes… (only on this device)"></textarea></div>
+    <div id="pane-pins" role="tabpanel" aria-labelledby="tab-pins" hidden><p class="muted" id="pins-intro">Pin a note to any keepsake from its close-up (the Note button). Postcards are listed here as they arrive.</p><div id="pins"></div></div></section>
+  <div class="session-controls"><button id="export-save">Save a copy</button><button id="import-save">Load a copy</button><input id="save-file" type="file" accept="application/json,.json" hidden><button id="open-feedback">Send feedback</button><button id="restart" class="text-button">Start again</button></div>
+</aside>
+</main>
+<div class="small-screen" role="note"><strong>Best on a laptop, desktop or tablet.</strong> The table is a real-size spread of Liv’s keepsakes; on a phone it is too small to read. You can still look around here.</div>
+
+<dialog id="unpack" class="unpack" aria-labelledby="unpack-title"><div class="unpack-inner">
+  <article class="letter" aria-label="Aunt Liv’s letter"><div class="postmark" aria-hidden="true"><img src="assets/Raven_Postmark.png" alt=""></div><div id="letter-text" class="liv-hand"></div></article>
+  <div class="unpack-side"><p class="eyebrow light">Escape Backpack · Norse adventure</p><h1 id="unpack-title">The Raven Inheritance</h1><p>A box has arrived from Aunt Liv. On top lie a postcard and a cypher wheel; underneath are thirteen envelopes, each marked with four runes.</p>
+    <div class="unpack-bag unpack-box" id="unpack-bag"></div>
+    <div class="unpack-buttons"><button class="primary" id="unbuckle">Open the box</button><button class="text-button light" id="unpack-help">How to play</button></div>
+    <p class="unpack-note">Played best on a laptop, desktop or tablet, alone or <span id="unpack-together">together</span>. Take your time: progress saves as you go.</p></div>
+</div></dialog>
+
+<dialog id="intro" aria-labelledby="intro-title"><div class="dialog-top"><h2 id="intro-title">How to play</h2><button data-close>Close</button></div><div class="intro-body help-body">
+  <p>Liv’s keepsakes lie on the table at real size. Read them, turn them over and put them together. When you find a code, set it on the cypher wheel beside the box. The wheel shows four runes: open the envelope marked with the same runes. Each envelope holds more keepsakes.</p>
+  <div class="help-grid">
+    <section><h3>Mouse</h3><ul><li><b>Drag</b> to move. Edges snap together; hold <kbd>Alt</kbd> to place freely.</li><li><b>Hover</b> for Zoom, Rotate, Flip and Move.</li><li><b>Double-click</b> for a readable close-up.</li><li><kbd>Ctrl</kbd> + scroll, or <b>+ / −</b>, zooms the table; drag the empty table to pan.</li></ul></section>
+    <section><h3>Tablet</h3><ul><li><b>Tap</b> a keepsake for its tools; <b>double-tap</b> for a close-up.</li><li><b>Pinch</b> the table to zoom, drag the empty table to pan.</li><li>Hold a keepsake and <b>twist with a second finger</b> to turn it.</li></ul></section>
+    <section><h3>Keyboard</h3><ul><li><kbd>M</kbd> magnifier (scroll over the lens for strength)</li><li><kbd>R</kbd> rotate, <kbd>F</kbd> flip, <kbd>Enter</kbd> close-up</li><li><kbd>+</kbd> <kbd>−</kbd> <kbd>0</kbd> zoom, arrows move a keepsake</li><li>On the wheel: type the code (space is the blank), or <kbd>↑</kbd> next <kbd>↓</kbd> back</li></ul></section>
+  </div>
+  <p class="muted">Hints are optional: under the wheel, open Hint 1, 2, 3 …, or the Solution. New keepsakes never push yours aside. Only Tidy table moves them, stacking older keepsakes in piles (click a pile’s name to take one out); for the last envelope, every postcard and map comes back out. Progress saves in this browser; “Save a copy” keeps a backup or moves it to another device.</p>
+  <button class="primary" id="begin" autofocus>Back to the table</button></div></dialog>
+
+<dialog id="viewer" aria-labelledby="viewer-title"><h2 id="viewer-title" class="sr-only"></h2><div id="viewer-scroll"><div id="viewer-art"></div><div id="viewer-side" hidden></div></div>
+  <div id="viewer-note" class="viewer-note" hidden><label for="viewer-note-text">Your note on <span id="viewer-note-name"></span></label><textarea id="viewer-note-text" maxlength="1000" placeholder="What did you notice?"></textarea><span class="muted" id="viewer-note-shared"></span></div>
+  <div id="viewer-tools" class="prop-tools" role="toolbar" aria-label="Close-up actions"><button aria-keyshortcuts="M" id="viewer-magnify" aria-pressed="false" title="Magnifying glass (M); scroll over it to change its strength"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg>Magnifier<kbd class="key" aria-hidden="true">M</kbd></button><button aria-keyshortcuts="R" id="viewer-rotate" title="Rotate a quarter turn (R)"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 3.5v4.8h-4.8"/></svg>Rotate<kbd class="key" aria-hidden="true">R</kbd></button><button aria-keyshortcuts="F" id="viewer-flip" title="Turn over (F)"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18" stroke-dasharray="2 2.5"/><path d="M9 7L3.5 17H9z"/><path d="M15 7l5.5 10H15z"/></svg>Flip<kbd class="key" aria-hidden="true">F</kbd></button><button id="viewer-move" title="Back to the table, carrying this prop; click to put it down"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M9 6l3-3 3 3M9 18l3 3 3-3M6 9l-3 3 3 3M18 9l3 3-3 3"/></svg>Move</button><button id="viewer-note-btn" aria-pressed="false" title="Pin a note to this keepsake"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v12l-4 4H5z"/><path d="M15 20v-4h4M8.5 9h7M8.5 12.5h5"/></svg>Note</button><span class="marker-tools"><button id="viewer-marker" aria-pressed="false" title="Wet-erase marker: drag to draw a straight line"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg>Marker</button><button id="viewer-undo" hidden title="Undo the last line"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>Undo</button><button id="viewer-wipe" hidden title="Wipe this map clean"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18"/><path d="M6 16l8-11 6 4-7 9z"/></svg>Wipe</button></span><label class="compare" title="Show another keepsake beside this one"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="7.5" height="14" rx="1"/><rect x="13.5" y="5" width="7.5" height="14" rx="1"/></svg>Compare <select id="viewer-compare" aria-label="Show beside it"></select></label><button aria-keyshortcuts="Escape" data-close class="close" title="Close (Esc)"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Close<kbd class="key" aria-hidden="true">Esc</kbd></button></div></dialog>
+
+<dialog id="opened" aria-labelledby="opened-title"><div class="intro-body opened"><p class="chapter-no" id="opened-no"></p><p class="eyebrow" id="opened-eyebrow"></p><h2 id="opened-title"></h2><img id="opened-medallion" class="medallion-img" alt="The medallion: a raven crest" hidden><div class="liv-hand" id="opened-liv"></div><p id="opened-what"></p><p class="muted" id="opened-next"></p><button class="primary" id="opened-go">Begin the trail →</button></div></dialog>
+
+<dialog id="room-dialog" aria-labelledby="room-title"><div class="dialog-top"><h2 id="room-title">Play together</h2><button data-close>Close</button></div><div class="intro-body room-body">
+  <div id="room-out"><p>Share one table with up to eight people, each on their own device: everyone sees the same keepsakes, moves and locks, live. Your notebook stays your own.</p>
+    <label for="room-name">Your name</label><input id="room-name" maxlength="24" autocomplete="nickname" placeholder="e.g. Sam">
+    <div class="room-choices"><section><h3>Start a room</h3><p class="muted">Your current table becomes the shared one.</p><button class="primary" id="room-create">Start a room</button></section>
+      <section><h3>Join a room</h3><label for="room-code" class="sr-only">Room code</label><input id="room-code" class="code-input" maxlength="6" autocomplete="off" spellcheck="false" placeholder="ABC234"><button id="room-join">Join</button></section></div>
+    <p class="muted" id="room-error" role="alert"></p></div>
+  <div id="room-in" hidden><p class="eyebrow">Room code</p><p class="room-code" id="room-code-big"></p><p>Send this link to the others: <a id="room-link" href="#"></a></p><div class="actions"><button class="primary" id="room-copy">Copy the link</button><button id="room-leave">Leave the room</button></div>
+    <h3>At the table</h3><ul id="room-peers" class="room-peers"></ul><p class="muted" id="room-status"></p><p class="muted">Leaving takes you back to your own saved game. The room keeps its table for 30 days.</p></div>
+</div></dialog>
+
+<dialog id="feedback-dialog" aria-labelledby="feedback-title"><div class="dialog-top"><h2 id="feedback-title">Tell us how it went</h2><button data-close>Close</button></div><form class="intro-body feedback-body" id="feedback-form">
+  <p>This is a playtest: your notes decide what we fix. Everything is optional except a few words.</p>
+  <label for="fb-rating">Overall</label><select id="fb-rating"><option value="">Choose if you like</option><option value="5">5 · Loved it</option><option value="4">4 · Enjoyed it</option><option value="3">3 · Mixed</option><option value="2">2 · Frustrating</option><option value="1">1 · Needs work</option></select>
+  <label for="fb-message">Your thoughts</label><textarea id="fb-message" required maxlength="4000" placeholder="What worked? Where did you get stuck? What would you change?"></textarea>
+  <label for="fb-email">Email <span class="muted">(only if you would like a reply)</span></label><input id="fb-email" type="email" maxlength="254" autocomplete="email">
+  <label class="check"><input type="checkbox" id="fb-medallion"> I finished online and would like to hear about getting a real medallion</label>
+  <label class="check"><input type="checkbox" id="fb-stats" checked> Include my game stats: time, hints, tries and puzzle ratings per puzzle (no answers)</label>
+  <p class="muted">Sent with Formspree, the service our site’s feedback form uses.</p>
+  <p id="fb-result" role="status"></p>
+  <div class="actions"><button type="submit" class="primary" id="fb-send">Send</button></div></form></dialog>
+
+<dialog id="restart-dialog" aria-labelledby="restart-title"><div class="intro-body"><h2 id="restart-title">Start the game again?</h2><p>This clears this playtest’s progress and notes in this browser. A saved copy is kept separately.</p><div class="actions"><button class="rust" data-close autofocus>Keep playing</button><button id="restart-confirm">Start again</button></div></div></dialog>
+<dialog id="save-dialog" aria-labelledby="save-title"><div class="dialog-top"><h2 id="save-title">Your saved game</h2><button data-close>Close</button></div><div class="intro-body"><p id="save-instructions"></p><label class="sr-only" for="save-text">Saved game text</label><textarea id="save-text" spellcheck="false"></textarea><p id="save-result" role="status"></p><div class="actions"><button id="select-save">Select all text</button><button id="download-save">Download file</button><button id="choose-save-file">Choose a file</button><button id="load-save-text" class="primary">Load saved game</button></div></div></dialog>
+
+<section id="certificate" class="certificate" aria-hidden="true"><div class="cert-frame"><svg class="cert-emblem" viewBox="0 0 512 512" aria-hidden="true"><circle cx="256" cy="256" r="230" fill="none" stroke="#B56A2A" stroke-width="18"/><path d="M86 322q170 55 340 0" fill="none" stroke="#B56A2A" stroke-width="16"/><path d="M125 306h260l-24 30H149z" fill="#B56A2A"/><path d="M253 134v169M253 143l-89 92h89zM264 148l87 84h-87z" fill="none" stroke="#193B35" stroke-width="14" stroke-linejoin="round"/><path d="M165 238q-55-15-72 25 30-5 46 7l-32 24 54-7q23-18 39-16" fill="#193B35"/></svg>
+  <p class="cert-kicker">Escape Backpack · Norse adventure</p><h1>The Raven Inheritance</h1><p class="cert-line">This is to certify that</p><p class="cert-name" id="cert-name"></p><p class="cert-line">followed Aunt Liv’s four Viking trails across the northern sea and opened all thirteen envelopes of her box.</p>
+  <p class="cert-stats" id="cert-stats"></p><img class="cert-medallion" id="cert-medallion" alt=""><p class="liv-hand cert-sign">Pack your bag. I’ll meet you in Norway. <br>Love, Aunt Liv</p></div></section>
+
+<div id="pile-menu" class="pile-menu" role="menu" hidden></div>
+<button id="turn-handle" type="button" hidden aria-label="Turn the ruler: drag, or press [ and ]" title="Drag to turn about the 0 mark (Shift: 15° steps). [ and ]: one degree."><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 3.5v4.8h-4.8"/></svg></button><div id="prop-tools" class="prop-tools" role="toolbar" hidden><span class="tools-name" id="tools-name"></span><button aria-keyshortcuts="Enter" data-tool="zoom" title="Look closer (Enter)"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6M10 7v6M7 10h6"/></svg>Zoom<kbd class="key" aria-hidden="true">↵</kbd></button><button aria-keyshortcuts="R" data-tool="rotate" title="Rotate a quarter turn (R)"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 3.5v4.8h-4.8"/></svg>Rotate<kbd class="key" aria-hidden="true">R</kbd></button><button aria-keyshortcuts="F" data-tool="flip" title="Turn over (F)"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18" stroke-dasharray="2 2.5"/><path d="M9 7L3.5 17H9z"/><path d="M15 7l5.5 10H15z"/></svg>Flip<kbd class="key" aria-hidden="true">F</kbd></button><button data-tool="move" title="Drag, or click then click where it goes (Esc cancels)"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M9 6l3-3 3 3M9 18l3 3 3-3M6 9l-3 3 3 3M18 9l3 3-3 3"/></svg>Move</button></div><div id="toast" role="status"></div><noscript>This game needs JavaScript enabled.</noscript>
+</body></html>

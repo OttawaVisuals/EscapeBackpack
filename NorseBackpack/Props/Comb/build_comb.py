@@ -2,15 +2,15 @@
 
 How it plays. The comb lies upright on the back of AD, handle in the left margin, teeth pointing
 right. Its two end ring-and-dots are drilled through; players sit the two printed ring-and-dots
-(build_postcard_AD_pdf.COMB_MARKS) in those holes. There is one tooth per line of Liv's message and sign-off (12 in all
-since the 6 x 4 in card, 13 Oct 2026), at the message's own line spacing. Intact teeth cover their
+(build_postcard_AD_pdf.COMB_MARKS) in those holes. There is one tooth per line of Liv's message and sign-off (11 in all
+since 14 Oct 2026; 12 on the first 6 x 4 in card, 13 Oct 2026), at the message's own line spacing. Intact teeth cover their
 whole line. Four teeth are broken short, each ending just before a chosen letter, so the only text
 left showing is
 
     line 1  [At her ]brother's harbor -- the one Aud
     line 3  [I've read everything I c]ould find about her this
-    line 6  [It was s]o awesome to find that comb
-    line 8  keep it!          (tooth broken off at the root)
+    line 6  [It was s]o awesome to find that comb, and
+    line 7  [the museum let me ]keep it!
 
 and the first visible letters, top to bottom, read B O O K.
 
@@ -48,7 +48,7 @@ ROOT = HERE.parents[2]
 sys.path.insert(0, str(ROOT / "NorseBackpack" / "Postcards"))
 import build_postcard_AD_pdf as AD  # noqa: E402
 
-AD_PDF = ROOT / "output" / "pdf" / "Postcard_AD_Bjarnarhofn_Print.pdf"
+AD_PDF = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Postcard_AD_Bjarnarhofn_Print.pdf"
 KNOTWORK_SVG = HERE / "knotwork.svg"
 PT = 25.4 / 72                    # mm per point
 
@@ -56,7 +56,12 @@ PT = 25.4 / 72                    # mm per point
 # 13 Oct 2026 (6 x 4 in card): the wider column rewraps the message, so "alongside" now starts
 # its line; the second O comes from "so" instead, and "keep" starts its line, so its tooth is
 # broken off almost at the root.
-TARGETS = [(1, "brother", 0), (3, "could", 1), (6, "so", 1), (8, "keep", 0)]
+# 14 Oct 2026: "alongside the coins" dropped from AD; the message is one line shorter and "keep"
+# sits mid-line 7, so its tooth is a normal broken tooth again.
+# 15 Oct 2026 (designer): AD's message rewritten; the letters are now B of "Bjarnarhöfn" (line 1),
+# the O of "to" (line 2), the O of "of" (line 5) and the K of "like" (line 8). The padded words
+# keep " to " from matching inside "stops".
+TARGETS = [(1, "Bjarnarhöfn", 0), (2, " to ", 2), (5, " of ", 1), (8, "like", 2)]
 ANSWER = "BOOK"
 
 # Geometry, in card points (x right, y down from the card's top-left) unless marked mm.
@@ -83,12 +88,12 @@ def read_layout():
     for block in page.get_text("rawdict")["blocks"]:
         for line in block.get("lines", []):
             x0, y0, x1, y1 = line["bbox"]
-            if x0 < 30 and 25 < y0 < 205:   # message lines plus the two signature lines
+            if x0 < 30 and 25 < y0 < 235:   # message lines plus the two signature lines
                 chars = [ch for span in line["spans"] for ch in span["chars"]]
                 lines.append(((y0 + y1) / 2, chars))
     lines.sort(key=lambda item: item[0])
-    if len(lines) != 12:
-        raise SystemExit("expected 10 message + 2 signature lines on AD, found %d" % len(lines))
+    if len(lines) != 14:
+        raise SystemExit("expected 12 message + 2 signature lines on AD, found %d" % len(lines))
     tips = {}
     for number, word, index in TARGETS:
         chars = lines[number - 1][1]
@@ -273,7 +278,7 @@ def overlay_png(handle, teeth, holes, cuts):
     for h in holes:
         mg.polygon([(x * k + pad, y * k) for x, y in h.exterior.coords], fill=255)
     out.paste(base, (0, 0), mask)
-    out.convert("RGB").crop((0, 0, pad + int(200 * k), int(252 * k))).save(HERE / "Aud_Comb_on_AD.png")
+    out.convert("RGB").save(HERE / "Aud_Comb_on_AD.png")   # whole card (15 Oct 2026: the old fixed crop cut off the new text)
 
 
 def main():

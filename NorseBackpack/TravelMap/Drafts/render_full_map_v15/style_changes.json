@@ -1,0 +1,13 @@
+{
+  "water_border": "#59635D",
+  "water_border_weight_pt": 0.55,
+  "border_method": "one shared coast/river/lake boundary stroke; no filled casings",
+  "removed_land_box": [
+    90,
+    100,
+    114,
+    113
+  ],
+  "stamp_ink_asset": "C:\\EscapeBackpack\\EscapeBackpack\\NorseBackpack\\TravelMap\\Drafts\\Aud_Comb_Ink_v15_final.png",
+  "stamp_background": "transparent, existing blue band shows through"
+}

@@ -1,6 +1,9 @@
 """
-The raven's flights player card (PZ-02 / PR-26). 4 x 3 in, landscape, single-sided, plain white.
-Size and paper chosen by the user, 28 Sept 2026 (the review's working size was half-Letter).
+The raven's flights player card (PZ-02 / PR-26). 3.5 x 2 in business card, landscape, single-sided.
+Resized 20 Oct 2026 from 4 x 3 in (designer, Q-052: stock business-card printing). The graph is
+stretched to fill the safe area (separate x and y scales, so no flight crosses another and the
+layout keeps its shape); digits and perch letters keep their 11 / 12 pt sizes.
+Earlier: 4 x 3 in chosen by the user, 28 Sept 2026 (the review's working size was half-Letter).
 
 Graph, clue and title are the approved 22 Sept 2026 spec (Review_2026-09-22/approved_changes.py,
 RV-21): eight perches, twelve two-way flights, one digit each, no crossings, no route marked.
@@ -8,11 +11,10 @@ HRAFN -> 2, 6, 4, 8. Node positions follow the accepted sketch,
 output/visualizations/norse-five-perches-comparison.png.
 
 Writes:
-  output/pdf/Raven_Flights_Card_Print.pdf      -- the card at exact trim size (player view only)
+  NorseBackpack/Print/_pdf_source/Raven_Flights_Card_Print.pdf      -- the card at exact trim size (player view only)
   Props/RavenFlights/Raven_Flights_Card_preview.png -- 300dpi render for the Norse page
-  output/docx/PrintTest_RavenFlights.docx      -- print file, same top-left zone and floating
-                                                  picture as the postcard/ticket print files,
-                                                  with corner crop marks outside the trim
+  NorseBackpack/Print/Print_RavenFlights_Card.docx  -- home-print Letter sheet: the card at 100 % with
+                                                  corner crop marks outside the trim
 """
 
 import importlib.util
@@ -32,9 +34,9 @@ from reportlab.pdfgen import canvas
 
 ROOT = Path(__file__).resolve().parents[3]
 FONT_DIR = ROOT / "Fonts"
-OUT_PDF = ROOT / "output" / "pdf" / "Raven_Flights_Card_Print.pdf"
+OUT_PDF = ROOT / "NorseBackpack" / "Print" / "_pdf_source" / "Raven_Flights_Card_Print.pdf"
 PREVIEW = Path(__file__).resolve().parent / "Raven_Flights_Card_preview.png"
-OUT_DOCX = ROOT / "output" / "docx" / "PrintTest_RavenFlights.docx"
+OUT_DOCX = ROOT / "NorseBackpack" / "Print" / "Print_RavenFlights_Card.docx"
 RAVEN_ICON = ROOT / "NorseBackpack" / "Art" / "Raven" / "Raven_Profile_Icon_v1.png"
 
 sys.path.insert(0, str(ROOT / "NorseBackpack" / "Review_2026-09-22"))
@@ -46,8 +48,9 @@ _postcard = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_postcard)
 add_floating_picture = _postcard.add_floating_picture
 
-CARD_W = 4.0 * inch
-CARD_H = 3.0 * inch
+CARD_W = 3.5 * inch
+CARD_H = 2.0 * inch
+SAFE = 0.125 * inch  # print-shop safe zone: nothing closer than this to the trim
 INK = HexColor("#222222")
 LINE = HexColor("#555555")
 
@@ -57,9 +60,7 @@ pdfmetrics.registerFont(TTFont("CinzelRegular", str(FONT_DIR / "Cinzel" / "stati
 # Perch centres in the accepted sketch's pixel space (y down).
 SKETCH = {"H": (128, 329), "R": (385, 293), "T": (675, 329), "A": (385, 444),
           "O": (128, 465), "N": (675, 465), "F": (253, 604), "S": (550, 604)}
-GRAPH_W = 3.4 * inch
-GRAPH_TOP = 0.0  # unused: the graph is centred vertically in draw_card
-NODE_R = 0.16 * inch
+NODE_R = 0.14 * inch  # was 0.16 on the 4 x 3 card; the 12 pt letter still clears the ring
 DIGIT_PT, NODE_PT = 11, 12
 
 
@@ -72,11 +73,13 @@ def check_route():
 
 
 def node_positions():
+    """Perch centres filling the safe area: perch rings touch the safe zone on all four sides."""
     xs = [p[0] for p in SKETCH.values()]
     ys = [p[1] for p in SKETCH.values()]
-    scale = GRAPH_W / (max(xs) - min(xs))
-    x0 = (CARD_W - GRAPH_W) / 2
-    return {k: (x0 + (x - min(xs)) * scale, CARD_H - GRAPH_TOP - (y - min(ys)) * scale)
+    inset = SAFE + NODE_R
+    sx = (CARD_W - 2 * inset) / (max(xs) - min(xs))
+    sy = (CARD_H - 2 * inset) / (max(ys) - min(ys))
+    return {k: (inset + (x - min(xs)) * sx, CARD_H - inset - (y - min(ys)) * sy)
             for k, (x, y) in SKETCH.items()}
 
 
@@ -85,9 +88,6 @@ def draw_card(c):
     Nothing is filled white, so the card can be printed on coloured paper: each flight stops
     at the perch outline and breaks around its digit instead of using a white knockout."""
     pos = node_positions()
-    ys = [y for _, y in pos.values()]
-    dy = CARD_H / 2 - (max(ys) + min(ys)) / 2   # centre the graph vertically on the card
-    pos = {k: (x, y + dy) for k, (x, y) in pos.items()}
 
     c.setStrokeColor(LINE)
     c.setLineWidth(0.8)
@@ -99,7 +99,9 @@ def draw_card(c):
         ux, uy = (x2 - x1) / length, (y2 - y1) / length
         mx, my = (x1 + x2) / 2, (y1 + y2) / 2
         # Gap half-width along the line: enough to clear the digit's box in this direction.
-        half = digit_gap / max(abs(ux), abs(uy) * 0.75) * 0.9 + 0.5
+        # (Steep flights used abs(uy) * 0.75 on the 4 x 3 card; at 3.5 x 2 the short vertical
+        # flights need their full length, and a digit is about as tall as it is wide.)
+        half = digit_gap / max(abs(ux), abs(uy)) * 0.9 + 0.5
         sx, sy = x1 + ux * NODE_R, y1 + uy * NODE_R
         ex, ey = x2 - ux * NODE_R, y2 - uy * NODE_R
         c.line(sx, sy, mx - ux * half, my - uy * half)
@@ -156,7 +158,7 @@ def build_docx():
     buf.seek(0)
 
     doc = Document()
-    add_floating_picture(doc.add_paragraph(), buf, 4.0 + 2 * MARK_MARGIN_IN, 3.0 + 2 * MARK_MARGIN_IN,
+    add_floating_picture(doc.add_paragraph(), buf, CARD_W / inch + 2 * MARK_MARGIN_IN, CARD_H / inch + 2 * MARK_MARGIN_IN,
                          SIDE_MARGIN_IN - MARK_MARGIN_IN, TOP_MARGIN_IN)
     OUT_DOCX.parent.mkdir(parents=True, exist_ok=True)
     doc.save(str(OUT_DOCX))
@@ -166,8 +168,9 @@ def build_docx():
 def main():
     check_route()
     print(build_pdf())
-    # The card is now printed on the luggage-tag sheet (Props/build_luggage_tag_inserts_pdf.py);
-    # build_docx() made the old stand-alone print file and is no longer called.
+    # Its own print sheet again since 20 Oct 2026: the luggage tags it shared a sheet with are parked
+    # (PP-023), so Props/build_luggage_tag_inserts_pdf.py is no longer the card's print master.
+    print(build_docx())
 
 
 if __name__ == "__main__":
