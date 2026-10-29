@@ -58,7 +58,7 @@ DPI = 110
 
 # Print costs tab (Q-052, 20 Oct 2026): stock print-shop products, priced per design from the online quote
 # system at 100/250/500/1,000. Same 12 rows, same order as the "Print quotes" tab of Production/Norse_Parts_List.xlsx.
-PRINT_QTYS = [25, 50, 100, 250, 500, 1000]
+PRINT_QTYS = [25, 50, 100, 200, 250, 500, 1000]  # LoudMouth quotes 200, Newprint 250
 PRINT_PRODUCTS = [  # key, label
     ("pc2", "Postcard 4 × 6 · 2 sides"),
     ("pc1", "Postcard 4 × 6 · 1 side"),
@@ -647,6 +647,15 @@ def costs_html():
         f'<tbody>{items}</tbody><tfoot>{foot}</tfoot></table></div>'
         '<h3 class="inside">Printing per box if everything came from one shop</h3>'
         f'<div class="tbl"><table class="cost"><thead><tr><th>Shop</th>{qh}</tr></thead><tbody>{whole}</tbody></table></div>'
+        '<h3 class="inside">Order to cover your run <small>(the smallest quote that covers it, fewest missing prices first)</small></h3>'
+        '<div class="costbar"><label>Boxes needed <input type="number" id="cost-need" min="1" step="1" value="350" style="width:90px"></label></div>'
+        '<div class="tbl"><table class="cost"><thead><tr><th>Shop</th><th class="r">Order size</th><th class="r">Printing, whole order</th>'
+        '<th class="r">Per box</th><th class="r">Spare boxes</th><th>Items without a price</th></tr></thead><tbody>'
+        '<tr data-need=""><th scope="row">Cheapest shop for each item <small>(as set above)</small></th>'
+        '<td class="r" data-nq></td><td class="r" data-nt></td><td class="r" data-nb></td><td class="r" data-ns></td><td data-nm></td></tr>'
+        + "".join(f'<tr data-need="{k}"><th scope="row">{e(name)}</th><td class="r" data-nq></td><td class="r" data-nt></td>'
+                  '<td class="r" data-nb></td><td class="r" data-ns></td><td data-nm></td></tr>' for k, name, *_ in SHOPS)
+        + '</tbody></table></div>'
         '<div class="costbar"><button id="cost-copy-notes">Copy all notes</button><span id="cost-msg-notes" class="meta"></span>'
         '<button id="cost-clear">Reset to quotes</button><span id="cost-msg" class="meta"></span></div>'
         + '<p class="meta">Superseded Letter 8.5 × 11 quotes, kept for reference (prototype maps): '
@@ -794,6 +803,7 @@ table.cost input[type=checkbox]{width:auto;min-width:0;accent-color:var(--accent
 table.cost.quotes input[type=number]{min-width:64px}
 table.cost.quotes input[type=text],table.cost.quotes input[type=url],table.cost.shops input[type=text],table.cost.shops input[type=url]{text-align:left;min-width:110px}
 table.cost input.bestc{border-color:var(--accent);background:var(--spoil);font-weight:700}
+table.cost tr.bestrow small{display:block;font-weight:400;color:var(--mute)}
 table.cost tr.bestrow th,table.cost tr.bestrow td{font-weight:700;border-top:2px solid var(--ink);font-size:12px}
 details.prodq>div{padding:0 0 6px}
 .costbar label{display:flex;gap:6px;align-items:center;font-size:14px}
@@ -856,7 +866,7 @@ try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(err){saved={}}
 var inputs=root.querySelectorAll('input[data-p],input[data-k],textarea[data-k]'),rows=root.querySelectorAll('tbody tr[data-p]');
 var envRows=root.querySelectorAll('tr[data-env]'),boxRows=root.querySelectorAll('tr[data-boxrow]'),madeRows=root.querySelectorAll('tr[data-made]'),radios=root.querySelectorAll('input[name="cost-box"]');
 var qtys=[].map.call(root.querySelectorAll('td[data-tot]'),function(td){return +td.getAttribute('data-tot')});
-var sel=document.getElementById('cost-mode'),hstBox=document.getElementById('cost-hst'),incs=root.querySelectorAll('input[data-inc]');
+var needBox=document.getElementById('cost-need'),sel=document.getElementById('cost-mode'),hstBox=document.getElementById('cost-hst'),incs=root.querySelectorAll('input[data-inc]');
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(err){}}
 Object.keys(saved).forEach(function(k){var m=/^(\w+)@(\d+)$/.exec(k),n=/^(pc2|pc1|bm2|bm1|bc1|fl1|fl2):note$/.exec(k);
   if(m){saved[m[1]+':old:'+m[2]]=saved[k];delete saved[k]}else if(n){saved[n[1]+':old:note']=saved[k];delete saved[k]}});
@@ -870,13 +880,26 @@ function best(p,q,only){var m=only||sel.value,b=null;
     var t=rowTotal(r,q);if(t!==null&&(!b||t<b.v))b={v:t,shop:r.getAttribute('data-sname')}});return b}
 function marks(){
   root.querySelectorAll('td[data-best]').forEach(function(td){var a=td.getAttribute('data-best').split(':'),b=best(a[0],+a[1]);
-    td.textContent=b?money(b.v)+' · '+b.shop:''});
+    td.textContent='';if(b){td.appendChild(document.createTextNode(money(b.v)));var sm=document.createElement('small');
+      sm.textContent=b.shop+' · '+money(b.v/a[1])+' each';td.appendChild(sm)}});
   root.querySelectorAll('tr[data-qr]').forEach(function(r){var p=r.getAttribute('data-qr');
     r.querySelectorAll('input[data-q]').forEach(function(i){var q=+i.getAttribute('data-q'),t=rowTotal(r,q),b=best(p,q);
       i.classList.toggle('bestc',t!==null&&b!==null&&Math.abs(t-b.v)<1e-9)})});
   root.querySelectorAll('td[data-shopq]').forEach(function(td){var a=td.getAttribute('data-shopq').split(':'),q=+a[1],t=0,m=0;
     rows.forEach(function(r){var b=best(r.getAttribute('data-p'),q,a[0]);if(b)t+=(+r.getAttribute('data-n'))*b.v/q;else m++});
-    td.textContent=m===rows.length?'':money(t)+(m?' (+'+m+' missing)':'')})}
+    td.textContent=m===rows.length?'':money(t)+(m?' (+'+m+' missing)':'')});
+  needCalc()}
+function needCalc(){var need=parseFloat(needBox.value);
+  root.querySelectorAll('tr[data-need]').forEach(function(tr){var s=tr.getAttribute('data-need'),pick=null,c=function(n){return tr.querySelector('td[data-'+n+']')};
+    qtys.forEach(function(q){if(!(q>=need))return;var t=0,m=0,any=0;
+      rows.forEach(function(r){var b=best(r.getAttribute('data-p'),q,s);if(b){t+=(+r.getAttribute('data-n'))*b.v;any++}else m++});
+      if(any&&(!pick||m<pick.m))pick={q:q,t:t,m:m}});
+    var lo=pick&&pick.m?'at least ':'';
+    c('nq').textContent=pick?pick.q.toLocaleString('en-CA'):'';
+    c('nt').textContent=pick?lo+money(pick.t):'';
+    c('nb').textContent=pick?lo+money(pick.t/pick.q):'';
+    c('ns').textContent=pick?Math.round(pick.q-need):'';
+    c('nm').textContent=pick?(pick.m?pick.m+' of '+rows.length:'none'):''})}
 function calc(){
   var pieces=0,tot={},miss={};qtys.forEach(function(q){tot[q]=0;miss[q]=0});
   rows.forEach(function(r){var p=r.getAttribute('data-p'),n=+r.getAttribute('data-n');pieces+=n;
@@ -912,6 +935,8 @@ function setLink(r,k){var a=r.querySelector('a[data-linkname]'),v=(r.querySelect
   if(/^https?:\/\//i.test(v)){a.href=v;a.classList.remove('nolink')}else{a.removeAttribute('href');a.classList.add('nolink')}}
 radios.forEach(function(r){if(saved.box)r.checked=(r.value===saved.box);
   r.addEventListener('change',function(){saved.box=r.value;try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(err){}calc()})});
+if(saved.need)needBox.value=saved.need;
+needBox.addEventListener('input',function(){if(needBox.value&&needBox.value!=='350')saved.need=needBox.value;else delete saved.need;persist();calc()});
 if(saved.mode)sel.value=saved.mode;if(saved.hst==='1')hstBox.checked=true;
 sel.addEventListener('change',function(){if(sel.value)saved.mode=sel.value;else delete saved.mode;persist();calc()});
 hstBox.addEventListener('change',function(){if(hstBox.checked)saved.hst='1';else delete saved.hst;persist();calc()});
@@ -932,7 +957,7 @@ document.getElementById('cost-copy-notes').onclick=function(){
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(lines.join('\n')).then(done,fallback)}else{fallback()}};
 document.getElementById('cost-clear').onclick=function(){if(!confirm('Put back the quoted prices (20 Oct 2026)?'))return;
   saved={};try{localStorage.removeItem(KEY)}catch(err){}inputs.forEach(function(i){i.value=i.getAttribute('data-default')});
-  radios.forEach(function(r){r.checked=(r.value==='boxA')});sel.value='';hstBox.checked=false;incs.forEach(function(c){c.checked=true});calc();msg.textContent='Quoted prices restored.'};
+  radios.forEach(function(r){r.checked=(r.value==='boxA')});sel.value='';needBox.value='350';hstBox.checked=false;incs.forEach(function(c){c.checked=true});calc();msg.textContent='Quoted prices restored.'};
 calc();
 })();
 </script></body></html>
