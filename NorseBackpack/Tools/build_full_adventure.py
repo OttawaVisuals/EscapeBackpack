@@ -58,7 +58,7 @@ DPI = 110
 
 # Print costs tab (Q-052, 20 Oct 2026): stock print-shop products, priced per design from the online quote
 # system at 100/250/500/1,000. Same 12 rows, same order as the "Print quotes" tab of Production/Norse_Parts_List.xlsx.
-PRINT_QTYS = [100, 250, 500, 1000]
+PRINT_QTYS = [25, 50, 100, 250, 500, 1000]
 PRINT_PRODUCTS = [  # key, label
     ("pc2", "Postcard 4 × 6 · 2 sides"),
     ("pc1", "Postcard 4 × 6 · 1 side"),
@@ -83,7 +83,7 @@ PRINT_QUOTES = {
 # (PRINT_PRODUCTS, ENVELOPES, BOXES, MADE). Shown as an editable Notes box on the Print costs page (edits stay in the
 # browser; to keep one for good, copy it here).
 NOTES = {
-    "fl1": "Cheapest option:\nShape - Rectangle (Portrait)\nFormat - 5.5 x 8.5 Inches Portrait\n"
+    "fl1:old": "Cheapest option:\nShape - Rectangle (Portrait)\nFormat - 5.5 x 8.5 Inches Portrait\n"
            "Paper - 80 lb. Lynx® Uncoated Text FSC® ♽\nColours - Colour Front Side Only\n"
            "Coating - No Coating\nPackaging - Pack Loose in Box",
 }
@@ -355,8 +355,8 @@ def unit_attr(v):
     return "" if v is None else f"{v:.3f}".rstrip("0").rstrip(".") if v % 1 else f"{v:.2f}"
 
 
-def note_cell(key, label):
-    v = NOTES.get(key, "")
+def note_cell(key, label, default=None):
+    v = NOTES.get(key, "") if default is None else default
     return (f'<td class="note"><textarea rows="2" data-k="{key}:note" data-default="{e(v)}" '
             f'aria-label="{e(label)}, notes" placeholder="Notes">{e(v)}</textarea></td>')
 
@@ -409,19 +409,18 @@ def packaging_html():
                               ("g6", "Made parts <small>(one-time costs spread over the quantity)</small>", ""),
                               ("g3", "Total per box", ' class="tot"'), ("g4", "Prices still missing", ' class="miss"')))
     return (
-        '<h3 class="inside">3 · Bought in packs (envelopes, magnifier, small parts)</h3>'
+        '<h3 class="inside">4 · Bought in packs (envelopes, magnifier, small parts)</h3>'
         '<div class="tbl"><table class="cost pack"><thead><tr><th>Item</th><th class="r">Per box</th>'
         '<th class="r">Items per pack</th><th class="r">Pack price</th><th>Link</th><th class="r">Price each</th>'
         '<th class="r">Cost per box</th><th>Notes</th></tr></thead><tbody>' + env_rows + '</tbody><tfoot><tr class="tot"><th scope="row">'
         'Bought in packs, per box</th><td></td><td></td><td></td><td></td><td></td><td class="r" id="cost-env"></td><td></td></tr></tfoot></table></div>'
-        '<h3 class="inside">4 · Box (quotes, price each; tick the one to count)</h3>'
+        '<h3 class="inside">5 · Box (quotes, price each; tick the one to count)</h3>'
         f'<div class="tbl"><table class="cost pack"><thead><tr><th>Box</th><th class="r">Per box</th>{pqh}<th>Link</th><th>Notes</th></tr></thead>'
         '<tbody>' + box_rows + '</tbody></table></div>'
-        '<h3 class="inside">5 · Made parts (quotes: one-time setup + price each)</h3>'
+        '<h3 class="inside">6 · Made parts (quotes: one-time setup + price each)</h3>'
         f'<div class="tbl"><table class="cost pack"><thead><tr><th>Part</th><th class="r">Per box</th><th class="r">One-time</th>{pqh}<th>Link</th><th>Notes</th></tr></thead>'
         '<tbody>' + made_rows + '</tbody></table></div>'
-        '<div class="costbar"><button id="cost-copy-notes">Copy all notes</button><span id="cost-msg-notes" class="meta"></span></div>'
-        '<h3 class="inside">6 · Total per box (printing + bought + box + made parts)</h3>'
+        '<h3 class="inside">7 · Total per box (printing + bought + box + made parts)</h3>'
         f'<div class="tbl"><table class="cost"><thead><tr><th></th>{qh}</tr></thead><tbody>{grand}</tbody></table></div>'
         '<p class="meta">Not yet here: rune stamps and ink, mailer bag, shipping, fees.</p>')
 
@@ -553,15 +552,63 @@ def next_steps_html(plan, preamble, recs):
         + plan_details(plan[1:]) + "</section>")
 
 
-def costs_html():
-    """The Print costs tab: price inputs per product and quantity, cost per box worked out in the page (script below)."""
+SHOPS = [  # key, name, where, link, note (29 Oct 2026; shops other than "old" are leads from a web search, no quotes yet)
+    ("old", "Existing quotes (Newprint or LoudMouth)", "Online / Ottawa", "",
+     "Quotes entered 20 Oct 2026 from the online quote systems; which shop each row came from was not recorded. "
+     "Move them to Newprint or LoudMouth once known."),
+    ("newprint", "Newprint", "Ottawa, online", "", "Box quote also from Newprint"),
+    ("loudmouth", "LoudMouth", "Ottawa", "", "Starts at 100 copies (designer, 29 Oct 2026); may be cheaper than Newprint at small runs"),
+    ("asap", "ASAP PM", "Ottawa, pickup", "", "Advertises small runs and quick turnaround; on the quote list in the plan"),
+    ("eprint", "ePrint It", "Ottawa, 580 Booth St", "", "Online printing with flyers; to quote"),
+    ("allegra", "Allegra Ottawa Downtown", "Ottawa, pickup", "https://www.allegramarketingprint.com/locations/ottawa-downtown/services/print/flyers",
+     "Chain shop; one quote to compare"),
+    ("vista", "Vistaprint Canada", "Online, ships", "", "Often cheapest per piece online (a competitor's comparison); check shipping and delivery time"),
+    ("pcloud", "Printcloud", "Online, ships in Canada", "", "Not verified; to quote"),
+    ("other", "Other shop", "", "", ""),
+]
+OLD_QTYS = [100, 250, 500, 1000]  # the quantities of the 20 Oct 2026 quotes (PRINT_QUOTES order)
+
+
+def field(key, value, label, kind="text", extra=""):
+    return (f'<td><input type="{kind}" {extra} data-k="{key}" value="{e(value)}" data-default="{e(value)}" '
+            f'aria-label="{e(label)}"></td>')
+
+
+def quote_block(key, label):
+    old = dict(zip(OLD_QTYS, PRINT_QUOTES[key]))
+    rows = []
+    for sk, sname, where, link, snote in SHOPS:
+        cells = "".join(
+            f'<td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="{key}" data-q="{q}" '
+            f'data-k="{key}:{sk}:{q}" value="{money_attr(old.get(q) if sk == "old" else None)}" '
+            f'data-default="{money_attr(old.get(q) if sk == "old" else None)}" '
+            f'aria-label="{e(label)}, {e(sname)}, total price for {q:,}"></td>' for q in PRINT_QTYS)
+        rows.append(
+            f'<tr data-qr="{key}" data-shop="{sk}" data-sname="{e(sname)}"><th scope="row">{e(sname)}</th>{cells}'
+            + field(f"{key}:{sk}:ship", "", f"{label}, {sname}, shipping", "number",
+                    'min="0" step="0.01" inputmode="decimal" data-ship placeholder="0"')
+            + field(f"{key}:{sk}:date", "", f"{label}, {sname}, quote date", "text", 'placeholder="date"')
+            + field(f"{key}:{sk}:link", "", f"{label}, {sname}, quote link", "url", 'placeholder="https://"')
+            + note_cell(f"{key}:{sk}", f"{label}, {sname}") + "</tr>")
     qh = "".join(f'<th class="r">@{q:,}</th>' for q in PRINT_QTYS)
-    prices = "".join(
-        f'<tr><th scope="row">{e(label)}</th>'
-        + "".join(f'<td><input type="number" min="0" step="0.01" inputmode="decimal" data-p="{key}" data-q="{q}" '
-                  f'value="{money_attr(PRINT_QUOTES[key][i])}" data-default="{money_attr(PRINT_QUOTES[key][i])}" '
-                  f'aria-label="{e(label)}, total price for {q:,}"></td>' for i, q in enumerate(PRINT_QTYS))
-        + note_cell(key, label) + "</tr>" for key, label in PRINT_PRODUCTS)
+    best = "".join(f'<td class="r" data-best="{key}:{q}"></td>' for q in PRINT_QTYS)
+    return (f'<details class="plan prodq" open><summary>{e(label)}</summary><div><div class="tbl"><table class="cost quotes">'
+            f'<thead><tr><th>Shop</th>{qh}<th class="r">Shipping</th><th>Quote date</th><th>Link</th>'
+            f'<th>Spec (paper, finish, packaging…)</th></tr></thead><tbody>{"".join(rows)}</tbody>'
+            f'<tfoot><tr class="bestrow"><th scope="row">Cheapest</th>{best}<td colspan="4"></td></tr></tfoot></table></div></div></details>')
+
+
+def costs_html():
+    """The Print costs tab: shops, a quote per shop and product, cost per box worked out in the page (script below)."""
+    qh = "".join(f'<th class="r">@{q:,}</th>' for q in PRINT_QTYS)
+    shop_rows = "".join(
+        f'<tr><th scope="row"><label><input type="checkbox" data-inc="{k}" checked aria-label="Count {e(name)} in the cheapest"> '
+        f'{e(name)}</label></th>'
+        + field(f"shop:{k}:where", where, f"{name}, where")
+        + field(f"shop:{k}:link", link, f"{name}, website", "url", 'placeholder="https://"')
+        + note_cell(f"shop:{k}", name, note) + "</tr>"
+        for k, name, where, link, note in SHOPS)
+    quotes = "".join(quote_block(key, label) for key, label in PRINT_PRODUCTS)
     label_of = dict(PRINT_PRODUCTS)
     items = "".join(
         f'<tr data-p="{key}" data-n="{n}"><th scope="row">'
@@ -576,18 +623,32 @@ def costs_html():
             + "".join(f'<td class="r" data-order="{q}"></td>' for q in PRINT_QTYS) + "</tr>"
             + '<tr class="miss"><th scope="row">Rows without a price</th><td></td><td></td>'
             + "".join(f'<td class="r" data-miss="{q}"></td>' for q in PRINT_QTYS) + "</tr>")
+    whole = "".join(
+        f'<tr><th scope="row">{e(name)}</th>' + "".join(f'<td class="r" data-shopq="{k}:{q}"></td>' for q in PRINT_QTYS) + "</tr>"
+        for k, name, where, link, note in SHOPS)
+    mode = '<option value="">Cheapest shop for each item</option>' + "".join(
+        f'<option value="{k}">Only {e(name)}</option>' for k, name, *_ in SHOPS)
     return (
         '<section class="env" id="costs"><header><span class="num">$</span>'
-        '<div><h2>Print costs</h2><p>Prices are the <b>total price for one design</b> from the online quote system '
-        '(Newprint or LoudMouth), quoted 20 Oct 2026. Cost per box works itself out: designs per box × price ÷ quantity. '
-        'Type over a price to try another; changes stay in this browser only (<i>Reset to quotes</i> brings the quotes back).</p></div></header>'
-        '<h3 class="inside">1 · Prices from the quote system (CAD, total per design)</h3>'
-        f'<div class="tbl"><table class="cost prices"><thead><tr><th>Product</th>{qh}<th>Notes (paper, finish, packaging of the cheapest quote)</th></tr></thead><tbody>{prices}</tbody></table></div>'
-        '<h3 class="inside" id="cost-perbox">2 · Cost per box</h3>'
+        '<div><h2>Print costs</h2><p>Each price is the <b>total for one design</b> from a shop\'s quote system, in CAD. '
+        'Enter a quote for any shop and quantity; the page takes the cheapest for each item and works out the cost per box '
+        '(designs per box × price ÷ quantity). Shipping is a flat amount per quote; tick HST to add 13%. '
+        'Edits stay in this browser only (<i>Reset to quotes</i> brings back the 20 Oct 2026 quotes). '
+        'Notes and specs are kept with each quote so the exact product is not lost.</p></div></header>'
+        '<h3 class="inside">1 · Shops <small>(untick one to leave it out of the cheapest)</small></h3>'
+        '<div class="tbl"><table class="cost shops"><thead><tr><th>Shop</th><th>Where</th><th>Website</th><th>Notes</th></tr></thead>'
+        f'<tbody>{shop_rows}</tbody></table></div>'
+        '<h3 class="inside">2 · Quotes per product and shop (CAD, total for one design)</h3>'
+        + quotes +
+        '<h3 class="inside" id="cost-perbox">3 · Cost per box</h3>'
+        f'<div class="costbar"><label>Compare using <select id="cost-mode">{mode}</select></label>'
+        '<label><input type="checkbox" id="cost-hst"> Add 13% HST (prices above are before tax)</label></div>'
         f'<div class="tbl"><table class="cost"><thead><tr><th>Item</th><th>Product</th><th class="r">Designs per box</th>{qh}</tr></thead>'
         f'<tbody>{items}</tbody><tfoot>{foot}</tfoot></table></div>'
-        '<div class="costbar"><button id="cost-clear">Reset to quotes</button>'
-        '<span id="cost-msg" class="meta"></span></div>'
+        '<h3 class="inside">Printing per box if everything came from one shop</h3>'
+        f'<div class="tbl"><table class="cost"><thead><tr><th>Shop</th>{qh}</tr></thead><tbody>{whole}</tbody></table></div>'
+        '<div class="costbar"><button id="cost-copy-notes">Copy all notes</button><span id="cost-msg-notes" class="meta"></span>'
+        '<button id="cost-clear">Reset to quotes</button><span id="cost-msg" class="meta"></span></div>'
         + '<p class="meta">Superseded Letter 8.5 × 11 quotes, kept for reference (prototype maps): '
         + "; ".join(f'{e(k)}: ' + " / ".join(f"${v:.2f}" for v in vals) for k, vals in OLD_LETTER_QUOTES.items())
         + ' (at 100 / 250 / 500 / 1,000).</p>'
@@ -729,6 +790,14 @@ table.cost input{width:100%;min-width:76px;font:inherit;text-align:right;padding
 table.cost textarea{width:100%;min-width:230px;font:inherit;font-size:13px;line-height:1.35;padding:4px 6px;border:1px solid var(--rule);border-radius:6px;background:var(--bg);color:var(--ink);resize:vertical}
 table.cost textarea:focus,table.cost input:focus{outline:2px solid var(--accent);outline-offset:0}
 table.cost input:focus{outline:2px solid var(--accent);outline-offset:0}
+table.cost input[type=checkbox]{width:auto;min-width:0;accent-color:var(--accent);margin:0 4px 0 0}
+table.cost.quotes input[type=number]{min-width:64px}
+table.cost.quotes input[type=text],table.cost.quotes input[type=url],table.cost.shops input[type=text],table.cost.shops input[type=url]{text-align:left;min-width:110px}
+table.cost input.bestc{border-color:var(--accent);background:var(--spoil);font-weight:700}
+table.cost tr.bestrow th,table.cost tr.bestrow td{font-weight:700;border-top:2px solid var(--ink);font-size:12px}
+details.prodq>div{padding:0 0 6px}
+.costbar label{display:flex;gap:6px;align-items:center;font-size:14px}
+.costbar select{font:inherit;padding:4px 6px;border:1px solid var(--rule);border-radius:6px;background:var(--bg);color:var(--ink)}
 table.cost tr.tot th,table.cost tr.tot td{font-weight:700;border-top:2px solid var(--ink)}
 table.cost tr.off th,table.cost tr.off td{opacity:.45}
 table.cost.pack input[type=number]{max-width:96px}
@@ -787,13 +856,32 @@ try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(err){saved={}}
 var inputs=root.querySelectorAll('input[data-p],input[data-k],textarea[data-k]'),rows=root.querySelectorAll('tbody tr[data-p]');
 var envRows=root.querySelectorAll('tr[data-env]'),boxRows=root.querySelectorAll('tr[data-boxrow]'),madeRows=root.querySelectorAll('tr[data-made]'),radios=root.querySelectorAll('input[name="cost-box"]');
 var qtys=[].map.call(root.querySelectorAll('td[data-tot]'),function(td){return +td.getAttribute('data-tot')});
+var sel=document.getElementById('cost-mode'),hstBox=document.getElementById('cost-hst'),incs=root.querySelectorAll('input[data-inc]');
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(err){}}
+Object.keys(saved).forEach(function(k){var m=/^(\w+)@(\d+)$/.exec(k),n=/^(pc2|pc1|bm2|bm1|bc1|fl1|fl2):note$/.exec(k);
+  if(m){saved[m[1]+':old:'+m[2]]=saved[k];delete saved[k]}else if(n){saved[n[1]+':old:note']=saved[k];delete saved[k]}});
 function money(x){return '$'+x.toFixed(2)}
-function price(p,q){var i=root.querySelector('input[data-p="'+p+'"][data-q="'+q+'"]');var v=i?parseFloat(i.value):NaN;return isNaN(v)?null:v}
+function rowTotal(r,q){var i=r.querySelector('input[data-q="'+q+'"]'),v=i?parseFloat(i.value):NaN;if(isNaN(v))return null;
+  var sh=parseFloat(r.querySelector('input[data-ship]').value);return (v+(isNaN(sh)?0:sh))*(hstBox.checked?1.13:1)}
+function best(p,q,only){var m=only||sel.value,b=null;
+  [].forEach.call(root.querySelectorAll('tr[data-qr="'+p+'"]'),function(r){var s=r.getAttribute('data-shop');
+    if(m&&s!==m)return;
+    if(!m){var c=root.querySelector('input[data-inc="'+s+'"]');if(c&&!c.checked)return}
+    var t=rowTotal(r,q);if(t!==null&&(!b||t<b.v))b={v:t,shop:r.getAttribute('data-sname')}});return b}
+function marks(){
+  root.querySelectorAll('td[data-best]').forEach(function(td){var a=td.getAttribute('data-best').split(':'),b=best(a[0],+a[1]);
+    td.textContent=b?money(b.v)+' · '+b.shop:''});
+  root.querySelectorAll('tr[data-qr]').forEach(function(r){var p=r.getAttribute('data-qr');
+    r.querySelectorAll('input[data-q]').forEach(function(i){var q=+i.getAttribute('data-q'),t=rowTotal(r,q),b=best(p,q);
+      i.classList.toggle('bestc',t!==null&&b!==null&&Math.abs(t-b.v)<1e-9)})});
+  root.querySelectorAll('td[data-shopq]').forEach(function(td){var a=td.getAttribute('data-shopq').split(':'),q=+a[1],t=0,m=0;
+    rows.forEach(function(r){var b=best(r.getAttribute('data-p'),q,a[0]);if(b)t+=(+r.getAttribute('data-n'))*b.v/q;else m++});
+    td.textContent=m===rows.length?'':money(t)+(m?' (+'+m+' missing)':'')})}
 function calc(){
   var pieces=0,tot={},miss={};qtys.forEach(function(q){tot[q]=0;miss[q]=0});
   rows.forEach(function(r){var p=r.getAttribute('data-p'),n=+r.getAttribute('data-n');pieces+=n;
-    qtys.forEach(function(q){var v=price(p,q),c=r.querySelector('td[data-q="'+q+'"]');
-      if(v===null){c.textContent='';miss[q]++}else{var x=n*v/q;tot[q]+=x;c.textContent=money(x)}})});
+    qtys.forEach(function(q){var b=best(p,q),v=b?b.v:null,c=r.querySelector('td[data-q="'+q+'"]');
+      if(v===null){c.textContent='';c.title='';miss[q]++}else{var x=n*v/q;tot[q]+=x;c.textContent=money(x);c.title=b.shop}})});
   document.getElementById('cost-pieces').textContent=pieces;
   qtys.forEach(function(q){root.querySelector('td[data-tot="'+q+'"]').textContent=miss[q]===rows.length?'':money(tot[q]);
     root.querySelector('td[data-order="'+q+'"]').textContent=miss[q]===rows.length?'':'$'+Math.round(tot[q]*q).toLocaleString('en-CA');
@@ -806,7 +894,7 @@ function calc(){
     if(ok)env+=n*each;else emiss++;
     setLink(r,k)});
   document.getElementById('cost-env').textContent=money(env);
-  var box=(root.querySelector('input[name="cost-box"]:checked')||{}).value,tier={100:250,250:250,500:500,1000:1000};
+  var box=(root.querySelector('input[name="cost-box"]:checked')||{}).value,tier={};qtys.forEach(function(q){tier[q]=q<=250?250:q});
   boxRows.forEach(function(r){var k=r.getAttribute('data-boxrow');r.classList.toggle('off',k!==box);setLink(r,k)});
   var br=root.querySelector('tr[data-boxrow="'+box+'"]');
   qtys.forEach(function(q){var bn=br?parseFloat(br.querySelector('input[data-k="'+box+':qty"]').value):NaN,
@@ -818,12 +906,17 @@ function calc(){
       if(isNaN(pe)||isNaN(n)){mmiss++}else{made+=n*pe+(isNaN(su)?0:su/q)}});
     setq('g6',q,money(made));
     setq('g3',q,money(tot[q]+env+(bc||0)+made));setq('g4',q,miss[q]+emiss+(bc===null?1:0)+mmiss)});
-  madeRows.forEach(function(r){setLink(r,r.getAttribute('data-made'))})}
+  madeRows.forEach(function(r){setLink(r,r.getAttribute('data-made'))});marks()}
 function setq(a,q,t){root.querySelector('td[data-'+a+'="'+q+'"]').textContent=t}
 function setLink(r,k){var a=r.querySelector('a[data-linkname]'),v=(r.querySelector('input[data-k="'+k+':link"]').value||'').trim();
   if(/^https?:\/\//i.test(v)){a.href=v;a.classList.remove('nolink')}else{a.removeAttribute('href');a.classList.add('nolink')}}
 radios.forEach(function(r){if(saved.box)r.checked=(r.value===saved.box);
   r.addEventListener('change',function(){saved.box=r.value;try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(err){}calc()})});
+if(saved.mode)sel.value=saved.mode;if(saved.hst==='1')hstBox.checked=true;
+sel.addEventListener('change',function(){if(sel.value)saved.mode=sel.value;else delete saved.mode;persist();calc()});
+hstBox.addEventListener('change',function(){if(hstBox.checked)saved.hst='1';else delete saved.hst;persist();calc()});
+incs.forEach(function(c){var k='inc:'+c.getAttribute('data-inc');if(saved[k]==='0')c.checked=false;
+  c.addEventListener('change',function(){if(c.checked)delete saved[k];else saved[k]='0';persist();calc()})});
 inputs.forEach(function(inp){var k=inp.getAttribute('data-k')||(inp.getAttribute('data-p')+'@'+inp.getAttribute('data-q'));
   if(saved[k]!=null)inp.value=saved[k];
   inp.addEventListener('input',function(){if(inp.value===inp.getAttribute('data-default'))delete saved[k];else saved[k]=inp.value;
@@ -831,8 +924,7 @@ inputs.forEach(function(inp){var k=inp.getAttribute('data-k')||(inp.getAttribute
 var msg=document.getElementById('cost-msg');
 document.getElementById('cost-copy-notes').onclick=function(){
   var lines=[].filter.call(root.querySelectorAll('textarea[data-k]'),function(t){return t.value.trim()}).map(function(t){
-    var k=t.getAttribute('data-k').replace(':note',''),r=t.closest('tr'),h=r.querySelector('th');
-    return (h?h.textContent.trim():k)+'\t'+t.value.replace(/\n/g,' / ')});
+    return t.getAttribute('aria-label').replace(', notes','')+'\t'+t.value.replace(/\n/g,' / ')});
   var m=document.getElementById('cost-msg-notes');
   function done(){m.textContent='Copied '+lines.length+' notes (item, note).'}
   function fallback(){var t=document.createElement('textarea');t.value=lines.join('\n');document.body.appendChild(t);t.select();
@@ -840,7 +932,7 @@ document.getElementById('cost-copy-notes').onclick=function(){
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(lines.join('\n')).then(done,fallback)}else{fallback()}};
 document.getElementById('cost-clear').onclick=function(){if(!confirm('Put back the quoted prices (20 Oct 2026)?'))return;
   saved={};try{localStorage.removeItem(KEY)}catch(err){}inputs.forEach(function(i){i.value=i.getAttribute('data-default')});
-  radios.forEach(function(r){r.checked=(r.value==='boxA')});calc();msg.textContent='Quoted prices restored.'};
+  radios.forEach(function(r){r.checked=(r.value==='boxA')});sel.value='';hstBox.checked=false;incs.forEach(function(c){c.checked=true});calc();msg.textContent='Quoted prices restored.'};
 calc();
 })();
 </script></body></html>
