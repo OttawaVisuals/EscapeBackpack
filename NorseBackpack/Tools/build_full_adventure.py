@@ -633,8 +633,9 @@ def costs_html():
         '<div><h2>Print costs</h2><p>Each price is the <b>total for one design</b> from a shop\'s quote system, in CAD. '
         'Enter a quote for any shop and quantity; the page takes the cheapest for each item and works out the cost per box '
         '(designs per box × price ÷ quantity). Shipping is a flat amount per quote; tick HST to add 13%. '
-        'Edits stay in this browser only (<i>Reset to quotes</i> brings back the 20 Oct 2026 quotes). '
+        'Edits are saved for everyone signed in to the Studio (otherwise they stay in this browser); <i>Reset to quotes</i> brings back the 20 Oct 2026 quotes. '
         'Notes and specs are kept with each quote so the exact product is not lost.</p></div></header>'
+        '<p class="meta" id="cost-sync" role="status"></p>'
         '<h3 class="inside">1 · Shops <small>(untick one to leave it out of the cheapest)</small></h3>'
         '<div class="tbl"><table class="cost shops"><thead><tr><th>Shop</th><th>Where</th><th>Website</th><th>Notes</th></tr></thead>'
         f'<tbody>{shop_rows}</tbody></table></div>'
@@ -867,7 +868,12 @@ var inputs=root.querySelectorAll('input[data-p],input[data-k],textarea[data-k]')
 var envRows=root.querySelectorAll('tr[data-env]'),boxRows=root.querySelectorAll('tr[data-boxrow]'),madeRows=root.querySelectorAll('tr[data-made]'),radios=root.querySelectorAll('input[name="cost-box"]');
 var qtys=[].map.call(root.querySelectorAll('td[data-tot]'),function(td){return +td.getAttribute('data-tot')});
 var needBox=document.getElementById('cost-need'),sel=document.getElementById('cost-mode'),hstBox=document.getElementById('cost-hst'),incs=root.querySelectorAll('input[data-inc]');
-function persist(){try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(err){}}
+var dirty={},timer=0,syncEl=document.getElementById('cost-sync'),API='/studio/api/page-data/norse-costs',lastPull=0;
+try{dirty=JSON.parse(localStorage.getItem(KEY+':dirty')||'{}')||{}}catch(err){dirty={}}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(saved));localStorage.setItem(KEY+':dirty',JSON.stringify(dirty))}catch(err){}}
+function setKey(k,v){saved[k]=v;dirty[k]=1;persist();sched()}
+function delKey(k){delete saved[k];dirty[k]=1;persist();sched()}
+function keyOf(inp){return inp.getAttribute('data-k')||(inp.getAttribute('data-p')+'@'+inp.getAttribute('data-q'))}
 Object.keys(saved).forEach(function(k){var m=/^(\w+)@(\d+)$/.exec(k),n=/^(pc2|pc1|bm2|bm1|bc1|fl1|fl2):note$/.exec(k);
   if(m){saved[m[1]+':old:'+m[2]]=saved[k];delete saved[k]}else if(n){saved[n[1]+':old:note']=saved[k];delete saved[k]}});
 function money(x){return '$'+x.toFixed(2)}
@@ -933,19 +939,45 @@ function calc(){
 function setq(a,q,t){root.querySelector('td[data-'+a+'="'+q+'"]').textContent=t}
 function setLink(r,k){var a=r.querySelector('a[data-linkname]'),v=(r.querySelector('input[data-k="'+k+':link"]').value||'').trim();
   if(/^https?:\/\//i.test(v)){a.href=v;a.classList.remove('nolink')}else{a.removeAttribute('href');a.classList.add('nolink')}}
-radios.forEach(function(r){if(saved.box)r.checked=(r.value===saved.box);
-  r.addEventListener('change',function(){saved.box=r.value;try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(err){}calc()})});
-if(saved.need)needBox.value=saved.need;
-needBox.addEventListener('input',function(){if(needBox.value&&needBox.value!=='350')saved.need=needBox.value;else delete saved.need;persist();calc()});
-if(saved.mode)sel.value=saved.mode;if(saved.hst==='1')hstBox.checked=true;
-sel.addEventListener('change',function(){if(sel.value)saved.mode=sel.value;else delete saved.mode;persist();calc()});
-hstBox.addEventListener('change',function(){if(hstBox.checked)saved.hst='1';else delete saved.hst;persist();calc()});
-incs.forEach(function(c){var k='inc:'+c.getAttribute('data-inc');if(saved[k]==='0')c.checked=false;
-  c.addEventListener('change',function(){if(c.checked)delete saved[k];else saved[k]='0';persist();calc()})});
-inputs.forEach(function(inp){var k=inp.getAttribute('data-k')||(inp.getAttribute('data-p')+'@'+inp.getAttribute('data-q'));
-  if(saved[k]!=null)inp.value=saved[k];
-  inp.addEventListener('input',function(){if(inp.value===inp.getAttribute('data-default'))delete saved[k];else saved[k]=inp.value;
-    try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(err){}calc()})});
+radios.forEach(function(r){r.addEventListener('change',function(){setKey('box',r.value);calc()})});
+needBox.addEventListener('input',function(){if(needBox.value&&needBox.value!=='350')setKey('need',needBox.value);else delKey('need');calc()});
+sel.addEventListener('change',function(){if(sel.value)setKey('mode',sel.value);else delKey('mode');calc()});
+hstBox.addEventListener('change',function(){if(hstBox.checked)setKey('hst','1');else delKey('hst');calc()});
+incs.forEach(function(c){var k='inc:'+c.getAttribute('data-inc');
+  c.addEventListener('change',function(){if(c.checked)delKey(k);else setKey(k,'0');calc()})});
+inputs.forEach(function(inp){inp.addEventListener('input',function(){var k=keyOf(inp);
+  if(inp.value===inp.getAttribute('data-default'))delKey(k);else setKey(k,inp.value);calc()})});
+function applySaved(){var ae=document.activeElement;
+  inputs.forEach(function(inp){if(inp===ae)return;var v=saved[keyOf(inp)];inp.value=(v!=null)?v:inp.getAttribute('data-default')});
+  radios.forEach(function(r){r.checked=(r.value===(saved.box||'boxA'))});
+  if(ae!==needBox)needBox.value=saved.need||'350';
+  if(ae!==sel)sel.value=saved.mode||'';
+  hstBox.checked=saved.hst==='1';
+  incs.forEach(function(c){c.checked=saved['inc:'+c.getAttribute('data-inc')]!=='0'})}
+/* Shared copy: the Studio worker keeps these values in its database for people signed in to the Studio (Cloudflare Access).
+   Anyone else, or offline, keeps working from this browser's copy and the page says so. */
+function status(t,link){if(!syncEl)return;syncEl.textContent=t+' ';
+  if(link){var a=document.createElement('a');a.href='/studio/';a.target='_blank';a.rel='noopener';a.textContent='Sign in to the Studio to share';syncEl.appendChild(a)}}
+function offline(){status('Saved in this browser only (not signed in, or offline).',true)}
+function sched(){clearTimeout(timer);status('Saving…');timer=setTimeout(push,700)}
+function push(){var ks=Object.keys(dirty);if(!ks.length)return Promise.resolve();
+  var set={},del=[];ks.forEach(function(k){if(k in saved)set[k]=String(saved[k]);else del.push(k)});
+  return fetch(API,{method:'PATCH',credentials:'same-origin',redirect:'manual',headers:{'Content-Type':'application/json'},body:JSON.stringify({set:set,del:del})})
+    .then(function(r){if(!r.ok)throw 0;
+      ks.forEach(function(k){var cur=(k in saved)?String(saved[k]):null,sent=(k in set)?set[k]:null;if(cur===sent)delete dirty[k]});
+      persist();status(Object.keys(dirty).length?'Saving…':'Saved for everyone signed in to the Studio.')})
+    .catch(offline)}
+function pull(){lastPull=Date.now();
+  return fetch(API,{credentials:'same-origin',redirect:'manual'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
+    var remote=j.data||{},first=true;try{first=!localStorage.getItem(KEY+':synced')}catch(err){}
+    if(first&&!j.count){Object.keys(saved).forEach(function(k){dirty[k]=1})}
+    else{var next={};Object.keys(remote).forEach(function(k){next[k]=remote[k]});
+      Object.keys(dirty).forEach(function(k){if(k in saved)next[k]=saved[k];else delete next[k]});saved=next}
+    try{localStorage.setItem(KEY+':synced','1')}catch(err){}
+    persist();applySaved();calc();
+    return push().then(function(){if(!Object.keys(dirty).length)status('Saved for everyone signed in to the Studio.')})}).catch(offline)}
+function again(){if(Date.now()-lastPull>15000)pull()}
+window.addEventListener('focus',again);document.addEventListener('visibilitychange',function(){if(!document.hidden)again()});
 var msg=document.getElementById('cost-msg');
 document.getElementById('cost-copy-notes').onclick=function(){
   var lines=[].filter.call(root.querySelectorAll('textarea[data-k]'),function(t){return t.value.trim()}).map(function(t){
@@ -955,10 +987,10 @@ document.getElementById('cost-copy-notes').onclick=function(){
   function fallback(){var t=document.createElement('textarea');t.value=lines.join('\n');document.body.appendChild(t);t.select();
     try{document.execCommand('copy');done()}catch(err){m.textContent='Copy failed.'}t.remove()}
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(lines.join('\n')).then(done,fallback)}else{fallback()}};
-document.getElementById('cost-clear').onclick=function(){if(!confirm('Put back the quoted prices (20 Oct 2026)?'))return;
-  saved={};try{localStorage.removeItem(KEY)}catch(err){}inputs.forEach(function(i){i.value=i.getAttribute('data-default')});
-  radios.forEach(function(r){r.checked=(r.value==='boxA')});sel.value='';needBox.value='350';hstBox.checked=false;incs.forEach(function(c){c.checked=true});calc();msg.textContent='Quoted prices restored.'};
-calc();
+document.getElementById('cost-clear').onclick=function(){
+  if(!confirm('Put back the quoted prices (20 Oct 2026)? This clears the saved edits for everyone signed in to the Studio too.'))return;
+  Object.keys(saved).forEach(function(k){dirty[k]=1});saved={};persist();applySaved();calc();sched();msg.textContent='Quoted prices restored.'};
+applySaved();calc();pull();
 })();
 </script></body></html>
 """
