@@ -375,31 +375,40 @@ def packaging_html():
     def name(item, value):
         return f'<a data-linkname target="_blank" rel="noopener"{f' href="{e(value)}"' if value else ""}>{e(item)}</a>'
 
-    env_rows = "".join(
-        f'<tr data-env="{k}" data-name="{e(item)}"><th scope="row">{name(item, url)}'
-        f'{f" <small>{e(note)}</small>" if note else ""}</th>'
-        + num(k, "qty", n, 1, f"{item}, per box", str)
-        + num(k, "pack", pack, 1, f"{item}, items per pack", str)
-        + num(k, "packprice", price, 0.01, f"{item}, pack price")
-        + link(k, url, item)
-        + '<td class="r" data-each></td><td class="r" data-cost></td>' + note_cell(k, item) + '</tr>'
-        for k, item, n, pack, price, url, note in ENVELOPES)
-    box_rows = "".join(
-        f'<tr data-boxrow="{k}" data-name="{e(item)}"><th scope="row"><label><input type="radio" name="cost-box" value="{k}"'
-        f'{" checked" if k == "boxA" else ""} aria-label="Count this box"> </label>{name(item, url)}'
-        f'{f" <small>{e(note)}</small>" if note else ""}</th>'
-        + num(k, "qty", n, 1, f"{item}, per box", str)
-        + "".join(num(k, f"p{q}", prices[i], 0.01, f"{item}, price each at {q:,}") for i, q in enumerate(PACK_QTYS))
-        + link(k, url, item) + note_cell(k, item) + "</tr>"
-        for k, item, n, prices, url, note in BOXES)
-    made_rows = "".join(
-        f'<tr data-made="{k}" data-name="{e(item)}"><th scope="row">{name(item, url)}'
-        f'{f" <small>{e(note)}</small>" if note else ""}</th>'
-        + num(k, "qty", n, 1, f"{item}, per box", str)
-        + num(k, "setup", setup, 0.01, f"{item}, one-time cost")
-        + "".join(num(k, f"p{q}", prices[i], 0.01, f"{item}, price each at {q:,}") for i, q in enumerate(PACK_QTYS))
-        + link(k, url, item) + note_cell(k, item) + "</tr>"
-        for k, item, n, setup, prices, url, note in MADE)
+    rm = ('<span class="rowbtns"><button type="button" class="rowbtn" data-act="rename" title="Rename">✎</button>'
+          '<button type="button" class="rowbtn" data-act="hide" title="Remove (hide)">✕</button></span>')
+
+    def env_row(k, item, n, pack, price, url, note):
+        return (f'<tr data-env="{k}" data-dname="{e(item)}" data-gk="{k}:gone"><th scope="row">{name(item, url)}'
+                f'{f" <small>{e(note)}</small>" if note else ""} {rm}</th>'
+                + num(k, "qty", n, 1, f"{item}, per box", str)
+                + num(k, "pack", pack, 1, f"{item}, items per pack", str)
+                + num(k, "packprice", price, 0.01, f"{item}, pack price")
+                + link(k, url, item)
+                + '<td class="r" data-each></td><td class="r" data-cost></td>' + note_cell(k, item) + '</tr>')
+
+    def box_row(k, item, n, prices, url, note):
+        return (f'<tr data-boxrow="{k}" data-dname="{e(item)}" data-gk="{k}:gone"><th scope="row"><label><input type="radio" name="cost-box" value="{k}"'
+                f'{" checked" if k == "boxA" else ""} aria-label="Count this box"> </label>{name(item, url)}'
+                f'{f" <small>{e(note)}</small>" if note else ""} {rm}</th>'
+                + num(k, "qty", n, 1, f"{item}, per box", str)
+                + "".join(num(k, f"p{q}", prices[i], 0.01, f"{item}, price each at {q:,}") for i, q in enumerate(PACK_QTYS))
+                + link(k, url, item) + note_cell(k, item) + "</tr>")
+
+    def made_row(k, item, n, setup, prices, url, note):
+        return (f'<tr data-made="{k}" data-dname="{e(item)}" data-gk="{k}:gone"><th scope="row">{name(item, url)}'
+                f'{f" <small>{e(note)}</small>" if note else ""} {rm}</th>'
+                + num(k, "qty", n, 1, f"{item}, per box", str)
+                + num(k, "setup", setup, 0.01, f"{item}, one-time cost")
+                + "".join(num(k, f"p{q}", prices[i], 0.01, f"{item}, price each at {q:,}") for i, q in enumerate(PACK_QTYS))
+                + link(k, url, item) + note_cell(k, item) + "</tr>")
+
+    env_rows = "".join(env_row(*r) for r in ENVELOPES)
+    box_rows = "".join(box_row(*r) for r in BOXES)
+    made_rows = "".join(made_row(*r) for r in MADE)
+    templates = (f'<template id="tpl-env">{env_row("__ID__", "New line", 1, None, None, "", "")}</template>'
+                 f'<template id="tpl-box">{box_row("__ID__", "New line", 1, [None] * 3, "", "")}</template>'
+                 f'<template id="tpl-made">{made_row("__ID__", "New line", 1, None, [None] * 3, "", "")}</template>')
     pqh = "".join(f'<th class="r">Each @{q:,}</th>' for q in PACK_QTYS)
     qh = "".join(f'<th class="r">@{q:,}</th>' for q in PRINT_QTYS)
     grand = "".join(
@@ -414,15 +423,19 @@ def packaging_html():
         '<th class="r">Items per pack</th><th class="r">Pack price</th><th>Link</th><th class="r">Price each</th>'
         '<th class="r">Cost per box</th><th>Notes</th></tr></thead><tbody>' + env_rows + '</tbody><tfoot><tr class="tot"><th scope="row">'
         'Bought in packs, per box</th><td></td><td></td><td></td><td></td><td></td><td class="r" id="cost-env"></td><td></td></tr></tfoot></table></div>'
+        '<div class="costbar"><button type="button" data-add="env">Add line</button></div>'
         '<h3 class="inside">5 · Box (quotes, price each; tick the one to count)</h3>'
         f'<div class="tbl"><table class="cost pack"><thead><tr><th>Box</th><th class="r">Per box</th>{pqh}<th>Link</th><th>Notes</th></tr></thead>'
         '<tbody>' + box_rows + '</tbody></table></div>'
-        '<h3 class="inside">6 · Made parts (quotes: one-time setup + price each)</h3>'
+        '<div class="costbar"><button type="button" data-add="box">Add line</button></div>'
+        '<h3 class="inside">6 · Made parts and other costs (one-time setup + price each)</h3>'
         f'<div class="tbl"><table class="cost pack"><thead><tr><th>Part</th><th class="r">Per box</th><th class="r">One-time</th>{pqh}<th>Link</th><th>Notes</th></tr></thead>'
         '<tbody>' + made_rows + '</tbody></table></div>'
+        '<div class="costbar"><button type="button" data-add="made">Add line</button></div>'
         '<h3 class="inside">7 · Total per box (printing + bought + box + made parts)</h3>'
         f'<div class="tbl"><table class="cost"><thead><tr><th></th>{qh}</tr></thead><tbody>{grand}</tbody></table></div>'
-        '<p class="meta">Not yet here: rune stamps and ink, mailer bag, shipping, fees.</p>')
+        '<p class="meta">Anything else you pay for (rune stamps and ink, mailer bag, shipping, fees) goes under Made parts and other costs: '
+        'use Per box, then a one-time cost, a price each, or both.</p>' + templates)
 
 
 PLAN_MD = os.path.join(PROJECT, "Production", "Kickstarter_Plan.md")
@@ -602,8 +615,10 @@ def costs_html():
     """The Print costs tab: shops, a quote per shop and product, cost per box worked out in the page (script below)."""
     qh = "".join(f'<th class="r">@{q:,}</th>' for q in PRINT_QTYS)
     shop_rows = "".join(
-        f'<tr><th scope="row"><label><input type="checkbox" data-inc="{k}" checked aria-label="Count {e(name)} in the cheapest"> '
-        f'{e(name)}</label></th>'
+        f'<tr data-gk="shop:{k}:gone" data-shopid="{k}"><th scope="row" class="shopname"><label>'
+        f'<input type="checkbox" data-inc="{k}" checked aria-label="Count {e(name)} in the cheapest"></label>'
+        f'<input type="text" data-shopname="{k}" data-k="shop:{k}:name" value="{e(name)}" data-default="{e(name)}" aria-label="Shop name">'
+        '<button type="button" class="rowbtn" data-act="hide" title="Remove (hide)">✕</button></th>'
         + field(f"shop:{k}:where", where, f"{name}, where")
         + field(f"shop:{k}:link", link, f"{name}, website", "url", 'placeholder="https://"')
         + note_cell(f"shop:{k}", name, note) + "</tr>"
@@ -636,9 +651,11 @@ def costs_html():
         'Edits are saved for everyone signed in to the Studio (otherwise they stay in this browser); <i>Reset to quotes</i> brings back the 20 Oct 2026 quotes. '
         'Notes and specs are kept with each quote so the exact product is not lost.</p></div></header>'
         '<p class="meta" id="cost-sync" role="status"></p>'
-        '<h3 class="inside">1 · Shops <small>(untick one to leave it out of the cheapest)</small></h3>'
+        '<p class="meta"><label><input type="checkbox" id="cost-showgone"> Show removed shops and lines (to restore them)</label></p>'
+        '<h3 class="inside">1 · Shops <small>(rename a shop by typing over its name; ✕ hides it; untick to leave it out of the cheapest)</small></h3>'
         '<div class="tbl"><table class="cost shops"><thead><tr><th>Shop</th><th>Where</th><th>Website</th><th>Notes</th></tr></thead>'
         f'<tbody>{shop_rows}</tbody></table></div>'
+        '<div class="costbar"><button type="button" data-add="shops">Add shop</button></div>'
         '<h3 class="inside">2 · Quotes per product and shop (CAD, total for one design)</h3>'
         + quotes +
         '<h3 class="inside" id="cost-perbox">3 · Cost per box</h3>'
@@ -803,6 +820,12 @@ table.cost input:focus{outline:2px solid var(--accent);outline-offset:0}
 table.cost input[type=checkbox]{width:auto;min-width:0;accent-color:var(--accent);margin:0 4px 0 0}
 table.cost.quotes input[type=number]{min-width:64px}
 table.cost.quotes input[type=text],table.cost.quotes input[type=url],table.cost.shops input[type=text],table.cost.shops input[type=url]{text-align:left;min-width:110px}
+#costs tr.gone{display:none}
+#costs.showgone table.shops tr.gone,#costs.showgone table.pack tr.gone{display:table-row;opacity:.5}
+.rowbtn{font-size:12px;padding:0 6px;margin-left:6px;border-radius:6px;line-height:1.5}
+.rowbtns{white-space:nowrap}
+table.cost.shops th.shopname{white-space:nowrap}
+table.cost.shops th.shopname input[type=text]{min-width:190px;font-weight:600;text-align:left}
 table.cost input.bestc{border-color:var(--accent);background:var(--spoil);font-weight:700}
 table.cost tr.bestrow small{display:block;font-weight:400;color:var(--mute)}
 table.cost tr.bestrow th,table.cost tr.bestrow td{font-weight:700;border-top:2px solid var(--ink);font-size:12px}
@@ -873,6 +896,10 @@ try{dirty=JSON.parse(localStorage.getItem(KEY+':dirty')||'{}')||{}}catch(err){di
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(saved));localStorage.setItem(KEY+':dirty',JSON.stringify(dirty))}catch(err){}}
 function setKey(k,v){saved[k]=v;dirty[k]=1;persist();sched()}
 function delKey(k){delete saved[k];dirty[k]=1;persist();sched()}
+function reindex(){inputs=root.querySelectorAll('input[data-p],input[data-k],textarea[data-k]');incs=root.querySelectorAll('input[data-inc]');
+  radios=root.querySelectorAll('input[name="cost-box"]');
+  var vis=function(q){return [].filter.call(root.querySelectorAll(q),function(r){return !r.classList.contains('gone')})};
+  envRows=vis('tr[data-env]');boxRows=vis('tr[data-boxrow]');madeRows=vis('tr[data-made]')}
 function keyOf(inp){return inp.getAttribute('data-k')||(inp.getAttribute('data-p')+'@'+inp.getAttribute('data-q'))}
 Object.keys(saved).forEach(function(k){var m=/^(\w+)@(\d+)$/.exec(k),n=/^(pc2|pc1|bm2|bm1|bc1|fl1|fl2):note$/.exec(k);
   if(m){saved[m[1]+':old:'+m[2]]=saved[k];delete saved[k]}else if(n){saved[n[1]+':old:note']=saved[k];delete saved[k]}});
@@ -880,7 +907,7 @@ function money(x){return '$'+x.toFixed(2)}
 function rowTotal(r,q){var i=r.querySelector('input[data-q="'+q+'"]'),v=i?parseFloat(i.value):NaN;if(isNaN(v))return null;
   var sh=parseFloat(r.querySelector('input[data-ship]').value);return (v+(isNaN(sh)?0:sh))*(hstBox.checked?1.13:1)}
 function best(p,q,only){var m=only||sel.value,b=null;
-  [].forEach.call(root.querySelectorAll('tr[data-qr="'+p+'"]'),function(r){var s=r.getAttribute('data-shop');
+  [].forEach.call(root.querySelectorAll('tr[data-qr="'+p+'"]'),function(r){var s=r.getAttribute('data-shop');if(r.classList.contains('gone'))return;
     if(m&&s!==m)return;
     if(!m){var c=root.querySelector('input[data-inc="'+s+'"]');if(c&&!c.checked)return}
     var t=rowTotal(r,q);if(t!==null&&(!b||t<b.v))b={v:t,shop:r.getAttribute('data-sname')}});return b}
@@ -906,7 +933,7 @@ function needCalc(){var need=parseFloat(needBox.value);
     c('nb').textContent=pick?lo+money(pick.t/pick.q):'';
     c('ns').textContent=pick?Math.round(pick.q-need):'';
     c('nm').textContent=pick?(pick.m?pick.m+' of '+rows.length:'none'):''})}
-function calc(){
+function calc(){syncNames();syncRows();reindex();
   var pieces=0,tot={},miss={};qtys.forEach(function(q){tot[q]=0;miss[q]=0});
   rows.forEach(function(r){var p=r.getAttribute('data-p'),n=+r.getAttribute('data-n');pieces+=n;
     qtys.forEach(function(q){var b=best(p,q),v=b?b.v:null,c=r.querySelector('td[data-q="'+q+'"]');
@@ -925,7 +952,7 @@ function calc(){
   document.getElementById('cost-env').textContent=money(env);
   var box=(root.querySelector('input[name="cost-box"]:checked')||{}).value,tier={};qtys.forEach(function(q){tier[q]=q<=250?250:q});
   boxRows.forEach(function(r){var k=r.getAttribute('data-boxrow');r.classList.toggle('off',k!==box);setLink(r,k)});
-  var br=root.querySelector('tr[data-boxrow="'+box+'"]');
+  var br=boxRows.filter(function(r){return r.getAttribute('data-boxrow')===box})[0];
   qtys.forEach(function(q){var bn=br?parseFloat(br.querySelector('input[data-k="'+box+':qty"]').value):NaN,
       bp=br?parseFloat(br.querySelector('input[data-k="'+box+':p'+tier[q]+'"]').value):NaN,bc=(isNaN(bn)||isNaN(bp))?null:bn*bp;
     setq('g1',q,money(tot[q]));setq('g2',q,money(env));setq('g5',q,bc===null?'':money(bc));
@@ -939,15 +966,59 @@ function calc(){
 function setq(a,q,t){root.querySelector('td[data-'+a+'="'+q+'"]').textContent=t}
 function setLink(r,k){var a=r.querySelector('a[data-linkname]'),v=(r.querySelector('input[data-k="'+k+':link"]').value||'').trim();
   if(/^https?:\/\//i.test(v)){a.href=v;a.classList.remove('nolink')}else{a.removeAttribute('href');a.classList.add('nolink')}}
-radios.forEach(function(r){r.addEventListener('change',function(){setKey('box',r.value);calc()})});
 needBox.addEventListener('input',function(){if(needBox.value&&needBox.value!=='350')setKey('need',needBox.value);else delKey('need');calc()});
 sel.addEventListener('change',function(){if(sel.value)setKey('mode',sel.value);else delKey('mode');calc()});
 hstBox.addEventListener('change',function(){if(hstBox.checked)setKey('hst','1');else delKey('hst');calc()});
-incs.forEach(function(c){var k='inc:'+c.getAttribute('data-inc');
-  c.addEventListener('change',function(){if(c.checked)delKey(k);else setKey(k,'0');calc()})});
-inputs.forEach(function(inp){inp.addEventListener('input',function(){var k=keyOf(inp);
-  if(inp.value===inp.getAttribute('data-default'))delKey(k);else setKey(k,inp.value);calc()})});
-function applySaved(){var ae=document.activeElement;
+root.addEventListener('input',function(e){var t=e.target;if(!t.matches||!t.matches('input[data-p],input[data-k],textarea[data-k]'))return;
+  var k=keyOf(t);if(t.value===t.getAttribute('data-default'))delKey(k);else setKey(k,t.value);calc()});
+root.addEventListener('change',function(e){var t=e.target;if(!t.matches)return;
+  if(t.matches('input[data-inc]')){var k='inc:'+t.getAttribute('data-inc');if(t.checked)delKey(k);else setKey(k,'0');calc()}
+  else if(t.matches('input[name="cost-box"]')){setKey('box',t.value);calc()}
+  else if(t.id==='cost-showgone'){root.classList.toggle('showgone',t.checked)}});
+/* Shops and expense lines can be added, renamed and hidden. Everything is stored as plain keys in the shared copy:
+   extra:<kind> = JSON list of added ids; shop:<id>:name, <line>:name = new names; <row>:gone = 1 when hidden. */
+function listGet(n){try{return JSON.parse(saved['extra:'+n]||'[]')||[]}catch(err){return []}}
+function listAdd(n,id){var a=listGet(n);if(a.indexOf(id)<0)a.push(id);setKey('extra:'+n,JSON.stringify(a))}
+function tag(el,kind,id){el.setAttribute('data-xk',kind);el.setAttribute('data-xid',id)}
+function addClone(src,id,tb,kind){tb.insertAdjacentHTML('beforeend',src.outerHTML.replace(/(["':])other(["':])/g,'$1'+id+'$2'));
+  var el=tb.lastElementChild;el.classList.remove('gone');tag(el,kind,id);return el}
+function buildShop(kind,id){
+  var sr=root.querySelector('table.shops input[data-inc="other"]').closest('tr'),r=addClone(sr,id,sr.parentNode,kind),ni=r.querySelector('input[data-shopname]');
+  ni.setAttribute('data-default','');ni.value='';
+  [].forEach.call(root.querySelectorAll('tr[data-qr][data-shop="other"]'),function(q){addClone(q,id,q.parentNode,kind)});
+  var wr=root.querySelector('td[data-shopq^="other:"]').closest('tr');addClone(wr,id,wr.parentNode,kind);
+  var nr=root.querySelector('tr[data-need="other"]');addClone(nr,id,nr.parentNode,kind);
+  sel.insertAdjacentHTML('beforeend','<option value="'+id+'"></option>');tag(sel.lastElementChild,kind,id)}
+function buildLine(kind,id){var tb=root.querySelector({env:'tr[data-env]',box:'tr[data-boxrow]',made:'tr[data-made]'}[kind]).parentNode;
+  tb.insertAdjacentHTML('beforeend',document.getElementById('tpl-'+kind).innerHTML.replace(/__ID__/g,id));tag(tb.lastElementChild,kind,id)}
+function ensureRows(){['shops','env','box','made'].forEach(function(kind){var want=listGet(kind);
+  [].forEach.call(root.querySelectorAll('[data-xk="'+kind+'"]'),function(el){if(want.indexOf(el.getAttribute('data-xid'))<0)el.remove()});
+  want.forEach(function(id){if(!root.querySelector('[data-xk="'+kind+'"][data-xid="'+id+'"]'))(kind==='shops'?buildShop:buildLine)(kind,id)})})}
+function syncNames(){
+  root.querySelectorAll('input[data-shopname]').forEach(function(ni){var id=ni.getAttribute('data-shopname'),nm=(ni.value||'').trim()||'(unnamed)';
+    root.querySelectorAll('tr[data-shop="'+id+'"]').forEach(function(r){r.setAttribute('data-sname',nm);r.querySelector('th').textContent=nm});
+    var w=root.querySelector('td[data-shopq^="'+id+':"]');if(w)w.closest('tr').querySelector('th').textContent=nm;
+    var nr=root.querySelector('tr[data-need="'+id+'"]');if(nr)nr.querySelector('th').textContent=nm;
+    var o=sel.querySelector('option[value="'+id+'"]');if(o)o.textContent='Only '+nm});
+  root.querySelectorAll('tr[data-env],tr[data-boxrow],tr[data-made]').forEach(function(r){
+    var k=r.getAttribute('data-env')||r.getAttribute('data-boxrow')||r.getAttribute('data-made'),nm=saved[k+':name']||r.getAttribute('data-dname'),a=r.querySelector('a[data-linkname]');
+    if(a&&a.textContent!==nm)a.textContent=nm})}
+function syncRows(){
+  root.querySelectorAll('tr[data-gk]').forEach(function(tr){var gone=saved[tr.getAttribute('data-gk')]==='1';tr.classList.toggle('gone',gone);
+    var b=tr.querySelector('button[data-act="hide"]');if(b){b.textContent=gone?'↺ Restore':'✕';b.title=gone?'Restore':'Remove (hide)'}});
+  root.querySelectorAll('table.shops tr[data-shopid]').forEach(function(tr){var id=tr.getAttribute('data-shopid'),gone=tr.classList.contains('gone');
+    root.querySelectorAll('tr[data-shop="'+id+'"],tr[data-need="'+id+'"]').forEach(function(r){r.classList.toggle('gone',gone)});
+    var w=root.querySelector('td[data-shopq^="'+id+':"]');if(w)w.closest('tr').classList.toggle('gone',gone);
+    var o=sel.querySelector('option[value="'+id+'"]');if(o)o.hidden=gone})}
+function addItem(kind){var nm=(prompt(kind==='shops'?'Name of the print shop':'Name of the new line')||'').trim();if(!nm)return;
+  var id=(kind==='shops'?'s':'x')+Date.now().toString(36);listAdd(kind,id);setKey(kind==='shops'?'shop:'+id+':name':id+':name',nm);applySaved();calc()}
+root.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('button[data-act],button[data-add]');if(!b)return;
+  if(b.hasAttribute('data-add')){addItem(b.getAttribute('data-add'));return}
+  var tr=b.closest('tr'),act=b.getAttribute('data-act'),gk=tr.getAttribute('data-gk');
+  if(act==='hide'){if(tr.classList.contains('gone'))delKey(gk);else setKey(gk,'1');calc()}
+  else if(act==='rename'){var k=tr.getAttribute('data-env')||tr.getAttribute('data-boxrow')||tr.getAttribute('data-made'),a=tr.querySelector('a[data-linkname]'),v=prompt('New name',a.textContent);
+    if(v===null)return;v=v.trim();if(!v)return;if(v===tr.getAttribute('data-dname'))delKey(k+':name');else setKey(k+':name',v);calc()}});
+function applySaved(){ensureRows();reindex();var ae=document.activeElement;
   inputs.forEach(function(inp){if(inp===ae)return;var v=saved[keyOf(inp)];inp.value=(v!=null)?v:inp.getAttribute('data-default')});
   radios.forEach(function(r){r.checked=(r.value===(saved.box||'boxA'))});
   if(ae!==needBox)needBox.value=saved.need||'350';
